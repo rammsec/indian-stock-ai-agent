@@ -915,6 +915,104 @@ html, body {
   transition: width 0.25s ease;
 }
 
+/* Beginner-Friendly Top-Right '?' Hover Tooltips */
+.has-help-corner {
+  position: relative;
+}
+
+.help-tip-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  z-index: 25;
+}
+
+.help-tip-corner {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  z-index: 30;
+}
+
+.help-tip-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid hsla(210, 92%, 58%, 0.55);
+  background: hsla(210, 92%, 58%, 0.14);
+  color: var(--accent-brand);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+  cursor: help;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.help-tip-btn:hover,
+.help-tip-wrap:focus-within .help-tip-btn {
+  background: hsla(210, 92%, 58%, 0.28);
+  transform: scale(1.06);
+}
+
+.help-tip-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 325px;
+  max-width: min(325px, 84vw);
+  background: hsl(222, 26%, 11%);
+  border: 1px solid hsla(210, 92%, 58%, 0.55);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 0.95rem;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.72);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.48;
+  color: var(--text-secondary);
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+  z-index: 220;
+}
+
+.help-tip-wrap:hover .help-tip-popover,
+.help-tip-wrap:focus-within .help-tip-popover,
+.help-tip-wrap.open .help-tip-popover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.help-tip-title {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.help-tip-row {
+  margin-bottom: 0.38rem;
+}
+
+.help-tip-row:last-child {
+  margin-bottom: 0;
+}
+
+.help-tip-row strong {
+  color: var(--accent-brand);
+}
+
 </style>
 </head>
 <body>
@@ -4486,6 +4584,188 @@ function renderPhase5ExperimentsTable(expData) {
     `);
   }
   tbody.innerHTML = rows.join("");
+}
+
+/* ============================================================================
+   Beginner-Friendly Top-Right '?' Hover Tooltips (All Charts & Start/Sections)
+   ============================================================================ */
+
+const BEGINNER_HELP_GUIDES = {
+  "market-regime-strip": {
+    title: "Market Regime & Breadth Ribbon (Start Here)",
+    what: "A live weather report for the overall Indian stock market (Nifty 50, India VIX fear gauge, and how many NSE stocks are rising vs falling).",
+    read: "Strong/Weak Bull = market trend is healthy; Sideways = choppy; Bear or High Volatility (VIX >= 21) = risky environment.",
+    use: "Even good stocks struggle when the market is in Bear or High Volatility mode. Trade smaller or wait when the regime warns of high risk.",
+  },
+  "sec-overview": {
+    title: "01. Company Overview & Next-Day Execution Ticket",
+    what: "A quick snapshot of the company's size, valuation (P/E), financial health (Piotroski F-Score out of 9), and tomorrow's suggested price levels.",
+    read: "Entry Zone = ideal buy price range; Target 1/2 = profit-taking levels; Stop-Loss = price where you exit to limit losses; R:R = potential reward vs risk.",
+    use: "Beginners should look for Piotroski >= 6, Risk:Reward >= 1.5x, and never enter a trade without knowing the Stop-Loss first.",
+  },
+  "sec-quant-intel": {
+    title: "02. Quantitative ML Prediction & Smart-Money Tape",
+    what: "Left side shows our walk-forward ML probability for tomorrow after Indian brokerage/STT costs. Right side shows institutional delivery % and bulk/block deals.",
+    read: "P(Up 1D) > 53% with positive Net E[R] = mild bullish edge; Delivery % > 50% means buyers are holding shares rather than day-trading.",
+    use: "Use this as a reality check: if Net E[R] after Indian taxes/fees is negative, avoid short-term trades.",
+  },
+  "sec-committee": {
+    title: "03. 5-Agent Investment Committee & Technical Chart",
+    what: "Five specialized analysts (Value, Growth, Quality, Momentum, Risk) vote Bullish, Neutral, or Bearish on the stock.",
+    read: "Check if both fundamental agents (Value/Quality) and technical agents (Momentum) agree, or if there is a conflict.",
+    use: "Strongest setups happen when 4+ agents agree; if Risk warns of overvaluation or high volatility, be patient.",
+  },
+  "price-dma-canvas": {
+    title: "Chart: 1-Year Price vs. 50-DMA & 200-DMA",
+    what: "Shows the daily closing price (green), 50-day moving average (blue), and 200-day moving average (amber), plus T1 Target and Stop-Loss lines.",
+    read: "Price above both blue (50-DMA) and amber (200-DMA) lines = healthy uptrend. Price below both = downtrend.",
+    use: "Beginners often avoid buying when price is below a falling 200-DMA, and use the Stop-Loss (SL) line as a safety floor.",
+  },
+  "sec-reports": {
+    title: "04. Financial Results (Annual & Quarterly)",
+    what: "Tracks whether the company is growing its sales (Revenue) and keeping more profit (Net Profit & Operating Margin %) over 5 years and 5 quarters.",
+    read: "Look for steady upward Revenue & Net Profit growth and stable or rising OPM%.",
+    use: "Avoid companies with shrinking sales or sudden profit drops unless there is a clear turnaround.",
+  },
+  "reports-bar-canvas": {
+    title: "Chart: 5-Year Annual Revenue vs. Net Profit",
+    what: "Compares total yearly sales (blue bars) against yearly net profit (green bars) over the last 5 financial years.",
+    read: "Taller bars moving left-to-right mean the business is expanding. Green bars growing alongside blue bars mean profitable growth.",
+    use: "Prefer companies where both Revenue and Net Profit trend upward over 5 years.",
+  },
+  "quarterly-bar-canvas": {
+    title: "Chart: Last 5 Quarterly Revenue vs. Net Profit",
+    what: "Shows short-term business momentum across the most recent 5 quarters.",
+    read: "Compare the latest quarter to the same quarter last year (YoY) and the previous quarter (QoQ) to spot acceleration or slowdown.",
+    use: "Rising quarterly profit often acts as a catalyst for stock prices over the next 1–3 months.",
+  },
+  "sec-cash": {
+    title: "05. Cash in Hand, Debt & Cash Flow",
+    what: "Shows how much cash the company holds vs how much money it owes (borrowings), plus whether profits turn into real cash (Operating Cash Flow).",
+    read: "Cash > Debt (Net Cash positive) is very safe. OCF/Net Profit >= 0.8x means profits are real cash, not just accounting numbers.",
+    use: "Companies with low debt and strong cash flow survive market downturns much better.",
+  },
+  "cash-debt-canvas": {
+    title: "Chart: 5-Year Cash in Hand vs. Total Borrowings",
+    what: "Compares liquid cash reserves (green) against total debt (red) over 5 years.",
+    read: "Green bars taller than red bars = conservative, low-debt balance sheet. Rising red bars with shrinking green bars = rising debt risk.",
+    use: "For long-term investing, favor stocks where cash is growing or debt is steadily shrinking.",
+  },
+  "sec-stockholders": {
+    title: "06. Shareholding Pattern (Promoters, FIIs, DIIs)",
+    what: "Shows who owns the company: Promoters (founders), FIIs (foreign funds), DIIs (Indian mutual funds/banks), and Public.",
+    read: "High or rising Promoter & Institutional (FII+DII) ownership generally signals confidence; promoter share pledging is a caution flag.",
+    use: "Watch for steady FII/DII accumulation and zero or decreasing promoter pledges.",
+  },
+  "shareholding-canvas": {
+    title: "Chart: Quarterly Shareholding Trend",
+    what: "Tracks how ownership % among Promoters, FIIs, DIIs, and Public has shifted over recent quarters.",
+    read: "Rising FII/DII lines with falling Public % often means 'smart money' is accumulating shares from retail sellers.",
+    use: "Be cautious if Promoters are rapidly selling their stake quarter after quarter.",
+  },
+  "sec-rd": {
+    title: "07. R&D & Innovation Spend",
+    what: "Measures how much the company invests in Research & Development to build future products and stay ahead of competitors.",
+    read: "R&D % of Sales shows innovation intensity compared to industry peers.",
+    use: "In tech, pharma, and engineering (like Tata Elxsi or TCS), consistent R&D protects profit margins long-term.",
+  },
+  "rd-chart-canvas": {
+    title: "Chart: 5-Year R&D Spend & % of Sales",
+    what: "Blue bars show total ₹ Crore spent on R&D; the green line shows R&D as a percentage of total revenue.",
+    read: "A rising or steady green line alongside growing revenue means the company is reinvesting for future growth.",
+    use: "Use this to compare innovation commitment across tech/manufacturing peers.",
+  },
+  "sec-promoters-competitors": {
+    title: "08. Promoter, Competitor & News Intelligence",
+    what: "Summarizes key leadership, recent news headlines, and how direct competitors are performing.",
+    read: "Bullish/Bearish tags classify whether news helps or hurts the stock; competitor read-across shows industry tailwinds or threats.",
+    use: "Always check recent headlines before buying so you don't get surprised by earnings, lawsuits, or regulatory news.",
+  },
+  "sec-p5-overview": {
+    title: "Phase 5 Multi-Dimensional Stock Intelligence",
+    what: "Combines quantitative ML signals, 6 categories of live news (company, promoter, industry, competitor, regulatory, global macro), and cross-stock relationships across 1D, 5D, and 10D.",
+    read: "BUY/HOLD/WATCH/NO TRADE decisions show whether Quant, News, and Cross-Stock signals agree. Facts are separated from model predictions.",
+    use: "Look for alignment across Quant + News + Cross-Stock before acting, and treat this strictly as research/paper-trading guidance.",
+  },
+  "sec-5d-outlook": {
+    title: "5-Day Price Forecast, Buy/Sell Ranges & Conditions",
+    what: "Shows estimated 5-day price ranges based on recent volatility (ATR) and the validated Naive Momentum benchmark, plus what could push prices up or down.",
+    read: "Buy Call Range = pullback zone with Stop-Loss; Sell Call Range = profit-taking zone; Upside/Downside conditions explain what to watch over 5 days, 1 month, and 1 year.",
+    use: "Never chase prices far above the Buy Range; respect the Stop-Loss if the downside conditions trigger.",
+  },
+};
+
+function createHelpTooltipEl(guide, cornerMode = true) {
+  const wrap = document.createElement("div");
+  wrap.className = cornerMode ? "help-tip-wrap help-tip-corner" : "help-tip-wrap";
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "help-tip-btn";
+  btn.setAttribute("aria-label", `Help: ${guide.title}`);
+  btn.textContent = "?";
+
+  const pop = document.createElement("div");
+  pop.className = "help-tip-popover";
+  pop.setAttribute("role", "tooltip");
+  pop.innerHTML = `
+    <div class="help-tip-title">${guide.title}</div>
+    <div class="help-tip-row"><strong>What it is:</strong> ${guide.what}</div>
+    <div class="help-tip-row"><strong>How to read it:</strong> ${guide.read}</div>
+    <div class="help-tip-row"><strong>How to use it:</strong> ${guide.use}</div>
+  `;
+
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = wrap.classList.contains("open");
+    document.querySelectorAll(".help-tip-wrap.open").forEach((el) => el.classList.remove("open"));
+    if (!isOpen) wrap.classList.add("open");
+  });
+
+  wrap.appendChild(btn);
+  wrap.appendChild(pop);
+  return wrap;
+}
+
+function initBeginnerHelpTooltips() {
+  Object.entries(BEGINNER_HELP_GUIDES).forEach(([targetId, guide]) => {
+    const el = document.getElementById(targetId);
+    if (!el) return;
+
+    if (el.tagName === "CANVAS") {
+      const container = el.closest(".canvas-container") || el.parentElement;
+      if (!container || container.querySelector(".help-tip-wrap")) return;
+      container.classList.add("has-help-corner");
+      container.appendChild(createHelpTooltipEl(guide, true));
+      return;
+    }
+
+    if (el.classList.contains("collapsible-section")) {
+      const hdr = el.querySelector(":scope > .collapsible-header");
+      if (!hdr || hdr.querySelector(".help-tip-wrap")) return;
+      const chevron = hdr.querySelector(".chevron-btn");
+      const tip = createHelpTooltipEl(guide, false);
+      tip.style.marginLeft = "auto";
+      tip.style.marginRight = "0.6rem";
+      if (chevron) {
+        hdr.insertBefore(tip, chevron);
+      } else {
+        hdr.appendChild(tip);
+      }
+      return;
+    }
+
+    if (!el.querySelector(".help-tip-wrap")) {
+      el.classList.add("has-help-corner");
+      el.appendChild(createHelpTooltipEl(guide, true));
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".help-tip-wrap")) {
+      document.querySelectorAll(".help-tip-wrap.open").forEach((el) => el.classList.remove("open"));
+    }
+  });
 }
 
 document.addEventListener("DOMContentLoaded", initApp);

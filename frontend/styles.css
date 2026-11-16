@@ -906,3 +906,101 @@ html, body {
   z-index: 999;
   transition: width 0.25s ease;
 }
+
+/* Beginner-Friendly Top-Right '?' Hover Tooltips */
+.has-help-corner {
+  position: relative;
+}
+
+.help-tip-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  z-index: 25;
+}
+
+.help-tip-corner {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  z-index: 30;
+}
+
+.help-tip-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid hsla(210, 92%, 58%, 0.55);
+  background: hsla(210, 92%, 58%, 0.14);
+  color: var(--accent-brand);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+  cursor: help;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.help-tip-btn:hover,
+.help-tip-wrap:focus-within .help-tip-btn {
+  background: hsla(210, 92%, 58%, 0.28);
+  transform: scale(1.06);
+}
+
+.help-tip-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 325px;
+  max-width: min(325px, 84vw);
+  background: hsl(222, 26%, 11%);
+  border: 1px solid hsla(210, 92%, 58%, 0.55);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 0.95rem;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.72);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.48;
+  color: var(--text-secondary);
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+  z-index: 220;
+}
+
+.help-tip-wrap:hover .help-tip-popover,
+.help-tip-wrap:focus-within .help-tip-popover,
+.help-tip-wrap.open .help-tip-popover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.help-tip-title {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.help-tip-row {
+  margin-bottom: 0.38rem;
+}
+
+.help-tip-row:last-child {
+  margin-bottom: 0;
+}
+
+.help-tip-row strong {
+  color: var(--accent-brand);
+}
