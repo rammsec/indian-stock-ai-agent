@@ -1915,9 +1915,10 @@ function drawRDCanvas(rdHist) {
 async function loadPhase5StockIntelligence(refresh = false) {
   setLoading(true);
   try {
-    const [intelRes, expRes] = await Promise.allSettled([
+    const [intelRes, expRes, fvRes] = await Promise.allSettled([
       fetch(`/api/stock-intelligence?refresh=${refresh ? "true" : "false"}`),
       fetch("/api/phase5-experiments"),
+      fetch(`/api/forward-validation?refresh=${refresh ? "true" : "false"}`),
     ]);
     if (intelRes.status === "fulfilled" && intelRes.value.ok) {
       const data = await intelRes.value.json();
@@ -1926,6 +1927,10 @@ async function loadPhase5StockIntelligence(refresh = false) {
     if (expRes.status === "fulfilled" && expRes.value.ok) {
       const exp = await expRes.value.json();
       renderPhase5ExperimentsTable(exp);
+    }
+    if (fvRes.status === "fulfilled" && fvRes.value.ok) {
+      const fv = await fvRes.value.json();
+      renderForwardValidation(fv);
     }
   } catch (err) {
     console.error("Failed loading Phase 5 Stock Intelligence:", err);
@@ -2113,6 +2118,108 @@ function renderPhase5ExperimentsTable(expData) {
     `);
   }
   tbody.innerHTML = rows.join("");
+}
+
+function renderForwardValidation(fv) {
+  if (!fv) return;
+  const sub = document.getElementById("fv-subtitle");
+  if (sub) {
+    const ts = fv.last_news_collection_at ? String(fv.last_news_collection_at).slice(0, 19).replace("T", " ") + " IST" : "Not collected yet";
+    sub.textContent = `Model ${fv.model_version || "5.3.0-pilot"} (${fv.feature_set_version || "237+17"}) • Last Forward News: ${ts}`;
+  }
+  const distEl = document.getElementById("fv-distinction-note");
+  if (distEl && fv.distinction_note) {
+    distEl.innerHTML = `<strong>Evidence Separation:</strong> ${fv.distinction_note}`;
+  }
+  const warnEl = document.getElementById("fv-warnings-banner");
+  const notices = [...(fv.data_quality_warnings || []), ...(fv.monitoring_alerts || [])];
+  if (warnEl) {
+    warnEl.innerHTML = notices.length
+      ? `<strong>Forward Validation Notices:</strong> ${notices.join(" | ")}`
+      : `<span class="text-bull">Forward news collection, snapshot logging, and outcome tracking healthy.</span>`;
+  }
+  const kpiEl = document.getElementById("fv-kpis");
+  if (kpiEl) {
+    kpiEl.innerHTML = `
+      <div class="kpi-box">
+        <span class="kpi-label">Real News (Valid / Quarantined)</span>
+        <span class="kpi-value">${fv.total_real_news_events ?? 0} (${fv.valid_news_events ?? 0} / ${fv.quarantined_news_events ?? 0})</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Immutable Snapshots</span>
+        <span class="kpi-value">${fv.total_immutable_snapshots ?? 0}</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Matured / Pending Outcomes</span>
+        <span class="kpi-value">${fv.matured_outcomes_total ?? 0} / ${fv.pending_outcomes_total ?? 0}</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Last News Collection</span>
+        <span class="kpi-value" style="font-size: 0.8rem;">${fv.last_news_collection_at ? String(fv.last_news_collection_at).slice(0, 16).replace("T", " ") : "Pending"}</span>
+      </div>
+    `;
+  }
+
+  const hBody = document.getElementById("tbody-fv-horizons");
+  if (hBody && fv.horizon_evaluations) {
+    hBody.innerHTML = ["1D", "5D", "10D"]
+      .filter((h) => fv.horizon_evaluations[h])
+      .map((h) => {
+        const m = fv.horizon_evaluations[h];
+        const stCls = m.status === "OK" ? "text-bull" : m.status === "WARNING" ? "text-bear" : "text-hold";
+        return `
+          <tr>
+            <td style="text-align: left;"><strong>${h}</strong></td>
+            <td>${m.model_version || "5.3.0-pilot"}</td>
+            <td>${fmtPct(m.prediction_coverage_pct ?? 0, 1)}</td>
+            <td>${m.matured_count ?? 0} / ${m.pending_count ?? 0}</td>
+            <td class="${stCls}" style="font-weight: 700;">${m.status}</td>
+            <td>${m.directional_accuracy_pct != null ? fmtPct(m.directional_accuracy_pct, 1) : "—"}</td>
+            <td>${m.roc_auc != null ? fmtNum(m.roc_auc, 4) : "—"}</td>
+            <td>${m.brier_score != null ? fmtNum(m.brier_score, 4) : "—"}</td>
+            <td>${m.rank_ic != null ? fmtNum(m.rank_ic, 4) : "—"}</td>
+            <td class="${(m.net_return_pct ?? 0) >= 0 ? "text-bull" : "text-bear"}">${m.net_return_pct != null ? fmtPct(m.net_return_pct, 2, true) : "—"}</td>
+            <td>${m.vs_naive_momentum_net_diff_pct != null ? fmtPct(m.vs_naive_momentum_net_diff_pct, 2, true) : "—"}</td>
+          </tr>
+        `;
+      })
+      .join("");
+  }
+
+  const pBody = document.getElementById("tbody-fv-paper");
+  if (pBody && fv.paper_portfolio) {
+    const pp = fv.paper_portfolio;
+    const rows = ["1D", "5D", "10D"]
+      .filter((h) => pp.strategies && pp.strategies[h])
+      .map((h) => {
+        const s = pp.strategies[h];
+        return `
+          <tr>
+            <td style="text-align: left;"><strong>Paper ML ${h}</strong></td>
+            <td>${s.status}</td>
+            <td>₹${Number(s.ending_capital_inr || 1000000).toLocaleString("en-IN")}</td>
+            <td class="${(s.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(s.net_return_pct ?? 0, 2, true)}</td>
+            <td class="text-bear">${fmtPct(s.max_drawdown_pct ?? 0, 2)}</td>
+            <td>${fmtPct(s.peak_exposure_pct ?? 0, 1)}</td>
+            <td>${s.executed_trades ?? 0} / ${s.rejected_signals ?? 0}</td>
+            <td>${s.win_rate_pct != null ? fmtPct(s.win_rate_pct, 1) : "—"}</td>
+          </tr>
+        `;
+      });
+    const bm = pp.benchmarks || {};
+    for (const [bName, bVal] of Object.entries(bm)) {
+      rows.push(`
+        <tr style="background: rgba(56, 189, 248, 0.06);">
+          <td style="text-align: left;"><strong>Benchmark: ${bName}</strong></td>
+          <td>${bVal.status || "ACTIVE"}</td>
+          <td>—</td>
+          <td class="${(bVal.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(bVal.net_return_pct ?? 0, 2, true)}</td>
+          <td>—</td><td>—</td><td>—</td><td>—</td>
+        </tr>
+      `);
+    }
+    pBody.innerHTML = rows.join("");
+  }
 }
 
 /* ============================================================================

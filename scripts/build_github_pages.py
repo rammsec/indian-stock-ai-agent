@@ -510,6 +510,10 @@ window.fetch = async function (url, opts) {
     const r = await _nativeFetch("./data/phase5_experiments.json");
     if (r.ok) return r;
   }
+  if (u.includes("/api/forward-validation")) {
+    const r = await _nativeFetch("./data/forward_validation.json");
+    if (r.ok) return r;
+  }
   if (u.includes("/api/search")) {
     const q = decodeURIComponent(u.split("q=")[1] || "").trim();
     try {

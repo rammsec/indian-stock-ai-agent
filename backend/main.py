@@ -152,6 +152,29 @@ def api_get_phase5_experiments() -> dict[str, Any]:
     raise HTTPException(status_code=404, detail="phase5_experiments.json not found")
 
 
+@app.get("/api/forward-validation")
+def api_get_forward_validation(refresh: bool = Query(False)) -> dict[str, Any]:
+    """Return Phase 5.3 Forward Validation, immutable snapshots, matured outcomes & paper portfolio."""
+    import json
+    from .config import PREDICTIONS_DATA_DIR
+    from .news_intel.forward_validation import build_forward_validation_payload, evaluate_forward_outcomes
+    from .storage.duckdb_store import DuckDBStore
+
+    fv_file = PREDICTIONS_DATA_DIR / "forward_validation.json"
+    if fv_file.exists() and not refresh:
+        try:
+            return json.loads(fv_file.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    try:
+        st = DuckDBStore()
+        evaluate_forward_outcomes(st)
+        payload = build_forward_validation_payload(store=st, persist=True)
+        return payload.model_dump()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Forward validation error: {exc}") from exc
+
+
 @app.get("/api/research/{symbol}")
 def api_get_research(
     symbol: str,

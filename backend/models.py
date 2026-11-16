@@ -656,6 +656,8 @@ class StructuredNewsEvent(BaseModel):
     promoter_verification_status: Literal["CONFIRMED", "INFERRED", "UNKNOWN", "NOT_APPLICABLE"] = "NOT_APPLICABLE"
     classification_evidence: list[str] = Field(default_factory=list)
     promoter_classification_confidence: float | None = None
+    collection_timestamp: str | None = None
+    validation_status: Literal["VALID", "QUARANTINED"] = "VALID"
 
 
 class CrossStockImpactItem(BaseModel):
@@ -765,5 +767,170 @@ class Phase5IntelligencePayload(BaseModel):
     consolidated_feed: list[StructuredNewsEvent] = Field(default_factory=list)
     monitoring: MonitoringSnapshot
     data_quality_warnings: list[str] = Field(default_factory=list)
+
+
+# ============================================================================
+# Phase 5.3 — Forward Validation, Immutable Snapshots & Paper Research Portfolio
+# ============================================================================
+
+
+class QuarantinedNewsRecord(BaseModel):
+    """Quarantined news item rejected due to timestamp or entity validation failure."""
+
+    symbol: str
+    title: str
+    source: str = ""
+    url: str = ""
+    raw_published: str = ""
+    collection_timestamp: str
+    quarantine_reason: str
+
+
+class ForwardPredictionSnapshot(BaseModel):
+    """Immutable daily prediction snapshot stored before outcomes are known (Phase 5.3)."""
+
+    prediction_id: str
+    symbol: str
+    prediction_timestamp: str
+    observation_date: str
+    model_version: str = "5.3.0-pilot"
+    feature_set_version: str = "237+17"
+    prob_1d_up: float | None = None
+    expected_1d_return_pct: float | None = None
+    prob_5d_up: float | None = None
+    expected_5d_return_pct: float | None = None
+    prob_10d_up: float | None = None
+    expected_10d_return_pct: float | None = None
+    news_score: float = 0.0
+    cross_stock_impact: float = 0.0
+    combined_signal: str = "NEUTRAL"
+    recommendation_1d: str = "UNAVAILABLE"
+    recommendation_5d: str = "UNAVAILABLE"
+    recommendation_10d: str = "UNAVAILABLE"
+    data_freshness: str = "Unknown"
+    model_availability: dict[str, bool] = Field(default_factory=dict)
+    benchmark_prob_up: float | None = None
+    benchmark_5d_return_pct: float | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class ForwardOutcomeRecord(BaseModel):
+    """Realized outcome record stored separately from immutable prediction snapshots."""
+
+    prediction_id: str
+    symbol: str
+    observation_date: str
+    horizon: Literal["1D", "5D", "10D"]
+    status: Literal["PENDING", "MATURED"] = "PENDING"
+    entry_date: str | None = None
+    entry_price: float | None = None
+    exit_date: str | None = None
+    exit_price: float | None = None
+    gross_return_pct: float | None = None
+    transaction_cost_pct: float | None = None
+    net_return_pct: float | None = None
+    benchmark_return_pct: float | None = None
+    corporate_action_adjusted: bool = False
+    evaluated_at: str | None = None
+
+
+class ForwardHorizonEvaluation(BaseModel):
+    """Independent forward evaluation metrics for 1D, 5D, or 10D."""
+
+    horizon: Literal["1D", "5D", "10D"]
+    model_version: str = "5.3.0-pilot"
+    min_sample_threshold: int = 10
+    total_snapshots: int = 0
+    matured_count: int = 0
+    pending_count: int = 0
+    prediction_coverage_pct: float = 0.0
+    status: Literal["OK", "WARNING", "INSUFFICIENT_DATA"] = "INSUFFICIENT_DATA"
+    directional_accuracy_pct: float | None = None
+    roc_auc: float | None = None
+    brier_score: float | None = None
+    rank_ic: float | None = None
+    gross_return_pct: float | None = None
+    net_return_pct: float | None = None
+    sharpe_ratio: float | None = None
+    max_drawdown_pct: float | None = None
+    profit_factor: float | None = None
+    win_rate_pct: float | None = None
+    vs_naive_momentum_net_diff_pct: float | None = None
+
+
+class PaperTradeRecord(BaseModel):
+    """Hypothetical paper portfolio trade/rejection audit record."""
+
+    strategy_horizon: Literal["1D", "5D", "10D"]
+    prediction_id: str
+    symbol: str
+    signal_date: str
+    action: Literal["ENTRY_EXIT", "REJECTED"]
+    reason: str
+    entry_date: str | None = None
+    exit_date: str | None = None
+    entry_price: float | None = None
+    exit_price: float | None = None
+    allocated_capital_inr: float = 0.0
+    position_weight_pct: float = 0.0
+    gross_return_pct: float | None = None
+    transaction_cost_inr: float = 0.0
+    net_return_pct: float | None = None
+    net_pnl_inr: float = 0.0
+
+
+class PaperStrategySummary(BaseModel):
+    """Paper research portfolio summary for a single horizon strategy."""
+
+    horizon: Literal["1D", "5D", "10D"]
+    starting_capital_inr: float = 1_000_000.0
+    ending_capital_inr: float = 1_000_000.0
+    net_return_pct: float = 0.0
+    gross_return_pct: float = 0.0
+    total_cost_inr: float = 0.0
+    max_drawdown_pct: float = 0.0
+    peak_exposure_pct: float = 0.0
+    executed_trades: int = 0
+    rejected_signals: int = 0
+    win_rate_pct: float | None = None
+    status: Literal["ACTIVE", "INSUFFICIENT_DATA"] = "INSUFFICIENT_DATA"
+
+
+class PaperPortfolioReport(BaseModel):
+    """Complete paper research portfolio report with comparable benchmarks."""
+
+    starting_capital_inr: float = 1_000_000.0
+    max_position_pct: float = 10.0
+    max_total_exposure_pct: float = 80.0
+    strategies: dict[str, PaperStrategySummary] = Field(default_factory=dict)
+    benchmarks: dict[str, dict[str, float | str]] = Field(default_factory=dict)
+    recent_trades: list[PaperTradeRecord] = Field(default_factory=list)
+
+
+class ForwardValidationPayload(BaseModel):
+    """Top-level payload for Phase 5.3 Forward Validation dashboard & API."""
+
+    generated_at: str
+    model_version: str = "5.3.0-pilot"
+    feature_set_version: str = "237+17"
+    pilot_universe: list[str] = Field(default_factory=list)
+    total_real_news_events: int = 0
+    valid_news_events: int = 0
+    quarantined_news_events: int = 0
+    last_news_collection_at: str | None = None
+    total_immutable_snapshots: int = 0
+    matured_outcomes_total: int = 0
+    pending_outcomes_total: int = 0
+    horizon_evaluations: dict[str, ForwardHorizonEvaluation] = Field(default_factory=dict)
+    paper_portfolio: PaperPortfolioReport
+    recent_snapshots: list[ForwardPredictionSnapshot] = Field(default_factory=list)
+    recent_outcomes: list[ForwardOutcomeRecord] = Field(default_factory=list)
+    data_quality_warnings: list[str] = Field(default_factory=list)
+    monitoring_alerts: list[str] = Field(default_factory=list)
+    distinction_note: str = (
+        "Historical proxy experiments and historical backtests are strictly separated from genuine forward-only "
+        "news observations and forward paper portfolio performance."
+    )
+
 
 

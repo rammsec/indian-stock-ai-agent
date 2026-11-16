@@ -428,6 +428,8 @@ def _deterministic_extract(
         promoter_verification_status=prom_status,  # type: ignore[arg-type]
         classification_evidence=prom_evidence,
         promoter_classification_confidence=prom_conf_val,
+        collection_timestamp=datetime.now(IST_TZ).isoformat(),
+        validation_status="VALID",
     )
 
 
@@ -491,6 +493,7 @@ def extract_structured_events_with_quarantine(
     events: list[StructuredNewsEvent] = []
     quarantined: list[dict[str, str]] = []
 
+    col_ts = datetime.now(IST_TZ).isoformat()
     for raw in raw_items:
         if not raw.title or not raw.title.strip():
             continue
@@ -500,14 +503,34 @@ def extract_structured_events_with_quarantine(
             pub_iso, eff_date = compute_effective_trading_date(raw.published)
         except ValueError:
             quarantined.append(
-                {"symbol": raw.symbol, "title": raw.title[:100], "reason": "invalid_or_missing_timestamp"}
+                {
+                    "symbol": raw.symbol,
+                    "title": raw.title[:160],
+                    "source": raw.source,
+                    "url": raw.url,
+                    "raw_published": str(raw.published or ""),
+                    "collection_timestamp": col_ts,
+                    "reason": "invalid_or_missing_timestamp",
+                    "quarantine_reason": "invalid_or_missing_timestamp",
+                }
             )
             continue
 
         # 2. Entity resolution & category separation
         resolved_cat, resolved_entity, rej_reason = resolve_category_and_entity(raw)
         if rej_reason is not None:
-            quarantined.append({"symbol": raw.symbol, "title": raw.title[:100], "reason": rej_reason})
+            quarantined.append(
+                {
+                    "symbol": raw.symbol,
+                    "title": raw.title[:160],
+                    "source": raw.source,
+                    "url": raw.url,
+                    "raw_published": str(raw.published or ""),
+                    "collection_timestamp": col_ts,
+                    "reason": rej_reason,
+                    "quarantine_reason": rej_reason,
+                }
+            )
             continue
 
         # 3. Deduplication

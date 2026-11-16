@@ -59,12 +59,27 @@ def run_phase5_intelligence_pipeline(
     raw_by_sym = collected["by_symbol"]
     warnings: list[str] = list(collected.get("warnings", []))
 
+    from ..models import QuarantinedNewsRecord
+
     events_by_sym: dict[str, list[StructuredNewsEvent]] = {}
     all_events: list[StructuredNewsEvent] = []
+    all_quarantined: list[QuarantinedNewsRecord] = []
     quarantined_total = 0
     for sym, raw_items in raw_by_sym.items():
         evts, quarantined = extract_structured_events_with_quarantine(raw_items)
         quarantined_total += len(quarantined)
+        for q in quarantined:
+            all_quarantined.append(
+                QuarantinedNewsRecord(
+                    symbol=str(q.get("symbol", sym)),
+                    title=str(q.get("title", "")),
+                    source=str(q.get("source", "")),
+                    url=str(q.get("url", "")),
+                    raw_published=str(q.get("raw_published", "")),
+                    collection_timestamp=str(q.get("collection_timestamp", now_iso)),
+                    quarantine_reason=str(q.get("quarantine_reason", q.get("reason", "validation_failed"))),
+                )
+            )
         events_by_sym[sym] = evts
         all_events.extend(evts)
     if quarantined_total > 0:
@@ -171,11 +186,23 @@ def run_phase5_intelligence_pipeline(
     )
 
     if persist:
+        from .forward_validation import (
+            build_forward_validation_payload,
+            evaluate_forward_outcomes,
+            record_forward_prediction_snapshots,
+        )
+
         if all_events:
             st.upsert_structured_events(all_events)
+        if all_quarantined:
+            st.upsert_quarantined_events(all_quarantined)
         if all_cross:
             st.upsert_cross_stock_impacts(all_cross)
         out_json = st.predictions_dir / "phase5_intelligence.json"
         out_json.write_text(payload.model_dump_json(indent=2), encoding="utf-8")
+
+        record_forward_prediction_snapshots(st, payload, quant_by_sym)
+        evaluate_forward_outcomes(st)
+        build_forward_validation_payload(store=st, persist=True)
 
     return payload

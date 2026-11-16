@@ -91,6 +91,10 @@ class DuckDBStore:
         self.bulk_block_parquet = self.processed_dir / "nse_bulk_block_deals.parquet"
         self.events_parquet = self.predictions_dir / "structured_events.parquet"
         self.cross_stock_parquet = self.predictions_dir / "cross_stock_impacts.parquet"
+        self.quarantined_events_parquet = self.predictions_dir / "quarantined_events.parquet"
+        self.forward_predictions_parquet = self.predictions_dir / "forward_predictions.parquet"
+        self.forward_outcomes_parquet = self.predictions_dir / "forward_outcomes.parquet"
+        self.paper_trades_parquet = self.predictions_dir / "paper_trades.parquet"
 
     @staticmethod
     def _upsert_parquet(
@@ -225,7 +229,7 @@ class DuckDBStore:
         if pred_df.empty:
             return 0
 
-        for col in ("realized_next_day_return_pct", "realized_5d_return_pct", "outcome_evaluated_at"):
+        for col in ("realized_next_day_return_pct", "realized_5d_return_pct", "realized_10d_return_pct", "outcome_evaluated_at"):
             if col not in pred_df.columns:
                 pred_df[col] = None
 
@@ -272,6 +276,11 @@ class DuckDBStore:
             if pd.isna(pred_df.loc[idx, "realized_5d_return_pct"]) and base_idx + 5 < len(closes_list):
                 r5 = (closes_list[base_idx + 5] / base_close - 1.0) * 100.0
                 pred_df.loc[idx, "realized_5d_return_pct"] = round(float(r5), 4)
+                changed = True
+
+            if pd.isna(pred_df.loc[idx, "realized_10d_return_pct"]) and base_idx + 10 < len(closes_list):
+                r10 = (closes_list[base_idx + 10] / base_close - 1.0) * 100.0
+                pred_df.loc[idx, "realized_10d_return_pct"] = round(float(r10), 4)
                 changed = True
 
             if changed:
@@ -330,6 +339,7 @@ class DuckDBStore:
             d = e.model_dump() if hasattr(e, "model_dump") else dict(e)
             d["related_companies"] = json.dumps(d.get("related_companies", []))
             d["related_sectors"] = json.dumps(d.get("related_sectors", []))
+            d["classification_evidence"] = json.dumps(d.get("classification_evidence", []))
             rows.append(d)
         return self._upsert_parquet(
             self.events_parquet,
@@ -337,6 +347,57 @@ class DuckDBStore:
             dedup_cols=["event_id", "ticker"],
             sort_cols=["publication_timestamp", "ticker", "event_id"],
             keep="first",
+        )
+
+    def upsert_quarantined_events(self, records: list[Any]) -> int:
+        """Append quarantined news records into `quarantined_events.parquet`."""
+        rows = [r.model_dump() if hasattr(r, "model_dump") else dict(r) for r in records]
+        return self._upsert_parquet(
+            self.quarantined_events_parquet,
+            rows,
+            dedup_cols=["symbol", "title", "raw_published"],
+            sort_cols=["collection_timestamp", "symbol"],
+            keep="first",
+        )
+
+    def upsert_forward_predictions(self, snapshots: list[Any]) -> int:
+        """Append strictly immutable forward prediction snapshots (`keep='first'`)."""
+        import json
+
+        rows: list[dict[str, Any]] = []
+        for s in snapshots:
+            d = s.model_dump() if hasattr(s, "model_dump") else dict(s)
+            d["model_availability"] = json.dumps(d.get("model_availability", {}))
+            d["metadata"] = json.dumps(d.get("metadata", {}))
+            rows.append(d)
+        return self._upsert_parquet(
+            self.forward_predictions_parquet,
+            rows,
+            dedup_cols=["prediction_id"],
+            sort_cols=["observation_date", "symbol", "prediction_timestamp"],
+            keep="first",
+        )
+
+    def upsert_forward_outcomes(self, outcomes: list[Any]) -> int:
+        """Upsert forward realized outcomes separately from immutable prediction snapshots."""
+        rows = [o.model_dump() if hasattr(o, "model_dump") else dict(o) for o in outcomes]
+        return self._upsert_parquet(
+            self.forward_outcomes_parquet,
+            rows,
+            dedup_cols=["prediction_id", "horizon"],
+            sort_cols=["observation_date", "symbol", "horizon"],
+            keep="last",
+        )
+
+    def upsert_paper_trades(self, trades: list[Any]) -> int:
+        """Persist paper research portfolio trade and rejection records."""
+        rows = [t.model_dump() if hasattr(t, "model_dump") else dict(t) for t in trades]
+        return self._upsert_parquet(
+            self.paper_trades_parquet,
+            rows,
+            dedup_cols=["strategy_horizon", "prediction_id"],
+            sort_cols=["signal_date", "strategy_horizon", "symbol"],
+            keep="last",
         )
 
     def upsert_cross_stock_impacts(self, impacts: list[Any]) -> int:
@@ -401,6 +462,22 @@ class DuckDBStore:
             if self.cross_stock_parquet.exists():
                 con.execute(
                     f"CREATE VIEW v_cross_stock_impacts AS SELECT * FROM read_parquet('{self.cross_stock_parquet.as_posix()}')"
+                )
+            if self.quarantined_events_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_quarantined_events AS SELECT * FROM read_parquet('{self.quarantined_events_parquet.as_posix()}')"
+                )
+            if self.forward_predictions_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_forward_predictions AS SELECT * FROM read_parquet('{self.forward_predictions_parquet.as_posix()}')"
+                )
+            if self.forward_outcomes_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_forward_outcomes AS SELECT * FROM read_parquet('{self.forward_outcomes_parquet.as_posix()}')"
+                )
+            if self.paper_trades_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_paper_trades AS SELECT * FROM read_parquet('{self.paper_trades_parquet.as_posix()}')"
                 )
             if params:
                 return con.execute(sql, params).df()

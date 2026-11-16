@@ -71,6 +71,7 @@ jobs:
             echo "9:00 AM IST Pre-Market Refresh: updating Phase 5 live news & cross-stock intelligence only"
             python -c "from backend.news_intel.pipeline import run_phase5_intelligence_pipeline; run_phase5_intelligence_pipeline(use_network=True, persist=True)"
             cp data/predictions/phase5_intelligence.json docs/data/phase5_intelligence.json
+            cp data/predictions/forward_validation.json docs/data/forward_validation.json
             python scripts/build_github_pages.py
           else
             python scripts/generate_static_data.py
@@ -78,7 +79,9 @@ jobs:
             python scripts/run_phase3_backtest.py
             python scripts/run_phase4_corporate_intel.py
             python scripts/run_phase5_experiments.py --skip-if-fresh
+            python scripts/run_forward_validation.py
             cp data/predictions/phase5_intelligence.json docs/data/phase5_intelligence.json
+            cp data/predictions/forward_validation.json docs/data/forward_validation.json
             cp data/backtests/phase5_experiments.json docs/data/phase5_experiments.json
             python scripts/build_github_pages.py
           fi
@@ -87,7 +90,7 @@ jobs:
         if: steps.calendar_check.outputs.should_run == 'true'
         run: |
           if [ "${{ github.event.schedule }}" = "30 3 * * 1-5" ]; then
-            pytest tests/test_phase5_news_intel.py tests/test_frontend_contract.py -v
+            pytest tests/test_phase5_news_intel.py tests/test_phase5_3_forward_validation.py tests/test_frontend_contract.py -v
           else
             pytest -v
           fi
