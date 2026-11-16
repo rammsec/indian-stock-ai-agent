@@ -2231,10 +2231,23 @@ function initBeginnerHelpTooltips() {
     if (!el) return;
 
     if (el.tagName === "CANVAS") {
-      const container = el.closest(".canvas-container") || el.parentElement;
-      if (!container || container.querySelector(".help-tip-wrap")) return;
-      container.classList.add("has-help-corner");
-      container.appendChild(createHelpTooltipEl(guide, true));
+      const card = el.closest(".sub-panel") || el.closest(".canvas-container") || el.parentElement;
+      if (!card || card.querySelector(".help-tip-wrap")) return;
+      if (targetId === "price-dma-canvas") {
+        const rsiBadge = document.getElementById("rsi-badge");
+        if (rsiBadge && rsiBadge.parentElement) {
+          const rightBox = document.createElement("div");
+          rightBox.style.cssText = "display:flex;align-items:center;gap:0.5rem;";
+          rsiBadge.parentElement.insertBefore(rightBox, rsiBadge);
+          rightBox.appendChild(rsiBadge);
+          rightBox.appendChild(createHelpTooltipEl(guide, false));
+          return;
+        }
+      }
+      card.classList.add("has-help-corner");
+      const h3 = card.querySelector("h3");
+      if (h3) h3.style.paddingRight = "2rem";
+      card.appendChild(createHelpTooltipEl(guide, true));
       return;
     }
 
@@ -2249,6 +2262,18 @@ function initBeginnerHelpTooltips() {
         hdr.insertBefore(tip, chevron);
       } else {
         hdr.appendChild(tip);
+      }
+      return;
+    }
+
+    if (targetId === "market-regime-strip") {
+      if (!el.querySelector(".help-tip-wrap")) {
+        const rightGroup = el.children[1];
+        if (rightGroup) {
+          rightGroup.appendChild(createHelpTooltipEl(guide, false));
+        } else {
+          el.appendChild(createHelpTooltipEl(guide, false));
+        }
       }
       return;
     }
