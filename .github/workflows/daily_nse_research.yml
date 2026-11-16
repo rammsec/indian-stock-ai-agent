@@ -60,12 +60,15 @@ jobs:
         run: |
           python scripts/run_phase1_foundation.py
 
-      - name: Generate Validated Frontend JSONs & Build GitHub Pages
+      - name: Generate Validated Frontend JSONs & Run Phases 2-4 Quant & Corporate Pipelines
         if: steps.calendar_check.outputs.should_run == 'true'
         env:
           EXTRA_SYMBOLS: ${{ github.event.inputs.extra_symbols }}
         run: |
           python scripts/generate_static_data.py
+          python scripts/run_phase2_features.py
+          python scripts/run_phase3_backtest.py
+          python scripts/run_phase4_corporate_intel.py
           python scripts/build_github_pages.py
 
       - name: Run Automated Test Suite
@@ -78,10 +81,10 @@ jobs:
         run: |
           git config user.name "BharatAlpha Quant Bot"
           git config user.email "actions@github.com"
-          git add data/processed/ docs/
+          git add data/processed/ data/features/ data/predictions/ data/backtests/ docs/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore(quant): update daily NSE Parquet store, market regime & next-day signals [skip ci]"
+            git commit -m "chore(quant): update daily NSE Parquet store, ML predictions, bulk deals & GitHub Pages [skip ci]"
             git push origin main
           fi

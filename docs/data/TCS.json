@@ -2109,32 +2109,96 @@
   ],
   "data_quality": {
     "symbol": "TCS",
-    "evaluated_at": "2026-11-16 09:38:52 IST",
+    "evaluated_at": "2026-11-16 09:37:49 IST",
     "quality_score": 89.6,
     "trade_eligible": true,
-    "forced_action": null,
-    "verified_metrics_count": 10,
-    "estimated_metrics_count": 1,
-    "missing_metrics_count": 1,
-    "stale_metrics_count": 0,
-    "conflicting_metrics_count": 0,
-    "critical_failures": [],
-    "metric_statuses": {
-      "current_price": "VERIFIED",
-      "intraday_high_low_range": "VERIFIED",
-      "volume_latest": "VERIFIED",
-      "delivery_pct": "VERIFIED",
-      "annual_revenue_cr": "VERIFIED",
-      "annual_net_profit_cr": "VERIFIED",
-      "quarterly_revenue_cr": "VERIFIED",
-      "quarterly_net_profit_cr": "VERIFIED",
-      "total_cash_in_hand_cr": "VERIFIED",
-      "operating_cash_flow_cr": "MISSING",
-      "shareholding_total_pct": "VERIFIED",
-      "rd_spend_cr": "ESTIMATED"
-    }
+    "has_minimum_price_history": true,
+    "price_bars_count": 248,
+    "missing_critical_fields": [],
+    "warnings": [],
+    "critical_failures": []
   },
-  "market_regime": null,
+  "market_regime": {
+    "observation_date": "2026-11-16",
+    "regime": "Weak Bull",
+    "nifty_50_close": 25267.85,
+    "nifty_50_day_change_pct": 0.49,
+    "nifty_50_return_20d_pct": 9.87,
+    "nifty_50_dma_50": 23356.03,
+    "nifty_50_dma_200": 23992.31,
+    "india_vix_close": 15.73,
+    "india_vix_change_pct": 1.48,
+    "advance_count": 939,
+    "decline_count": 1777,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.528,
+    "pct_above_50dma": 86.7,
+    "pct_above_200dma": 73.3,
+    "allow_aggressive_longs": true,
+    "regime_rationale": [
+      "Structural uptrend intact above 200-DMA (23,992.3), though short-term momentum is moderate (20D: +9.87%).",
+      "NSE Market Breadth: 939 Advances vs 1777 Declines (A/D Ratio 0.53).",
+      "Universe Breadth: 86.7% above 50-DMA, 73.3% above 200-DMA."
+    ],
+    "sector_performances": [
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 61383.4,
+        "day_change_pct": 0.57,
+        "return_20d_pct": 9.99,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_IT",
+        "index_name": "Nifty IT",
+        "close": 32111.05,
+        "day_change_pct": 0.56,
+        "return_20d_pct": 4.53,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_PHARMA",
+        "index_name": "Nifty Pharma",
+        "close": 28681.7,
+        "day_change_pct": 0.51,
+        "return_20d_pct": 11.09,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_FMCG",
+        "index_name": "Nifty FMCG",
+        "close": 46987.5,
+        "day_change_pct": 0.33,
+        "return_20d_pct": 4.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27851.85,
+        "day_change_pct": -0.28,
+        "return_20d_pct": 8.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_ENERGY",
+        "index_name": "Nifty Energy",
+        "close": 37152.2,
+        "day_change_pct": -0.66,
+        "return_20d_pct": 2.59,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12540.5,
+        "day_change_pct": -0.85,
+        "return_20d_pct": 4.34,
+        "pe_ratio": null
+      }
+    ]
+  },
   "quantitative_prediction": {
     "prediction_id": "TCS_2026-11-16_ml_ensemble_3.0.0",
     "symbol": "TCS",
@@ -2236,5 +2300,99 @@
     ],
     "realized_next_day_return_pct": null,
     "realized_5d_return_pct": null
+  },
+  "corporate_intelligence": {
+    "symbol": "TCS",
+    "evaluated_at": "2026-11-16T06:08:12.094429+00:00",
+    "promoter_holding_pct": 71.77,
+    "promoter_chg_1q": 0.0,
+    "promoter_chg_4q": 0.0,
+    "promoter_pledge_pct": null,
+    "fii_holding_pct": 9.01,
+    "fii_chg_1q": -0.06,
+    "fii_chg_4q": -1.32,
+    "dii_holding_pct": 13.57,
+    "dii_chg_1q": 0.16,
+    "dii_chg_4q": 0.93,
+    "net_institutional_flow_4q": -0.39,
+    "is_fno_eligible": true,
+    "latest_delivery_pct": 56.35,
+    "delivery_vs_20d_avg": 4.97,
+    "fno_positioning_heuristic": "Short Covering Bounce Heuristic",
+    "net_bulk_block_value_cr": 0.0,
+    "bulk_block_deals_count": 0,
+    "institutional_conviction_score": 55.0,
+    "smart_money_verdict": "MODERATE ACCUMULATION",
+    "bulk_block_deals": [],
+    "recent_corporate_actions": [
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2026-10-14",
+        "amount_or_ratio": 12.0,
+        "description": "Cash Dividend of \u20b912.00/share (Ex-Date: 2026-10-14)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2026-07-15",
+        "amount_or_ratio": 12.0,
+        "description": "Cash Dividend of \u20b912.00/share (Ex-Date: 2026-07-15)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2026-05-25",
+        "amount_or_ratio": 31.0,
+        "description": "Cash Dividend of \u20b931.00/share (Ex-Date: 2026-05-25)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2026-01-16",
+        "amount_or_ratio": 57.0,
+        "description": "Cash Dividend of \u20b957.00/share (Ex-Date: 2026-01-16)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2025-10-15",
+        "amount_or_ratio": 11.0,
+        "description": "Cash Dividend of \u20b911.00/share (Ex-Date: 2025-10-15)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2025-07-16",
+        "amount_or_ratio": 11.0,
+        "description": "Cash Dividend of \u20b911.00/share (Ex-Date: 2025-07-16)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2025-06-04",
+        "amount_or_ratio": 30.0,
+        "description": "Cash Dividend of \u20b930.00/share (Ex-Date: 2025-06-04)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "TCS",
+        "action_type": "DIVIDEND",
+        "ex_date": "2025-01-17",
+        "amount_or_ratio": 76.0,
+        "description": "Cash Dividend of \u20b976.00/share (Ex-Date: 2025-01-17)",
+        "source": "Exchange_Corporate_Actions"
+      }
+    ],
+    "key_signals": [
+      "Stable majority promoter holding at 71.77%.",
+      "Recent Corporate Action: Cash Dividend of \u20b912.00/share (Ex-Date: 2026-10-14)."
+    ]
   }
 }

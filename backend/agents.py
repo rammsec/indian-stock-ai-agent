@@ -768,6 +768,37 @@ def run_full_stock_research(
         overview.symbol, overview, shp
     )
 
+    # Attach pre-computed Phase 1-4 market_regime, quantitative_prediction, and corporate_intelligence if available
+    from pathlib import Path
+
+    docs_data_dir = Path(__file__).resolve().parent.parent / "docs" / "data"
+    market_regime_obj = None
+    quant_pred_obj = None
+    corp_intel_obj = None
+    try:
+        reg_file = docs_data_dir / "regime.json"
+        if reg_file.exists():
+            from .models import MarketRegimeSnapshot
+
+            market_regime_obj = MarketRegimeSnapshot(**json.loads(reg_file.read_text()))
+    except Exception:
+        pass
+
+    try:
+        sym_file = docs_data_dir / f"{overview.symbol}.json"
+        if sym_file.exists():
+            cached_sym = json.loads(sym_file.read_text())
+            if cached_sym.get("quantitative_prediction"):
+                from .models import QuantitativePredictionSummary
+
+                quant_pred_obj = QuantitativePredictionSummary(**cached_sym["quantitative_prediction"])
+            if cached_sym.get("corporate_intelligence"):
+                from .models import CorporateIntelligenceSummary
+
+                corp_intel_obj = CorporateIntelligenceSummary(**cached_sym["corporate_intelligence"])
+    except Exception:
+        pass
+
     return StockResearchBundle(
         fetched_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S IST"),
         overview=overview,
@@ -782,4 +813,7 @@ def run_full_stock_research(
         promoter_and_competitor_intel=prom_comp_intel,
         news=news,
         data_quality=quality_report,
+        market_regime=market_regime_obj,
+        quantitative_prediction=quant_pred_obj,
+        corporate_intelligence=corp_intel_obj,
     )

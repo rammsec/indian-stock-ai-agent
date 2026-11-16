@@ -486,6 +486,22 @@ window.fetch = async function (url, opts) {
     const r = await _nativeFetch("./data/scanner.json");
     if (r.ok) return r;
   }
+  if (u.includes("/api/regime")) {
+    const r = await _nativeFetch("./data/regime.json");
+    if (r.ok) return r;
+  }
+  if (u.includes("/api/backtest")) {
+    const r = await _nativeFetch("./data/backtest_summary.json");
+    if (r.ok) return r;
+  }
+  if (u.includes("/api/predictions")) {
+    const r = await _nativeFetch("./data/latest_predictions.json");
+    if (r.ok) return r;
+  }
+  if (u.includes("/api/corporate-intel")) {
+    const r = await _nativeFetch("./data/corporate_intel.json");
+    if (r.ok) return r;
+  }
   if (u.includes("/api/search")) {
     const q = decodeURIComponent(u.split("q=")[1] || "").trim();
     try {

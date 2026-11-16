@@ -2113,5 +2113,148 @@
     ],
     "realized_next_day_return_pct": null,
     "realized_5d_return_pct": null
+  },
+  "corporate_intelligence": {
+    "symbol": "SUNPHARMA",
+    "evaluated_at": "2026-11-16T06:08:12.071779+00:00",
+    "promoter_holding_pct": 52.68,
+    "promoter_chg_1q": -1.8,
+    "promoter_chg_4q": -1.8,
+    "promoter_pledge_pct": null,
+    "fii_holding_pct": 14.36,
+    "fii_chg_1q": -0.18,
+    "fii_chg_4q": -2.19,
+    "dii_holding_pct": 22.27,
+    "dii_chg_1q": 0.21,
+    "dii_chg_4q": 2.15,
+    "net_institutional_flow_4q": -0.04,
+    "is_fno_eligible": true,
+    "latest_delivery_pct": 52.95,
+    "delivery_vs_20d_avg": -7.71,
+    "fno_positioning_heuristic": "Balanced F&O / Cash Activity",
+    "net_bulk_block_value_cr": 0.0,
+    "bulk_block_deals_count": 0,
+    "institutional_conviction_score": 40.0,
+    "smart_money_verdict": "DISTRIBUTION",
+    "bulk_block_deals": [],
+    "recent_corporate_actions": [
+      {
+        "symbol": "SUNPHARMA",
+        "action_type": "DIVIDEND",
+        "ex_date": "2026-07-07",
+        "amount_or_ratio": 5.0,
+        "description": "Cash Dividend of \u20b95.00/share (Ex-Date: 2026-07-07)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "SUNPHARMA",
+        "action_type": "DIVIDEND",
+        "ex_date": "2026-02-05",
+        "amount_or_ratio": 11.0,
+        "description": "Cash Dividend of \u20b911.00/share (Ex-Date: 2026-02-05)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "SUNPHARMA",
+        "action_type": "DIVIDEND",
+        "ex_date": "2025-07-07",
+        "amount_or_ratio": 5.5,
+        "description": "Cash Dividend of \u20b95.50/share (Ex-Date: 2025-07-07)",
+        "source": "Exchange_Corporate_Actions"
+      },
+      {
+        "symbol": "SUNPHARMA",
+        "action_type": "DIVIDEND",
+        "ex_date": "2025-02-06",
+        "amount_or_ratio": 10.5,
+        "description": "Cash Dividend of \u20b910.50/share (Ex-Date: 2025-02-06)",
+        "source": "Exchange_Corporate_Actions"
+      }
+    ],
+    "key_signals": [
+      "Promoter stake diluted by -1.80% YoY (Current: 52.68%).",
+      "Recent Corporate Action: Cash Dividend of \u20b95.00/share (Ex-Date: 2026-07-07)."
+    ]
+  },
+  "market_regime": {
+    "observation_date": "2026-11-16",
+    "regime": "Weak Bull",
+    "nifty_50_close": 25267.85,
+    "nifty_50_day_change_pct": 0.49,
+    "nifty_50_return_20d_pct": 9.87,
+    "nifty_50_dma_50": 23356.03,
+    "nifty_50_dma_200": 23992.31,
+    "india_vix_close": 15.73,
+    "india_vix_change_pct": 1.48,
+    "advance_count": 939,
+    "decline_count": 1777,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.528,
+    "pct_above_50dma": 86.7,
+    "pct_above_200dma": 73.3,
+    "allow_aggressive_longs": true,
+    "regime_rationale": [
+      "Structural uptrend intact above 200-DMA (23,992.3), though short-term momentum is moderate (20D: +9.87%).",
+      "NSE Market Breadth: 939 Advances vs 1777 Declines (A/D Ratio 0.53).",
+      "Universe Breadth: 86.7% above 50-DMA, 73.3% above 200-DMA."
+    ],
+    "sector_performances": [
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 61383.4,
+        "day_change_pct": 0.57,
+        "return_20d_pct": 9.99,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_IT",
+        "index_name": "Nifty IT",
+        "close": 32111.05,
+        "day_change_pct": 0.56,
+        "return_20d_pct": 4.53,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_PHARMA",
+        "index_name": "Nifty Pharma",
+        "close": 28681.7,
+        "day_change_pct": 0.51,
+        "return_20d_pct": 11.09,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_FMCG",
+        "index_name": "Nifty FMCG",
+        "close": 46987.5,
+        "day_change_pct": 0.33,
+        "return_20d_pct": 4.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27851.85,
+        "day_change_pct": -0.28,
+        "return_20d_pct": 8.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_ENERGY",
+        "index_name": "Nifty Energy",
+        "close": 37152.2,
+        "day_change_pct": -0.66,
+        "return_20d_pct": 2.59,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12540.5,
+        "day_change_pct": -0.85,
+        "return_20d_pct": 4.34,
+        "pe_ratio": null
+      }
+    ]
   }
 }

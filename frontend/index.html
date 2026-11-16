@@ -28,6 +28,9 @@
       <button class="page-nav-btn active" data-page="page-company">
         🏢 My Companies Deep Research
       </button>
+      <button class="page-nav-btn" data-page="page-quant">
+        🧪 Quant Backtest &amp; NSE Bulk Deals
+      </button>
       <button class="page-nav-btn" data-page="page-gainers">
         📈 Yesterday's Top 20 Gainers
       </button>
@@ -71,6 +74,20 @@
         + Add Stock
       </button>
       <div id="search-dropdown" class="search-dropdown"></div>
+    </div>
+  </section>
+
+  <!-- Phase 1 Live NSE Market Regime & Breadth Ribbon -->
+  <section id="market-regime-strip" style="background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid var(--border-subtle); padding: 0.48rem 1.35rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.65rem; font-size: 0.78rem;">
+    <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+      <span class="badge-neutral mono" id="mr-regime-badge" style="font-weight: 700; color: var(--accent-brand);">REGIME: LOADING...</span>
+      <span class="mono" id="mr-nifty-metric" style="color: var(--text-secondary);">Nifty 50: —</span>
+      <span class="mono" id="mr-vix-metric" style="color: var(--text-secondary);">India VIX: —</span>
+      <span class="mono" id="mr-breadth-metric" style="color: var(--text-secondary);">NSE A/D Ratio: —</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 0.6rem;">
+      <span class="mono" id="mr-gate-badge" style="font-size: 0.74rem; color: var(--signal-bull);">Data Quality Gate: ACTIVE</span>
+      <span class="mono" id="mr-walkforward-pill" style="font-size: 0.74rem; color: var(--text-muted);">Walk-Forward OOS Net Sharpe: +0.783 (+19.75% Net)</span>
     </div>
   </section>
 
@@ -215,6 +232,71 @@
                   <span>Risk : Reward: <strong id="gd-rr" class="mono" style="color: var(--text-primary);">1 : 0.0</strong></span>
                   <span>Allocation: <strong id="gd-pos-size" class="mono" style="color: var(--text-primary);">0%</strong></span>
                   <span>ATR(14) Range: <strong id="gd-atr-range" class="mono" style="color: var(--text-primary);">₹0</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 01B (PHASES 2-4): Calibrated ML Ensemble, TreeSHAP Drivers, Indian Costs & Institutional / Delivery / Corporate Actions -->
+      <section class="collapsible-section open" id="sec-quant-intel">
+        <div class="collapsible-header" data-toggle="sec-quant-intel">
+          <div class="header-left">
+            <span class="sec-num" style="background: rgba(56, 189, 248, 0.14); color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">ML</span>
+            <div>
+              <h2 class="sec-heading-title">Quantitative ML Ensemble Forecast, TreeSHAP Attribution &amp; NSE Institutional / Delivery Intelligence</h2>
+              <p class="sec-heading-sub">Calibrated 1D/5D/10D Probabilities, Indian CNC/MIS Statutory Transaction Costs, NSE Bhavcopy Delivery %, F&amp;O Positioning &amp; Corporate Actions</p>
+            </div>
+          </div>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.15rem;">
+            <!-- Left: Phase 3 Calibrated ML Ensemble & TreeSHAP -->
+            <div class="sub-panel">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                <div>
+                  <h3 style="font-size: 0.98rem; font-weight: 700;">Calibrated ML Ensemble (LightGBM + XGBoost + Ridge)</h3>
+                  <p id="qp-model-sub" style="font-size: 0.76rem; color: var(--text-muted);">Walk-Forward Out-of-Sample Calibrated Probability &amp; Net Return after Indian Costs</p>
+                </div>
+                <span id="qp-action-pill" class="signal-banner hold" style="font-size: 0.78rem; padding: 0.25rem 0.65rem;">HOLD</span>
+              </div>
+
+              <div class="kpi-strip" id="qp-kpi-strip" style="margin-bottom: 0.85rem;"></div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
+                  <strong class="text-bull" style="font-size: 0.74rem; text-transform: uppercase;">Top Bullish TreeSHAP Drivers (+bps)</strong>
+                  <ul id="qp-bull-drivers" class="agent-reasons mono" style="margin-top: 0.45rem; font-size: 0.76rem;"></ul>
+                </div>
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
+                  <strong class="text-bear" style="font-size: 0.74rem; text-transform: uppercase;">Top Bearish TreeSHAP Drivers (-bps)</strong>
+                  <ul id="qp-bear-drivers" class="agent-reasons mono" style="margin-top: 0.45rem; font-size: 0.76rem;"></ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Phase 4 Institutional Conviction, NSE Delivery %, F&O & Corporate Actions -->
+            <div class="sub-panel">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                <div>
+                  <h3 style="font-size: 0.98rem; font-weight: 700;">NSE Delivery %, Institutional Flows, F&amp;O &amp; Corporate Actions</h3>
+                  <p id="ci-verdict-sub" style="font-size: 0.76rem; color: var(--text-muted);">Quarterly Shareholding vs Daily NSE Bhavcopy Delivery &amp; Bulk/Block Deals</p>
+                </div>
+                <span id="ci-conviction-pill" class="badge-neutral mono" style="font-weight: 700;">Smart Money: —</span>
+              </div>
+
+              <div class="kpi-strip" id="ci-kpi-strip" style="margin-bottom: 0.85rem;"></div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
+                  <strong style="font-size: 0.74rem; color: var(--accent-brand); text-transform: uppercase;">Smart-Money &amp; Delivery Signals</strong>
+                  <ul id="ci-signals-list" class="agent-reasons" style="margin-top: 0.45rem; font-size: 0.78rem;"></ul>
+                </div>
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
+                  <strong style="font-size: 0.74rem; color: var(--text-muted); text-transform: uppercase;">Verified Dividends, Splits &amp; Bulk Deals</strong>
+                  <ul id="ci-actions-deals-list" class="agent-reasons mono" style="margin-top: 0.45rem; font-size: 0.75rem;"></ul>
                 </div>
               </div>
             </div>
@@ -477,6 +559,121 @@
         </div>
       </section>
 
+    </div>
+
+    <!-- ======================================================================
+         PAGE 1B: QUANT WALK-FORWARD BACKTEST, ALL-STOCK SIGNAL MATRIX & NSE BULK DEALS
+         ====================================================================== -->
+    <div id="page-quant" class="page-view">
+      <!-- Walk-Forward Model Comparison -->
+      <div class="collapsible-section open">
+        <div class="collapsible-header">
+          <div class="header-left">
+            <span class="sec-num" style="background: rgba(56, 189, 248, 0.14); color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">WF</span>
+            <div>
+              <h2 class="sec-heading-title">Walk-Forward Out-of-Sample Backtest (7 Expanding Folds • Indian CNC Transaction Costs)</h2>
+              <p id="quant-bt-subtitle" class="sec-heading-sub">Zero Look-Ahead Leakage (`0.00e+00`) • Comparing Calibrated ML Ensemble vs Baselines &amp; Nifty 50 Benchmark</p>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-body">
+          <div id="quant-bt-kpis" class="kpi-strip" style="margin-bottom: 1rem;"></div>
+          <div class="table-wrap">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Model Architecture</th>
+                  <th>OOS Trades</th>
+                  <th>Win Rate %</th>
+                  <th>Precision (LONG)</th>
+                  <th>Gross Return %</th>
+                  <th>Indian Cost Drag %</th>
+                  <th>Net Return %</th>
+                  <th>Net Ann. Sharpe</th>
+                  <th>Sortino</th>
+                  <th>Max Drawdown %</th>
+                  <th>vs Nifty 50</th>
+                  <th>Brier / ECE</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-quant-models">
+                <tr><td colspan="12" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading Walk-Forward Out-of-Sample Backtest...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- All-Stock Calibrated Next-Day Signal Matrix -->
+      <div class="collapsible-section open">
+        <div class="collapsible-header">
+          <div class="header-left">
+            <span class="sec-num" style="background: var(--signal-bull-bg); color: var(--signal-bull); border-color: var(--signal-bull);">27</span>
+            <div>
+              <h2 class="sec-heading-title">All-Stock Calibrated Next-Day Signal Matrix, TreeSHAP Drivers &amp; NSE Delivery</h2>
+              <p class="sec-heading-sub">27 Liquid NSE Equities Ranked by Calibrated `P(Up 1D)` &amp; Net Expected Return after Indian CNC Costs (~35 bps)</p>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-body">
+          <div class="table-wrap">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Symbol / Sector</th>
+                  <th>Close (₹)</th>
+                  <th>ML Action</th>
+                  <th>P(Up 1D)</th>
+                  <th>P(Up 5D)</th>
+                  <th>Gross E[R] 1D</th>
+                  <th>CNC Cost</th>
+                  <th>Net E[R] 1D</th>
+                  <th>Conf. /100</th>
+                  <th style="text-align: left;">Top Bullish &amp; Bearish TreeSHAP Drivers</th>
+                  <th>Inspect</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-quant-predictions">
+                <tr><td colspan="11" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading All-Stock Calibrated Predictions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Official NSE Bulk & Block Deals Live Archive -->
+      <div class="collapsible-section open">
+        <div class="collapsible-header">
+          <div class="header-left">
+            <span class="sec-num" style="background: rgba(245, 158, 11, 0.14); color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">NSE</span>
+            <div>
+              <h2 class="sec-heading-title">Official NSE Bulk &amp; Block Deals Institutional Tape (`nsearchives.nseindia.com`)</h2>
+              <p id="quant-deals-subtitle" class="sec-heading-sub">Verified Institutional Block &amp; Bulk Transactions Ranked by Deal Value (₹ Crores)</p>
+            </div>
+          </div>
+        </div>
+        <div class="collapsible-body">
+          <div class="table-wrap">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Deal Type</th>
+                  <th style="text-align: left;">Symbol / Company</th>
+                  <th style="text-align: left;">Institutional Client / Fund Name</th>
+                  <th>Side</th>
+                  <th>Quantity</th>
+                  <th>Exec. Price (₹)</th>
+                  <th>Deal Value (₹ Cr)</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-nse-bulk-deals">
+                <tr><td colspan="8" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading Official NSE Bulk &amp; Block Deals...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ======================================================================

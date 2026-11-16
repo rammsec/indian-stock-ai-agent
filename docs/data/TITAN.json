@@ -1,1 +1,2065 @@
-{"fetched_at":"2026-11-16 01:40:31 IST","overview":{"symbol":"TITAN","name":"Titan Company Ltd","exchange":"NSE","bse_code":null,"nse_code":"TITAN","sector":"Consumer Discretionary","industry":"Gems, Jewellery And Watches","about":"Titan Company Ltd is among India\u2019s most respected lifestyle companies. It has established leadership positions in the Watches, Jewellery and Eyewear categories led by its trusted brands and differentiated customer experience. It was founded in 1984 as a joint-venture between TATA Group and Tamilnadu Industrial Development Corporation (TIDCO). [1]","market_cap_cr":430124.0,"current_price":4845.0,"high_52w":5187.0,"low_52w":3751.0,"stock_pe":60.5,"book_value":206.0,"dividend_yield_pct":0.31,"roce_pct":20.5,"roe_pct":37.7,"face_value":1.0,"revenue_cagr_5y_pct":32.06,"profit_cagr_5y_pct":23.26,"piotroski_score":5,"pros":["Company is expected to give good quarter","Company has a good return on equity (ROE) track record: 3 Years ROE 34.4%","Company has been maintaining a healthy dividend payout of 27.9%","Company's median sales growth is 22.1% of last 10 years"],"cons":["Stock is trading at 23.6 times its book value","Company might be capitalizing the interest cost"]},"last_5_annual_reports":[{"period":"Mar 2022","revenue_cr":28799.0,"expenses_cr":25455.0,"operating_profit_cr":3344.0,"opm_pct":12.0,"other_income_cr":177.0,"interest_cr":218.0,"depreciation_cr":399.0,"profit_before_tax_cr":2904.0,"tax_pct":24.0,"net_profit_cr":2198.0,"eps_inr":24.48,"dividend_payout_pct":31.0,"revenue_growth_pct":33.06,"net_profit_growth_pct":125.67},{"period":"Mar 2023","revenue_cr":40575.0,"expenses_cr":35693.0,"operating_profit_cr":4882.0,"opm_pct":12.0,"other_income_cr":306.0,"interest_cr":300.0,"depreciation_cr":441.0,"profit_before_tax_cr":4447.0,"tax_pct":26.0,"net_profit_cr":3274.0,"eps_inr":36.61,"dividend_payout_pct":27.0,"revenue_growth_pct":40.89,"net_profit_growth_pct":48.95},{"period":"Mar 2024","revenue_cr":51084.0,"expenses_cr":45792.0,"operating_profit_cr":5292.0,"opm_pct":10.0,"other_income_cr":534.0,"interest_cr":619.0,"depreciation_cr":584.0,"profit_before_tax_cr":4623.0,"tax_pct":24.0,"net_profit_cr":3496.0,"eps_inr":39.38,"dividend_payout_pct":28.0,"revenue_growth_pct":25.9,"net_profit_growth_pct":6.78},{"period":"Mar 2025","revenue_cr":60456.0,"expenses_cr":54762.0,"operating_profit_cr":5694.0,"opm_pct":9.0,"other_income_cr":487.0,"interest_cr":953.0,"depreciation_cr":693.0,"profit_before_tax_cr":4535.0,"tax_pct":26.0,"net_profit_cr":3337.0,"eps_inr":37.59,"dividend_payout_pct":29.0,"revenue_growth_pct":18.35,"net_profit_growth_pct":-4.55},{"period":"Mar 2026","revenue_cr":87584.0,"expenses_cr":79227.0,"operating_profit_cr":8357.0,"opm_pct":10.0,"other_income_cr":450.0,"interest_cr":1180.0,"depreciation_cr":826.0,"profit_before_tax_cr":6801.0,"tax_pct":25.0,"net_profit_cr":5073.0,"eps_inr":57.14,"dividend_payout_pct":26.0,"revenue_growth_pct":44.87,"net_profit_growth_pct":52.02}],"last_5_quarterly_reports":[{"period":"Sep 2025","revenue_cr":18725.0,"expenses_cr":16850.0,"operating_profit_cr":1875.0,"opm_pct":10.0,"other_income_cr":113.0,"interest_cr":277.0,"depreciation_cr":189.0,"profit_before_tax_cr":1522.0,"tax_pct":26.0,"net_profit_cr":1120.0,"eps_inr":12.62,"dividend_payout_pct":null,"revenue_growth_pct":13.33,"net_profit_growth_pct":2.66},{"period":"Dec 2025","revenue_cr":25416.0,"expenses_cr":22703.0,"operating_profit_cr":2713.0,"opm_pct":11.0,"other_income_cr":-1.0,"interest_cr":282.0,"depreciation_cr":207.0,"profit_before_tax_cr":2223.0,"tax_pct":24.0,"net_profit_cr":1684.0,"eps_inr":18.97,"dividend_payout_pct":null,"revenue_growth_pct":35.73,"net_profit_growth_pct":50.36},{"period":"Mar 2026","revenue_cr":26920.0,"expenses_cr":24982.0,"operating_profit_cr":1938.0,"opm_pct":7.0,"other_income_cr":235.0,"interest_cr":350.0,"depreciation_cr":246.0,"profit_before_tax_cr":1577.0,"tax_pct":25.0,"net_profit_cr":1179.0,"eps_inr":13.28,"dividend_payout_pct":null,"revenue_growth_pct":5.92,"net_profit_growth_pct":-29.99},{"period":"Jun 2026","revenue_cr":21356.0,"expenses_cr":18466.0,"operating_profit_cr":2890.0,"opm_pct":14.0,"other_income_cr":148.0,"interest_cr":353.0,"depreciation_cr":256.0,"profit_before_tax_cr":2429.0,"tax_pct":27.0,"net_profit_cr":1777.0,"eps_inr":20.02,"dividend_payout_pct":null,"revenue_growth_pct":-20.67,"net_profit_growth_pct":50.72},{"period":"Sep 2026","revenue_cr":20614.0,"expenses_cr":17631.0,"operating_profit_cr":2983.0,"opm_pct":14.0,"other_income_cr":816.0,"interest_cr":536.0,"depreciation_cr":263.0,"profit_before_tax_cr":3000.0,"tax_pct":20.0,"net_profit_cr":2393.0,"eps_inr":26.95,"dividend_payout_pct":null,"revenue_growth_pct":-3.47,"net_profit_growth_pct":34.67}],"cash_and_balance_sheet":{"latest_period":"Sep 2026","cash_equivalents_cr":1061.0,"liquid_investments_cr":2672.0,"total_cash_in_hand_cr":3733.0,"total_borrowings_cr":27638.0,"net_cash_position_cr":-23905.0,"debt_to_equity":1.51,"cash_to_debt_ratio":0.14,"cash_pct_of_mcap":0.87,"latest_ocf_cr":0.0,"latest_fcf_cr":0.0,"cumulative_5y_ocf_cr":204.0,"cumulative_5y_fcf_cr":-3025.2,"roce_5y_series":[{"period":"Mar 2022","roce_pct":21.0},{"period":"Mar 2023","roce_pct":25.0},{"period":"Mar 2024","roce_pct":23.0},{"period":"Mar 2025","roce_pct":19.0},{"period":"Mar 2026","roce_pct":21.0}],"history_5y":[{"period":"Mar 2023","cash_equivalents_cr":1343.0,"investments_cr":2515.0,"total_cash_in_hand_cr":3858.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":9367.0,"net_cash_cr":-5509.0,"total_equity_cr":11851.0,"total_assets_cr":27020.0,"operating_cash_flow_cr":52.0,"investing_cash_flow_cr":-1814.0,"free_cash_flow_cr":-1127.1},{"period":"Mar 2024","cash_equivalents_cr":1526.0,"investments_cr":2345.0,"total_cash_in_hand_cr":3871.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":15528.0,"net_cash_cr":-11657.0,"total_equity_cr":9393.0,"total_assets_cr":31547.0,"operating_cash_flow_cr":54.0,"investing_cash_flow_cr":-189.0,"free_cash_flow_cr":-68.85},{"period":"Mar 2025","cash_equivalents_cr":1584.0,"investments_cr":1988.0,"total_cash_in_hand_cr":3572.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":20777.0,"net_cash_cr":-17205.0,"total_equity_cr":11624.0,"total_assets_cr":40645.0,"operating_cash_flow_cr":10.0,"investing_cash_flow_cr":546.0,"free_cash_flow_cr":10.0},{"period":"Mar 2026","cash_equivalents_cr":1917.0,"investments_cr":3506.0,"total_cash_in_hand_cr":5423.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":30621.0,"net_cash_cr":-25198.0,"total_equity_cr":15703.0,"total_assets_cr":60561.0,"operating_cash_flow_cr":88.0,"investing_cash_flow_cr":-2965.0,"free_cash_flow_cr":-1839.25},{"period":"Sep 2026","cash_equivalents_cr":1061.0,"investments_cr":2672.0,"total_cash_in_hand_cr":3733.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":27638.0,"net_cash_cr":-23905.0,"total_equity_cr":18263.0,"total_assets_cr":71806.0,"operating_cash_flow_cr":null,"investing_cash_flow_cr":null,"free_cash_flow_cr":null}]},"stockholders":{"latest_period":"Sep 2026","promoters_pct":52.9,"fii_pct":16.37,"dii_pct":14.42,"government_pct":0.0,"public_pct":16.2,"institutional_total_pct":30.79,"promoter_change_4q_pct":0.0,"fii_change_4q_pct":0.26,"dii_change_4q_pct":0.43,"num_shareholders":724298,"quarterly_history":[{"period":"Dec 2024","promoters_pct":52.9,"fii_pct":18.11,"dii_pct":11.37,"government_pct":0.19,"public_pct":17.35,"num_shareholders":875901},{"period":"Mar 2025","promoters_pct":52.9,"fii_pct":17.82,"dii_pct":12.01,"government_pct":0.19,"public_pct":17.01,"num_shareholders":855126},{"period":"Jun 2025","promoters_pct":52.9,"fii_pct":17.54,"dii_pct":12.59,"government_pct":0.19,"public_pct":16.69,"num_shareholders":792131},{"period":"Sep 2025","promoters_pct":52.9,"fii_pct":16.11,"dii_pct":13.99,"government_pct":0.19,"public_pct":16.76,"num_shareholders":795466},{"period":"Dec 2025","promoters_pct":52.9,"fii_pct":15.55,"dii_pct":14.83,"government_pct":0.19,"public_pct":16.45,"num_shareholders":749373},{"period":"Mar 2026","promoters_pct":52.9,"fii_pct":15.65,"dii_pct":14.84,"government_pct":0.19,"public_pct":16.34,"num_shareholders":735599},{"period":"Jun 2026","promoters_pct":52.9,"fii_pct":15.39,"dii_pct":15.15,"government_pct":0.19,"public_pct":16.31,"num_shareholders":733428},{"period":"Sep 2026","promoters_pct":52.9,"fii_pct":16.37,"dii_pct":14.42,"government_pct":0.0,"public_pct":16.2,"num_shareholders":724298}],"named_stockholders":[{"name":"Life Insurance Corporation of India","category":"DII","latest_holding_pct":123150.0,"previous_holding_pct":2.16,"change_4q_pct":123147.66,"trend":[{"period":"Dec 2025","pct":2.51},{"period":"Mar 2026","pct":2.34},{"period":"Jun 2026","pct":2.17},{"period":"Sep 2026","pct":2.16},{"period":"setAttributes","pct":123150.0}]},{"name":"Nps Trust A/C - Lic Pension Fund Limited - Nps Lite Scheme - Govt. Pattern","category":"DII","latest_holding_pct":274227.0,"previous_holding_pct":1.79,"change_4q_pct":274225.21,"trend":[{"period":"Sep 2026","pct":1.79},{"period":"setAttributes","pct":274227.0}]},{"name":"Sbi Nifty 50 Etf","category":"DII","latest_holding_pct":123139.0,"previous_holding_pct":1.85,"change_4q_pct":123137.31,"trend":[{"period":"Dec 2025","pct":1.63},{"period":"Mar 2026","pct":1.69},{"period":"Jun 2026","pct":1.8},{"period":"Sep 2026","pct":1.85},{"period":"setAttributes","pct":123139.0}]},{"name":"Nps Trust A/C Uti Pension Fund Limited-Scheme State Govt","category":"DII","latest_holding_pct":187379.0,"previous_holding_pct":1.73,"change_4q_pct":187377.69,"trend":[{"period":"Dec 2025","pct":1.31},{"period":"Mar 2026","pct":1.48},{"period":"Jun 2026","pct":1.73},{"period":"setAttributes","pct":187379.0}]},{"name":"Icici Prudential Balanced Advantage Fund","category":"DII","latest_holding_pct":75056.0,"previous_holding_pct":1.26,"change_4q_pct":75054.61,"trend":[{"period":"Sep 2025","pct":1.61},{"period":"Dec 2025","pct":1.39},{"period":"Mar 2026","pct":1.28},{"period":"Jun 2026","pct":1.26},{"period":"setAttributes","pct":75056.0}]},{"name":"Uti Nifty 50 Etf","category":"DII","latest_holding_pct":156709.0,"previous_holding_pct":1.11,"change_4q_pct":156707.95,"trend":[{"period":"Dec 2025","pct":1.05},{"period":"Mar 2026","pct":1.09},{"period":"Jun 2026","pct":1.11},{"period":"setAttributes","pct":156709.0}]},{"name":"Uti-Flexi Cap Fund","category":"DII","latest_holding_pct":1607.0,"previous_holding_pct":1.08,"change_4q_pct":1605.92,"trend":[{"period":"Sep 2026","pct":1.08},{"period":"setAttributes","pct":1607.0}]}]},"rd_and_innovation":{"latest_rd_spend_cr":875.84,"latest_rd_pct_of_sales":1.0,"cumulative_5y_rd_cr":2619.99,"intangible_assets_cr":1782.0,"cwip_cr":163.0,"rd_cagr_5y_pct":34.12,"innovation_focus":"Technology absorption, process automation, and product R&D in Gems, Jewellery And Watches","rd_data_source":"Statutory BRSR / Sector R&D & Intangible Capitalization Model","history_5y":[{"period":"Mar 2022","revenue_cr":28799.0,"rd_spend_cr":270.71,"rd_pct_of_sales":0.94,"intangible_assets_cr":320.0,"cwip_cr":85.0,"employee_cost_pct":null},{"period":"Mar 2023","revenue_cr":40575.0,"rd_spend_cr":385.46,"rd_pct_of_sales":0.95,"intangible_assets_cr":320.0,"cwip_cr":144.0,"employee_cost_pct":null},{"period":"Mar 2024","revenue_cr":51084.0,"rd_spend_cr":495.51,"rd_pct_of_sales":0.97,"intangible_assets_cr":320.0,"cwip_cr":97.0,"employee_cost_pct":null},{"period":"Mar 2025","revenue_cr":60456.0,"rd_spend_cr":592.47,"rd_pct_of_sales":0.98,"intangible_assets_cr":320.0,"cwip_cr":105.0,"employee_cost_pct":null},{"period":"Mar 2026","revenue_cr":87584.0,"rd_spend_cr":875.84,"rd_pct_of_sales":1.0,"intangible_assets_cr":1782.0,"cwip_cr":163.0,"employee_cost_pct":null}],"annual_reports_5y":[{"title":"Annual Report 2026","year":"2026","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/1e85b157-d3b6-44c8-ab75-4776048dab00.pdf"},{"title":"Annual Report 2025","year":"2025","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/92f76ec9-cc9b-4534-ad82-2cbd920a55b7.pdf"},{"title":"Annual Report 2024","year":"2024","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/6b841ec3-461e-4368-8fb9-d95df5065e11.pdf"},{"title":"Annual Report 2023","year":"2023","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/45417344-b78e-4ff6-8085-7c17a0e906db.pdf"},{"title":"Annual Report 2022","year":"2022","url":"https://www.bseindia.com/bseplus/AnnualReport/500114/73425500114_05_07_22.pdf"}]},"technicals":{"current_price":4844.9,"prev_close":4921.9,"day_change_pct":-1.56,"day_high":4947.8,"day_low":4837.1,"high_52w":5187.0,"low_52w":3751.0,"return_5d_pct":0.21,"return_1m_pct":7.98,"return_6m_pct":18.83,"return_1y_pct":26.61,"rsi_14":60.82,"macd_line":89.61,"macd_signal":26.59,"macd_hist":63.01,"ema_20":4692.8,"dma_50":4696.38,"dma_200":4465.75,"bb_upper":5092.84,"bb_middle":4581.09,"bb_lower":4069.34,"atr_14":118.5,"atr_pct":2.45,"volume_latest":624040.0,"volume_20d_avg":951099.55,"volume_Surge_ratio":0.66,"annualized_volatility_pct":26.13,"pivot_point":4876.6,"support_1":4805.4,"support_2":4765.9,"resistance_1":4916.1,"resistance_2":4987.3,"trend_regime":"BULLISH UPTREND (Price > 50-DMA > 200-DMA)","technical_signals":["Golden Trend Alignment: Trading above both 50-DMA and 200-DMA","RSI(14) at 60.82 \u2014 Healthy bullish momentum zone without overextension","MACD Bullish Crossover active (Histogram +63.01)"],"price_series":[{"date":"2026-07-07","close":4589.14,"open":4535.12,"high":4640.67,"low":4490.27,"dma50":4248.58,"dma200":4136.98,"volume":3385946.0},{"date":"2026-07-08","close":4571.4,"open":4575.39,"high":4614.86,"low":4546.78,"dma50":4252.09,"dma200":4139.7,"volume":1045703.0},{"date":"2026-07-09","close":4555.8,"open":4614.8,"high":4679.8,"low":4546.1,"dma50":4254.66,"dma200":4142.28,"volume":1777107.0},{"date":"2026-07-10","close":4584.4,"open":4578.6,"high":4602.8,"low":4560.7,"dma50":4258.3,"dma200":4145.01,"volume":652646.0},{"date":"2026-07-13","close":4601.5,"open":4578.0,"high":4635.0,"low":4524.4,"dma50":4261.83,"dma200":4147.81,"volume":770367.0},{"date":"2026-07-14","close":4573.7,"open":4579.8,"high":4600.0,"low":4554.0,"dma50":4265.88,"dma200":4150.41,"volume":631158.0},{"date":"2026-07-15","close":4579.4,"open":4573.7,"high":4607.0,"low":4565.1,"dma50":4270.5,"dma200":4153.01,"volume":619451.0},{"date":"2026-07-16","close":4625.8,"open":4585.3,"high":4668.8,"low":4580.0,"dma50":4275.83,"dma200":4155.86,"volume":1136159.0},{"date":"2026-07-17","close":4638.1,"open":4626.0,"high":4647.5,"low":4610.1,"dma50":4281.68,"dma200":4158.74,"volume":667212.0},{"date":"2026-07-20","close":4643.4,"open":4638.1,"high":4660.0,"low":4625.3,"dma50":4288.68,"dma200":4161.63,"volume":274158.0},{"date":"2026-07-21","close":4688.7,"open":4644.2,"high":4691.7,"low":4629.2,"dma50":4292.57,"dma200":4164.75,"volume":530094.0},{"date":"2026-07-22","close":4711.6,"open":4685.7,"high":4733.0,"low":4675.0,"dma50":4302.96,"dma200":4167.96,"volume":996475.0},{"date":"2026-07-23","close":4697.3,"open":4700.0,"high":4709.8,"low":4671.6,"dma50":4316.07,"dma200":4171.06,"volume":421185.0},{"date":"2026-07-24","close":4677.0,"open":4605.0,"high":4697.0,"low":4604.1,"dma50":4328.06,"dma200":4174.0,"volume":513858.0},{"date":"2026-07-27","close":4740.1,"open":4686.9,"high":4749.1,"low":4686.9,"dma50":4340.43,"dma200":4177.27,"volume":500721.0},{"date":"2026-07-28","close":4849.7,"open":4750.0,"high":4860.0,"low":4712.9,"dma50":4354.32,"dma200":4181.14,"volume":1321587.0},{"date":"2026-07-29","close":4850.2,"open":4849.7,"high":4866.9,"low":4823.2,"dma50":4368.2,"dma200":4184.96,"volume":837059.0},{"date":"2026-07-30","close":4850.0,"open":4820.9,"high":4869.9,"low":4820.9,"dma50":4383.43,"dma200":4188.74,"volume":777361.0},{"date":"2026-07-31","close":4875.2,"open":4850.0,"high":4886.0,"low":4820.9,"dma50":4399.07,"dma200":4192.62,"volume":1003314.0},{"date":"2026-08-03","close":5000.0,"open":4875.2,"high":5000.0,"low":4851.8,"dma50":4417.68,"dma200":4197.15,"volume":505420.0},{"date":"2026-08-04","close":4935.0,"open":4935.0,"high":4935.0,"low":4862.0,"dma50":4435.05,"dma200":4201.28,"volume":1181747.0},{"date":"2026-08-05","close":4912.4,"open":4910.2,"high":4920.6,"low":4882.3,"dma50":4450.38,"dma200":4205.23,"volume":546332.0},{"date":"2026-08-06","close":4998.0,"open":4883.9,"high":5005.0,"low":4883.9,"dma50":4468.49,"dma200":4209.61,"volume":1283840.0},{"date":"2026-08-07","close":4941.0,"open":4978.1,"high":5003.0,"low":4891.3,"dma50":4484.83,"dma200":4213.62,"volume":1166858.0},{"date":"2026-08-10","close":5090.0,"open":4932.0,"high":5122.2,"low":4886.2,"dma50":4505.4,"dma200":4218.41,"volume":3664718.0},{"date":"2026-08-11","close":5128.0,"open":5090.0,"high":5168.0,"low":5090.0,"dma50":4527.73,"dma200":4223.36,"volume":1664853.0},{"date":"2026-08-12","close":5099.0,"open":5128.0,"high":5128.0,"low":4992.0,"dma50":4548.41,"dma200":4228.09,"volume":1105157.0},{"date":"2026-08-13","close":5063.7,"open":5069.5,"high":5071.5,"low":5010.0,"dma50":4568.18,"dma200":4232.58,"volume":533274.0},{"date":"2026-08-14","close":5056.2,"open":5064.0,"high":5090.5,"low":5046.4,"dma50":4584.96,"dma200":4236.99,"volume":587764.0},{"date":"2026-08-17","close":5068.5,"open":5056.2,"high":5111.0,"low":5037.2,"dma50":4601.4,"dma200":4241.41,"volume":565258.0},{"date":"2026-08-18","close":5048.6,"open":5060.0,"high":5094.9,"low":5042.5,"dma50":4618.8,"dma200":4245.68,"volume":354873.0},{"date":"2026-08-19","close":5068.0,"open":5045.0,"high":5074.8,"low":5038.0,"dma50":4638.33,"dma200":4250.01,"volume":412981.0},{"date":"2026-08-20","close":5068.0,"open":5084.9,"high":5110.0,"low":5060.1,"dma50":4659.11,"dma200":4254.29,"volume":614435.0},{"date":"2026-08-21","close":5086.1,"open":5068.0,"high":5090.4,"low":5011.0,"dma50":4680.6,"dma200":4258.62,"volume":352381.0},{"date":"2026-08-24","close":5079.0,"open":5086.8,"high":5093.4,"low":5050.0,"dma50":4698.77,"dma200":4262.87,"volume":256376.0},{"date":"2026-08-25","close":5124.8,"open":5059.1,"high":5124.8,"low":5052.7,"dma50":4715.88,"dma200":4267.32,"volume":347515.0},{"date":"2026-08-26","close":5100.0,"open":5149.9,"high":5149.9,"low":5091.0,"dma50":4731.4,"dma200":4271.59,"volume":377617.0},{"date":"2026-08-27","close":5139.3,"open":5100.0,"high":5186.7,"low":5069.5,"dma50":4746.86,"dma200":4276.01,"volume":1101845.0},{"date":"2026-08-28","close":5169.2,"open":5155.0,"high":5169.9,"low":5136.0,"dma50":4762.77,"dma200":4280.55,"volume":547804.0},{"date":"2026-08-31","close":5102.4,"open":5159.0,"high":5159.0,"low":5088.0,"dma50":4776.71,"dma200":4284.7,"volume":630695.0},{"date":"2026-09-01","close":5050.0,"open":5104.0,"high":5126.5,"low":5010.5,"dma50":4790.55,"dma200":4288.55,"volume":466855.0},{"date":"2026-09-02","close":5074.0,"open":4972.0,"high":5092.0,"low":4971.5,"dma50":4806.21,"dma200":4292.47,"volume":812660.0},{"date":"2026-09-03","close":5027.0,"open":5057.5,"high":5072.5,"low":4952.0,"dma50":4820.55,"dma200":4298.47,"volume":571600.0},{"date":"2026-09-04","close":5020.0,"open":5010.0,"high":5022.0,"low":4980.0,"dma50":4835.41,"dma200":4304.49,"volume":310845.0},{"date":"2026-09-07","close":4995.0,"open":5010.0,"high":5028.0,"low":4958.5,"dma50":4850.04,"dma200":4310.19,"volume":480336.0},{"date":"2026-09-08","close":4987.0,"open":4975.0,"high":5015.5,"low":4969.0,"dma50":4861.99,"dma200":4315.79,"volume":432671.0},{"date":"2026-09-09","close":5005.0,"open":5010.0,"high":5019.0,"low":4968.0,"dma50":4874.41,"dma200":4321.21,"volume":502050.0},{"date":"2026-09-10","close":5021.0,"open":5000.5,"high":5021.0,"low":4974.5,"dma50":4885.5,"dma200":4326.87,"volume":336565.0},{"date":"2026-09-11","close":5009.5,"open":4964.0,"high":5015.0,"low":4943.0,"dma50":4896.76,"dma200":4332.46,"volume":403235.0},{"date":"2026-09-15","close":4856.0,"open":5003.0,"high":5003.0,"low":4856.0,"dma50":4904.48,"dma200":4337.43,"volume":504447.0},{"date":"2026-09-16","close":4908.5,"open":4880.0,"high":4921.5,"low":4845.0,"dma50":4910.87,"dma200":4342.76,"volume":376036.0},{"date":"2026-09-17","close":4841.0,"open":4895.0,"high":4915.5,"low":4838.5,"dma50":4916.26,"dma200":4347.54,"volume":489416.0},{"date":"2026-09-18","close":4798.5,"open":4851.0,"high":4864.5,"low":4772.0,"dma50":4921.12,"dma200":4352.08,"volume":1066023.0},{"date":"2026-09-21","close":4875.0,"open":4816.5,"high":4880.0,"low":4780.0,"dma50":4926.93,"dma200":4356.98,"volume":665067.0},{"date":"2026-09-22","close":4928.5,"open":4876.0,"high":4982.0,"low":4862.5,"dma50":4933.47,"dma200":4362.21,"volume":1238174.0},{"date":"2026-09-23","close":4880.0,"open":4928.5,"high":4951.0,"low":4852.5,"dma50":4939.59,"dma200":4367.25,"volume":769737.0},{"date":"2026-09-24","close":4832.5,"open":4868.0,"high":4912.0,"low":4830.0,"dma50":4944.66,"dma200":4372.38,"volume":504126.0},{"date":"2026-09-25","close":4884.0,"open":4855.0,"high":4884.0,"low":4821.5,"dma50":4949.82,"dma200":4377.86,"volume":368677.0},{"date":"2026-09-28","close":4819.5,"open":4881.0,"high":4881.0,"low":4810.0,"dma50":4953.45,"dma200":4382.96,"volume":632938.0},{"date":"2026-09-29","close":4675.0,"open":4808.0,"high":4818.5,"low":4675.0,"dma50":4954.08,"dma200":4387.56,"volume":1188414.0},{"date":"2026-09-30","close":4587.0,"open":4683.0,"high":4698.0,"low":4587.0,"dma50":4952.05,"dma200":4391.31,"volume":927060.0},{"date":"2026-10-01","close":4515.7,"open":4574.9,"high":4621.8,"low":4491.0,"dma50":4948.13,"dma200":4394.73,"volume":694098.0},{"date":"2026-10-05","close":4580.0,"open":4515.9,"high":4610.0,"low":4505.8,"dma50":4945.78,"dma200":4398.46,"volume":731987.0},{"date":"2026-10-06","close":4550.0,"open":4599.9,"high":4600.0,"low":4530.3,"dma50":4943.24,"dma200":4401.88,"volume":800113.0},{"date":"2026-10-07","close":4377.0,"open":4439.0,"high":4440.0,"low":4335.6,"dma50":4935.98,"dma200":4404.49,"volume":2951280.0},{"date":"2026-10-08","close":4359.5,"open":4380.0,"high":4467.0,"low":4359.5,"dma50":4926.18,"dma200":4406.71,"volume":1490894.0},{"date":"2026-10-09","close":4410.0,"open":4375.1,"high":4430.7,"low":4360.2,"dma50":4917.37,"dma200":4409.28,"volume":591677.0},{"date":"2026-10-12","close":4400.0,"open":4415.7,"high":4428.8,"low":4361.0,"dma50":4908.37,"dma200":4411.75,"volume":724353.0},{"date":"2026-10-13","close":4487.0,"open":4385.2,"high":4487.0,"low":4367.8,"dma50":4900.61,"dma200":4414.6,"volume":550356.0},{"date":"2026-10-14","close":4444.0,"open":4478.1,"high":4495.8,"low":4423.0,"dma50":4889.49,"dma200":4417.21,"volume":552204.0},{"date":"2026-10-15","close":4455.8,"open":4440.0,"high":4465.0,"low":4413.0,"dma50":4879.9,"dma200":4419.93,"volume":533115.0},{"date":"2026-10-16","close":4444.8,"open":4455.0,"high":4480.0,"low":4431.6,"dma50":4870.55,"dma200":4422.67,"volume":577590.0},{"date":"2026-10-19","close":4424.2,"open":4452.0,"high":4494.4,"low":4402.7,"dma50":4859.08,"dma200":4424.9,"volume":651506.0},{"date":"2026-10-21","close":4380.9,"open":4431.0,"high":4442.5,"low":4351.0,"dma50":4847.87,"dma200":4426.95,"volume":448729.0},{"date":"2026-10-22","close":4350.0,"open":4350.0,"high":4373.7,"low":4300.1,"dma50":4833.07,"dma200":4428.89,"volume":426321.0},{"date":"2026-10-23","close":4299.7,"open":4350.0,"high":4350.0,"low":4209.0,"dma50":4816.51,"dma200":4430.2,"volume":633220.0},{"date":"2026-10-26","close":4323.0,"open":4281.0,"high":4327.6,"low":4240.8,"dma50":4800.99,"dma200":4431.63,"volume":382563.0},{"date":"2026-10-27","close":4365.9,"open":4303.0,"high":4377.2,"low":4300.0,"dma50":4787.03,"dma200":4433.27,"volume":749496.0},{"date":"2026-10-28","close":4337.9,"open":4340.0,"high":4380.6,"low":4270.5,"dma50":4772.67,"dma200":4434.63,"volume":527965.0},{"date":"2026-10-29","close":4434.0,"open":4342.0,"high":4458.6,"low":4341.0,"dma50":4759.98,"dma200":4436.31,"volume":958380.0},{"date":"2026-10-30","close":4436.5,"open":4437.3,"high":4486.0,"low":4391.3,"dma50":4747.73,"dma200":4437.19,"volume":1143254.0},{"date":"2026-11-02","close":4476.3,"open":4436.5,"high":4480.0,"low":4420.3,"dma50":4735.9,"dma200":4438.4,"volume":603203.0},{"date":"2026-11-03","close":4562.0,"open":4503.0,"high":4562.0,"low":4455.0,"dma50":4725.78,"dma200":4440.27,"volume":774059.0},{"date":"2026-11-04","close":4754.4,"open":4472.0,"high":4754.4,"low":4471.5,"dma50":4719.15,"dma200":4442.95,"volume":1324883.0},{"date":"2026-11-05","close":4834.6,"open":4800.0,"high":4857.1,"low":4746.0,"dma50":4714.26,"dma200":4446.0,"volume":1241367.0},{"date":"2026-11-06","close":5000.0,"open":4799.9,"high":5013.9,"low":4694.4,"dma50":4711.76,"dma200":4449.96,"volume":4132719.0},{"date":"2026-11-09","close":5005.0,"open":5000.7,"high":5027.6,"low":4954.2,"dma50":4709.86,"dma200":4453.95,"volume":839812.0},{"date":"2026-11-11","close":4970.0,"open":5025.0,"high":5056.6,"low":4951.9,"dma50":4706.48,"dma200":4457.88,"volume":1716837.0},{"date":"2026-11-12","close":4921.9,"open":4970.0,"high":5030.0,"low":4896.0,"dma50":4701.53,"dma200":4461.84,"volume":732932.0},{"date":"2026-11-13","close":4844.9,"open":4935.0,"high":4947.8,"low":4837.1,"dma50":4696.38,"dma200":4465.75,"volume":624040.0}]},"agent_committee":[{"agent_id":"five_reports_agent","agent_name":"5-Report Earnings & Performance Agent","persona_inspiration":"Peter Lynch / Fundamental Growth Analyst","signal":"BULLISH","score":100.0,"confidence":95,"weight_pct":25,"headline":"5Y Profit CAGR 23.26% | Latest FY Net Profit \u20b95,073 Cr | ROE 37.7%","key_metrics":{"5Y Revenue CAGR":"32.1%","5Y Profit CAGR":"23.3%","Latest Qtr Net Profit":"\u20b92,393 Cr","Latest OPM %":"10.0%","ROE / ROCE":"37.7% / 20.5%","Piotroski F-Score":"5/9"},"reasoning":["Strong 5-report annual revenue compounding at 32.1% CAGR.","Superior bottom-line expansion: Net Profit grew at 23.3% 5Y CAGR.","Latest quarter (Sep 2026) net profit jumped +34.7% sequentially.","Positive sequential profit momentum in 4 of the last 5 quarters.","High capital efficiency: ROE 37.7% and ROCE 20.5% exceed institutional hurdle rates."]},{"agent_id":"cash_balance_agent","agent_name":"Cash-in-Hand & Balance Sheet Agent","persona_inspiration":"Benjamin Graham / Balance Sheet Specialist","signal":"NEUTRAL","score":46.0,"confidence":70,"weight_pct":20,"headline":"Cash & Investments: \u20b93,733 Cr | Net Cash: \u20b9-23,905 Cr | D/E: 1.51x","key_metrics":{"Cash Equivalents":"\u20b91,061 Cr","Liquid Investments":"\u20b92,672 Cr","Total Cash in Hand":"\u20b93,733 Cr","Total Borrowings":"\u20b927,638 Cr","Debt / Equity":"1.51x","5Y Cumulative OCF":"\u20b9204 Cr"},"reasoning":["Elevated leverage: Debt/Equity at 1.51x (Total Borrowings \u20b927,638 Cr vs Cash \u20b93,733 Cr).","Generated \u20b9204 Cr in cumulative 5-year Operating Cash Flow (latest FY OCF \u20b90 Cr)."]},{"agent_id":"stockholders_agent","agent_name":"Stockholders & Institutional Flow Agent","persona_inspiration":"Smart-Money & Insider Ownership Tracker","signal":"BULLISH","score":70.0,"confidence":79,"weight_pct":20,"headline":"Promoters 52.9% (+0.00% 4Q) | FII 16.4% | DII 14.4%","key_metrics":{"Promoter Holding":"52.90% (+0.00% 4Q)","FII Holding":"16.37% (+0.26% 4Q)","DII Holding":"14.42% (+0.43% 4Q)","Total Institutional":"30.79%","Public Float":"16.20%","Shareholder Accounts":"724,298"},"reasoning":["High skin-in-the-game: Promoters hold 52.90% equity.","Net Institutional Accumulation: Combined FII+DII holding rose +0.69% over 4 quarters (FII +0.26%, DII +0.43%).","Marquee named stockholders: Life Insurance Corporation of India (123150.00%), Nps Trust A/C - Lic Pension Fund Limited - Nps Lite Scheme - Govt. Pattern (274227.00%), Sbi Nifty 50 Etf (123139.00%), Nps Trust A/C Uti Pension Fund Limited-Scheme State Govt (187379.00%)."]},{"agent_id":"rd_innovation_agent","agent_name":"R&D Intensity & Innovation Moat Agent","persona_inspiration":"Charlie Munger / Philip Fisher Moat Analyst","signal":"BULLISH","score":82.0,"confidence":83,"weight_pct":15,"headline":"Latest R&D: \u20b9876 Cr (1.00% of Sales) | 5Y R&D: \u20b92,620 Cr","key_metrics":{"Latest FY R&D Spend":"\u20b9876 Cr","R&D % of Revenue":"1.00%","5Y Cumulative R&D":"\u20b92,620 Cr","5Y R&D CAGR":"34.1%","Intangible Assets":"\u20b91,782 Cr","CapEx WIP (CWIP)":"\u20b9163 Cr"},"reasoning":["Latest annual R&D investment of \u20b9876 Cr (1.00% of revenue); 5-year cumulative R&D of \u20b92,620 Cr.","Consistent R&D allocation (1.00% of turnover) supporting digital/product differentiation.","R&D budget compounding at 34.1% CAGR over the last 5 reports.","Balance-sheet innovation & capacity pipeline: Intangible Assets \u20b91,782 Cr and Capital Work-in-Progress (CWIP) \u20b9163 Cr.","Strategic R&D Focus: Technology absorption, process automation, and product R&D in Gems, Jewellery And Watches."]},{"agent_id":"technical_catalyst_agent","agent_name":"Next-Day Technical & Catalyst Agent","persona_inspiration":"Stanley Druckenmiller / Price-Action & Timing Desk","signal":"BULLISH","score":88.0,"confidence":91,"weight_pct":20,"headline":"RSI(14) 60.8 | 50-DMA \u20b94,696.4 | 200-DMA \u20b94,465.8 | ATR \u20b9118.5","key_metrics":{"RSI (14)":"60.8","MACD Histogram":"+63.01","50-DMA / 200-DMA":"\u20b94,696.4 / \u20b94,465.8","ATR (14) Daily Range":"\u20b9118.50 (2.45%)","Volume vs 20D Avg":"0.66x","Pivot S1 / R1":"\u20b94,805.4 / \u20b94,916.1"},"reasoning":["Golden Trend Alignment: Trading above both 50-DMA and 200-DMA","RSI(14) at 60.82 \u2014 Healthy bullish momentum zone without overextension","MACD Bullish Crossover active (Histogram +63.01)","News Catalyst: 2 positive vs 0 negative recent Indian market headlines."]}],"next_day_guidance":{"action":"STRONG BUY","conviction_score":78.1,"fundamental_score":75.6,"technical_score":88.0,"current_price":4844.9,"entry_zone_low":4815.27,"entry_zone_high":4862.67,"target_1_next_day":5004.88,"target_2_swing":5153.0,"stop_loss":4738.25,"risk_reward_ratio":1.5,"expected_next_day_range_low":4726.4,"expected_next_day_range_high":4963.4,"position_size_suggestion_pct":8.0,"executive_summary":"Titan Company Ltd (TITAN) earns a composite conviction score of 78.1/100 (STRONG BUY) for the next NSE trading session. Fundamentally backed by \u20b93,733 Cr in cash & investments, 37.7% ROE, 1.00% R&D intensity, and 83.7% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b94,815.27\u2013\u20b94,862.67 zone targeting \u20b95,004.88 (T1) and \u20b95,153.00 (T2) with a strict ATR-calibrated stop-loss at \u20b94,738.25 (Risk:Reward 1:1.5).","rationale_points":["5-Report Fundamental Score: 75.6/100 (5Y Profit CAGR: 23.3%, Piotroski: 5/9).","Balance Sheet & Cash in Hand: \u20b93,733 Cr liquid cash/investments vs \u20b927,638 Cr total borrowings (D/E 1.51x).","Stockholder Conviction: Promoters hold 52.90%, FIIs 16.37%, DIIs 14.42% (Total Institutional: 30.79%).","R&D & Innovation Moat: \u20b9876 Cr annual R&D (1.00% of sales; 5Y cumulative \u20b92,620 Cr).","Next-Day Technical Trigger (88.0/100): BULLISH UPTREND (Price > 50-DMA > 200-DMA); RSI(14) at 60.8 with ATR(14) daily range of \u20b9118.50."],"key_catalysts":["Company is expected to give good quarter","Company has a good return on equity (ROE) track record: 3 Years ROE 34.4%","Company has been maintaining a healthy dividend payout of 27.9%","R&D & CapEx Pipeline: Technology absorption, process automation, and product R&D in Gems, Jewellery And Watches"],"key_risks":["Stock is trading at 23.6 times its book value","Company might be capitalizing the interest cost","Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b94,738.25"],"llm_synthesized":false,"llm_model_used":"Quantitative Multi-Agent Committee Engine v2"},"news":[{"title":"Titan Company Share Price - Upstox","source":"Upstox","published":"Fri, 13 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMibEFVX3lxTFBLaEdJb1pERXM5Z3lpRHpvd0FueUNpN2V0VGsxc2p6bkhJVmpaaEFHUklFc1dOSUJiMkVBd1RkcmVXQW03aThSdktIMjgwaGtPUGRrWGJDMVN6c0tldTlSc09USm1sRjR0dFE1Ng?oc=5","sentiment":"NEUTRAL"},{"title":"Titan Company Ltd. Share Price Today - Titan Company Ltd. Stock Price Live NSE/BSE - CNBC TV18","source":"CNBC TV18","published":"Fri, 13 Nov 2026 09:58:00","url":"https://news.google.com/rss/articles/CBMif0FVX3lxTE12MHJzNjU1akM5NTdWTTEzc2tpTGFjUDJZRGpfX3JQYzA3VGhEa3BDWG9IYU9YeXhQMFE3QWNieTBjQkwzTUJqY3VrLV96RTdjcEItWTVwQVhsTU5FRzBtTVB3cm15LUhDUmdSMndsMDdGbURUeVFxMFk3NnZkeU0?oc=5","sentiment":"NEUTRAL"},{"title":"Titan (NSEI:TITAN) Stock Forecast & Analyst Predictions - Simply Wall St","source":"Simply Wall St","published":"Mon, 09 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMihgFBVV95cUxOaWRIVlA1bkRfX1RwcERGOEZqRUNJaExtRl9PU2VXM2VFZDY4TUk1ME1YVXRqWmpuYlpGcXJJd3RpNHVKdVl2VHExaFBLeGhnQ3hDdWJfakVqOHYwUXFMUXo1X01RQjg0eVZRd3c0LW0yUGJVaTdyczN0UDk2MVFJTkRaenNHZw?oc=5","sentiment":"NEUTRAL"},{"title":"Titan Company Stock Price Forecast. Should You Buy TITAN.NS? - StockInvest.us","source":"StockInvest.us","published":"Thu, 12 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMiTkFVX3lxTE1iR3hDT3ZuV2NCVzNNVjhTWFl2OTJ0Zm5QUk9haENyelpxaWNSZTlxdjN1OEVjSDBCQ19wS1dUVEs1RUhHLTBueVBJREtLQQ?oc=5","sentiment":"POSITIVE"},{"title":"Top 15 Low-Price Stocks In India To Buy In November 2026 - Samco","source":"Samco","published":"Sun, 15 Nov 2026 06:51:14","url":"https://news.google.com/rss/articles/CBMiggFBVV95cUxOZGN1MTZSOXVGTTdPYmlrSl8zMWdmNFV5RVhaVnNBQzdvM2o4MUs3WHhoZ0VzdEF1a2lUX0xYQmh0VnJTZ3RLNFplTXN1MzF0SnM0N3dNeGdsOUtYMVVsRnJwSTQ3dEhtem5wcTNMTm80QzM2b3hvck5BNUdiTFRLNld3?oc=5","sentiment":"POSITIVE"},{"title":"Titan Company adds QIA, Schroders to Nov 2026 investor meetings - scanx.trade","source":"scanx.trade","published":"Tue, 10 Nov 2026 11:16:23","url":"https://news.google.com/rss/articles/CBMipwFBVV95cUxNclVUaEYxbnVtUU13clJnVVJFNExwOW1PSWMtdGtBQ25YcVVMYVBKS0cxTXdmWTdIeE1jTFJfVl9Zdkt2ODZHR1F5YkZKcTBCSXc1YWJfOWk1b1RYUkxaWDZkLURtNFBrcVdOb3RNVWVteXlMVXdQRHdLUjBOeVVaSnpvak5zaks2SFJiMm80NGo2WWRTR3lVMks3N1NRTE56VWtEV21nNA?oc=5","sentiment":"NEUTRAL"},{"title":"Titan Company (NSE:TITAN): Who Will It Meet at Its November 2026 Investor Sessions? - Kalkine India","source":"Kalkine India","published":"Mon, 09 Nov 2026 09:28:00","url":"https://news.google.com/rss/articles/CBMixAFBVV95cUxPVUYzWW1qb1ZCRkF4Z0lodnhzd2VHaEN0MmF1SWJOU0hUdllHYzV0NE1iTGh5WWtvbTRYYnZ1TU50cy1ROXk4bVRhdFlfQjlTb2pHUUs4LXpHSUJ5RC1HMVZfcm80blBYdk9CaXlYbldnb19YVEZsN0F4aWRwLXczVHdXTFdzMUNTRi1pNkE4TUVuUlN0WTE4eXY3QmZVTWNwaS1jLTE4czJDekFjRTZmUXVORmh5SUhvdEV6S2ZHYmFoLVB2?oc=5","sentiment":"NEUTRAL"},{"title":"Sensex Today Trades Lower | Nifty Below 25,250 | HDFC Bank & Titan Company Top Losers - Equitymaster","source":"Equitymaster","published":"Fri, 13 Nov 2026 04:53:03","url":"https://news.google.com/rss/articles/CBMi2gFBVV95cUxPOXgyYUNZcWVlQjN0YkdmT1FJOHk0QkNXTERyaGVhc2dZMmNJaEpUOHd3cnNIMVF0Z2drOHJ4MnZhemZKOURldWVXZDVsaGdwUThzQVBoR3c1OWxjb2x6YVA5clVQUlpWNm56S2NHaTB3NXQxay1TeGpNeGlpUmRELS1zdzR6RTNyYk95UWJya3ZGWmg2LS13Q21qOGl0SWVpS3hseXFlNDdhN3dNRTQ3Vml4encycjAyZmFheXBaRG52R0ZBMnVSemhOQ1BSaGN3ZHdRNkFGUlNBdw?oc=5","sentiment":"NEUTRAL"}],"promoter_and_competitor_intel":{"promoter_group":"Promoter & Insider Group (52.90% Stake)","key_leaders":[{"name":"Titan Company Ltd Managing Director & Board","role":"Principal Promoter & Executive Leadership","focus":"Capital allocation, operating margin expansion & growth in Gems, Jewellery And Watches","handle_or_source":"BSE/NSE Corporate Filings & Earnings Concalls"}],"key_stakeholders_watch":["Life Insurance Corporation of India (DII \u2014 123150.00%)","Nps Trust A/C - Lic Pension Fund Limited - Nps Lite Scheme - Govt. Pattern (DII \u2014 274227.00%)","Sbi Nifty 50 Etf (DII \u2014 123139.00%)","Nps Trust A/C Uti Pension Fund Limited-Scheme State Govt (DII \u2014 187379.00%)"],"promoter_statements_and_articles":[{"speaker_or_source":"CNBC TV18","published":"Fri, 13 Nov 2026 09:58","headline":"Titan Company Ltd. Share Price Today - Titan Company Ltd. Stock Price Live NSE/BSE - CNBC TV18","url":"https://news.google.com/rss/articles/CBMif0FVX3lxTE12MHJzNjU1akM5NTdWTTEzc2tpTGFjUDJZRGpfX3JQYzA3VGhEa3BDWG9IYU9YeXhQMFE3QWNieTBjQkwzTUJqY3VrLV96RTdjcEItWTVwQVhsTU5FRzBtTVB3cm15LUhDUmdSMndsMDdGbURUeVFxMFk3NnZkeU0?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for Titan Company Ltd."},{"speaker_or_source":"Moneycontrol.com","published":"Thu, 05 Nov 2026 08:00","headline":"Titan Q2 results: Net profit more than doubles to Rs 2,393 crore, beats estimates - Moneycontrol.com","url":"https://news.google.com/rss/articles/CBMi3gFBVV95cUxNOGtNdGtQYlZXdnM4YThGN25ib0lxVXVDcnpka2xWRTdGUjBKLVN3WjhGR1JYN1FZTmh2bjBpOUxKcTRqSkJfWDdObTVhYVFvMWd1QjhvQ1AyYzI3WWMwWERTWTlxS0E1SjZQdWl2X2liVHFEYkZtMmg5RFdjaUp4aXJ2ZEJqM3pVbl8xamlGZ0pRdGxOSktVNHlKNTYzZUZCczRaY1RnVngtb2JTaDN4MERyNEFYRklkd1c0MGYwS1RGMmFrN1QxSk80YkxXOUVTSTBvVFdKQmpZaXFmVkHSAeMBQVVfeXFMTndSZTJfQlVnODIzcm1zQ1oyUEFfeEYzbDRqQlV2QTJobktiMVY2OG9uMDV5bnJGMEg2aHhXcUx4V3hCTVQ5X0pxNzFZak8wcWJYY0VRNVVBOXNNMmI3aTA5VFhKNzctOWt2TTV0cWo2ckhsU3V2Zml4SkRUM1pCc2lobFI4MUM5azdRVDlOaFE3UGdZc3lZbS1WR3I4YlFkb1R6dWd0Uk9DbUtBVG4zOHk2T2EzWUUtUHJNajZYVG0xU0FORUdkZkJ6WFZKLU1iNmdlMFBmLVdzaGx6UFF4VWZ0eUE?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."},{"speaker_or_source":"Univest","published":"Thu, 05 Nov 2026 16:54","headline":"Titan Company Q2 Results FY27: PAT Jumps 113.64% to Rs 2,392.73 Cr - Univest","url":"https://news.google.com/rss/articles/CBMieEFVX3lxTFBlc1lpd2puX2V1SmJNOWo5UjRCa21pWlhOd0JNYWJCcnczT1FRZnJoSkMyXzNhaElwWVd6NmV6MmQ1X05BcFhGV0hiZDV1LVJWcGRmWkw2UW9xQ3ZMRWZQc0hHSTZBRF96c3paeURLekxRNHR6RXdfbw?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."},{"speaker_or_source":"CNBC TV18","published":"Thu, 05 Nov 2026 08:00","headline":"Titan Q2 Results: Net profit zooms 56% on jewellery, watches, EyeCare revenue; beats estimates - CNBC TV18","url":"https://news.google.com/rss/articles/CBMi6AFBVV95cUxPdDlrREx1WW1IbkViU3cxY3FzXzFDLWh1RDFnQ0pXSUw3UV94M0JVUFJfbGU3dmNOVkF2RTVfUm5ObGpnZEdtOHZJd1FVcF9xaVFFZy03NTE2SFpwcmFRbG5zYUVjb1EtNnNWLTFDN0lRaGM1M1NaaEFwOFhQbHBsbVkzbS1jU095UTVLN0g0Z09McnhvelVLSTBPYjV1dmRFWFNGWk9ORWRaWjd3aXE2ODRNdXZkVEVvc2tZNXg3S3ZkU3BLdlJ6Sk5fS1ZNU3VVZzB3cTM1S1JkWUNyQU10SDVsQUs0NVg00gHuAUFVX3lxTE5wZThsaGxucUxYeWY3dHM3YjN0Nms1VlV6YTBCQ3ZGbEpEWTdXX1A0eGhzemgwcHZBbDR0Q1JCdUFveU1KVFY3cnllYWNwWU9rdk5zNklSLVdpNHFxSXpqaXpmN0VsOVoxWXpZN0c1NlY1blJhbjVfNVJCS1pvcG11MW1aU0dKZDA5N1ZrdnhVNThEYkV4dkpKNEZCNXN4WGprTTMwSTFiM1NIM2JCbFVYbklzemFRUzVuN3hmZFpmMHB0NjhvZENiV2hfd2ctR1o3MW5vaC1uYUNZWEVJbFlVV09DTU1aX2Y1a2x4RVE?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."},{"speaker_or_source":"Upstox","published":"Fri, 13 Nov 2026 08:00","headline":"Titan Company Share Price - Upstox","url":"https://news.google.com/rss/articles/CBMibEFVX3lxTFBLaEdJb1pERXM5Z3lpRHpvd0FueUNpN2V0VGsxc2p6bkhJVmpaaEFHUklFc1dOSUJiMkVBd1RkcmVXQW03aThSdktIMjgwaGtPUGRrWGJDMVN6c0tldTlSc09USm1sRjR0dFE1Ng?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for Titan Company Ltd."},{"speaker_or_source":"Simply Wall St","published":"Mon, 09 Nov 2026 08:00","headline":"Titan (NSEI:TITAN) Stock Forecast & Analyst Predictions - Simply Wall St","url":"https://news.google.com/rss/articles/CBMihgFBVV95cUxOaWRIVlA1bkRfX1RwcERGOEZqRUNJaExtRl9PU2VXM2VFZDY4TUk1ME1YVXRqWmpuYlpGcXJJd3RpNHVKdVl2VHExaFBLeGhnQ3hDdWJfakVqOHYwUXFMUXo1X01RQjg0eVZRd3c0LW0yUGJVaTdyczN0UDk2MVFJTkRaenNHZw?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for Titan Company Ltd."}],"competitors":[{"symbol":"RELIANCE","name":"Reliance Industries Ltd","segment":"Energy & Telecom","current_price":1339.7,"day_change_pct":0.0,"return_1m_pct":14.83,"pe":null,"roe_pct":null,"latest_statement_or_news":"Bell-ringing ceremony marks the stock market debut of Jio Platforms Limited - Facebook","latest_news_url":"https://news.google.com/rss/articles/CBMi5gFBVV95cUxOcVFReFZZMlpSWVJZcjNKUE81dmdCYkhLY05JNU5xLWgySVN2c0lzR09nMjN4bVQ2VnEtUWR3blNydUg4THBremhsSXNBVHB5WS0zNE9XWnlBXzh2OG9NY3lqNmQ5SDMzbmh5SzA5N0MySl8wTFp5X2Vaa2F6NVVUU2dBVFIzVm9JMG1ReXd2ZWR3eGhCUERJTEpzOE5wYUFqcmthVEh4TFM1WXhKUmJtSERxZUFjeDhGZkpYT0dnM3p2SjRCdGFBcUdadkRzYllmcV9Kemx1Qk4wUkJKSVlHY3Itb25YZw?oc=5","read_across_signal":"POSITIVE READ-ACROSS","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."},{"symbol":"TCS","name":"Tata Consultancy Services Ltd","segment":"IT Services","current_price":2407.5,"day_change_pct":-1.43,"return_1m_pct":6.65,"pe":null,"roe_pct":null,"latest_statement_or_news":"Tata Consultancy Services Limited (TCS.NS) stock price, news, quote and history - Yahoo Finance Singapore","latest_news_url":"https://news.google.com/rss/articles/CBMiVEFVX3lxTE4yZG1MMUJWTjQzeUxZdV9QMF90azdyZlhNOTctMFZTMTYyRVhVWlZKbDFRenlSZXN2aEpLWTRkVHlROVpBNmpZYWZ5V3EwZ2FQU2loLQ?oc=5","read_across_signal":"POSITIVE READ-ACROSS","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."},{"symbol":"TATAELXSI","name":"Tata Elxsi Ltd","segment":"Auto & Media ER&D","current_price":3835.0,"day_change_pct":-0.7,"return_1m_pct":11.92,"pe":null,"roe_pct":null,"latest_statement_or_news":"Tata Elxsi Share Price - Live NSE: TATAELXSI Stock Price & Chart - Upstox","latest_news_url":"https://news.google.com/rss/articles/CBMiaEFVX3lxTFBHajZHTVhxYlMwc2xwUkJsalBoeDktWG5Pc3huX2xvaHBGVkpwT041Ry1Uel9xdnFlclVSXzA4ZEhQc1M5bmxUZEIydlE2Q3ZsQ3ZLMXhyT3g4X0FnRjY5ZWxSSzNLX2hK?oc=5","read_across_signal":"POSITIVE READ-ACROSS","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."},{"symbol":"ITC","name":"ITC Ltd","segment":"FMCG & Cigarettes","current_price":285.0,"day_change_pct":0.33,"return_1m_pct":9.2,"pe":null,"roe_pct":null,"latest_statement_or_news":"ITC Q2 net profit declines 18.7% as higher cigarette taxes hit earnings - Business Standard","latest_news_url":"https://news.google.com/rss/articles/CBMi5gFBVV95cUxPZFpGRE1tcFhUVEk3ZXBMZFhyYkNrZGV4TWNwTFJGenc4OENfbUd3N1dzdmx5X2tvcWFOREE3ZDRjWUpPSGZtX1NPYzUzRFo0M2wxZGl4VXFCa0ljTzh4dFk0WkpEY2oyeHZYSFlRclVmVm9ocDZ2UHRZRmNwakVDQjQyeXVNVjlIOFJvSVRkdWpKLXF5alp4MWhlRUc3bkRKZmRkTGgyQUJTWkdhX3Z0a0tHTEo4ajdDNUJDVFN6YThTY3REUThDVElJUW9TbGlMdHRpQVJkSjRyLUVlNF9QMWllTVBnd9IB6wFBVV95cUxNTDJMRjdvNjcxNy1INDB4SGJ5UFRZV1piVTBqVzZSQzZkVGEzN0Z4akhkdmtZaVlINW1Ic1l4aGktVlhSSENYQ2ZlUGZqdlNpQ0RCUDlhcU1fcHV3OTBiWmtYbkFUbHc5ZEgxY05pQmpicW1pUjVVSjBocjhiSnVGWkoxRVdlOHN5dXp4M2FyeTJ0ZTlTYUNORzBWZ1pzVzRaY3VIZFg4R2FRb000S3hjMEp1eWlWWE9RSWhVT2I2ZWRka3lOVUd6NE92a2lMenViQjR1SnJXaU5Gd3FUNTlzOUMzbC1LZ2FNdU5z?oc=5","read_across_signal":"POSITIVE READ-ACROSS","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."}]}}
+{
+  "fetched_at": "2026-11-16 01:40:31 IST",
+  "overview": {
+    "symbol": "TITAN",
+    "name": "Titan Company Ltd",
+    "exchange": "NSE",
+    "bse_code": null,
+    "nse_code": "TITAN",
+    "sector": "Consumer Discretionary",
+    "industry": "Gems, Jewellery And Watches",
+    "about": "Titan Company Ltd is among India\u2019s most respected lifestyle companies. It has established leadership positions in the Watches, Jewellery and Eyewear categories led by its trusted brands and differentiated customer experience. It was founded in 1984 as a joint-venture between TATA Group and Tamilnadu Industrial Development Corporation (TIDCO). [1]",
+    "market_cap_cr": 430124.0,
+    "current_price": 4845.0,
+    "high_52w": 5187.0,
+    "low_52w": 3751.0,
+    "stock_pe": 60.5,
+    "book_value": 206.0,
+    "dividend_yield_pct": 0.31,
+    "roce_pct": 20.5,
+    "roe_pct": 37.7,
+    "face_value": 1.0,
+    "revenue_cagr_5y_pct": 32.06,
+    "profit_cagr_5y_pct": 23.26,
+    "piotroski_score": 5,
+    "pros": [
+      "Company is expected to give good quarter",
+      "Company has a good return on equity (ROE) track record: 3 Years ROE 34.4%",
+      "Company has been maintaining a healthy dividend payout of 27.9%",
+      "Company's median sales growth is 22.1% of last 10 years"
+    ],
+    "cons": [
+      "Stock is trading at 23.6 times its book value",
+      "Company might be capitalizing the interest cost"
+    ]
+  },
+  "last_5_annual_reports": [
+    {
+      "period": "Mar 2022",
+      "revenue_cr": 28799.0,
+      "expenses_cr": 25455.0,
+      "operating_profit_cr": 3344.0,
+      "opm_pct": 12.0,
+      "other_income_cr": 177.0,
+      "interest_cr": 218.0,
+      "depreciation_cr": 399.0,
+      "profit_before_tax_cr": 2904.0,
+      "tax_pct": 24.0,
+      "net_profit_cr": 2198.0,
+      "eps_inr": 24.48,
+      "dividend_payout_pct": 31.0,
+      "revenue_growth_pct": 33.06,
+      "net_profit_growth_pct": 125.67
+    },
+    {
+      "period": "Mar 2023",
+      "revenue_cr": 40575.0,
+      "expenses_cr": 35693.0,
+      "operating_profit_cr": 4882.0,
+      "opm_pct": 12.0,
+      "other_income_cr": 306.0,
+      "interest_cr": 300.0,
+      "depreciation_cr": 441.0,
+      "profit_before_tax_cr": 4447.0,
+      "tax_pct": 26.0,
+      "net_profit_cr": 3274.0,
+      "eps_inr": 36.61,
+      "dividend_payout_pct": 27.0,
+      "revenue_growth_pct": 40.89,
+      "net_profit_growth_pct": 48.95
+    },
+    {
+      "period": "Mar 2024",
+      "revenue_cr": 51084.0,
+      "expenses_cr": 45792.0,
+      "operating_profit_cr": 5292.0,
+      "opm_pct": 10.0,
+      "other_income_cr": 534.0,
+      "interest_cr": 619.0,
+      "depreciation_cr": 584.0,
+      "profit_before_tax_cr": 4623.0,
+      "tax_pct": 24.0,
+      "net_profit_cr": 3496.0,
+      "eps_inr": 39.38,
+      "dividend_payout_pct": 28.0,
+      "revenue_growth_pct": 25.9,
+      "net_profit_growth_pct": 6.78
+    },
+    {
+      "period": "Mar 2025",
+      "revenue_cr": 60456.0,
+      "expenses_cr": 54762.0,
+      "operating_profit_cr": 5694.0,
+      "opm_pct": 9.0,
+      "other_income_cr": 487.0,
+      "interest_cr": 953.0,
+      "depreciation_cr": 693.0,
+      "profit_before_tax_cr": 4535.0,
+      "tax_pct": 26.0,
+      "net_profit_cr": 3337.0,
+      "eps_inr": 37.59,
+      "dividend_payout_pct": 29.0,
+      "revenue_growth_pct": 18.35,
+      "net_profit_growth_pct": -4.55
+    },
+    {
+      "period": "Mar 2026",
+      "revenue_cr": 87584.0,
+      "expenses_cr": 79227.0,
+      "operating_profit_cr": 8357.0,
+      "opm_pct": 10.0,
+      "other_income_cr": 450.0,
+      "interest_cr": 1180.0,
+      "depreciation_cr": 826.0,
+      "profit_before_tax_cr": 6801.0,
+      "tax_pct": 25.0,
+      "net_profit_cr": 5073.0,
+      "eps_inr": 57.14,
+      "dividend_payout_pct": 26.0,
+      "revenue_growth_pct": 44.87,
+      "net_profit_growth_pct": 52.02
+    }
+  ],
+  "last_5_quarterly_reports": [
+    {
+      "period": "Sep 2025",
+      "revenue_cr": 18725.0,
+      "expenses_cr": 16850.0,
+      "operating_profit_cr": 1875.0,
+      "opm_pct": 10.0,
+      "other_income_cr": 113.0,
+      "interest_cr": 277.0,
+      "depreciation_cr": 189.0,
+      "profit_before_tax_cr": 1522.0,
+      "tax_pct": 26.0,
+      "net_profit_cr": 1120.0,
+      "eps_inr": 12.62,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 13.33,
+      "net_profit_growth_pct": 2.66
+    },
+    {
+      "period": "Dec 2025",
+      "revenue_cr": 25416.0,
+      "expenses_cr": 22703.0,
+      "operating_profit_cr": 2713.0,
+      "opm_pct": 11.0,
+      "other_income_cr": -1.0,
+      "interest_cr": 282.0,
+      "depreciation_cr": 207.0,
+      "profit_before_tax_cr": 2223.0,
+      "tax_pct": 24.0,
+      "net_profit_cr": 1684.0,
+      "eps_inr": 18.97,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 35.73,
+      "net_profit_growth_pct": 50.36
+    },
+    {
+      "period": "Mar 2026",
+      "revenue_cr": 26920.0,
+      "expenses_cr": 24982.0,
+      "operating_profit_cr": 1938.0,
+      "opm_pct": 7.0,
+      "other_income_cr": 235.0,
+      "interest_cr": 350.0,
+      "depreciation_cr": 246.0,
+      "profit_before_tax_cr": 1577.0,
+      "tax_pct": 25.0,
+      "net_profit_cr": 1179.0,
+      "eps_inr": 13.28,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 5.92,
+      "net_profit_growth_pct": -29.99
+    },
+    {
+      "period": "Jun 2026",
+      "revenue_cr": 21356.0,
+      "expenses_cr": 18466.0,
+      "operating_profit_cr": 2890.0,
+      "opm_pct": 14.0,
+      "other_income_cr": 148.0,
+      "interest_cr": 353.0,
+      "depreciation_cr": 256.0,
+      "profit_before_tax_cr": 2429.0,
+      "tax_pct": 27.0,
+      "net_profit_cr": 1777.0,
+      "eps_inr": 20.02,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": -20.67,
+      "net_profit_growth_pct": 50.72
+    },
+    {
+      "period": "Sep 2026",
+      "revenue_cr": 20614.0,
+      "expenses_cr": 17631.0,
+      "operating_profit_cr": 2983.0,
+      "opm_pct": 14.0,
+      "other_income_cr": 816.0,
+      "interest_cr": 536.0,
+      "depreciation_cr": 263.0,
+      "profit_before_tax_cr": 3000.0,
+      "tax_pct": 20.0,
+      "net_profit_cr": 2393.0,
+      "eps_inr": 26.95,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": -3.47,
+      "net_profit_growth_pct": 34.67
+    }
+  ],
+  "cash_and_balance_sheet": {
+    "latest_period": "Sep 2026",
+    "cash_equivalents_cr": 1061.0,
+    "liquid_investments_cr": 2672.0,
+    "total_cash_in_hand_cr": 3733.0,
+    "total_borrowings_cr": 27638.0,
+    "net_cash_position_cr": -23905.0,
+    "debt_to_equity": 1.51,
+    "cash_to_debt_ratio": 0.14,
+    "cash_pct_of_mcap": 0.87,
+    "latest_ocf_cr": 0.0,
+    "latest_fcf_cr": 0.0,
+    "cumulative_5y_ocf_cr": 204.0,
+    "cumulative_5y_fcf_cr": -3025.2,
+    "roce_5y_series": [
+      {
+        "period": "Mar 2022",
+        "roce_pct": 21.0
+      },
+      {
+        "period": "Mar 2023",
+        "roce_pct": 25.0
+      },
+      {
+        "period": "Mar 2024",
+        "roce_pct": 23.0
+      },
+      {
+        "period": "Mar 2025",
+        "roce_pct": 19.0
+      },
+      {
+        "period": "Mar 2026",
+        "roce_pct": 21.0
+      }
+    ],
+    "history_5y": [
+      {
+        "period": "Mar 2023",
+        "cash_equivalents_cr": 1343.0,
+        "investments_cr": 2515.0,
+        "total_cash_in_hand_cr": 3858.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 9367.0,
+        "net_cash_cr": -5509.0,
+        "total_equity_cr": 11851.0,
+        "total_assets_cr": 27020.0,
+        "operating_cash_flow_cr": 52.0,
+        "investing_cash_flow_cr": -1814.0,
+        "free_cash_flow_cr": -1127.1
+      },
+      {
+        "period": "Mar 2024",
+        "cash_equivalents_cr": 1526.0,
+        "investments_cr": 2345.0,
+        "total_cash_in_hand_cr": 3871.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 15528.0,
+        "net_cash_cr": -11657.0,
+        "total_equity_cr": 9393.0,
+        "total_assets_cr": 31547.0,
+        "operating_cash_flow_cr": 54.0,
+        "investing_cash_flow_cr": -189.0,
+        "free_cash_flow_cr": -68.85
+      },
+      {
+        "period": "Mar 2025",
+        "cash_equivalents_cr": 1584.0,
+        "investments_cr": 1988.0,
+        "total_cash_in_hand_cr": 3572.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 20777.0,
+        "net_cash_cr": -17205.0,
+        "total_equity_cr": 11624.0,
+        "total_assets_cr": 40645.0,
+        "operating_cash_flow_cr": 10.0,
+        "investing_cash_flow_cr": 546.0,
+        "free_cash_flow_cr": 10.0
+      },
+      {
+        "period": "Mar 2026",
+        "cash_equivalents_cr": 1917.0,
+        "investments_cr": 3506.0,
+        "total_cash_in_hand_cr": 5423.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 30621.0,
+        "net_cash_cr": -25198.0,
+        "total_equity_cr": 15703.0,
+        "total_assets_cr": 60561.0,
+        "operating_cash_flow_cr": 88.0,
+        "investing_cash_flow_cr": -2965.0,
+        "free_cash_flow_cr": -1839.25
+      },
+      {
+        "period": "Sep 2026",
+        "cash_equivalents_cr": 1061.0,
+        "investments_cr": 2672.0,
+        "total_cash_in_hand_cr": 3733.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 27638.0,
+        "net_cash_cr": -23905.0,
+        "total_equity_cr": 18263.0,
+        "total_assets_cr": 71806.0,
+        "operating_cash_flow_cr": null,
+        "investing_cash_flow_cr": null,
+        "free_cash_flow_cr": null
+      }
+    ]
+  },
+  "stockholders": {
+    "latest_period": "Sep 2026",
+    "promoters_pct": 52.9,
+    "fii_pct": 16.37,
+    "dii_pct": 14.42,
+    "government_pct": 0.0,
+    "public_pct": 16.2,
+    "institutional_total_pct": 30.79,
+    "promoter_change_4q_pct": 0.0,
+    "fii_change_4q_pct": 0.26,
+    "dii_change_4q_pct": 0.43,
+    "num_shareholders": 724298,
+    "quarterly_history": [
+      {
+        "period": "Dec 2024",
+        "promoters_pct": 52.9,
+        "fii_pct": 18.11,
+        "dii_pct": 11.37,
+        "government_pct": 0.19,
+        "public_pct": 17.35,
+        "num_shareholders": 875901
+      },
+      {
+        "period": "Mar 2025",
+        "promoters_pct": 52.9,
+        "fii_pct": 17.82,
+        "dii_pct": 12.01,
+        "government_pct": 0.19,
+        "public_pct": 17.01,
+        "num_shareholders": 855126
+      },
+      {
+        "period": "Jun 2025",
+        "promoters_pct": 52.9,
+        "fii_pct": 17.54,
+        "dii_pct": 12.59,
+        "government_pct": 0.19,
+        "public_pct": 16.69,
+        "num_shareholders": 792131
+      },
+      {
+        "period": "Sep 2025",
+        "promoters_pct": 52.9,
+        "fii_pct": 16.11,
+        "dii_pct": 13.99,
+        "government_pct": 0.19,
+        "public_pct": 16.76,
+        "num_shareholders": 795466
+      },
+      {
+        "period": "Dec 2025",
+        "promoters_pct": 52.9,
+        "fii_pct": 15.55,
+        "dii_pct": 14.83,
+        "government_pct": 0.19,
+        "public_pct": 16.45,
+        "num_shareholders": 749373
+      },
+      {
+        "period": "Mar 2026",
+        "promoters_pct": 52.9,
+        "fii_pct": 15.65,
+        "dii_pct": 14.84,
+        "government_pct": 0.19,
+        "public_pct": 16.34,
+        "num_shareholders": 735599
+      },
+      {
+        "period": "Jun 2026",
+        "promoters_pct": 52.9,
+        "fii_pct": 15.39,
+        "dii_pct": 15.15,
+        "government_pct": 0.19,
+        "public_pct": 16.31,
+        "num_shareholders": 733428
+      },
+      {
+        "period": "Sep 2026",
+        "promoters_pct": 52.9,
+        "fii_pct": 16.37,
+        "dii_pct": 14.42,
+        "government_pct": 0.0,
+        "public_pct": 16.2,
+        "num_shareholders": 724298
+      }
+    ],
+    "named_stockholders": [
+      {
+        "name": "Life Insurance Corporation of India",
+        "category": "DII",
+        "latest_holding_pct": 123150.0,
+        "previous_holding_pct": 2.16,
+        "change_4q_pct": 123147.66,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 2.51
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 2.34
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 2.17
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 2.16
+          },
+          {
+            "period": "setAttributes",
+            "pct": 123150.0
+          }
+        ]
+      },
+      {
+        "name": "Nps Trust A/C - Lic Pension Fund Limited - Nps Lite Scheme - Govt. Pattern",
+        "category": "DII",
+        "latest_holding_pct": 274227.0,
+        "previous_holding_pct": 1.79,
+        "change_4q_pct": 274225.21,
+        "trend": [
+          {
+            "period": "Sep 2026",
+            "pct": 1.79
+          },
+          {
+            "period": "setAttributes",
+            "pct": 274227.0
+          }
+        ]
+      },
+      {
+        "name": "Sbi Nifty 50 Etf",
+        "category": "DII",
+        "latest_holding_pct": 123139.0,
+        "previous_holding_pct": 1.85,
+        "change_4q_pct": 123137.31,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 1.63
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 1.69
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 1.8
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 1.85
+          },
+          {
+            "period": "setAttributes",
+            "pct": 123139.0
+          }
+        ]
+      },
+      {
+        "name": "Nps Trust A/C Uti Pension Fund Limited-Scheme State Govt",
+        "category": "DII",
+        "latest_holding_pct": 187379.0,
+        "previous_holding_pct": 1.73,
+        "change_4q_pct": 187377.69,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 1.31
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 1.48
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 1.73
+          },
+          {
+            "period": "setAttributes",
+            "pct": 187379.0
+          }
+        ]
+      },
+      {
+        "name": "Icici Prudential Balanced Advantage Fund",
+        "category": "DII",
+        "latest_holding_pct": 75056.0,
+        "previous_holding_pct": 1.26,
+        "change_4q_pct": 75054.61,
+        "trend": [
+          {
+            "period": "Sep 2025",
+            "pct": 1.61
+          },
+          {
+            "period": "Dec 2025",
+            "pct": 1.39
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 1.28
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 1.26
+          },
+          {
+            "period": "setAttributes",
+            "pct": 75056.0
+          }
+        ]
+      },
+      {
+        "name": "Uti Nifty 50 Etf",
+        "category": "DII",
+        "latest_holding_pct": 156709.0,
+        "previous_holding_pct": 1.11,
+        "change_4q_pct": 156707.95,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 1.05
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 1.09
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 1.11
+          },
+          {
+            "period": "setAttributes",
+            "pct": 156709.0
+          }
+        ]
+      },
+      {
+        "name": "Uti-Flexi Cap Fund",
+        "category": "DII",
+        "latest_holding_pct": 1607.0,
+        "previous_holding_pct": 1.08,
+        "change_4q_pct": 1605.92,
+        "trend": [
+          {
+            "period": "Sep 2026",
+            "pct": 1.08
+          },
+          {
+            "period": "setAttributes",
+            "pct": 1607.0
+          }
+        ]
+      }
+    ]
+  },
+  "rd_and_innovation": {
+    "latest_rd_spend_cr": 875.84,
+    "latest_rd_pct_of_sales": 1.0,
+    "cumulative_5y_rd_cr": 2619.99,
+    "intangible_assets_cr": 1782.0,
+    "cwip_cr": 163.0,
+    "rd_cagr_5y_pct": 34.12,
+    "innovation_focus": "Technology absorption, process automation, and product R&D in Gems, Jewellery And Watches",
+    "rd_data_source": "Statutory BRSR / Sector R&D & Intangible Capitalization Model",
+    "history_5y": [
+      {
+        "period": "Mar 2022",
+        "revenue_cr": 28799.0,
+        "rd_spend_cr": 270.71,
+        "rd_pct_of_sales": 0.94,
+        "intangible_assets_cr": 320.0,
+        "cwip_cr": 85.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2023",
+        "revenue_cr": 40575.0,
+        "rd_spend_cr": 385.46,
+        "rd_pct_of_sales": 0.95,
+        "intangible_assets_cr": 320.0,
+        "cwip_cr": 144.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2024",
+        "revenue_cr": 51084.0,
+        "rd_spend_cr": 495.51,
+        "rd_pct_of_sales": 0.97,
+        "intangible_assets_cr": 320.0,
+        "cwip_cr": 97.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2025",
+        "revenue_cr": 60456.0,
+        "rd_spend_cr": 592.47,
+        "rd_pct_of_sales": 0.98,
+        "intangible_assets_cr": 320.0,
+        "cwip_cr": 105.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2026",
+        "revenue_cr": 87584.0,
+        "rd_spend_cr": 875.84,
+        "rd_pct_of_sales": 1.0,
+        "intangible_assets_cr": 1782.0,
+        "cwip_cr": 163.0,
+        "employee_cost_pct": null
+      }
+    ],
+    "annual_reports_5y": [
+      {
+        "title": "Annual Report 2026",
+        "year": "2026",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/1e85b157-d3b6-44c8-ab75-4776048dab00.pdf"
+      },
+      {
+        "title": "Annual Report 2025",
+        "year": "2025",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/92f76ec9-cc9b-4534-ad82-2cbd920a55b7.pdf"
+      },
+      {
+        "title": "Annual Report 2024",
+        "year": "2024",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/6b841ec3-461e-4368-8fb9-d95df5065e11.pdf"
+      },
+      {
+        "title": "Annual Report 2023",
+        "year": "2023",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/45417344-b78e-4ff6-8085-7c17a0e906db.pdf"
+      },
+      {
+        "title": "Annual Report 2022",
+        "year": "2022",
+        "url": "https://www.bseindia.com/bseplus/AnnualReport/500114/73425500114_05_07_22.pdf"
+      }
+    ]
+  },
+  "technicals": {
+    "current_price": 4844.9,
+    "prev_close": 4921.9,
+    "day_change_pct": -1.56,
+    "day_high": 4947.8,
+    "day_low": 4837.1,
+    "high_52w": 5187.0,
+    "low_52w": 3751.0,
+    "return_5d_pct": 0.21,
+    "return_1m_pct": 7.98,
+    "return_6m_pct": 18.83,
+    "return_1y_pct": 26.61,
+    "rsi_14": 60.82,
+    "macd_line": 89.61,
+    "macd_signal": 26.59,
+    "macd_hist": 63.01,
+    "ema_20": 4692.8,
+    "dma_50": 4696.38,
+    "dma_200": 4465.75,
+    "bb_upper": 5092.84,
+    "bb_middle": 4581.09,
+    "bb_lower": 4069.34,
+    "atr_14": 118.5,
+    "atr_pct": 2.45,
+    "volume_latest": 624040.0,
+    "volume_20d_avg": 951099.55,
+    "volume_Surge_ratio": 0.66,
+    "annualized_volatility_pct": 26.13,
+    "pivot_point": 4876.6,
+    "support_1": 4805.4,
+    "support_2": 4765.9,
+    "resistance_1": 4916.1,
+    "resistance_2": 4987.3,
+    "trend_regime": "BULLISH UPTREND (Price > 50-DMA > 200-DMA)",
+    "technical_signals": [
+      "Golden Trend Alignment: Trading above both 50-DMA and 200-DMA",
+      "RSI(14) at 60.82 \u2014 Healthy bullish momentum zone without overextension",
+      "MACD Bullish Crossover active (Histogram +63.01)"
+    ],
+    "price_series": [
+      {
+        "date": "2026-07-07",
+        "close": 4589.14,
+        "open": 4535.12,
+        "high": 4640.67,
+        "low": 4490.27,
+        "dma50": 4248.58,
+        "dma200": 4136.98,
+        "volume": 3385946.0
+      },
+      {
+        "date": "2026-07-08",
+        "close": 4571.4,
+        "open": 4575.39,
+        "high": 4614.86,
+        "low": 4546.78,
+        "dma50": 4252.09,
+        "dma200": 4139.7,
+        "volume": 1045703.0
+      },
+      {
+        "date": "2026-07-09",
+        "close": 4555.8,
+        "open": 4614.8,
+        "high": 4679.8,
+        "low": 4546.1,
+        "dma50": 4254.66,
+        "dma200": 4142.28,
+        "volume": 1777107.0
+      },
+      {
+        "date": "2026-07-10",
+        "close": 4584.4,
+        "open": 4578.6,
+        "high": 4602.8,
+        "low": 4560.7,
+        "dma50": 4258.3,
+        "dma200": 4145.01,
+        "volume": 652646.0
+      },
+      {
+        "date": "2026-07-13",
+        "close": 4601.5,
+        "open": 4578.0,
+        "high": 4635.0,
+        "low": 4524.4,
+        "dma50": 4261.83,
+        "dma200": 4147.81,
+        "volume": 770367.0
+      },
+      {
+        "date": "2026-07-14",
+        "close": 4573.7,
+        "open": 4579.8,
+        "high": 4600.0,
+        "low": 4554.0,
+        "dma50": 4265.88,
+        "dma200": 4150.41,
+        "volume": 631158.0
+      },
+      {
+        "date": "2026-07-15",
+        "close": 4579.4,
+        "open": 4573.7,
+        "high": 4607.0,
+        "low": 4565.1,
+        "dma50": 4270.5,
+        "dma200": 4153.01,
+        "volume": 619451.0
+      },
+      {
+        "date": "2026-07-16",
+        "close": 4625.8,
+        "open": 4585.3,
+        "high": 4668.8,
+        "low": 4580.0,
+        "dma50": 4275.83,
+        "dma200": 4155.86,
+        "volume": 1136159.0
+      },
+      {
+        "date": "2026-07-17",
+        "close": 4638.1,
+        "open": 4626.0,
+        "high": 4647.5,
+        "low": 4610.1,
+        "dma50": 4281.68,
+        "dma200": 4158.74,
+        "volume": 667212.0
+      },
+      {
+        "date": "2026-07-20",
+        "close": 4643.4,
+        "open": 4638.1,
+        "high": 4660.0,
+        "low": 4625.3,
+        "dma50": 4288.68,
+        "dma200": 4161.63,
+        "volume": 274158.0
+      },
+      {
+        "date": "2026-07-21",
+        "close": 4688.7,
+        "open": 4644.2,
+        "high": 4691.7,
+        "low": 4629.2,
+        "dma50": 4292.57,
+        "dma200": 4164.75,
+        "volume": 530094.0
+      },
+      {
+        "date": "2026-07-22",
+        "close": 4711.6,
+        "open": 4685.7,
+        "high": 4733.0,
+        "low": 4675.0,
+        "dma50": 4302.96,
+        "dma200": 4167.96,
+        "volume": 996475.0
+      },
+      {
+        "date": "2026-07-23",
+        "close": 4697.3,
+        "open": 4700.0,
+        "high": 4709.8,
+        "low": 4671.6,
+        "dma50": 4316.07,
+        "dma200": 4171.06,
+        "volume": 421185.0
+      },
+      {
+        "date": "2026-07-24",
+        "close": 4677.0,
+        "open": 4605.0,
+        "high": 4697.0,
+        "low": 4604.1,
+        "dma50": 4328.06,
+        "dma200": 4174.0,
+        "volume": 513858.0
+      },
+      {
+        "date": "2026-07-27",
+        "close": 4740.1,
+        "open": 4686.9,
+        "high": 4749.1,
+        "low": 4686.9,
+        "dma50": 4340.43,
+        "dma200": 4177.27,
+        "volume": 500721.0
+      },
+      {
+        "date": "2026-07-28",
+        "close": 4849.7,
+        "open": 4750.0,
+        "high": 4860.0,
+        "low": 4712.9,
+        "dma50": 4354.32,
+        "dma200": 4181.14,
+        "volume": 1321587.0
+      },
+      {
+        "date": "2026-07-29",
+        "close": 4850.2,
+        "open": 4849.7,
+        "high": 4866.9,
+        "low": 4823.2,
+        "dma50": 4368.2,
+        "dma200": 4184.96,
+        "volume": 837059.0
+      },
+      {
+        "date": "2026-07-30",
+        "close": 4850.0,
+        "open": 4820.9,
+        "high": 4869.9,
+        "low": 4820.9,
+        "dma50": 4383.43,
+        "dma200": 4188.74,
+        "volume": 777361.0
+      },
+      {
+        "date": "2026-07-31",
+        "close": 4875.2,
+        "open": 4850.0,
+        "high": 4886.0,
+        "low": 4820.9,
+        "dma50": 4399.07,
+        "dma200": 4192.62,
+        "volume": 1003314.0
+      },
+      {
+        "date": "2026-08-03",
+        "close": 5000.0,
+        "open": 4875.2,
+        "high": 5000.0,
+        "low": 4851.8,
+        "dma50": 4417.68,
+        "dma200": 4197.15,
+        "volume": 505420.0
+      },
+      {
+        "date": "2026-08-04",
+        "close": 4935.0,
+        "open": 4935.0,
+        "high": 4935.0,
+        "low": 4862.0,
+        "dma50": 4435.05,
+        "dma200": 4201.28,
+        "volume": 1181747.0
+      },
+      {
+        "date": "2026-08-05",
+        "close": 4912.4,
+        "open": 4910.2,
+        "high": 4920.6,
+        "low": 4882.3,
+        "dma50": 4450.38,
+        "dma200": 4205.23,
+        "volume": 546332.0
+      },
+      {
+        "date": "2026-08-06",
+        "close": 4998.0,
+        "open": 4883.9,
+        "high": 5005.0,
+        "low": 4883.9,
+        "dma50": 4468.49,
+        "dma200": 4209.61,
+        "volume": 1283840.0
+      },
+      {
+        "date": "2026-08-07",
+        "close": 4941.0,
+        "open": 4978.1,
+        "high": 5003.0,
+        "low": 4891.3,
+        "dma50": 4484.83,
+        "dma200": 4213.62,
+        "volume": 1166858.0
+      },
+      {
+        "date": "2026-08-10",
+        "close": 5090.0,
+        "open": 4932.0,
+        "high": 5122.2,
+        "low": 4886.2,
+        "dma50": 4505.4,
+        "dma200": 4218.41,
+        "volume": 3664718.0
+      },
+      {
+        "date": "2026-08-11",
+        "close": 5128.0,
+        "open": 5090.0,
+        "high": 5168.0,
+        "low": 5090.0,
+        "dma50": 4527.73,
+        "dma200": 4223.36,
+        "volume": 1664853.0
+      },
+      {
+        "date": "2026-08-12",
+        "close": 5099.0,
+        "open": 5128.0,
+        "high": 5128.0,
+        "low": 4992.0,
+        "dma50": 4548.41,
+        "dma200": 4228.09,
+        "volume": 1105157.0
+      },
+      {
+        "date": "2026-08-13",
+        "close": 5063.7,
+        "open": 5069.5,
+        "high": 5071.5,
+        "low": 5010.0,
+        "dma50": 4568.18,
+        "dma200": 4232.58,
+        "volume": 533274.0
+      },
+      {
+        "date": "2026-08-14",
+        "close": 5056.2,
+        "open": 5064.0,
+        "high": 5090.5,
+        "low": 5046.4,
+        "dma50": 4584.96,
+        "dma200": 4236.99,
+        "volume": 587764.0
+      },
+      {
+        "date": "2026-08-17",
+        "close": 5068.5,
+        "open": 5056.2,
+        "high": 5111.0,
+        "low": 5037.2,
+        "dma50": 4601.4,
+        "dma200": 4241.41,
+        "volume": 565258.0
+      },
+      {
+        "date": "2026-08-18",
+        "close": 5048.6,
+        "open": 5060.0,
+        "high": 5094.9,
+        "low": 5042.5,
+        "dma50": 4618.8,
+        "dma200": 4245.68,
+        "volume": 354873.0
+      },
+      {
+        "date": "2026-08-19",
+        "close": 5068.0,
+        "open": 5045.0,
+        "high": 5074.8,
+        "low": 5038.0,
+        "dma50": 4638.33,
+        "dma200": 4250.01,
+        "volume": 412981.0
+      },
+      {
+        "date": "2026-08-20",
+        "close": 5068.0,
+        "open": 5084.9,
+        "high": 5110.0,
+        "low": 5060.1,
+        "dma50": 4659.11,
+        "dma200": 4254.29,
+        "volume": 614435.0
+      },
+      {
+        "date": "2026-08-21",
+        "close": 5086.1,
+        "open": 5068.0,
+        "high": 5090.4,
+        "low": 5011.0,
+        "dma50": 4680.6,
+        "dma200": 4258.62,
+        "volume": 352381.0
+      },
+      {
+        "date": "2026-08-24",
+        "close": 5079.0,
+        "open": 5086.8,
+        "high": 5093.4,
+        "low": 5050.0,
+        "dma50": 4698.77,
+        "dma200": 4262.87,
+        "volume": 256376.0
+      },
+      {
+        "date": "2026-08-25",
+        "close": 5124.8,
+        "open": 5059.1,
+        "high": 5124.8,
+        "low": 5052.7,
+        "dma50": 4715.88,
+        "dma200": 4267.32,
+        "volume": 347515.0
+      },
+      {
+        "date": "2026-08-26",
+        "close": 5100.0,
+        "open": 5149.9,
+        "high": 5149.9,
+        "low": 5091.0,
+        "dma50": 4731.4,
+        "dma200": 4271.59,
+        "volume": 377617.0
+      },
+      {
+        "date": "2026-08-27",
+        "close": 5139.3,
+        "open": 5100.0,
+        "high": 5186.7,
+        "low": 5069.5,
+        "dma50": 4746.86,
+        "dma200": 4276.01,
+        "volume": 1101845.0
+      },
+      {
+        "date": "2026-08-28",
+        "close": 5169.2,
+        "open": 5155.0,
+        "high": 5169.9,
+        "low": 5136.0,
+        "dma50": 4762.77,
+        "dma200": 4280.55,
+        "volume": 547804.0
+      },
+      {
+        "date": "2026-08-31",
+        "close": 5102.4,
+        "open": 5159.0,
+        "high": 5159.0,
+        "low": 5088.0,
+        "dma50": 4776.71,
+        "dma200": 4284.7,
+        "volume": 630695.0
+      },
+      {
+        "date": "2026-09-01",
+        "close": 5050.0,
+        "open": 5104.0,
+        "high": 5126.5,
+        "low": 5010.5,
+        "dma50": 4790.55,
+        "dma200": 4288.55,
+        "volume": 466855.0
+      },
+      {
+        "date": "2026-09-02",
+        "close": 5074.0,
+        "open": 4972.0,
+        "high": 5092.0,
+        "low": 4971.5,
+        "dma50": 4806.21,
+        "dma200": 4292.47,
+        "volume": 812660.0
+      },
+      {
+        "date": "2026-09-03",
+        "close": 5027.0,
+        "open": 5057.5,
+        "high": 5072.5,
+        "low": 4952.0,
+        "dma50": 4820.55,
+        "dma200": 4298.47,
+        "volume": 571600.0
+      },
+      {
+        "date": "2026-09-04",
+        "close": 5020.0,
+        "open": 5010.0,
+        "high": 5022.0,
+        "low": 4980.0,
+        "dma50": 4835.41,
+        "dma200": 4304.49,
+        "volume": 310845.0
+      },
+      {
+        "date": "2026-09-07",
+        "close": 4995.0,
+        "open": 5010.0,
+        "high": 5028.0,
+        "low": 4958.5,
+        "dma50": 4850.04,
+        "dma200": 4310.19,
+        "volume": 480336.0
+      },
+      {
+        "date": "2026-09-08",
+        "close": 4987.0,
+        "open": 4975.0,
+        "high": 5015.5,
+        "low": 4969.0,
+        "dma50": 4861.99,
+        "dma200": 4315.79,
+        "volume": 432671.0
+      },
+      {
+        "date": "2026-09-09",
+        "close": 5005.0,
+        "open": 5010.0,
+        "high": 5019.0,
+        "low": 4968.0,
+        "dma50": 4874.41,
+        "dma200": 4321.21,
+        "volume": 502050.0
+      },
+      {
+        "date": "2026-09-10",
+        "close": 5021.0,
+        "open": 5000.5,
+        "high": 5021.0,
+        "low": 4974.5,
+        "dma50": 4885.5,
+        "dma200": 4326.87,
+        "volume": 336565.0
+      },
+      {
+        "date": "2026-09-11",
+        "close": 5009.5,
+        "open": 4964.0,
+        "high": 5015.0,
+        "low": 4943.0,
+        "dma50": 4896.76,
+        "dma200": 4332.46,
+        "volume": 403235.0
+      },
+      {
+        "date": "2026-09-15",
+        "close": 4856.0,
+        "open": 5003.0,
+        "high": 5003.0,
+        "low": 4856.0,
+        "dma50": 4904.48,
+        "dma200": 4337.43,
+        "volume": 504447.0
+      },
+      {
+        "date": "2026-09-16",
+        "close": 4908.5,
+        "open": 4880.0,
+        "high": 4921.5,
+        "low": 4845.0,
+        "dma50": 4910.87,
+        "dma200": 4342.76,
+        "volume": 376036.0
+      },
+      {
+        "date": "2026-09-17",
+        "close": 4841.0,
+        "open": 4895.0,
+        "high": 4915.5,
+        "low": 4838.5,
+        "dma50": 4916.26,
+        "dma200": 4347.54,
+        "volume": 489416.0
+      },
+      {
+        "date": "2026-09-18",
+        "close": 4798.5,
+        "open": 4851.0,
+        "high": 4864.5,
+        "low": 4772.0,
+        "dma50": 4921.12,
+        "dma200": 4352.08,
+        "volume": 1066023.0
+      },
+      {
+        "date": "2026-09-21",
+        "close": 4875.0,
+        "open": 4816.5,
+        "high": 4880.0,
+        "low": 4780.0,
+        "dma50": 4926.93,
+        "dma200": 4356.98,
+        "volume": 665067.0
+      },
+      {
+        "date": "2026-09-22",
+        "close": 4928.5,
+        "open": 4876.0,
+        "high": 4982.0,
+        "low": 4862.5,
+        "dma50": 4933.47,
+        "dma200": 4362.21,
+        "volume": 1238174.0
+      },
+      {
+        "date": "2026-09-23",
+        "close": 4880.0,
+        "open": 4928.5,
+        "high": 4951.0,
+        "low": 4852.5,
+        "dma50": 4939.59,
+        "dma200": 4367.25,
+        "volume": 769737.0
+      },
+      {
+        "date": "2026-09-24",
+        "close": 4832.5,
+        "open": 4868.0,
+        "high": 4912.0,
+        "low": 4830.0,
+        "dma50": 4944.66,
+        "dma200": 4372.38,
+        "volume": 504126.0
+      },
+      {
+        "date": "2026-09-25",
+        "close": 4884.0,
+        "open": 4855.0,
+        "high": 4884.0,
+        "low": 4821.5,
+        "dma50": 4949.82,
+        "dma200": 4377.86,
+        "volume": 368677.0
+      },
+      {
+        "date": "2026-09-28",
+        "close": 4819.5,
+        "open": 4881.0,
+        "high": 4881.0,
+        "low": 4810.0,
+        "dma50": 4953.45,
+        "dma200": 4382.96,
+        "volume": 632938.0
+      },
+      {
+        "date": "2026-09-29",
+        "close": 4675.0,
+        "open": 4808.0,
+        "high": 4818.5,
+        "low": 4675.0,
+        "dma50": 4954.08,
+        "dma200": 4387.56,
+        "volume": 1188414.0
+      },
+      {
+        "date": "2026-09-30",
+        "close": 4587.0,
+        "open": 4683.0,
+        "high": 4698.0,
+        "low": 4587.0,
+        "dma50": 4952.05,
+        "dma200": 4391.31,
+        "volume": 927060.0
+      },
+      {
+        "date": "2026-10-01",
+        "close": 4515.7,
+        "open": 4574.9,
+        "high": 4621.8,
+        "low": 4491.0,
+        "dma50": 4948.13,
+        "dma200": 4394.73,
+        "volume": 694098.0
+      },
+      {
+        "date": "2026-10-05",
+        "close": 4580.0,
+        "open": 4515.9,
+        "high": 4610.0,
+        "low": 4505.8,
+        "dma50": 4945.78,
+        "dma200": 4398.46,
+        "volume": 731987.0
+      },
+      {
+        "date": "2026-10-06",
+        "close": 4550.0,
+        "open": 4599.9,
+        "high": 4600.0,
+        "low": 4530.3,
+        "dma50": 4943.24,
+        "dma200": 4401.88,
+        "volume": 800113.0
+      },
+      {
+        "date": "2026-10-07",
+        "close": 4377.0,
+        "open": 4439.0,
+        "high": 4440.0,
+        "low": 4335.6,
+        "dma50": 4935.98,
+        "dma200": 4404.49,
+        "volume": 2951280.0
+      },
+      {
+        "date": "2026-10-08",
+        "close": 4359.5,
+        "open": 4380.0,
+        "high": 4467.0,
+        "low": 4359.5,
+        "dma50": 4926.18,
+        "dma200": 4406.71,
+        "volume": 1490894.0
+      },
+      {
+        "date": "2026-10-09",
+        "close": 4410.0,
+        "open": 4375.1,
+        "high": 4430.7,
+        "low": 4360.2,
+        "dma50": 4917.37,
+        "dma200": 4409.28,
+        "volume": 591677.0
+      },
+      {
+        "date": "2026-10-12",
+        "close": 4400.0,
+        "open": 4415.7,
+        "high": 4428.8,
+        "low": 4361.0,
+        "dma50": 4908.37,
+        "dma200": 4411.75,
+        "volume": 724353.0
+      },
+      {
+        "date": "2026-10-13",
+        "close": 4487.0,
+        "open": 4385.2,
+        "high": 4487.0,
+        "low": 4367.8,
+        "dma50": 4900.61,
+        "dma200": 4414.6,
+        "volume": 550356.0
+      },
+      {
+        "date": "2026-10-14",
+        "close": 4444.0,
+        "open": 4478.1,
+        "high": 4495.8,
+        "low": 4423.0,
+        "dma50": 4889.49,
+        "dma200": 4417.21,
+        "volume": 552204.0
+      },
+      {
+        "date": "2026-10-15",
+        "close": 4455.8,
+        "open": 4440.0,
+        "high": 4465.0,
+        "low": 4413.0,
+        "dma50": 4879.9,
+        "dma200": 4419.93,
+        "volume": 533115.0
+      },
+      {
+        "date": "2026-10-16",
+        "close": 4444.8,
+        "open": 4455.0,
+        "high": 4480.0,
+        "low": 4431.6,
+        "dma50": 4870.55,
+        "dma200": 4422.67,
+        "volume": 577590.0
+      },
+      {
+        "date": "2026-10-19",
+        "close": 4424.2,
+        "open": 4452.0,
+        "high": 4494.4,
+        "low": 4402.7,
+        "dma50": 4859.08,
+        "dma200": 4424.9,
+        "volume": 651506.0
+      },
+      {
+        "date": "2026-10-21",
+        "close": 4380.9,
+        "open": 4431.0,
+        "high": 4442.5,
+        "low": 4351.0,
+        "dma50": 4847.87,
+        "dma200": 4426.95,
+        "volume": 448729.0
+      },
+      {
+        "date": "2026-10-22",
+        "close": 4350.0,
+        "open": 4350.0,
+        "high": 4373.7,
+        "low": 4300.1,
+        "dma50": 4833.07,
+        "dma200": 4428.89,
+        "volume": 426321.0
+      },
+      {
+        "date": "2026-10-23",
+        "close": 4299.7,
+        "open": 4350.0,
+        "high": 4350.0,
+        "low": 4209.0,
+        "dma50": 4816.51,
+        "dma200": 4430.2,
+        "volume": 633220.0
+      },
+      {
+        "date": "2026-10-26",
+        "close": 4323.0,
+        "open": 4281.0,
+        "high": 4327.6,
+        "low": 4240.8,
+        "dma50": 4800.99,
+        "dma200": 4431.63,
+        "volume": 382563.0
+      },
+      {
+        "date": "2026-10-27",
+        "close": 4365.9,
+        "open": 4303.0,
+        "high": 4377.2,
+        "low": 4300.0,
+        "dma50": 4787.03,
+        "dma200": 4433.27,
+        "volume": 749496.0
+      },
+      {
+        "date": "2026-10-28",
+        "close": 4337.9,
+        "open": 4340.0,
+        "high": 4380.6,
+        "low": 4270.5,
+        "dma50": 4772.67,
+        "dma200": 4434.63,
+        "volume": 527965.0
+      },
+      {
+        "date": "2026-10-29",
+        "close": 4434.0,
+        "open": 4342.0,
+        "high": 4458.6,
+        "low": 4341.0,
+        "dma50": 4759.98,
+        "dma200": 4436.31,
+        "volume": 958380.0
+      },
+      {
+        "date": "2026-10-30",
+        "close": 4436.5,
+        "open": 4437.3,
+        "high": 4486.0,
+        "low": 4391.3,
+        "dma50": 4747.73,
+        "dma200": 4437.19,
+        "volume": 1143254.0
+      },
+      {
+        "date": "2026-11-02",
+        "close": 4476.3,
+        "open": 4436.5,
+        "high": 4480.0,
+        "low": 4420.3,
+        "dma50": 4735.9,
+        "dma200": 4438.4,
+        "volume": 603203.0
+      },
+      {
+        "date": "2026-11-03",
+        "close": 4562.0,
+        "open": 4503.0,
+        "high": 4562.0,
+        "low": 4455.0,
+        "dma50": 4725.78,
+        "dma200": 4440.27,
+        "volume": 774059.0
+      },
+      {
+        "date": "2026-11-04",
+        "close": 4754.4,
+        "open": 4472.0,
+        "high": 4754.4,
+        "low": 4471.5,
+        "dma50": 4719.15,
+        "dma200": 4442.95,
+        "volume": 1324883.0
+      },
+      {
+        "date": "2026-11-05",
+        "close": 4834.6,
+        "open": 4800.0,
+        "high": 4857.1,
+        "low": 4746.0,
+        "dma50": 4714.26,
+        "dma200": 4446.0,
+        "volume": 1241367.0
+      },
+      {
+        "date": "2026-11-06",
+        "close": 5000.0,
+        "open": 4799.9,
+        "high": 5013.9,
+        "low": 4694.4,
+        "dma50": 4711.76,
+        "dma200": 4449.96,
+        "volume": 4132719.0
+      },
+      {
+        "date": "2026-11-09",
+        "close": 5005.0,
+        "open": 5000.7,
+        "high": 5027.6,
+        "low": 4954.2,
+        "dma50": 4709.86,
+        "dma200": 4453.95,
+        "volume": 839812.0
+      },
+      {
+        "date": "2026-11-11",
+        "close": 4970.0,
+        "open": 5025.0,
+        "high": 5056.6,
+        "low": 4951.9,
+        "dma50": 4706.48,
+        "dma200": 4457.88,
+        "volume": 1716837.0
+      },
+      {
+        "date": "2026-11-12",
+        "close": 4921.9,
+        "open": 4970.0,
+        "high": 5030.0,
+        "low": 4896.0,
+        "dma50": 4701.53,
+        "dma200": 4461.84,
+        "volume": 732932.0
+      },
+      {
+        "date": "2026-11-13",
+        "close": 4844.9,
+        "open": 4935.0,
+        "high": 4947.8,
+        "low": 4837.1,
+        "dma50": 4696.38,
+        "dma200": 4465.75,
+        "volume": 624040.0
+      }
+    ]
+  },
+  "agent_committee": [
+    {
+      "agent_id": "five_reports_agent",
+      "agent_name": "5-Report Earnings & Performance Agent",
+      "persona_inspiration": "Peter Lynch / Fundamental Growth Analyst",
+      "signal": "BULLISH",
+      "score": 100.0,
+      "confidence": 95,
+      "weight_pct": 25,
+      "headline": "5Y Profit CAGR 23.26% | Latest FY Net Profit \u20b95,073 Cr | ROE 37.7%",
+      "key_metrics": {
+        "5Y Revenue CAGR": "32.1%",
+        "5Y Profit CAGR": "23.3%",
+        "Latest Qtr Net Profit": "\u20b92,393 Cr",
+        "Latest OPM %": "10.0%",
+        "ROE / ROCE": "37.7% / 20.5%",
+        "Piotroski F-Score": "5/9"
+      },
+      "reasoning": [
+        "Strong 5-report annual revenue compounding at 32.1% CAGR.",
+        "Superior bottom-line expansion: Net Profit grew at 23.3% 5Y CAGR.",
+        "Latest quarter (Sep 2026) net profit jumped +34.7% sequentially.",
+        "Positive sequential profit momentum in 4 of the last 5 quarters.",
+        "High capital efficiency: ROE 37.7% and ROCE 20.5% exceed institutional hurdle rates."
+      ]
+    },
+    {
+      "agent_id": "cash_balance_agent",
+      "agent_name": "Cash-in-Hand & Balance Sheet Agent",
+      "persona_inspiration": "Benjamin Graham / Balance Sheet Specialist",
+      "signal": "NEUTRAL",
+      "score": 46.0,
+      "confidence": 70,
+      "weight_pct": 20,
+      "headline": "Cash & Investments: \u20b93,733 Cr | Net Cash: \u20b9-23,905 Cr | D/E: 1.51x",
+      "key_metrics": {
+        "Cash Equivalents": "\u20b91,061 Cr",
+        "Liquid Investments": "\u20b92,672 Cr",
+        "Total Cash in Hand": "\u20b93,733 Cr",
+        "Total Borrowings": "\u20b927,638 Cr",
+        "Debt / Equity": "1.51x",
+        "5Y Cumulative OCF": "\u20b9204 Cr"
+      },
+      "reasoning": [
+        "Elevated leverage: Debt/Equity at 1.51x (Total Borrowings \u20b927,638 Cr vs Cash \u20b93,733 Cr).",
+        "Generated \u20b9204 Cr in cumulative 5-year Operating Cash Flow (latest FY OCF \u20b90 Cr)."
+      ]
+    },
+    {
+      "agent_id": "stockholders_agent",
+      "agent_name": "Stockholders & Institutional Flow Agent",
+      "persona_inspiration": "Smart-Money & Insider Ownership Tracker",
+      "signal": "BULLISH",
+      "score": 70.0,
+      "confidence": 79,
+      "weight_pct": 20,
+      "headline": "Promoters 52.9% (+0.00% 4Q) | FII 16.4% | DII 14.4%",
+      "key_metrics": {
+        "Promoter Holding": "52.90% (+0.00% 4Q)",
+        "FII Holding": "16.37% (+0.26% 4Q)",
+        "DII Holding": "14.42% (+0.43% 4Q)",
+        "Total Institutional": "30.79%",
+        "Public Float": "16.20%",
+        "Shareholder Accounts": "724,298"
+      },
+      "reasoning": [
+        "High skin-in-the-game: Promoters hold 52.90% equity.",
+        "Net Institutional Accumulation: Combined FII+DII holding rose +0.69% over 4 quarters (FII +0.26%, DII +0.43%).",
+        "Marquee named stockholders: Life Insurance Corporation of India (123150.00%), Nps Trust A/C - Lic Pension Fund Limited - Nps Lite Scheme - Govt. Pattern (274227.00%), Sbi Nifty 50 Etf (123139.00%), Nps Trust A/C Uti Pension Fund Limited-Scheme State Govt (187379.00%)."
+      ]
+    },
+    {
+      "agent_id": "rd_innovation_agent",
+      "agent_name": "R&D Intensity & Innovation Moat Agent",
+      "persona_inspiration": "Charlie Munger / Philip Fisher Moat Analyst",
+      "signal": "BULLISH",
+      "score": 82.0,
+      "confidence": 83,
+      "weight_pct": 15,
+      "headline": "Latest R&D: \u20b9876 Cr (1.00% of Sales) | 5Y R&D: \u20b92,620 Cr",
+      "key_metrics": {
+        "Latest FY R&D Spend": "\u20b9876 Cr",
+        "R&D % of Revenue": "1.00%",
+        "5Y Cumulative R&D": "\u20b92,620 Cr",
+        "5Y R&D CAGR": "34.1%",
+        "Intangible Assets": "\u20b91,782 Cr",
+        "CapEx WIP (CWIP)": "\u20b9163 Cr"
+      },
+      "reasoning": [
+        "Latest annual R&D investment of \u20b9876 Cr (1.00% of revenue); 5-year cumulative R&D of \u20b92,620 Cr.",
+        "Consistent R&D allocation (1.00% of turnover) supporting digital/product differentiation.",
+        "R&D budget compounding at 34.1% CAGR over the last 5 reports.",
+        "Balance-sheet innovation & capacity pipeline: Intangible Assets \u20b91,782 Cr and Capital Work-in-Progress (CWIP) \u20b9163 Cr.",
+        "Strategic R&D Focus: Technology absorption, process automation, and product R&D in Gems, Jewellery And Watches."
+      ]
+    },
+    {
+      "agent_id": "technical_catalyst_agent",
+      "agent_name": "Next-Day Technical & Catalyst Agent",
+      "persona_inspiration": "Stanley Druckenmiller / Price-Action & Timing Desk",
+      "signal": "BULLISH",
+      "score": 88.0,
+      "confidence": 91,
+      "weight_pct": 20,
+      "headline": "RSI(14) 60.8 | 50-DMA \u20b94,696.4 | 200-DMA \u20b94,465.8 | ATR \u20b9118.5",
+      "key_metrics": {
+        "RSI (14)": "60.8",
+        "MACD Histogram": "+63.01",
+        "50-DMA / 200-DMA": "\u20b94,696.4 / \u20b94,465.8",
+        "ATR (14) Daily Range": "\u20b9118.50 (2.45%)",
+        "Volume vs 20D Avg": "0.66x",
+        "Pivot S1 / R1": "\u20b94,805.4 / \u20b94,916.1"
+      },
+      "reasoning": [
+        "Golden Trend Alignment: Trading above both 50-DMA and 200-DMA",
+        "RSI(14) at 60.82 \u2014 Healthy bullish momentum zone without overextension",
+        "MACD Bullish Crossover active (Histogram +63.01)",
+        "News Catalyst: 2 positive vs 0 negative recent Indian market headlines."
+      ]
+    }
+  ],
+  "next_day_guidance": {
+    "action": "STRONG BUY",
+    "conviction_score": 78.1,
+    "fundamental_score": 75.6,
+    "technical_score": 88.0,
+    "current_price": 4844.9,
+    "entry_zone_low": 4815.27,
+    "entry_zone_high": 4862.67,
+    "target_1_next_day": 5004.88,
+    "target_2_swing": 5153.0,
+    "stop_loss": 4738.25,
+    "risk_reward_ratio": 1.5,
+    "expected_next_day_range_low": 4726.4,
+    "expected_next_day_range_high": 4963.4,
+    "position_size_suggestion_pct": 8.0,
+    "executive_summary": "Titan Company Ltd (TITAN) earns a composite conviction score of 78.1/100 (STRONG BUY) for the next NSE trading session. Fundamentally backed by \u20b93,733 Cr in cash & investments, 37.7% ROE, 1.00% R&D intensity, and 83.7% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b94,815.27\u2013\u20b94,862.67 zone targeting \u20b95,004.88 (T1) and \u20b95,153.00 (T2) with a strict ATR-calibrated stop-loss at \u20b94,738.25 (Risk:Reward 1:1.5).",
+    "rationale_points": [
+      "5-Report Fundamental Score: 75.6/100 (5Y Profit CAGR: 23.3%, Piotroski: 5/9).",
+      "Balance Sheet & Cash in Hand: \u20b93,733 Cr liquid cash/investments vs \u20b927,638 Cr total borrowings (D/E 1.51x).",
+      "Stockholder Conviction: Promoters hold 52.90%, FIIs 16.37%, DIIs 14.42% (Total Institutional: 30.79%).",
+      "R&D & Innovation Moat: \u20b9876 Cr annual R&D (1.00% of sales; 5Y cumulative \u20b92,620 Cr).",
+      "Next-Day Technical Trigger (88.0/100): BULLISH UPTREND (Price > 50-DMA > 200-DMA); RSI(14) at 60.8 with ATR(14) daily range of \u20b9118.50."
+    ],
+    "key_catalysts": [
+      "Company is expected to give good quarter",
+      "Company has a good return on equity (ROE) track record: 3 Years ROE 34.4%",
+      "Company has been maintaining a healthy dividend payout of 27.9%",
+      "R&D & CapEx Pipeline: Technology absorption, process automation, and product R&D in Gems, Jewellery And Watches"
+    ],
+    "key_risks": [
+      "Stock is trading at 23.6 times its book value",
+      "Company might be capitalizing the interest cost",
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b94,738.25"
+    ],
+    "llm_synthesized": false,
+    "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
+  },
+  "news": [
+    {
+      "title": "Titan Company Share Price - Upstox",
+      "source": "Upstox",
+      "published": "Fri, 13 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBLaEdJb1pERXM5Z3lpRHpvd0FueUNpN2V0VGsxc2p6bkhJVmpaaEFHUklFc1dOSUJiMkVBd1RkcmVXQW03aThSdktIMjgwaGtPUGRrWGJDMVN6c0tldTlSc09USm1sRjR0dFE1Ng?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Titan Company Ltd. Share Price Today - Titan Company Ltd. Stock Price Live NSE/BSE - CNBC TV18",
+      "source": "CNBC TV18",
+      "published": "Fri, 13 Nov 2026 09:58:00",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE12MHJzNjU1akM5NTdWTTEzc2tpTGFjUDJZRGpfX3JQYzA3VGhEa3BDWG9IYU9YeXhQMFE3QWNieTBjQkwzTUJqY3VrLV96RTdjcEItWTVwQVhsTU5FRzBtTVB3cm15LUhDUmdSMndsMDdGbURUeVFxMFk3NnZkeU0?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Titan (NSEI:TITAN) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "source": "Simply Wall St",
+      "published": "Mon, 09 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOaWRIVlA1bkRfX1RwcERGOEZqRUNJaExtRl9PU2VXM2VFZDY4TUk1ME1YVXRqWmpuYlpGcXJJd3RpNHVKdVl2VHExaFBLeGhnQ3hDdWJfakVqOHYwUXFMUXo1X01RQjg0eVZRd3c0LW0yUGJVaTdyczN0UDk2MVFJTkRaenNHZw?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Titan Company Stock Price Forecast. Should You Buy TITAN.NS? - StockInvest.us",
+      "source": "StockInvest.us",
+      "published": "Thu, 12 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE1iR3hDT3ZuV2NCVzNNVjhTWFl2OTJ0Zm5QUk9haENyelpxaWNSZTlxdjN1OEVjSDBCQ19wS1dUVEs1RUhHLTBueVBJREtLQQ?oc=5",
+      "sentiment": "POSITIVE"
+    },
+    {
+      "title": "Top 15 Low-Price Stocks In India To Buy In November 2026 - Samco",
+      "source": "Samco",
+      "published": "Sun, 15 Nov 2026 06:51:14",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOZGN1MTZSOXVGTTdPYmlrSl8zMWdmNFV5RVhaVnNBQzdvM2o4MUs3WHhoZ0VzdEF1a2lUX0xYQmh0VnJTZ3RLNFplTXN1MzF0SnM0N3dNeGdsOUtYMVVsRnJwSTQ3dEhtem5wcTNMTm80QzM2b3hvck5BNUdiTFRLNld3?oc=5",
+      "sentiment": "POSITIVE"
+    },
+    {
+      "title": "Titan Company adds QIA, Schroders to Nov 2026 investor meetings - scanx.trade",
+      "source": "scanx.trade",
+      "published": "Tue, 10 Nov 2026 11:16:23",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNclVUaEYxbnVtUU13clJnVVJFNExwOW1PSWMtdGtBQ25YcVVMYVBKS0cxTXdmWTdIeE1jTFJfVl9Zdkt2ODZHR1F5YkZKcTBCSXc1YWJfOWk1b1RYUkxaWDZkLURtNFBrcVdOb3RNVWVteXlMVXdQRHdLUjBOeVVaSnpvak5zaks2SFJiMm80NGo2WWRTR3lVMks3N1NRTE56VWtEV21nNA?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Titan Company (NSE:TITAN): Who Will It Meet at Its November 2026 Investor Sessions? - Kalkine India",
+      "source": "Kalkine India",
+      "published": "Mon, 09 Nov 2026 09:28:00",
+      "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPVUYzWW1qb1ZCRkF4Z0lodnhzd2VHaEN0MmF1SWJOU0hUdllHYzV0NE1iTGh5WWtvbTRYYnZ1TU50cy1ROXk4bVRhdFlfQjlTb2pHUUs4LXpHSUJ5RC1HMVZfcm80blBYdk9CaXlYbldnb19YVEZsN0F4aWRwLXczVHdXTFdzMUNTRi1pNkE4TUVuUlN0WTE4eXY3QmZVTWNwaS1jLTE4czJDekFjRTZmUXVORmh5SUhvdEV6S2ZHYmFoLVB2?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Sensex Today Trades Lower | Nifty Below 25,250 | HDFC Bank & Titan Company Top Losers - Equitymaster",
+      "source": "Equitymaster",
+      "published": "Fri, 13 Nov 2026 04:53:03",
+      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxPOXgyYUNZcWVlQjN0YkdmT1FJOHk0QkNXTERyaGVhc2dZMmNJaEpUOHd3cnNIMVF0Z2drOHJ4MnZhemZKOURldWVXZDVsaGdwUThzQVBoR3c1OWxjb2x6YVA5clVQUlpWNm56S2NHaTB3NXQxay1TeGpNeGlpUmRELS1zdzR6RTNyYk95UWJya3ZGWmg2LS13Q21qOGl0SWVpS3hseXFlNDdhN3dNRTQ3Vml4encycjAyZmFheXBaRG52R0ZBMnVSemhOQ1BSaGN3ZHdRNkFGUlNBdw?oc=5",
+      "sentiment": "NEUTRAL"
+    }
+  ],
+  "promoter_and_competitor_intel": {
+    "promoter_group": "Promoter & Insider Group (52.90% Stake)",
+    "key_leaders": [
+      {
+        "name": "Titan Company Ltd Managing Director & Board",
+        "role": "Principal Promoter & Executive Leadership",
+        "focus": "Capital allocation, operating margin expansion & growth in Gems, Jewellery And Watches",
+        "handle_or_source": "BSE/NSE Corporate Filings & Earnings Concalls"
+      }
+    ],
+    "key_stakeholders_watch": [
+      "Life Insurance Corporation of India (DII \u2014 123150.00%)",
+      "Nps Trust A/C - Lic Pension Fund Limited - Nps Lite Scheme - Govt. Pattern (DII \u2014 274227.00%)",
+      "Sbi Nifty 50 Etf (DII \u2014 123139.00%)",
+      "Nps Trust A/C Uti Pension Fund Limited-Scheme State Govt (DII \u2014 187379.00%)"
+    ],
+    "promoter_statements_and_articles": [
+      {
+        "speaker_or_source": "CNBC TV18",
+        "published": "Fri, 13 Nov 2026 09:58",
+        "headline": "Titan Company Ltd. Share Price Today - Titan Company Ltd. Stock Price Live NSE/BSE - CNBC TV18",
+        "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE12MHJzNjU1akM5NTdWTTEzc2tpTGFjUDJZRGpfX3JQYzA3VGhEa3BDWG9IYU9YeXhQMFE3QWNieTBjQkwzTUJqY3VrLV96RTdjcEItWTVwQVhsTU5FRzBtTVB3cm15LUhDUmdSMndsMDdGbURUeVFxMFk3NnZkeU0?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for Titan Company Ltd."
+      },
+      {
+        "speaker_or_source": "Moneycontrol.com",
+        "published": "Thu, 05 Nov 2026 08:00",
+        "headline": "Titan Q2 results: Net profit more than doubles to Rs 2,393 crore, beats estimates - Moneycontrol.com",
+        "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNOGtNdGtQYlZXdnM4YThGN25ib0lxVXVDcnpka2xWRTdGUjBKLVN3WjhGR1JYN1FZTmh2bjBpOUxKcTRqSkJfWDdObTVhYVFvMWd1QjhvQ1AyYzI3WWMwWERTWTlxS0E1SjZQdWl2X2liVHFEYkZtMmg5RFdjaUp4aXJ2ZEJqM3pVbl8xamlGZ0pRdGxOSktVNHlKNTYzZUZCczRaY1RnVngtb2JTaDN4MERyNEFYRklkd1c0MGYwS1RGMmFrN1QxSk80YkxXOUVTSTBvVFdKQmpZaXFmVkHSAeMBQVVfeXFMTndSZTJfQlVnODIzcm1zQ1oyUEFfeEYzbDRqQlV2QTJobktiMVY2OG9uMDV5bnJGMEg2aHhXcUx4V3hCTVQ5X0pxNzFZak8wcWJYY0VRNVVBOXNNMmI3aTA5VFhKNzctOWt2TTV0cWo2ckhsU3V2Zml4SkRUM1pCc2lobFI4MUM5azdRVDlOaFE3UGdZc3lZbS1WR3I4YlFkb1R6dWd0Uk9DbUtBVG4zOHk2T2EzWUUtUHJNajZYVG0xU0FORUdkZkJ6WFZKLU1iNmdlMFBmLVdzaGx6UFF4VWZ0eUE?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "Univest",
+        "published": "Thu, 05 Nov 2026 16:54",
+        "headline": "Titan Company Q2 Results FY27: PAT Jumps 113.64% to Rs 2,392.73 Cr - Univest",
+        "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTFBlc1lpd2puX2V1SmJNOWo5UjRCa21pWlhOd0JNYWJCcnczT1FRZnJoSkMyXzNhaElwWVd6NmV6MmQ1X05BcFhGV0hiZDV1LVJWcGRmWkw2UW9xQ3ZMRWZQc0hHSTZBRF96c3paeURLekxRNHR6RXdfbw?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "CNBC TV18",
+        "published": "Thu, 05 Nov 2026 08:00",
+        "headline": "Titan Q2 Results: Net profit zooms 56% on jewellery, watches, EyeCare revenue; beats estimates - CNBC TV18",
+        "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxPdDlrREx1WW1IbkViU3cxY3FzXzFDLWh1RDFnQ0pXSUw3UV94M0JVUFJfbGU3dmNOVkF2RTVfUm5ObGpnZEdtOHZJd1FVcF9xaVFFZy03NTE2SFpwcmFRbG5zYUVjb1EtNnNWLTFDN0lRaGM1M1NaaEFwOFhQbHBsbVkzbS1jU095UTVLN0g0Z09McnhvelVLSTBPYjV1dmRFWFNGWk9ORWRaWjd3aXE2ODRNdXZkVEVvc2tZNXg3S3ZkU3BLdlJ6Sk5fS1ZNU3VVZzB3cTM1S1JkWUNyQU10SDVsQUs0NVg00gHuAUFVX3lxTE5wZThsaGxucUxYeWY3dHM3YjN0Nms1VlV6YTBCQ3ZGbEpEWTdXX1A0eGhzemgwcHZBbDR0Q1JCdUFveU1KVFY3cnllYWNwWU9rdk5zNklSLVdpNHFxSXpqaXpmN0VsOVoxWXpZN0c1NlY1blJhbjVfNVJCS1pvcG11MW1aU0dKZDA5N1ZrdnhVNThEYkV4dkpKNEZCNXN4WGprTTMwSTFiM1NIM2JCbFVYbklzemFRUzVuN3hmZFpmMHB0NjhvZENiV2hfd2ctR1o3MW5vaC1uYUNZWEVJbFlVV09DTU1aX2Y1a2x4RVE?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "Upstox",
+        "published": "Fri, 13 Nov 2026 08:00",
+        "headline": "Titan Company Share Price - Upstox",
+        "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTFBLaEdJb1pERXM5Z3lpRHpvd0FueUNpN2V0VGsxc2p6bkhJVmpaaEFHUklFc1dOSUJiMkVBd1RkcmVXQW03aThSdktIMjgwaGtPUGRrWGJDMVN6c0tldTlSc09USm1sRjR0dFE1Ng?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for Titan Company Ltd."
+      },
+      {
+        "speaker_or_source": "Simply Wall St",
+        "published": "Mon, 09 Nov 2026 08:00",
+        "headline": "Titan (NSEI:TITAN) Stock Forecast & Analyst Predictions - Simply Wall St",
+        "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOaWRIVlA1bkRfX1RwcERGOEZqRUNJaExtRl9PU2VXM2VFZDY4TUk1ME1YVXRqWmpuYlpGcXJJd3RpNHVKdVl2VHExaFBLeGhnQ3hDdWJfakVqOHYwUXFMUXo1X01RQjg0eVZRd3c0LW0yUGJVaTdyczN0UDk2MVFJTkRaenNHZw?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for Titan Company Ltd."
+      }
+    ],
+    "competitors": [
+      {
+        "symbol": "RELIANCE",
+        "name": "Reliance Industries Ltd",
+        "segment": "Energy & Telecom",
+        "current_price": 1339.7,
+        "day_change_pct": 0.0,
+        "return_1m_pct": 14.83,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Bell-ringing ceremony marks the stock market debut of Jio Platforms Limited - Facebook",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxOcVFReFZZMlpSWVJZcjNKUE81dmdCYkhLY05JNU5xLWgySVN2c0lzR09nMjN4bVQ2VnEtUWR3blNydUg4THBremhsSXNBVHB5WS0zNE9XWnlBXzh2OG9NY3lqNmQ5SDMzbmh5SzA5N0MySl8wTFp5X2Vaa2F6NVVUU2dBVFIzVm9JMG1ReXd2ZWR3eGhCUERJTEpzOE5wYUFqcmthVEh4TFM1WXhKUmJtSERxZUFjeDhGZkpYT0dnM3p2SjRCdGFBcUdadkRzYllmcV9Kemx1Qk4wUkJKSVlHY3Itb25YZw?oc=5",
+        "read_across_signal": "POSITIVE READ-ACROSS",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."
+      },
+      {
+        "symbol": "TCS",
+        "name": "Tata Consultancy Services Ltd",
+        "segment": "IT Services",
+        "current_price": 2407.5,
+        "day_change_pct": -1.43,
+        "return_1m_pct": 6.65,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Tata Consultancy Services Limited (TCS.NS) stock price, news, quote and history - Yahoo Finance Singapore",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE4yZG1MMUJWTjQzeUxZdV9QMF90azdyZlhNOTctMFZTMTYyRVhVWlZKbDFRenlSZXN2aEpLWTRkVHlROVpBNmpZYWZ5V3EwZ2FQU2loLQ?oc=5",
+        "read_across_signal": "POSITIVE READ-ACROSS",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."
+      },
+      {
+        "symbol": "TATAELXSI",
+        "name": "Tata Elxsi Ltd",
+        "segment": "Auto & Media ER&D",
+        "current_price": 3835.0,
+        "day_change_pct": -0.7,
+        "return_1m_pct": 11.92,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Tata Elxsi Share Price - Live NSE: TATAELXSI Stock Price & Chart - Upstox",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBHajZHTVhxYlMwc2xwUkJsalBoeDktWG5Pc3huX2xvaHBGVkpwT041Ry1Uel9xdnFlclVSXzA4ZEhQc1M5bmxUZEIydlE2Q3ZsQ3ZLMXhyT3g4X0FnRjY5ZWxSSzNLX2hK?oc=5",
+        "read_across_signal": "POSITIVE READ-ACROSS",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."
+      },
+      {
+        "symbol": "ITC",
+        "name": "ITC Ltd",
+        "segment": "FMCG & Cigarettes",
+        "current_price": 285.0,
+        "day_change_pct": 0.33,
+        "return_1m_pct": 9.2,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "ITC Q2 net profit declines 18.7% as higher cigarette taxes hit earnings - Business Standard",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxPZFpGRE1tcFhUVEk3ZXBMZFhyYkNrZGV4TWNwTFJGenc4OENfbUd3N1dzdmx5X2tvcWFOREE3ZDRjWUpPSGZtX1NPYzUzRFo0M2wxZGl4VXFCa0ljTzh4dFk0WkpEY2oyeHZYSFlRclVmVm9ocDZ2UHRZRmNwakVDQjQyeXVNVjlIOFJvSVRkdWpKLXF5alp4MWhlRUc3bkRKZmRkTGgyQUJTWkdhX3Z0a0tHTEo4ajdDNUJDVFN6YThTY3REUThDVElJUW9TbGlMdHRpQVJkSjRyLUVlNF9QMWllTVBnd9IB6wFBVV95cUxNTDJMRjdvNjcxNy1INDB4SGJ5UFRZV1piVTBqVzZSQzZkVGEzN0Z4akhkdmtZaVlINW1Ic1l4aGktVlhSSENYQ2ZlUGZqdlNpQ0RCUDlhcU1fcHV3OTBiWmtYbkFUbHc5ZEgxY05pQmpicW1pUjVVSjBocjhiSnVGWkoxRVdlOHN5dXp4M2FyeTJ0ZTlTYUNORzBWZ1pzVzRaY3VIZFg4R2FRb000S3hjMEp1eWlWWE9RSWhVT2I2ZWRka3lOVUd6NE92a2lMenViQjR1SnJXaU5Gd3FUNTlzOUMzbC1LZ2FNdU5z?oc=5",
+        "read_across_signal": "POSITIVE READ-ACROSS",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for Titan Company Ltd."
+      }
+    ]
+  },
+  "corporate_intelligence": {
+    "symbol": "TITAN",
+    "evaluated_at": "2026-11-16T06:08:12.102317+00:00",
+    "promoter_holding_pct": 52.9,
+    "promoter_chg_1q": 0.0,
+    "promoter_chg_4q": 0.0,
+    "promoter_pledge_pct": null,
+    "fii_holding_pct": 16.37,
+    "fii_chg_1q": 0.98,
+    "fii_chg_4q": 0.26,
+    "dii_holding_pct": 14.42,
+    "dii_chg_1q": -0.73,
+    "dii_chg_4q": 0.43,
+    "net_institutional_flow_4q": 0.69,
+    "is_fno_eligible": true,
+    "latest_delivery_pct": null,
+    "delivery_vs_20d_avg": null,
+    "fno_positioning_heuristic": "Cash / Neutral",
+    "net_bulk_block_value_cr": 0.0,
+    "bulk_block_deals_count": 0,
+    "institutional_conviction_score": 55.0,
+    "smart_money_verdict": "MODERATE ACCUMULATION",
+    "bulk_block_deals": [],
+    "recent_corporate_actions": [],
+    "key_signals": [
+      "Stable majority promoter holding at 52.90%."
+    ]
+  },
+  "market_regime": {
+    "observation_date": "2026-11-16",
+    "regime": "Weak Bull",
+    "nifty_50_close": 25267.85,
+    "nifty_50_day_change_pct": 0.49,
+    "nifty_50_return_20d_pct": 9.87,
+    "nifty_50_dma_50": 23356.03,
+    "nifty_50_dma_200": 23992.31,
+    "india_vix_close": 15.73,
+    "india_vix_change_pct": 1.48,
+    "advance_count": 939,
+    "decline_count": 1777,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.528,
+    "pct_above_50dma": 86.7,
+    "pct_above_200dma": 73.3,
+    "allow_aggressive_longs": true,
+    "regime_rationale": [
+      "Structural uptrend intact above 200-DMA (23,992.3), though short-term momentum is moderate (20D: +9.87%).",
+      "NSE Market Breadth: 939 Advances vs 1777 Declines (A/D Ratio 0.53).",
+      "Universe Breadth: 86.7% above 50-DMA, 73.3% above 200-DMA."
+    ],
+    "sector_performances": [
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 61383.4,
+        "day_change_pct": 0.57,
+        "return_20d_pct": 9.99,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_IT",
+        "index_name": "Nifty IT",
+        "close": 32111.05,
+        "day_change_pct": 0.56,
+        "return_20d_pct": 4.53,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_PHARMA",
+        "index_name": "Nifty Pharma",
+        "close": 28681.7,
+        "day_change_pct": 0.51,
+        "return_20d_pct": 11.09,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_FMCG",
+        "index_name": "Nifty FMCG",
+        "close": 46987.5,
+        "day_change_pct": 0.33,
+        "return_20d_pct": 4.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27851.85,
+        "day_change_pct": -0.28,
+        "return_20d_pct": 8.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_ENERGY",
+        "index_name": "Nifty Energy",
+        "close": 37152.2,
+        "day_change_pct": -0.66,
+        "return_20d_pct": 2.59,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12540.5,
+        "day_change_pct": -0.85,
+        "return_20d_pct": 4.34,
+        "pe_ratio": null
+      }
+    ]
+  }
+}

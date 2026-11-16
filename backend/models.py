@@ -527,6 +527,61 @@ class BacktestComparisonSummary(BaseModel):
     top_global_features: list[dict[str, Any]] = Field(default_factory=list)
 
 
+class BulkBlockDealRecord(BaseModel):
+    """Normalized NSE Bulk or Block deal disclosure record (Phase 4 — Section 5C)."""
+
+    deal_type: Literal["BULK", "BLOCK"]
+    deal_date: str
+    symbol: str
+    security_name: str
+    client_name: str
+    side: Literal["BUY", "SELL"]
+    quantity: int
+    price_inr: float
+    value_cr: float
+    source: str = "NSE_Official_Archives"
+
+
+class CorporateActionRecord(BaseModel):
+    """Corporate action record (Dividend, Stock Split, Bonus Issue)."""
+
+    symbol: str
+    action_type: Literal["DIVIDEND", "SPLIT", "BONUS"]
+    ex_date: str
+    amount_or_ratio: float
+    description: str
+    source: str = "Exchange_Corporate_Actions"
+
+
+class CorporateIntelligenceSummary(BaseModel):
+    """Per-stock Institutional, Promoter, Bulk/Block Deal, Corporate Action & F&O Positioning summary (Phase 4)."""
+
+    symbol: str
+    evaluated_at: str
+    promoter_holding_pct: float | None = None
+    promoter_chg_1q: float | None = None
+    promoter_chg_4q: float | None = None
+    promoter_pledge_pct: float | None = None
+    fii_holding_pct: float | None = None
+    fii_chg_1q: float | None = None
+    fii_chg_4q: float | None = None
+    dii_holding_pct: float | None = None
+    dii_chg_1q: float | None = None
+    dii_chg_4q: float | None = None
+    net_institutional_flow_4q: float | None = None
+    is_fno_eligible: bool = False
+    latest_delivery_pct: float | None = None
+    delivery_vs_20d_avg: float | None = None
+    fno_positioning_heuristic: str = "Cash / Neutral"
+    net_bulk_block_value_cr: float = 0.0
+    bulk_block_deals_count: int = 0
+    institutional_conviction_score: float = 50.0
+    smart_money_verdict: Literal["STRONG ACCUMULATION", "MODERATE ACCUMULATION", "NEUTRAL", "DISTRIBUTION"] = "NEUTRAL"
+    bulk_block_deals: list[BulkBlockDealRecord] = Field(default_factory=list)
+    recent_corporate_actions: list[CorporateActionRecord] = Field(default_factory=list)
+    key_signals: list[str] = Field(default_factory=list)
+
+
 class StockResearchBundle(BaseModel):
     fetched_at: str
     overview: CompanyOverview
@@ -545,4 +600,5 @@ class StockResearchBundle(BaseModel):
     data_quality: DataQualityReport | None = None
     market_regime: MarketRegimeSnapshot | None = None
     quantitative_prediction: QuantitativePredictionRecord | None = None
+    corporate_intelligence: CorporateIntelligenceSummary | None = None
 

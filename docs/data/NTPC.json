@@ -1,1 +1,1904 @@
-{"fetched_at":"2026-11-16 01:40:22 IST","overview":{"symbol":"NTPC","name":"NTPC Ltd","exchange":"NSE","bse_code":null,"nse_code":"NTPC","sector":"Utilities","industry":"Power Generation","about":"NTPC (National Thermal Power Corporation) Ltd along with its subsidiaries/ associates & JVs is primarily involved in generation and sale of bulk power to State power utilities. Other business of the group includes providing consultancy, project management & supervision, energy trading, oil & gas exploration and coal mining. [1]","market_cap_cr":309421.0,"current_price":319.0,"high_52w":414.0,"low_52w":292.0,"stock_pe":10.4,"book_value":220.0,"dividend_yield_pct":2.82,"roce_pct":8.92,"roe_pct":15.1,"face_value":10.0,"revenue_cagr_5y_pct":9.02,"profit_cagr_5y_pct":12.89,"piotroski_score":4,"pros":["Company has been maintaining a healthy dividend payout of 34.3%"],"cons":["The company has delivered a poor sales growth of 10.9% over past five years.","Tax rate seems low","Company might be capitalizing the interest cost"]},"last_5_annual_reports":[{"period":"Mar 2022","revenue_cr":132669.0,"expenses_cr":92307.0,"operating_profit_cr":40362.0,"opm_pct":30.0,"other_income_cr":4809.0,"interest_cr":9376.0,"depreciation_cr":13788.0,"profit_before_tax_cr":22007.0,"tax_pct":23.0,"net_profit_cr":16960.0,"eps_inr":17.2,"dividend_payout_pct":41.0,"revenue_growth_pct":18.95,"net_profit_growth_pct":13.3},{"period":"Mar 2023","revenue_cr":176207.0,"expenses_cr":128611.0,"operating_profit_cr":47596.0,"opm_pct":27.0,"other_income_cr":2561.0,"interest_cr":11447.0,"depreciation_cr":14792.0,"profit_before_tax_cr":23917.0,"tax_pct":28.0,"net_profit_cr":17121.0,"eps_inr":17.44,"dividend_payout_pct":42.0,"revenue_growth_pct":32.82,"net_profit_growth_pct":0.95},{"period":"Mar 2024","revenue_cr":178525.0,"expenses_cr":127056.0,"operating_profit_cr":51469.0,"opm_pct":29.0,"other_income_cr":5177.0,"interest_cr":12301.0,"depreciation_cr":16204.0,"profit_before_tax_cr":28142.0,"tax_pct":24.0,"net_profit_cr":21332.0,"eps_inr":21.46,"dividend_payout_pct":36.0,"revenue_growth_pct":1.32,"net_profit_growth_pct":24.6},{"period":"Mar 2025","revenue_cr":188138.0,"expenses_cr":133783.0,"operating_profit_cr":54355.0,"opm_pct":29.0,"other_income_cr":8526.0,"interest_cr":13282.0,"depreciation_cr":17401.0,"profit_before_tax_cr":32198.0,"tax_pct":26.0,"net_profit_cr":23953.0,"eps_inr":24.16,"dividend_payout_pct":35.0,"revenue_growth_pct":5.38,"net_profit_growth_pct":12.29},{"period":"Mar 2026","revenue_cr":187385.0,"expenses_cr":131947.0,"operating_profit_cr":55438.0,"opm_pct":30.0,"other_income_cr":2662.0,"interest_cr":13801.0,"depreciation_cr":19629.0,"profit_before_tax_cr":24669.0,"tax_pct":-12.0,"net_profit_cr":27546.0,"eps_inr":27.9,"dividend_payout_pct":32.0,"revenue_growth_pct":-0.4,"net_profit_growth_pct":15.0}],"last_5_quarterly_reports":[{"period":"Sep 2025","revenue_cr":44784.0,"expenses_cr":31970.0,"operating_profit_cr":12814.0,"opm_pct":29.0,"other_income_cr":2735.0,"interest_cr":3432.0,"depreciation_cr":4816.0,"profit_before_tax_cr":7301.0,"tax_pct":28.0,"net_profit_cr":5225.0,"eps_inr":5.23,"dividend_payout_pct":null,"revenue_growth_pct":-4.84,"net_profit_growth_pct":-14.46},{"period":"Dec 2025","revenue_cr":45846.0,"expenses_cr":31276.0,"operating_profit_cr":14570.0,"opm_pct":32.0,"other_income_cr":1738.0,"interest_cr":3164.0,"depreciation_cr":5093.0,"profit_before_tax_cr":8050.0,"tax_pct":30.0,"net_profit_cr":5597.0,"eps_inr":5.66,"dividend_payout_pct":null,"revenue_growth_pct":2.37,"net_profit_growth_pct":7.12},{"period":"Mar 2026","revenue_cr":49686.0,"expenses_cr":41181.0,"operating_profit_cr":8505.0,"opm_pct":17.0,"other_income_cr":1918.0,"interest_cr":3737.0,"depreciation_cr":5134.0,"profit_before_tax_cr":1553.0,"tax_pct":-584.0,"net_profit_cr":10615.0,"eps_inr":10.81,"dividend_payout_pct":null,"revenue_growth_pct":8.38,"net_profit_growth_pct":89.66},{"period":"Jun 2026","revenue_cr":50741.0,"expenses_cr":34510.0,"operating_profit_cr":16231.0,"opm_pct":32.0,"other_income_cr":1549.0,"interest_cr":3386.0,"depreciation_cr":5234.0,"profit_before_tax_cr":9160.0,"tax_pct":25.0,"net_profit_cr":6896.0,"eps_inr":6.93,"dividend_payout_pct":null,"revenue_growth_pct":2.12,"net_profit_growth_pct":-35.04},{"period":"Sep 2026","revenue_cr":54270.0,"expenses_cr":38643.0,"operating_profit_cr":15627.0,"opm_pct":29.0,"other_income_cr":3007.0,"interest_cr":4086.0,"depreciation_cr":5330.0,"profit_before_tax_cr":9218.0,"tax_pct":20.0,"net_profit_cr":7351.0,"eps_inr":7.25,"dividend_payout_pct":null,"revenue_growth_pct":6.95,"net_profit_growth_pct":6.6}],"cash_and_balance_sheet":{"latest_period":"Sep 2026","cash_equivalents_cr":7763.0,"liquid_investments_cr":25289.0,"total_cash_in_hand_cr":33052.0,"total_borrowings_cr":279526.0,"net_cash_position_cr":-246474.0,"debt_to_equity":1.31,"cash_to_debt_ratio":0.12,"cash_pct_of_mcap":10.68,"latest_ocf_cr":0.0,"latest_fcf_cr":0.0,"cumulative_5y_ocf_cr":392.0,"cumulative_5y_fcf_cr":-91278.15,"roce_5y_series":[{"period":"Mar 2022","roce_pct":9.0},{"period":"Mar 2023","roce_pct":10.0},{"period":"Mar 2024","roce_pct":10.0},{"period":"Mar 2025","roce_pct":11.0},{"period":"Mar 2026","roce_pct":9.0}],"history_5y":[{"period":"Mar 2023","cash_equivalents_cr":4949.0,"investments_cr":13935.0,"total_cash_in_hand_cr":18884.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":222913.0,"net_cash_cr":-204029.0,"total_equity_cr":147023.0,"total_assets_cr":447189.0,"operating_cash_flow_cr":108.0,"investing_cash_flow_cr":-26145.0,"free_cash_flow_cr":-16886.25},{"period":"Mar 2024","cash_equivalents_cr":6847.0,"investments_cr":15885.0,"total_cash_in_hand_cr":22732.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":237131.0,"net_cash_cr":-214399.0,"total_equity_cr":160710.0,"total_assets_cr":479278.0,"operating_cash_flow_cr":85.0,"investing_cash_flow_cr":-31456.0,"free_cash_flow_cr":-20361.4},{"period":"Mar 2025","cash_equivalents_cr":11457.0,"investments_cr":19704.0,"total_cash_in_hand_cr":31161.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":250096.0,"net_cash_cr":-218935.0,"total_equity_cr":184071.0,"total_assets_cr":523732.0,"operating_cash_flow_cr":101.0,"investing_cash_flow_cr":-45852.0,"free_cash_flow_cr":-29702.8},{"period":"Mar 2026","cash_equivalents_cr":8004.0,"investments_cr":24180.0,"total_cash_in_hand_cr":32184.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":271005.0,"net_cash_cr":-238821.0,"total_equity_cr":203176.0,"total_assets_cr":558442.0,"operating_cash_flow_cr":98.0,"investing_cash_flow_cr":-37578.0,"free_cash_flow_cr":-24327.7},{"period":"Sep 2026","cash_equivalents_cr":7763.0,"investments_cr":25289.0,"total_cash_in_hand_cr":33052.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":279526.0,"net_cash_cr":-246474.0,"total_equity_cr":213472.0,"total_assets_cr":577363.0,"operating_cash_flow_cr":null,"investing_cash_flow_cr":null,"free_cash_flow_cr":null}]},"stockholders":{"latest_period":"Sep 2026","promoters_pct":51.1,"fii_pct":15.79,"dii_pct":29.86,"government_pct":0.0,"public_pct":3.23,"institutional_total_pct":45.65,"promoter_change_4q_pct":0.0,"fii_change_4q_pct":-0.61,"dii_change_4q_pct":0.93,"num_shareholders":3134985,"quarterly_history":[{"period":"Dec 2024","promoters_pct":51.1,"fii_pct":18.2,"dii_pct":26.76,"government_pct":0.11,"public_pct":3.83,"num_shareholders":4365786},{"period":"Mar 2025","promoters_pct":51.1,"fii_pct":17.79,"dii_pct":27.22,"government_pct":0.11,"public_pct":3.77,"num_shareholders":4143175},{"period":"Jun 2025","promoters_pct":51.1,"fii_pct":16.09,"dii_pct":28.92,"government_pct":0.12,"public_pct":3.77,"num_shareholders":3965860},{"period":"Sep 2025","promoters_pct":51.1,"fii_pct":16.4,"dii_pct":28.93,"government_pct":0.12,"public_pct":3.45,"num_shareholders":3729617},{"period":"Dec 2025","promoters_pct":51.1,"fii_pct":16.24,"dii_pct":29.19,"government_pct":0.12,"public_pct":3.34,"num_shareholders":3543434},{"period":"Mar 2026","promoters_pct":51.1,"fii_pct":16.54,"dii_pct":29.13,"government_pct":0.12,"public_pct":3.1,"num_shareholders":3300179},{"period":"Jun 2026","promoters_pct":51.1,"fii_pct":16.3,"dii_pct":29.44,"government_pct":0.0,"public_pct":3.14,"num_shareholders":3201112},{"period":"Sep 2026","promoters_pct":51.1,"fii_pct":15.79,"dii_pct":29.86,"government_pct":0.0,"public_pct":3.23,"num_shareholders":3134985}],"named_stockholders":[{"name":"President Of India","category":"Promoter","latest_holding_pct":38450.0,"previous_holding_pct":51.1,"change_4q_pct":38398.9,"trend":[{"period":"Dec 2025","pct":51.1},{"period":"Mar 2026","pct":51.1},{"period":"Jun 2026","pct":51.1},{"period":"Sep 2026","pct":51.1},{"period":"setAttributes","pct":38450.0}]}]},"rd_and_innovation":{"latest_rd_spend_cr":524.68,"latest_rd_pct_of_sales":0.28,"cumulative_5y_rd_cr":2354.19,"intangible_assets_cr":0.0,"cwip_cr":84957.0,"rd_cagr_5y_pct":11.05,"innovation_focus":"NETRA (NTPC Energy Technology Research Alliance) carbon capture, green methanol & nuclear","rd_data_source":"Annual Report R&D Disclosure","history_5y":[{"period":"Mar 2022","revenue_cr":132669.0,"rd_spend_cr":344.94,"rd_pct_of_sales":0.26,"intangible_assets_cr":0.0,"cwip_cr":91126.0,"employee_cost_pct":null},{"period":"Mar 2023","revenue_cr":176207.0,"rd_spend_cr":475.76,"rd_pct_of_sales":0.27,"intangible_assets_cr":0.0,"cwip_cr":89179.0,"employee_cost_pct":null},{"period":"Mar 2024","revenue_cr":178525.0,"rd_spend_cr":482.02,"rd_pct_of_sales":0.27,"intangible_assets_cr":0.0,"cwip_cr":87664.0,"employee_cost_pct":null},{"period":"Mar 2025","revenue_cr":188138.0,"rd_spend_cr":526.79,"rd_pct_of_sales":0.28,"intangible_assets_cr":0.0,"cwip_cr":100859.0,"employee_cost_pct":null},{"period":"Mar 2026","revenue_cr":187385.0,"rd_spend_cr":524.68,"rd_pct_of_sales":0.28,"intangible_assets_cr":0.0,"cwip_cr":84957.0,"employee_cost_pct":null}],"annual_reports_5y":[{"title":"Annual Report 2026","year":"2026","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/dbc69766-f1e1-4ecc-9fa9-7599477167db.pdf"},{"title":"Annual Report 2025","year":"2025","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/ba273826-d8ae-4bf6-b346-31875690c34b.pdf"},{"title":"Annual Report 2024","year":"2024","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/39e0cfa7-a5b9-4ef4-9802-ba4248ad306d.pdf"},{"title":"Annual Report 2023","year":"2023","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/da3b3d90-81a9-4839-9a4c-3caedb6497f4.pdf"},{"title":"Annual Report 2022","year":"2022","url":"https://www.bseindia.com/bseplus/AnnualReport/532555/74152532555.pdf"}]},"technicals":{"current_price":319.1,"prev_close":323.0,"day_change_pct":-1.21,"day_high":322.95,"day_low":317.05,"high_52w":414.0,"low_52w":292.0,"return_5d_pct":-1.34,"return_1m_pct":1.72,"return_6m_pct":-19.48,"return_1y_pct":-3.36,"rsi_14":50.76,"macd_line":1.81,"macd_signal":0.25,"macd_hist":1.57,"ema_20":318.52,"dma_50":321.76,"dma_200":341.16,"bb_upper":334.18,"bb_middle":314.36,"bb_lower":294.55,"atr_14":7.79,"atr_pct":2.44,"volume_latest":5034469.0,"volume_20d_avg":9677927.35,"volume_Surge_ratio":0.52,"annualized_volatility_pct":22.34,"pivot_point":319.7,"support_1":316.45,"support_2":313.8,"resistance_1":322.35,"resistance_2":325.6,"trend_regime":"BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA)","technical_signals":["Price below both 50-DMA and 200-DMA; wait for support stabilization","RSI(14) at 50.76 \u2014 Neutral momentum band","MACD Bullish Crossover active (Histogram +1.57)"],"price_series":[{"date":"2026-07-08","close":348.7,"open":344.89,"high":345.92,"low":340.58,"dma50":367.87,"dma200":361.88,"volume":9898287.0},{"date":"2026-07-09","close":343.7,"open":342.0,"high":343.96,"low":336.22,"dma50":366.92,"dma200":361.7,"volume":18770087.0},{"date":"2026-07-10","close":344.55,"open":337.59,"high":341.8,"low":336.32,"dma50":366.05,"dma200":361.53,"volume":13212805.0},{"date":"2026-07-13","close":351.75,"open":338.13,"high":347.88,"low":336.81,"dma50":365.49,"dma200":361.43,"volume":8638829.0},{"date":"2026-07-14","close":348.15,"open":341.51,"high":346.85,"low":340.53,"dma50":364.81,"dma200":361.3,"volume":8832150.0},{"date":"2026-07-15","close":344.35,"open":340.53,"high":341.46,"low":336.17,"dma50":364.0,"dma200":361.13,"volume":11869569.0},{"date":"2026-07-16","close":342.45,"open":337.3,"high":339.11,"low":335.24,"dma50":363.16,"dma200":360.94,"volume":14801920.0},{"date":"2026-07-17","close":341.85,"open":335.63,"high":337.0,"low":333.43,"dma50":362.32,"dma200":360.75,"volume":7860947.0},{"date":"2026-07-20","close":347.25,"open":336.12,"high":342.29,"low":334.26,"dma50":361.73,"dma200":360.62,"volume":14744282.0},{"date":"2026-07-21","close":348.55,"open":340.24,"high":342.15,"low":337.25,"dma50":361.21,"dma200":360.5,"volume":8761839.0},{"date":"2026-07-22","close":350.5,"open":340.43,"high":343.81,"low":338.72,"dma50":360.79,"dma200":360.4,"volume":7234233.0},{"date":"2026-07-23","close":348.6,"open":341.56,"high":343.67,"low":340.14,"dma50":360.32,"dma200":360.28,"volume":7175761.0},{"date":"2026-07-24","close":347.2,"open":340.97,"high":342.98,"low":338.18,"dma50":359.8,"dma200":360.15,"volume":6995344.0},{"date":"2026-07-27","close":350.8,"open":345.92,"high":345.92,"low":340.82,"dma50":359.45,"dma200":360.06,"volume":12636209.0},{"date":"2026-07-28","close":343.75,"open":342.93,"high":342.98,"low":335.24,"dma50":358.83,"dma200":359.89,"volume":14285364.0},{"date":"2026-07-29","close":343.5,"open":336.81,"high":338.42,"low":334.31,"dma50":358.23,"dma200":359.73,"volume":9112883.0},{"date":"2026-07-30","close":344.85,"open":336.61,"high":340.68,"low":334.99,"dma50":357.71,"dma200":359.58,"volume":10758912.0},{"date":"2026-07-31","close":347.25,"open":337.2,"high":341.26,"low":336.66,"dma50":357.3,"dma200":359.46,"volume":8632058.0},{"date":"2026-08-03","close":350.9,"open":340.28,"high":343.86,"low":338.37,"dma50":357.05,"dma200":359.38,"volume":5573502.0},{"date":"2026-08-04","close":343.65,"open":341.02,"high":341.95,"low":334.75,"dma50":356.52,"dma200":359.22,"volume":7403248.0},{"date":"2026-08-05","close":349.9,"open":336.56,"high":342.88,"low":335.87,"dma50":356.26,"dma200":359.13,"volume":19926757.0},{"date":"2026-08-06","close":345.0,"open":340.53,"high":342.24,"low":336.22,"dma50":355.82,"dma200":358.99,"volume":10401486.0},{"date":"2026-08-07","close":342.5,"open":338.08,"high":340.04,"low":335.63,"dma50":355.3,"dma200":358.82,"volume":7431402.0},{"date":"2026-08-10","close":340.45,"open":335.63,"high":336.81,"low":330.39,"dma50":354.72,"dma200":358.64,"volume":9395350.0},{"date":"2026-08-11","close":338.45,"open":332.79,"high":333.57,"low":329.31,"dma50":354.08,"dma200":358.44,"volume":10828846.0},{"date":"2026-08-12","close":339.45,"open":331.66,"high":334.5,"low":328.62,"dma50":353.5,"dma200":358.25,"volume":10751737.0},{"date":"2026-08-13","close":344.25,"open":331.27,"high":337.34,"low":331.22,"dma50":353.14,"dma200":358.11,"volume":11550537.0},{"date":"2026-08-14","close":340.0,"open":336.76,"high":336.76,"low":330.73,"dma50":352.63,"dma200":357.93,"volume":8334382.0},{"date":"2026-08-17","close":337.0,"open":333.18,"high":333.47,"low":328.97,"dma50":352.01,"dma200":357.72,"volume":8316923.0},{"date":"2026-08-18","close":337.1,"open":330.24,"high":332.49,"low":327.2,"dma50":351.43,"dma200":357.52,"volume":10543355.0},{"date":"2026-08-19","close":336.55,"open":329.55,"high":332.05,"low":326.91,"dma50":350.84,"dma200":357.31,"volume":7666396.0},{"date":"2026-08-20","close":337.5,"open":330.34,"high":332.74,"low":327.69,"dma50":350.32,"dma200":357.11,"volume":4354487.0},{"date":"2026-08-21","close":340.0,"open":330.24,"high":335.97,"low":330.24,"dma50":349.92,"dma200":356.94,"volume":7095469.0},{"date":"2026-08-24","close":339.5,"open":333.87,"high":335.19,"low":330.68,"dma50":349.51,"dma200":356.77,"volume":5830893.0},{"date":"2026-08-25","close":339.85,"open":332.2,"high":333.96,"low":328.92,"dma50":349.13,"dma200":356.6,"volume":5474765.0},{"date":"2026-08-26","close":334.6,"open":334.7,"high":337.54,"low":327.89,"dma50":348.56,"dma200":356.38,"volume":6232520.0},{"date":"2026-08-27","close":330.9,"open":328.28,"high":329.21,"low":321.81,"dma50":347.87,"dma200":356.13,"volume":13628035.0},{"date":"2026-08-28","close":330.05,"open":322.89,"high":326.42,"low":322.2,"dma50":347.17,"dma200":355.87,"volume":8061610.0},{"date":"2026-08-31","close":327.4,"open":323.48,"high":323.82,"low":317.01,"dma50":346.39,"dma200":355.58,"volume":19069080.0},{"date":"2026-09-01","close":327.5,"open":320.83,"high":321.67,"low":318.53,"dma50":345.65,"dma200":355.3,"volume":7829054.0},{"date":"2026-09-02","close":330.0,"open":320.93,"high":327.96,"low":317.96,"dma50":345.04,"dma200":355.05,"volume":12650156.0},{"date":"2026-09-03","close":330.9,"open":327.32,"high":329.55,"low":325.98,"dma50":344.48,"dma200":354.81,"volume":11628868.0},{"date":"2026-09-04","close":332.5,"open":329.6,"high":330.89,"low":326.68,"dma50":344.01,"dma200":354.59,"volume":7737020.0},{"date":"2026-09-07","close":332.0,"open":329.35,"high":330.64,"low":327.22,"dma50":343.54,"dma200":354.36,"volume":5514880.0},{"date":"2026-09-08","close":330.8,"open":326.87,"high":330.04,"low":325.54,"dma50":343.04,"dma200":354.13,"volume":7539926.0},{"date":"2026-09-09","close":334.5,"open":327.96,"high":334.3,"low":327.77,"dma50":342.71,"dma200":353.94,"volume":12771103.0},{"date":"2026-09-10","close":335.0,"open":332.47,"high":332.52,"low":329.94,"dma50":342.41,"dma200":353.75,"volume":6984804.0},{"date":"2026-09-11","close":333.4,"open":329.85,"high":333.06,"low":328.46,"dma50":342.05,"dma200":353.54,"volume":5167985.0},{"date":"2026-09-15","close":329.5,"open":329.85,"high":330.14,"low":323.31,"dma50":341.56,"dma200":353.3,"volume":8691810.0},{"date":"2026-09-16","close":327.0,"open":326.38,"high":326.82,"low":323.46,"dma50":340.99,"dma200":353.04,"volume":6873622.0},{"date":"2026-09-17","close":329.6,"open":324.69,"high":328.16,"low":324.1,"dma50":340.54,"dma200":352.81,"volume":5877448.0},{"date":"2026-09-18","close":323.65,"open":326.68,"high":327.72,"low":320.58,"dma50":339.88,"dma200":352.52,"volume":9573191.0},{"date":"2026-09-21","close":326.4,"open":321.92,"high":325.64,"low":321.77,"dma50":339.35,"dma200":352.26,"volume":5510107.0},{"date":"2026-09-22","close":327.8,"open":323.41,"high":325.88,"low":322.47,"dma50":338.9,"dma200":352.02,"volume":6708391.0},{"date":"2026-09-23","close":326.0,"open":323.41,"high":326.28,"low":321.92,"dma50":338.39,"dma200":351.76,"volume":11131554.0},{"date":"2026-09-24","close":326.6,"open":323.85,"high":324.6,"low":321.33,"dma50":337.93,"dma200":351.51,"volume":7824466.0},{"date":"2026-09-25","close":326.6,"open":324.2,"high":324.2,"low":320.44,"dma50":337.49,"dma200":351.26,"volume":6196586.0},{"date":"2026-09-28","close":321.1,"open":323.51,"high":323.51,"low":317.17,"dma50":336.84,"dma200":350.96,"volume":6158743.0},{"date":"2026-09-29","close":323.5,"open":317.46,"high":321.92,"low":314.54,"dma50":336.32,"dma200":350.69,"volume":12554181.0},{"date":"2026-09-30","close":322.75,"open":320.44,"high":320.88,"low":315.88,"dma50":335.79,"dma200":350.41,"volume":7055415.0},{"date":"2026-10-01","close":315.1,"open":317.76,"high":317.91,"low":310.08,"dma50":334.98,"dma200":350.06,"volume":10644107.0},{"date":"2026-10-05","close":321.8,"open":313.06,"high":320.49,"low":313.06,"dma50":334.46,"dma200":349.78,"volume":9620858.0},{"date":"2026-10-06","close":321.45,"open":320.44,"high":321.23,"low":317.02,"dma50":333.95,"dma200":349.49,"volume":7459330.0},{"date":"2026-10-07","close":316.75,"open":317.12,"high":318.65,"low":312.91,"dma50":333.28,"dma200":349.17,"volume":6874630.0},{"date":"2026-10-08","close":309.7,"open":313.01,"high":313.4,"low":305.53,"dma50":332.35,"dma200":348.78,"volume":13339953.0},{"date":"2026-10-09","close":312.0,"open":306.82,"high":311.37,"low":306.62,"dma50":331.55,"dma200":348.41,"volume":7468984.0},{"date":"2026-10-12","close":310.0,"open":309.04,"high":311.32,"low":302.8,"dma50":330.71,"dma200":348.03,"volume":13636286.0},{"date":"2026-10-13","close":311.0,"open":305.48,"high":308.95,"low":303.25,"dma50":329.93,"dma200":347.66,"volume":6329118.0},{"date":"2026-10-14","close":313.7,"open":308.05,"high":313.06,"low":306.96,"dma50":329.3,"dma200":347.32,"volume":11945643.0},{"date":"2026-10-15","close":314.65,"open":309.99,"high":314.94,"low":308.85,"dma50":328.72,"dma200":347.0,"volume":10662656.0},{"date":"2026-10-16","close":315.15,"open":311.92,"high":314.64,"low":308.75,"dma50":328.19,"dma200":346.68,"volume":9837398.0},{"date":"2026-10-19","close":309.0,"open":310.23,"high":313.4,"low":305.18,"dma50":327.44,"dma200":346.3,"volume":8555474.0},{"date":"2026-10-21","close":303.0,"open":306.07,"high":307.51,"low":298.25,"dma50":326.48,"dma200":345.87,"volume":10150617.0},{"date":"2026-10-22","close":302.6,"open":298.64,"high":299.93,"low":294.73,"dma50":325.54,"dma200":345.44,"volume":8416771.0},{"date":"2026-10-23","close":298.0,"open":299.24,"high":299.93,"low":289.28,"dma50":324.46,"dma200":344.97,"volume":9397605.0},{"date":"2026-10-26","close":300.0,"open":294.93,"high":298.54,"low":291.31,"dma50":323.5,"dma200":344.52,"volume":6812446.0},{"date":"2026-10-27","close":301.8,"open":297.11,"high":304.09,"low":296.91,"dma50":322.65,"dma200":344.1,"volume":13740816.0},{"date":"2026-10-28","close":303.75,"open":299.19,"high":302.01,"low":296.56,"dma50":321.91,"dma200":343.7,"volume":7928372.0},{"date":"2026-10-29","close":310.5,"open":299.14,"high":309.69,"low":298.84,"dma50":321.46,"dma200":343.37,"volume":8268884.0},{"date":"2026-10-30","close":316.25,"open":307.56,"high":314.99,"low":305.23,"dma50":321.26,"dma200":343.1,"volume":15719099.0},{"date":"2026-11-02","close":323.0,"open":316.92,"high":324.89,"low":315.98,"dma50":321.33,"dma200":342.9,"volume":15601459.0},{"date":"2026-11-03","close":321.55,"open":319.94,"high":320.29,"low":313.6,"dma50":321.34,"dma200":342.68,"volume":9031672.0},{"date":"2026-11-04","close":321.95,"open":316.97,"high":318.9,"low":313.75,"dma50":321.36,"dma200":342.48,"volume":8622856.0},{"date":"2026-11-05","close":316.7,"open":321.03,"high":322.07,"low":313.06,"dma50":321.18,"dma200":342.22,"volume":10095120.0},{"date":"2026-11-06","close":323.45,"open":313.0,"high":323.45,"low":308.75,"dma50":321.27,"dma200":342.03,"volume":13370344.0},{"date":"2026-11-08","close":322.7,"open":322.7,"high":322.7,"low":322.7,"dma50":321.32,"dma200":341.84,"volume":1113666.0},{"date":"2026-11-09","close":328.75,"open":323.1,"high":328.75,"low":322.1,"dma50":321.61,"dma200":341.71,"volume":9991883.0},{"date":"2026-11-11","close":327.0,"open":328.5,"high":333.85,"low":325.75,"dma50":321.83,"dma200":341.57,"volume":16356947.0},{"date":"2026-11-12","close":323.0,"open":327.05,"high":327.45,"low":321.85,"dma50":321.87,"dma200":341.38,"volume":5512649.0},{"date":"2026-11-13","close":319.1,"open":321.0,"high":322.95,"low":317.05,"dma50":321.76,"dma200":341.16,"volume":5034469.0}]},"agent_committee":[{"agent_id":"five_reports_agent","agent_name":"5-Report Earnings & Performance Agent","persona_inspiration":"Peter Lynch / Fundamental Growth Analyst","signal":"BULLISH","score":69.0,"confidence":78,"weight_pct":25,"headline":"5Y Profit CAGR 12.89% | Latest FY Net Profit \u20b927,546 Cr | ROE 15.1%","key_metrics":{"5Y Revenue CAGR":"9.0%","5Y Profit CAGR":"12.9%","Latest Qtr Net Profit":"\u20b97,351 Cr","Latest OPM %":"30.0%","ROE / ROCE":"15.1% / 8.9%","Piotroski F-Score":"4/9"},"reasoning":["Steady 5-report annual revenue growth at 9.0% CAGR.","Consistent 5-year net profit growth (12.9% CAGR).","Positive sequential profit momentum in 3 of the last 5 quarters."]},{"agent_id":"cash_balance_agent","agent_name":"Cash-in-Hand & Balance Sheet Agent","persona_inspiration":"Benjamin Graham / Balance Sheet Specialist","signal":"NEUTRAL","score":52.0,"confidence":69,"weight_pct":20,"headline":"Cash & Investments: \u20b933,052 Cr | Net Cash: \u20b9-246,474 Cr | D/E: 1.31x","key_metrics":{"Cash Equivalents":"\u20b97,763 Cr","Liquid Investments":"\u20b925,289 Cr","Total Cash in Hand":"\u20b933,052 Cr","Total Borrowings":"\u20b9279,526 Cr","Debt / Equity":"1.31x","5Y Cumulative OCF":"\u20b9392 Cr"},"reasoning":["Elevated leverage: Debt/Equity at 1.31x (Total Borrowings \u20b9279,526 Cr vs Cash \u20b933,052 Cr).","Generated \u20b9392 Cr in cumulative 5-year Operating Cash Flow (latest FY OCF \u20b90 Cr).","Cash & investments represent 10.7% of total Market Cap, offering downside protection."]},{"agent_id":"stockholders_agent","agent_name":"Stockholders & Institutional Flow Agent","persona_inspiration":"Smart-Money & Insider Ownership Tracker","signal":"BULLISH","score":70.0,"confidence":79,"weight_pct":20,"headline":"Promoters 51.1% (+0.00% 4Q) | FII 15.8% | DII 29.9%","key_metrics":{"Promoter Holding":"51.10% (+0.00% 4Q)","FII Holding":"15.79% (-0.61% 4Q)","DII Holding":"29.86% (+0.93% 4Q)","Total Institutional":"45.65%","Public Float":"3.23%","Shareholder Accounts":"3,134,985"},"reasoning":["High skin-in-the-game: Promoters hold 51.10% equity.","Net Institutional Accumulation: Combined FII+DII holding rose +0.32% over 4 quarters (FII -0.61%, DII +0.93%).","Marquee named stockholders: President Of India (38450.00%)."]},{"agent_id":"rd_innovation_agent","agent_name":"R&D Intensity & Innovation Moat Agent","persona_inspiration":"Charlie Munger / Philip Fisher Moat Analyst","signal":"BULLISH","score":72.0,"confidence":77,"weight_pct":15,"headline":"Latest R&D: \u20b9525 Cr (0.28% of Sales) | 5Y R&D: \u20b92,354 Cr","key_metrics":{"Latest FY R&D Spend":"\u20b9525 Cr","R&D % of Revenue":"0.28%","5Y Cumulative R&D":"\u20b92,354 Cr","5Y R&D CAGR":"11.1%","Intangible Assets":"\u20b90 Cr","CapEx WIP (CWIP)":"\u20b984,957 Cr"},"reasoning":["Latest annual R&D investment of \u20b9525 Cr (0.28% of revenue); 5-year cumulative R&D of \u20b92,354 Cr.","R&D budget compounding at 11.1% CAGR over the last 5 reports.","Balance-sheet innovation & capacity pipeline: Intangible Assets \u20b90 Cr and Capital Work-in-Progress (CWIP) \u20b984,957 Cr.","Strategic R&D Focus: NETRA (NTPC Energy Technology Research Alliance) carbon capture, green methanol & nuclear."]},{"agent_id":"technical_catalyst_agent","agent_name":"Next-Day Technical & Catalyst Agent","persona_inspiration":"Stanley Druckenmiller / Price-Action & Timing Desk","signal":"NEUTRAL","score":59.0,"confidence":71,"weight_pct":20,"headline":"RSI(14) 50.8 | 50-DMA \u20b9321.8 | 200-DMA \u20b9341.2 | ATR \u20b97.8","key_metrics":{"RSI (14)":"50.8","MACD Histogram":"+1.57","50-DMA / 200-DMA":"\u20b9321.8 / \u20b9341.2","ATR (14) Daily Range":"\u20b97.79 (2.44%)","Volume vs 20D Avg":"0.52x","Pivot S1 / R1":"\u20b9316.4 / \u20b9322.4"},"reasoning":["Price below both 50-DMA and 200-DMA; wait for support stabilization","RSI(14) at 50.76 \u2014 Neutral momentum band","MACD Bullish Crossover active (Histogram +1.57)","News Catalyst: 4 positive vs 0 negative recent Indian market headlines."]}],"next_day_guidance":{"action":"BUY","conviction_score":64.2,"fundamental_score":65.6,"technical_score":59.0,"current_price":319.1,"entry_zone_low":315.98,"entry_zone_high":319.88,"target_1_next_day":328.45,"target_2_swing":336.63,"stop_loss":311.7,"risk_reward_ratio":1.26,"expected_next_day_range_low":311.31,"expected_next_day_range_high":326.89,"position_size_suggestion_pct":5.0,"executive_summary":"NTPC Ltd (NTPC) earns a composite conviction score of 64.2/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b933,052 Cr in cash & investments, 15.1% ROE, 0.28% R&D intensity, and 96.8% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9315.98\u2013\u20b9319.88 zone targeting \u20b9328.45 (T1) and \u20b9336.63 (T2) with a strict ATR-calibrated stop-loss at \u20b9311.70 (Risk:Reward 1:1.26).","rationale_points":["5-Report Fundamental Score: 65.6/100 (5Y Profit CAGR: 12.9%, Piotroski: 4/9).","Balance Sheet & Cash in Hand: \u20b933,052 Cr liquid cash/investments vs \u20b9279,526 Cr total borrowings (D/E 1.31x).","Stockholder Conviction: Promoters hold 51.10%, FIIs 15.79%, DIIs 29.86% (Total Institutional: 45.65%).","R&D & Innovation Moat: \u20b9525 Cr annual R&D (0.28% of sales; 5Y cumulative \u20b92,354 Cr).","Next-Day Technical Trigger (59.0/100): BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA); RSI(14) at 50.8 with ATR(14) daily range of \u20b97.79."],"key_catalysts":["Company has been maintaining a healthy dividend payout of 34.3%","R&D & CapEx Pipeline: NETRA (NTPC Energy Technology Research Alliance) carbon capture, green methanol & nuclear","Institutional Sponsorship: 45.6% held by FIIs + DIIs"],"key_risks":["The company has delivered a poor sales growth of 10.9% over past five years.","Tax rate seems low","Company might be capitalizing the interest cost","Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9311.70"],"llm_synthesized":false,"llm_model_used":"Quantitative Multi-Agent Committee Engine v2"},"news":[{"title":"NTPC Share Price Today, NTPC Stock Price Live NSE/BSE Updates - The Economic Times","source":"The Economic Times","published":"Thu, 12 Nov 2026 20:58:00","url":"https://news.google.com/rss/articles/CBMifEFVX3lxTFAxR1RMOTRQMUlacm5UVXB6czZlc3RwV0JVUHBYa1UyT3I5Q1hWVENBemlhZk1CV29URW9veDIxSjBBS0R6VmVJVnhtUng1OEFmQ0tRZ2t2OUx2MTY4YzJ4Q1V4ZlNYZ0RxaEF2aXV5UVBCcG5yMnN3Q3M1aWk?oc=5","sentiment":"NEUTRAL"},{"title":"Weekly Recap: Coal gasification proposals and long-term dividend appeal - TradingView","source":"TradingView","published":"Mon, 16 Nov 2026 01:00:00","url":"https://news.google.com/rss/articles/CBMizAFBVV95cUxPQXFBU2VlY3hoVkFFNzl3REhVUW9CV1pQQmRjTFBTUGhYZDl1Rl9IWWhUd19tMUNFWmxkUENleEVpVFdqNzliei1uN0N6VEF4NzF4c3hjTWRaeTZYOG9wWlRTXzlocnl0cVpHTFE3a0V0U2V3bDdWZ2FYeFJjZmV3RnF4dkgyMF9MMWhObmdMaFF0ejViWEpaUGhkd0p3SjRlMDNWNGdQdjVWZHdnQjAyUzFjdmoyU1hZTFoxc1NkMC01Nk84V3NSZUVNZHc?oc=5","sentiment":"POSITIVE"},{"title":"GAIL Share Price - Upstox","source":"Upstox","published":"Fri, 13 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMiY0FVX3lxTFB1amVaR3NxZDVGeEJycEl5T1JCeDlkWF8tblVMMXdGRXZkdVZkMC1QR0pLWUE0dERLTVRYR2VUMEE1RkZ5OHNGVUlwNXVIYWFUV29pQnJXbmJxRHlZU0Y3OEhFdw?oc=5","sentiment":"NEUTRAL"},{"title":"33 Best Power Sector Stocks In India November 2026 | Best Energy Stocks To Invest - Samco","source":"Samco","published":"Fri, 13 Nov 2026 06:51:15","url":"https://news.google.com/rss/articles/CBMibEFVX3lxTE5JLVJiY1FqOUtqSDRBanhEV2hCb0stQzFQXzYtWjB3UXZ5UEJDa2ZZZnkxamRKUHItS2Q1aDlPLTRHUW5JQ2Z6MEQyQURNUFRhUTUzd3RvVmdVQnMzdUhyMzRyeVlCQnM5RlptUg?oc=5","sentiment":"NEUTRAL"},{"title":"High Margin Fast Profit Growth Five-Year Winner Stocks: M&M, NTPC - Univest","source":"Univest","published":"Thu, 12 Nov 2026 08:48:00","url":"https://news.google.com/rss/articles/CBMiuwFBVV95cUxQemRhQlpwenRXYndmbHFxOHJOSlBWSEc0elEyem9MeWZULXpORjM5bnpzSm8tTk9pMFhwSGNNME9XOE5vbkp0T0tLMFEtN3owbW1GdzdHR0J5Q25sV29RX0hzX2xoLS1tWnJTTE5zSFlsclE4NEt5dmV0NWVVWEljUnJGSl9RVWpfQnNQdGFHM0xTdzZCT0RPRHFGZ1llSm5WUTVzX2lxUEJmUW45SzFkSXZhbFhUTXAzbnFz?oc=5","sentiment":"POSITIVE"},{"title":"Tata Power Share Price - Live NSE: TATAPOWER Stock Price & Chart - Upstox","source":"Upstox","published":"Fri, 13 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5UVUN0OGR1YVBaQW9KZGJRS25XcElwWU01Z3lqRUdOM2ZlOUx2d3RONV9NRW9GN2RWaWQyRktSdlBtSzgySUdFNDlUelQ4UUJmUjZzSGpObTNjeVVnUDZSSjJBVEtnVzg?oc=5","sentiment":"NEUTRAL"},{"title":"Top 19 PSU Stocks In India To Buy In November 2026 - Samco","source":"Samco","published":"Wed, 11 Nov 2026 06:51:10","url":"https://news.google.com/rss/articles/CBMiekFVX3lxTE14aGtfQTlCVjdRUHNUazZWXzBOU0xzZU5KNEpXTHRJTTMxbU9ueVVIWml1bmFFdktuQTNsZklJWFFkSGtGS2FqMzRxd2Q2TERKTjdqYklQWnhNV2I2dEs3eV9uOWh1bU1HV1JlMWRuaUowUjNZNGNxLUlR?oc=5","sentiment":"POSITIVE"},{"title":"FII Backed Five-Year Winner Fast Profit Growth Stocks to Watch - Univest","source":"Univest","published":"Fri, 13 Nov 2026 04:17:00","url":"https://news.google.com/rss/articles/CBMiugFBVV95cUxQNTc0TVNGdTVEaE5Ca1V1Z3d4bFVCT2dZV21LNmZya1N3amptcnY4VmU0ZVZtdGhWVF9NODlENUJnMjFLVmYzbk1uWDN6YVFqbnhnTV8yWmplc1VfTEYxc0VBR19PVlpDM2JOa0xlS05SUlV3WFVocFA5MWRrOE9yUlRNRzB4ZkRnLTlOVlY5QnJjNFlZLWd4R0hjb0xOWDJ3emp4TUpTSFhqNnZhS3NSQ3YxWGpjdmx1R0E?oc=5","sentiment":"POSITIVE"}],"promoter_and_competitor_intel":{"promoter_group":"President Of India (51.10% Total Promoter Stake)","key_leaders":[{"name":"President Of India","role":"Principal Promoter & Executive Leadership","focus":"Capital allocation, operating margin expansion & growth in Power Generation","handle_or_source":"BSE/NSE Corporate Filings & Earnings Concalls"}],"key_stakeholders_watch":["Promoters hold 51.10% (+0.00% 4Q change)","Foreign Institutions (FII) hold 15.79% (-0.61% 4Q change)","Domestic Institutions (DII) hold 29.86% (+0.93% 4Q change)"],"promoter_statements_and_articles":[{"speaker_or_source":"Moneycontrol.com","published":"Sat, 31 Oct 2026 07:00","headline":"NTPC Q2 results: Consolidated profit rises 41% to Rs 7,351 crore, revenue up 21%; declares Rs 3 interim... - Moneycontrol.com","url":"https://news.google.com/rss/articles/CBMi9wFBVV95cUxPNUxBN2JzQS0xM3Fvdk9xcmVIRVh1TVhabEN1dkI5b0JFdmw5c3dJNkVnNXFkeXhNd3RSWUxjVHRTQ1otR09aQmc2RE5NaUVOVV9SNkNuU2lFSm5oM3A5R2hETE9NR0pRMjFLdG1rRHI4dEV2VEVjSVhSX1E0SHptODBaUjgyRW1hRnNIYXQxcWNHSHdCMkY0UlVEamxYZEtfYURHeUx4RWY3NjhTcF83QWZYREhUdmxwNFZaeS1aMTk2Y2JsMi1zS3o5VUV1UVpZWjY4MGpBUjBZSTFqV2dPMzY2cnFOVTB0UE1QX1hoS0xsWTVBUVJj0gH8AUFVX3lxTFBfN19mQmRFQmRtb1pkU1FieVBQZ0pqbXBnZmJWSWlKeGg3WDZPTm5sdk9WQkVSWHc0R0drUFpKRkpEdG9Gc25jRzNGUGtqWjZfLXpEejNrcjZKWG5pc1p0MExyTEM5MDNvNC1NWGhDMlNoYXQ0WnZXUmt2bDhUNjRYS1RQRjJsM3JiejhFVFY0dUJ0RHlHRHByU1ZxUWlFaFdhUDlCX29vU0NjOWFqMVUyTW9YS0xvOFVMTWFWSFpwUm1YV0Q3eU8wai1wbDgzWHpIZWJqRDJXSUR1LUFkSzhyUDNLdENYd0V3UHphdlVFWGd2SDB4SExxOWltYw?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."},{"speaker_or_source":"Upstox","published":"Sun, 01 Nov 2026 07:00","headline":"NTPC Q2 results: Net profit soars 41% YoY to \u20b97,351 crore; dividend of \u20b93/share declared - Upstox","url":"https://news.google.com/rss/articles/CBMi3gFBVV95cUxPY1FxMVlUWGxjek9VbkctQkxsYlh0WnljLURLSV9ta3pUSUFOOUJTYnpKVTVXQnRLOXE3RzFBV3VEUGY5VlpOUk03ZVNVZUYwSkhHcl90cUk1dzBtUjk3SFFqVVRZSlJFc3VVc2FmeTBDY2V3aUZ2THJkNmJvMzBibXNZOVoybVRBaV9QNjlUekFRZ0REa3JTeS1GREN0cXM2N2laTS0zdUIxR3QzdWhPRGZ5bi1Eb2Ezc3U4UXM3dWJFTnMzZnhqVGVlNDJWTExTcHNNVmFFWGNHMFJ6OUE?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."},{"speaker_or_source":"Multibagg AI","published":"Sat, 31 Oct 2026 10:02","headline":"NTPC Limited Board Meets for Q2 FY27 Results and Dividend - Multibagg AI","url":"https://news.google.com/rss/articles/CBMipgFBVV95cUxNTXBLQ01QQkFvMlluRTBBaGhKOHZha210VVJGSDFKN3BteE02VUJxZUJ5cHVVUXhIMkFDRTUyckY2c2JjQ2ZydkJGeXliLWVJNHFWM0Y2TkRidjZiQmNBbjNsZnBocEE1WkprM1MwR1ZaaEhLQTBqNkhkOG1tRnRFZUt4QzU1cmt4ZkdzcW5OUFJWaDBYakVWYUYtM01OWFU5aGZqM3d3?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Direct order-book / deal-pipeline expansion increases forward 4-quarter revenue visibility and earnings multiples."},{"speaker_or_source":"scanx.trade","published":"Sat, 31 Oct 2026 07:00","headline":"NTPC Q2FY27 net profit rises 14% YoY to \u20b97,350 crore - scanx.trade","url":"https://news.google.com/rss/articles/CBMisgFBVV95cUxPZTRXcnNxNkdLVENTckgyaEJzeTl5ci1TUm0zYU5uN0pIci0xSk9Vai1sTzJsNXNkdVRhcEpndVhCV1pfd0hlaW9TSlFOMTdNdzlyQjFxVWMzV2J3WnFiRkNYVFZMXzZpTzNWd2F3aTNLX2dVeFB2QzFJRnlfTC03cktFMktrQmg3eGtoUFA0aVB4T25yNWlWVkZWSF9yalpSczRzY09HcHYwTTh1dS1MTV9R?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."},{"speaker_or_source":"TechGraph","published":"Fri, 13 Nov 2026 08:00","headline":"NTPC (NTPC) Share Price Today (NSE), Market News - TechGraph","url":"https://news.google.com/rss/articles/CBMiXEFVX3lxTE12NlF4T3VocE9pMGNCOVQ3UmVPYmpPM19haW5LNE4xQURLYTk3dVJMZkY4QllreDh2UzE3RDZqNERodHdKbmhFc1ljdzNuLVM3OGlsRVRXRnpGUGFH?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for NTPC Ltd."},{"speaker_or_source":"NiftyTrader","published":"Fri, 30 Oct 2026 07:00","headline":"NTPC Q2 FY27 Results Oct 31: Brokerages See Profit Up 66%, Dividend Hopes and What to Watch - NiftyTrader","url":"https://news.google.com/rss/articles/CBMif0FVX3lxTE9SWHluY1Ffa05GMHhKN3hNM0x0dVlnSU1sbjFXOGF5YWZ2NS1nR1RUZlVPWF9DOTBYQ0VfUVg3cWU5aEtDODF6ajBOZUYtOFY0ekx4ZFZpTlpnZ1dhQ3FqUm1VeGZrcTNjOWNNZURBLW1NNENpU3pZMUFvRlBKTW8?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."}],"competitors":[{"symbol":"BHEL","name":"Bharat Heavy Electricals Ltd","segment":"Power Equipment","current_price":436.3,"day_change_pct":1.18,"return_1m_pct":-1.37,"pe":null,"roe_pct":null,"latest_statement_or_news":"BHEL Share Price Today - Bharat Heavy Electricals on NSE/BSE - scanx.trade","latest_news_url":"https://news.google.com/rss/articles/CBMibkFVX3lxTE1wT0xDN1VyUUtzSWhBNkhXb1hMSUdibnR5SnV0QWsyS3pYem4wMGdzNkV3OFdraXRkUGxHQmRMSnVSS0JHcDkydS1oZ1hiamFidGJmbDVaWXR5b1hQb2pDRmFfYm9xUWhUM3ZIdnZn?oc=5","read_across_signal":"NEUTRAL","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for NTPC Ltd."},{"symbol":"TATAPOWER","name":"Tata Power Company Ltd","segment":"Power & Renewables","current_price":348.0,"day_change_pct":-2.52,"return_1m_pct":0.87,"pe":null,"roe_pct":null,"latest_statement_or_news":"Tata Power Share Price Today, Tata Power Stock Price Live NSE/BSE Updates - The Economic Times","latest_news_url":"https://news.google.com/rss/articles/CBMijwFBVV95cUxPMy1VRjNTOFdkbHZKX3JXUExGdkF3SHp3Y1RpakpYa1RSYkZGUFB2Q3FZb1d0blFvYTNScGxUSWo0RGsxdmVJOENBcG9iOTZNMURQa0lCWDZiRmNPUGNwdW1mQXVfS0xzbXZaX2V6Nnh3LW1xUnM2WWJMQkMtbHNnUzNmeUNEcUJGOXRud3luMA?oc=5","read_across_signal":"COMPETITIVE THREAT","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for NTPC Ltd."},{"symbol":"POWERGRID","name":"Power Grid Corporation of India Ltd","segment":"Power Transmission","current_price":257.45,"day_change_pct":-0.77,"return_1m_pct":3.97,"pe":null,"roe_pct":null,"latest_statement_or_news":"Power Grid Corporation of India (NSEI:POWERGRID) Stock Forecast & Analyst Predictions - Simply Wall St","latest_news_url":"https://news.google.com/rss/articles/CBMiowFBVV95cUxOTDNHOVFOeFI5REk3VEh4dENiVmZQTVAzYjRWd3Uwd3ZUWkd2MTVYNnZPUERwWEphYWJXYlBUaXBCZTFRRVZJbkFmRjFaSmdmeEdZSzE0bVk2Y0ZzLW1QUWNoNkhuSGRIU1Z4cW1ZbjQwNzFEVEdnaWozU2NGUkFQRXhSVm5YelBoNnNCcDlFTXQ5T243VTZZVFdNejZLUi1iT0ZV?oc=5","read_across_signal":"NEUTRAL","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for NTPC Ltd."}]}}
+{
+  "fetched_at": "2026-11-16 01:40:22 IST",
+  "overview": {
+    "symbol": "NTPC",
+    "name": "NTPC Ltd",
+    "exchange": "NSE",
+    "bse_code": null,
+    "nse_code": "NTPC",
+    "sector": "Utilities",
+    "industry": "Power Generation",
+    "about": "NTPC (National Thermal Power Corporation) Ltd along with its subsidiaries/ associates & JVs is primarily involved in generation and sale of bulk power to State power utilities. Other business of the group includes providing consultancy, project management & supervision, energy trading, oil & gas exploration and coal mining. [1]",
+    "market_cap_cr": 309421.0,
+    "current_price": 319.0,
+    "high_52w": 414.0,
+    "low_52w": 292.0,
+    "stock_pe": 10.4,
+    "book_value": 220.0,
+    "dividend_yield_pct": 2.82,
+    "roce_pct": 8.92,
+    "roe_pct": 15.1,
+    "face_value": 10.0,
+    "revenue_cagr_5y_pct": 9.02,
+    "profit_cagr_5y_pct": 12.89,
+    "piotroski_score": 4,
+    "pros": [
+      "Company has been maintaining a healthy dividend payout of 34.3%"
+    ],
+    "cons": [
+      "The company has delivered a poor sales growth of 10.9% over past five years.",
+      "Tax rate seems low",
+      "Company might be capitalizing the interest cost"
+    ]
+  },
+  "last_5_annual_reports": [
+    {
+      "period": "Mar 2022",
+      "revenue_cr": 132669.0,
+      "expenses_cr": 92307.0,
+      "operating_profit_cr": 40362.0,
+      "opm_pct": 30.0,
+      "other_income_cr": 4809.0,
+      "interest_cr": 9376.0,
+      "depreciation_cr": 13788.0,
+      "profit_before_tax_cr": 22007.0,
+      "tax_pct": 23.0,
+      "net_profit_cr": 16960.0,
+      "eps_inr": 17.2,
+      "dividend_payout_pct": 41.0,
+      "revenue_growth_pct": 18.95,
+      "net_profit_growth_pct": 13.3
+    },
+    {
+      "period": "Mar 2023",
+      "revenue_cr": 176207.0,
+      "expenses_cr": 128611.0,
+      "operating_profit_cr": 47596.0,
+      "opm_pct": 27.0,
+      "other_income_cr": 2561.0,
+      "interest_cr": 11447.0,
+      "depreciation_cr": 14792.0,
+      "profit_before_tax_cr": 23917.0,
+      "tax_pct": 28.0,
+      "net_profit_cr": 17121.0,
+      "eps_inr": 17.44,
+      "dividend_payout_pct": 42.0,
+      "revenue_growth_pct": 32.82,
+      "net_profit_growth_pct": 0.95
+    },
+    {
+      "period": "Mar 2024",
+      "revenue_cr": 178525.0,
+      "expenses_cr": 127056.0,
+      "operating_profit_cr": 51469.0,
+      "opm_pct": 29.0,
+      "other_income_cr": 5177.0,
+      "interest_cr": 12301.0,
+      "depreciation_cr": 16204.0,
+      "profit_before_tax_cr": 28142.0,
+      "tax_pct": 24.0,
+      "net_profit_cr": 21332.0,
+      "eps_inr": 21.46,
+      "dividend_payout_pct": 36.0,
+      "revenue_growth_pct": 1.32,
+      "net_profit_growth_pct": 24.6
+    },
+    {
+      "period": "Mar 2025",
+      "revenue_cr": 188138.0,
+      "expenses_cr": 133783.0,
+      "operating_profit_cr": 54355.0,
+      "opm_pct": 29.0,
+      "other_income_cr": 8526.0,
+      "interest_cr": 13282.0,
+      "depreciation_cr": 17401.0,
+      "profit_before_tax_cr": 32198.0,
+      "tax_pct": 26.0,
+      "net_profit_cr": 23953.0,
+      "eps_inr": 24.16,
+      "dividend_payout_pct": 35.0,
+      "revenue_growth_pct": 5.38,
+      "net_profit_growth_pct": 12.29
+    },
+    {
+      "period": "Mar 2026",
+      "revenue_cr": 187385.0,
+      "expenses_cr": 131947.0,
+      "operating_profit_cr": 55438.0,
+      "opm_pct": 30.0,
+      "other_income_cr": 2662.0,
+      "interest_cr": 13801.0,
+      "depreciation_cr": 19629.0,
+      "profit_before_tax_cr": 24669.0,
+      "tax_pct": -12.0,
+      "net_profit_cr": 27546.0,
+      "eps_inr": 27.9,
+      "dividend_payout_pct": 32.0,
+      "revenue_growth_pct": -0.4,
+      "net_profit_growth_pct": 15.0
+    }
+  ],
+  "last_5_quarterly_reports": [
+    {
+      "period": "Sep 2025",
+      "revenue_cr": 44784.0,
+      "expenses_cr": 31970.0,
+      "operating_profit_cr": 12814.0,
+      "opm_pct": 29.0,
+      "other_income_cr": 2735.0,
+      "interest_cr": 3432.0,
+      "depreciation_cr": 4816.0,
+      "profit_before_tax_cr": 7301.0,
+      "tax_pct": 28.0,
+      "net_profit_cr": 5225.0,
+      "eps_inr": 5.23,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": -4.84,
+      "net_profit_growth_pct": -14.46
+    },
+    {
+      "period": "Dec 2025",
+      "revenue_cr": 45846.0,
+      "expenses_cr": 31276.0,
+      "operating_profit_cr": 14570.0,
+      "opm_pct": 32.0,
+      "other_income_cr": 1738.0,
+      "interest_cr": 3164.0,
+      "depreciation_cr": 5093.0,
+      "profit_before_tax_cr": 8050.0,
+      "tax_pct": 30.0,
+      "net_profit_cr": 5597.0,
+      "eps_inr": 5.66,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 2.37,
+      "net_profit_growth_pct": 7.12
+    },
+    {
+      "period": "Mar 2026",
+      "revenue_cr": 49686.0,
+      "expenses_cr": 41181.0,
+      "operating_profit_cr": 8505.0,
+      "opm_pct": 17.0,
+      "other_income_cr": 1918.0,
+      "interest_cr": 3737.0,
+      "depreciation_cr": 5134.0,
+      "profit_before_tax_cr": 1553.0,
+      "tax_pct": -584.0,
+      "net_profit_cr": 10615.0,
+      "eps_inr": 10.81,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 8.38,
+      "net_profit_growth_pct": 89.66
+    },
+    {
+      "period": "Jun 2026",
+      "revenue_cr": 50741.0,
+      "expenses_cr": 34510.0,
+      "operating_profit_cr": 16231.0,
+      "opm_pct": 32.0,
+      "other_income_cr": 1549.0,
+      "interest_cr": 3386.0,
+      "depreciation_cr": 5234.0,
+      "profit_before_tax_cr": 9160.0,
+      "tax_pct": 25.0,
+      "net_profit_cr": 6896.0,
+      "eps_inr": 6.93,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 2.12,
+      "net_profit_growth_pct": -35.04
+    },
+    {
+      "period": "Sep 2026",
+      "revenue_cr": 54270.0,
+      "expenses_cr": 38643.0,
+      "operating_profit_cr": 15627.0,
+      "opm_pct": 29.0,
+      "other_income_cr": 3007.0,
+      "interest_cr": 4086.0,
+      "depreciation_cr": 5330.0,
+      "profit_before_tax_cr": 9218.0,
+      "tax_pct": 20.0,
+      "net_profit_cr": 7351.0,
+      "eps_inr": 7.25,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 6.95,
+      "net_profit_growth_pct": 6.6
+    }
+  ],
+  "cash_and_balance_sheet": {
+    "latest_period": "Sep 2026",
+    "cash_equivalents_cr": 7763.0,
+    "liquid_investments_cr": 25289.0,
+    "total_cash_in_hand_cr": 33052.0,
+    "total_borrowings_cr": 279526.0,
+    "net_cash_position_cr": -246474.0,
+    "debt_to_equity": 1.31,
+    "cash_to_debt_ratio": 0.12,
+    "cash_pct_of_mcap": 10.68,
+    "latest_ocf_cr": 0.0,
+    "latest_fcf_cr": 0.0,
+    "cumulative_5y_ocf_cr": 392.0,
+    "cumulative_5y_fcf_cr": -91278.15,
+    "roce_5y_series": [
+      {
+        "period": "Mar 2022",
+        "roce_pct": 9.0
+      },
+      {
+        "period": "Mar 2023",
+        "roce_pct": 10.0
+      },
+      {
+        "period": "Mar 2024",
+        "roce_pct": 10.0
+      },
+      {
+        "period": "Mar 2025",
+        "roce_pct": 11.0
+      },
+      {
+        "period": "Mar 2026",
+        "roce_pct": 9.0
+      }
+    ],
+    "history_5y": [
+      {
+        "period": "Mar 2023",
+        "cash_equivalents_cr": 4949.0,
+        "investments_cr": 13935.0,
+        "total_cash_in_hand_cr": 18884.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 222913.0,
+        "net_cash_cr": -204029.0,
+        "total_equity_cr": 147023.0,
+        "total_assets_cr": 447189.0,
+        "operating_cash_flow_cr": 108.0,
+        "investing_cash_flow_cr": -26145.0,
+        "free_cash_flow_cr": -16886.25
+      },
+      {
+        "period": "Mar 2024",
+        "cash_equivalents_cr": 6847.0,
+        "investments_cr": 15885.0,
+        "total_cash_in_hand_cr": 22732.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 237131.0,
+        "net_cash_cr": -214399.0,
+        "total_equity_cr": 160710.0,
+        "total_assets_cr": 479278.0,
+        "operating_cash_flow_cr": 85.0,
+        "investing_cash_flow_cr": -31456.0,
+        "free_cash_flow_cr": -20361.4
+      },
+      {
+        "period": "Mar 2025",
+        "cash_equivalents_cr": 11457.0,
+        "investments_cr": 19704.0,
+        "total_cash_in_hand_cr": 31161.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 250096.0,
+        "net_cash_cr": -218935.0,
+        "total_equity_cr": 184071.0,
+        "total_assets_cr": 523732.0,
+        "operating_cash_flow_cr": 101.0,
+        "investing_cash_flow_cr": -45852.0,
+        "free_cash_flow_cr": -29702.8
+      },
+      {
+        "period": "Mar 2026",
+        "cash_equivalents_cr": 8004.0,
+        "investments_cr": 24180.0,
+        "total_cash_in_hand_cr": 32184.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 271005.0,
+        "net_cash_cr": -238821.0,
+        "total_equity_cr": 203176.0,
+        "total_assets_cr": 558442.0,
+        "operating_cash_flow_cr": 98.0,
+        "investing_cash_flow_cr": -37578.0,
+        "free_cash_flow_cr": -24327.7
+      },
+      {
+        "period": "Sep 2026",
+        "cash_equivalents_cr": 7763.0,
+        "investments_cr": 25289.0,
+        "total_cash_in_hand_cr": 33052.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 279526.0,
+        "net_cash_cr": -246474.0,
+        "total_equity_cr": 213472.0,
+        "total_assets_cr": 577363.0,
+        "operating_cash_flow_cr": null,
+        "investing_cash_flow_cr": null,
+        "free_cash_flow_cr": null
+      }
+    ]
+  },
+  "stockholders": {
+    "latest_period": "Sep 2026",
+    "promoters_pct": 51.1,
+    "fii_pct": 15.79,
+    "dii_pct": 29.86,
+    "government_pct": 0.0,
+    "public_pct": 3.23,
+    "institutional_total_pct": 45.65,
+    "promoter_change_4q_pct": 0.0,
+    "fii_change_4q_pct": -0.61,
+    "dii_change_4q_pct": 0.93,
+    "num_shareholders": 3134985,
+    "quarterly_history": [
+      {
+        "period": "Dec 2024",
+        "promoters_pct": 51.1,
+        "fii_pct": 18.2,
+        "dii_pct": 26.76,
+        "government_pct": 0.11,
+        "public_pct": 3.83,
+        "num_shareholders": 4365786
+      },
+      {
+        "period": "Mar 2025",
+        "promoters_pct": 51.1,
+        "fii_pct": 17.79,
+        "dii_pct": 27.22,
+        "government_pct": 0.11,
+        "public_pct": 3.77,
+        "num_shareholders": 4143175
+      },
+      {
+        "period": "Jun 2025",
+        "promoters_pct": 51.1,
+        "fii_pct": 16.09,
+        "dii_pct": 28.92,
+        "government_pct": 0.12,
+        "public_pct": 3.77,
+        "num_shareholders": 3965860
+      },
+      {
+        "period": "Sep 2025",
+        "promoters_pct": 51.1,
+        "fii_pct": 16.4,
+        "dii_pct": 28.93,
+        "government_pct": 0.12,
+        "public_pct": 3.45,
+        "num_shareholders": 3729617
+      },
+      {
+        "period": "Dec 2025",
+        "promoters_pct": 51.1,
+        "fii_pct": 16.24,
+        "dii_pct": 29.19,
+        "government_pct": 0.12,
+        "public_pct": 3.34,
+        "num_shareholders": 3543434
+      },
+      {
+        "period": "Mar 2026",
+        "promoters_pct": 51.1,
+        "fii_pct": 16.54,
+        "dii_pct": 29.13,
+        "government_pct": 0.12,
+        "public_pct": 3.1,
+        "num_shareholders": 3300179
+      },
+      {
+        "period": "Jun 2026",
+        "promoters_pct": 51.1,
+        "fii_pct": 16.3,
+        "dii_pct": 29.44,
+        "government_pct": 0.0,
+        "public_pct": 3.14,
+        "num_shareholders": 3201112
+      },
+      {
+        "period": "Sep 2026",
+        "promoters_pct": 51.1,
+        "fii_pct": 15.79,
+        "dii_pct": 29.86,
+        "government_pct": 0.0,
+        "public_pct": 3.23,
+        "num_shareholders": 3134985
+      }
+    ],
+    "named_stockholders": [
+      {
+        "name": "President Of India",
+        "category": "Promoter",
+        "latest_holding_pct": 38450.0,
+        "previous_holding_pct": 51.1,
+        "change_4q_pct": 38398.9,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 51.1
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 51.1
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 51.1
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 51.1
+          },
+          {
+            "period": "setAttributes",
+            "pct": 38450.0
+          }
+        ]
+      }
+    ]
+  },
+  "rd_and_innovation": {
+    "latest_rd_spend_cr": 524.68,
+    "latest_rd_pct_of_sales": 0.28,
+    "cumulative_5y_rd_cr": 2354.19,
+    "intangible_assets_cr": 0.0,
+    "cwip_cr": 84957.0,
+    "rd_cagr_5y_pct": 11.05,
+    "innovation_focus": "NETRA (NTPC Energy Technology Research Alliance) carbon capture, green methanol & nuclear",
+    "rd_data_source": "Annual Report R&D Disclosure",
+    "history_5y": [
+      {
+        "period": "Mar 2022",
+        "revenue_cr": 132669.0,
+        "rd_spend_cr": 344.94,
+        "rd_pct_of_sales": 0.26,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 91126.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2023",
+        "revenue_cr": 176207.0,
+        "rd_spend_cr": 475.76,
+        "rd_pct_of_sales": 0.27,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 89179.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2024",
+        "revenue_cr": 178525.0,
+        "rd_spend_cr": 482.02,
+        "rd_pct_of_sales": 0.27,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 87664.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2025",
+        "revenue_cr": 188138.0,
+        "rd_spend_cr": 526.79,
+        "rd_pct_of_sales": 0.28,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 100859.0,
+        "employee_cost_pct": null
+      },
+      {
+        "period": "Mar 2026",
+        "revenue_cr": 187385.0,
+        "rd_spend_cr": 524.68,
+        "rd_pct_of_sales": 0.28,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 84957.0,
+        "employee_cost_pct": null
+      }
+    ],
+    "annual_reports_5y": [
+      {
+        "title": "Annual Report 2026",
+        "year": "2026",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/dbc69766-f1e1-4ecc-9fa9-7599477167db.pdf"
+      },
+      {
+        "title": "Annual Report 2025",
+        "year": "2025",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/ba273826-d8ae-4bf6-b346-31875690c34b.pdf"
+      },
+      {
+        "title": "Annual Report 2024",
+        "year": "2024",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/39e0cfa7-a5b9-4ef4-9802-ba4248ad306d.pdf"
+      },
+      {
+        "title": "Annual Report 2023",
+        "year": "2023",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/da3b3d90-81a9-4839-9a4c-3caedb6497f4.pdf"
+      },
+      {
+        "title": "Annual Report 2022",
+        "year": "2022",
+        "url": "https://www.bseindia.com/bseplus/AnnualReport/532555/74152532555.pdf"
+      }
+    ]
+  },
+  "technicals": {
+    "current_price": 319.1,
+    "prev_close": 323.0,
+    "day_change_pct": -1.21,
+    "day_high": 322.95,
+    "day_low": 317.05,
+    "high_52w": 414.0,
+    "low_52w": 292.0,
+    "return_5d_pct": -1.34,
+    "return_1m_pct": 1.72,
+    "return_6m_pct": -19.48,
+    "return_1y_pct": -3.36,
+    "rsi_14": 50.76,
+    "macd_line": 1.81,
+    "macd_signal": 0.25,
+    "macd_hist": 1.57,
+    "ema_20": 318.52,
+    "dma_50": 321.76,
+    "dma_200": 341.16,
+    "bb_upper": 334.18,
+    "bb_middle": 314.36,
+    "bb_lower": 294.55,
+    "atr_14": 7.79,
+    "atr_pct": 2.44,
+    "volume_latest": 5034469.0,
+    "volume_20d_avg": 9677927.35,
+    "volume_Surge_ratio": 0.52,
+    "annualized_volatility_pct": 22.34,
+    "pivot_point": 319.7,
+    "support_1": 316.45,
+    "support_2": 313.8,
+    "resistance_1": 322.35,
+    "resistance_2": 325.6,
+    "trend_regime": "BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA)",
+    "technical_signals": [
+      "Price below both 50-DMA and 200-DMA; wait for support stabilization",
+      "RSI(14) at 50.76 \u2014 Neutral momentum band",
+      "MACD Bullish Crossover active (Histogram +1.57)"
+    ],
+    "price_series": [
+      {
+        "date": "2026-07-08",
+        "close": 348.7,
+        "open": 344.89,
+        "high": 345.92,
+        "low": 340.58,
+        "dma50": 367.87,
+        "dma200": 361.88,
+        "volume": 9898287.0
+      },
+      {
+        "date": "2026-07-09",
+        "close": 343.7,
+        "open": 342.0,
+        "high": 343.96,
+        "low": 336.22,
+        "dma50": 366.92,
+        "dma200": 361.7,
+        "volume": 18770087.0
+      },
+      {
+        "date": "2026-07-10",
+        "close": 344.55,
+        "open": 337.59,
+        "high": 341.8,
+        "low": 336.32,
+        "dma50": 366.05,
+        "dma200": 361.53,
+        "volume": 13212805.0
+      },
+      {
+        "date": "2026-07-13",
+        "close": 351.75,
+        "open": 338.13,
+        "high": 347.88,
+        "low": 336.81,
+        "dma50": 365.49,
+        "dma200": 361.43,
+        "volume": 8638829.0
+      },
+      {
+        "date": "2026-07-14",
+        "close": 348.15,
+        "open": 341.51,
+        "high": 346.85,
+        "low": 340.53,
+        "dma50": 364.81,
+        "dma200": 361.3,
+        "volume": 8832150.0
+      },
+      {
+        "date": "2026-07-15",
+        "close": 344.35,
+        "open": 340.53,
+        "high": 341.46,
+        "low": 336.17,
+        "dma50": 364.0,
+        "dma200": 361.13,
+        "volume": 11869569.0
+      },
+      {
+        "date": "2026-07-16",
+        "close": 342.45,
+        "open": 337.3,
+        "high": 339.11,
+        "low": 335.24,
+        "dma50": 363.16,
+        "dma200": 360.94,
+        "volume": 14801920.0
+      },
+      {
+        "date": "2026-07-17",
+        "close": 341.85,
+        "open": 335.63,
+        "high": 337.0,
+        "low": 333.43,
+        "dma50": 362.32,
+        "dma200": 360.75,
+        "volume": 7860947.0
+      },
+      {
+        "date": "2026-07-20",
+        "close": 347.25,
+        "open": 336.12,
+        "high": 342.29,
+        "low": 334.26,
+        "dma50": 361.73,
+        "dma200": 360.62,
+        "volume": 14744282.0
+      },
+      {
+        "date": "2026-07-21",
+        "close": 348.55,
+        "open": 340.24,
+        "high": 342.15,
+        "low": 337.25,
+        "dma50": 361.21,
+        "dma200": 360.5,
+        "volume": 8761839.0
+      },
+      {
+        "date": "2026-07-22",
+        "close": 350.5,
+        "open": 340.43,
+        "high": 343.81,
+        "low": 338.72,
+        "dma50": 360.79,
+        "dma200": 360.4,
+        "volume": 7234233.0
+      },
+      {
+        "date": "2026-07-23",
+        "close": 348.6,
+        "open": 341.56,
+        "high": 343.67,
+        "low": 340.14,
+        "dma50": 360.32,
+        "dma200": 360.28,
+        "volume": 7175761.0
+      },
+      {
+        "date": "2026-07-24",
+        "close": 347.2,
+        "open": 340.97,
+        "high": 342.98,
+        "low": 338.18,
+        "dma50": 359.8,
+        "dma200": 360.15,
+        "volume": 6995344.0
+      },
+      {
+        "date": "2026-07-27",
+        "close": 350.8,
+        "open": 345.92,
+        "high": 345.92,
+        "low": 340.82,
+        "dma50": 359.45,
+        "dma200": 360.06,
+        "volume": 12636209.0
+      },
+      {
+        "date": "2026-07-28",
+        "close": 343.75,
+        "open": 342.93,
+        "high": 342.98,
+        "low": 335.24,
+        "dma50": 358.83,
+        "dma200": 359.89,
+        "volume": 14285364.0
+      },
+      {
+        "date": "2026-07-29",
+        "close": 343.5,
+        "open": 336.81,
+        "high": 338.42,
+        "low": 334.31,
+        "dma50": 358.23,
+        "dma200": 359.73,
+        "volume": 9112883.0
+      },
+      {
+        "date": "2026-07-30",
+        "close": 344.85,
+        "open": 336.61,
+        "high": 340.68,
+        "low": 334.99,
+        "dma50": 357.71,
+        "dma200": 359.58,
+        "volume": 10758912.0
+      },
+      {
+        "date": "2026-07-31",
+        "close": 347.25,
+        "open": 337.2,
+        "high": 341.26,
+        "low": 336.66,
+        "dma50": 357.3,
+        "dma200": 359.46,
+        "volume": 8632058.0
+      },
+      {
+        "date": "2026-08-03",
+        "close": 350.9,
+        "open": 340.28,
+        "high": 343.86,
+        "low": 338.37,
+        "dma50": 357.05,
+        "dma200": 359.38,
+        "volume": 5573502.0
+      },
+      {
+        "date": "2026-08-04",
+        "close": 343.65,
+        "open": 341.02,
+        "high": 341.95,
+        "low": 334.75,
+        "dma50": 356.52,
+        "dma200": 359.22,
+        "volume": 7403248.0
+      },
+      {
+        "date": "2026-08-05",
+        "close": 349.9,
+        "open": 336.56,
+        "high": 342.88,
+        "low": 335.87,
+        "dma50": 356.26,
+        "dma200": 359.13,
+        "volume": 19926757.0
+      },
+      {
+        "date": "2026-08-06",
+        "close": 345.0,
+        "open": 340.53,
+        "high": 342.24,
+        "low": 336.22,
+        "dma50": 355.82,
+        "dma200": 358.99,
+        "volume": 10401486.0
+      },
+      {
+        "date": "2026-08-07",
+        "close": 342.5,
+        "open": 338.08,
+        "high": 340.04,
+        "low": 335.63,
+        "dma50": 355.3,
+        "dma200": 358.82,
+        "volume": 7431402.0
+      },
+      {
+        "date": "2026-08-10",
+        "close": 340.45,
+        "open": 335.63,
+        "high": 336.81,
+        "low": 330.39,
+        "dma50": 354.72,
+        "dma200": 358.64,
+        "volume": 9395350.0
+      },
+      {
+        "date": "2026-08-11",
+        "close": 338.45,
+        "open": 332.79,
+        "high": 333.57,
+        "low": 329.31,
+        "dma50": 354.08,
+        "dma200": 358.44,
+        "volume": 10828846.0
+      },
+      {
+        "date": "2026-08-12",
+        "close": 339.45,
+        "open": 331.66,
+        "high": 334.5,
+        "low": 328.62,
+        "dma50": 353.5,
+        "dma200": 358.25,
+        "volume": 10751737.0
+      },
+      {
+        "date": "2026-08-13",
+        "close": 344.25,
+        "open": 331.27,
+        "high": 337.34,
+        "low": 331.22,
+        "dma50": 353.14,
+        "dma200": 358.11,
+        "volume": 11550537.0
+      },
+      {
+        "date": "2026-08-14",
+        "close": 340.0,
+        "open": 336.76,
+        "high": 336.76,
+        "low": 330.73,
+        "dma50": 352.63,
+        "dma200": 357.93,
+        "volume": 8334382.0
+      },
+      {
+        "date": "2026-08-17",
+        "close": 337.0,
+        "open": 333.18,
+        "high": 333.47,
+        "low": 328.97,
+        "dma50": 352.01,
+        "dma200": 357.72,
+        "volume": 8316923.0
+      },
+      {
+        "date": "2026-08-18",
+        "close": 337.1,
+        "open": 330.24,
+        "high": 332.49,
+        "low": 327.2,
+        "dma50": 351.43,
+        "dma200": 357.52,
+        "volume": 10543355.0
+      },
+      {
+        "date": "2026-08-19",
+        "close": 336.55,
+        "open": 329.55,
+        "high": 332.05,
+        "low": 326.91,
+        "dma50": 350.84,
+        "dma200": 357.31,
+        "volume": 7666396.0
+      },
+      {
+        "date": "2026-08-20",
+        "close": 337.5,
+        "open": 330.34,
+        "high": 332.74,
+        "low": 327.69,
+        "dma50": 350.32,
+        "dma200": 357.11,
+        "volume": 4354487.0
+      },
+      {
+        "date": "2026-08-21",
+        "close": 340.0,
+        "open": 330.24,
+        "high": 335.97,
+        "low": 330.24,
+        "dma50": 349.92,
+        "dma200": 356.94,
+        "volume": 7095469.0
+      },
+      {
+        "date": "2026-08-24",
+        "close": 339.5,
+        "open": 333.87,
+        "high": 335.19,
+        "low": 330.68,
+        "dma50": 349.51,
+        "dma200": 356.77,
+        "volume": 5830893.0
+      },
+      {
+        "date": "2026-08-25",
+        "close": 339.85,
+        "open": 332.2,
+        "high": 333.96,
+        "low": 328.92,
+        "dma50": 349.13,
+        "dma200": 356.6,
+        "volume": 5474765.0
+      },
+      {
+        "date": "2026-08-26",
+        "close": 334.6,
+        "open": 334.7,
+        "high": 337.54,
+        "low": 327.89,
+        "dma50": 348.56,
+        "dma200": 356.38,
+        "volume": 6232520.0
+      },
+      {
+        "date": "2026-08-27",
+        "close": 330.9,
+        "open": 328.28,
+        "high": 329.21,
+        "low": 321.81,
+        "dma50": 347.87,
+        "dma200": 356.13,
+        "volume": 13628035.0
+      },
+      {
+        "date": "2026-08-28",
+        "close": 330.05,
+        "open": 322.89,
+        "high": 326.42,
+        "low": 322.2,
+        "dma50": 347.17,
+        "dma200": 355.87,
+        "volume": 8061610.0
+      },
+      {
+        "date": "2026-08-31",
+        "close": 327.4,
+        "open": 323.48,
+        "high": 323.82,
+        "low": 317.01,
+        "dma50": 346.39,
+        "dma200": 355.58,
+        "volume": 19069080.0
+      },
+      {
+        "date": "2026-09-01",
+        "close": 327.5,
+        "open": 320.83,
+        "high": 321.67,
+        "low": 318.53,
+        "dma50": 345.65,
+        "dma200": 355.3,
+        "volume": 7829054.0
+      },
+      {
+        "date": "2026-09-02",
+        "close": 330.0,
+        "open": 320.93,
+        "high": 327.96,
+        "low": 317.96,
+        "dma50": 345.04,
+        "dma200": 355.05,
+        "volume": 12650156.0
+      },
+      {
+        "date": "2026-09-03",
+        "close": 330.9,
+        "open": 327.32,
+        "high": 329.55,
+        "low": 325.98,
+        "dma50": 344.48,
+        "dma200": 354.81,
+        "volume": 11628868.0
+      },
+      {
+        "date": "2026-09-04",
+        "close": 332.5,
+        "open": 329.6,
+        "high": 330.89,
+        "low": 326.68,
+        "dma50": 344.01,
+        "dma200": 354.59,
+        "volume": 7737020.0
+      },
+      {
+        "date": "2026-09-07",
+        "close": 332.0,
+        "open": 329.35,
+        "high": 330.64,
+        "low": 327.22,
+        "dma50": 343.54,
+        "dma200": 354.36,
+        "volume": 5514880.0
+      },
+      {
+        "date": "2026-09-08",
+        "close": 330.8,
+        "open": 326.87,
+        "high": 330.04,
+        "low": 325.54,
+        "dma50": 343.04,
+        "dma200": 354.13,
+        "volume": 7539926.0
+      },
+      {
+        "date": "2026-09-09",
+        "close": 334.5,
+        "open": 327.96,
+        "high": 334.3,
+        "low": 327.77,
+        "dma50": 342.71,
+        "dma200": 353.94,
+        "volume": 12771103.0
+      },
+      {
+        "date": "2026-09-10",
+        "close": 335.0,
+        "open": 332.47,
+        "high": 332.52,
+        "low": 329.94,
+        "dma50": 342.41,
+        "dma200": 353.75,
+        "volume": 6984804.0
+      },
+      {
+        "date": "2026-09-11",
+        "close": 333.4,
+        "open": 329.85,
+        "high": 333.06,
+        "low": 328.46,
+        "dma50": 342.05,
+        "dma200": 353.54,
+        "volume": 5167985.0
+      },
+      {
+        "date": "2026-09-15",
+        "close": 329.5,
+        "open": 329.85,
+        "high": 330.14,
+        "low": 323.31,
+        "dma50": 341.56,
+        "dma200": 353.3,
+        "volume": 8691810.0
+      },
+      {
+        "date": "2026-09-16",
+        "close": 327.0,
+        "open": 326.38,
+        "high": 326.82,
+        "low": 323.46,
+        "dma50": 340.99,
+        "dma200": 353.04,
+        "volume": 6873622.0
+      },
+      {
+        "date": "2026-09-17",
+        "close": 329.6,
+        "open": 324.69,
+        "high": 328.16,
+        "low": 324.1,
+        "dma50": 340.54,
+        "dma200": 352.81,
+        "volume": 5877448.0
+      },
+      {
+        "date": "2026-09-18",
+        "close": 323.65,
+        "open": 326.68,
+        "high": 327.72,
+        "low": 320.58,
+        "dma50": 339.88,
+        "dma200": 352.52,
+        "volume": 9573191.0
+      },
+      {
+        "date": "2026-09-21",
+        "close": 326.4,
+        "open": 321.92,
+        "high": 325.64,
+        "low": 321.77,
+        "dma50": 339.35,
+        "dma200": 352.26,
+        "volume": 5510107.0
+      },
+      {
+        "date": "2026-09-22",
+        "close": 327.8,
+        "open": 323.41,
+        "high": 325.88,
+        "low": 322.47,
+        "dma50": 338.9,
+        "dma200": 352.02,
+        "volume": 6708391.0
+      },
+      {
+        "date": "2026-09-23",
+        "close": 326.0,
+        "open": 323.41,
+        "high": 326.28,
+        "low": 321.92,
+        "dma50": 338.39,
+        "dma200": 351.76,
+        "volume": 11131554.0
+      },
+      {
+        "date": "2026-09-24",
+        "close": 326.6,
+        "open": 323.85,
+        "high": 324.6,
+        "low": 321.33,
+        "dma50": 337.93,
+        "dma200": 351.51,
+        "volume": 7824466.0
+      },
+      {
+        "date": "2026-09-25",
+        "close": 326.6,
+        "open": 324.2,
+        "high": 324.2,
+        "low": 320.44,
+        "dma50": 337.49,
+        "dma200": 351.26,
+        "volume": 6196586.0
+      },
+      {
+        "date": "2026-09-28",
+        "close": 321.1,
+        "open": 323.51,
+        "high": 323.51,
+        "low": 317.17,
+        "dma50": 336.84,
+        "dma200": 350.96,
+        "volume": 6158743.0
+      },
+      {
+        "date": "2026-09-29",
+        "close": 323.5,
+        "open": 317.46,
+        "high": 321.92,
+        "low": 314.54,
+        "dma50": 336.32,
+        "dma200": 350.69,
+        "volume": 12554181.0
+      },
+      {
+        "date": "2026-09-30",
+        "close": 322.75,
+        "open": 320.44,
+        "high": 320.88,
+        "low": 315.88,
+        "dma50": 335.79,
+        "dma200": 350.41,
+        "volume": 7055415.0
+      },
+      {
+        "date": "2026-10-01",
+        "close": 315.1,
+        "open": 317.76,
+        "high": 317.91,
+        "low": 310.08,
+        "dma50": 334.98,
+        "dma200": 350.06,
+        "volume": 10644107.0
+      },
+      {
+        "date": "2026-10-05",
+        "close": 321.8,
+        "open": 313.06,
+        "high": 320.49,
+        "low": 313.06,
+        "dma50": 334.46,
+        "dma200": 349.78,
+        "volume": 9620858.0
+      },
+      {
+        "date": "2026-10-06",
+        "close": 321.45,
+        "open": 320.44,
+        "high": 321.23,
+        "low": 317.02,
+        "dma50": 333.95,
+        "dma200": 349.49,
+        "volume": 7459330.0
+      },
+      {
+        "date": "2026-10-07",
+        "close": 316.75,
+        "open": 317.12,
+        "high": 318.65,
+        "low": 312.91,
+        "dma50": 333.28,
+        "dma200": 349.17,
+        "volume": 6874630.0
+      },
+      {
+        "date": "2026-10-08",
+        "close": 309.7,
+        "open": 313.01,
+        "high": 313.4,
+        "low": 305.53,
+        "dma50": 332.35,
+        "dma200": 348.78,
+        "volume": 13339953.0
+      },
+      {
+        "date": "2026-10-09",
+        "close": 312.0,
+        "open": 306.82,
+        "high": 311.37,
+        "low": 306.62,
+        "dma50": 331.55,
+        "dma200": 348.41,
+        "volume": 7468984.0
+      },
+      {
+        "date": "2026-10-12",
+        "close": 310.0,
+        "open": 309.04,
+        "high": 311.32,
+        "low": 302.8,
+        "dma50": 330.71,
+        "dma200": 348.03,
+        "volume": 13636286.0
+      },
+      {
+        "date": "2026-10-13",
+        "close": 311.0,
+        "open": 305.48,
+        "high": 308.95,
+        "low": 303.25,
+        "dma50": 329.93,
+        "dma200": 347.66,
+        "volume": 6329118.0
+      },
+      {
+        "date": "2026-10-14",
+        "close": 313.7,
+        "open": 308.05,
+        "high": 313.06,
+        "low": 306.96,
+        "dma50": 329.3,
+        "dma200": 347.32,
+        "volume": 11945643.0
+      },
+      {
+        "date": "2026-10-15",
+        "close": 314.65,
+        "open": 309.99,
+        "high": 314.94,
+        "low": 308.85,
+        "dma50": 328.72,
+        "dma200": 347.0,
+        "volume": 10662656.0
+      },
+      {
+        "date": "2026-10-16",
+        "close": 315.15,
+        "open": 311.92,
+        "high": 314.64,
+        "low": 308.75,
+        "dma50": 328.19,
+        "dma200": 346.68,
+        "volume": 9837398.0
+      },
+      {
+        "date": "2026-10-19",
+        "close": 309.0,
+        "open": 310.23,
+        "high": 313.4,
+        "low": 305.18,
+        "dma50": 327.44,
+        "dma200": 346.3,
+        "volume": 8555474.0
+      },
+      {
+        "date": "2026-10-21",
+        "close": 303.0,
+        "open": 306.07,
+        "high": 307.51,
+        "low": 298.25,
+        "dma50": 326.48,
+        "dma200": 345.87,
+        "volume": 10150617.0
+      },
+      {
+        "date": "2026-10-22",
+        "close": 302.6,
+        "open": 298.64,
+        "high": 299.93,
+        "low": 294.73,
+        "dma50": 325.54,
+        "dma200": 345.44,
+        "volume": 8416771.0
+      },
+      {
+        "date": "2026-10-23",
+        "close": 298.0,
+        "open": 299.24,
+        "high": 299.93,
+        "low": 289.28,
+        "dma50": 324.46,
+        "dma200": 344.97,
+        "volume": 9397605.0
+      },
+      {
+        "date": "2026-10-26",
+        "close": 300.0,
+        "open": 294.93,
+        "high": 298.54,
+        "low": 291.31,
+        "dma50": 323.5,
+        "dma200": 344.52,
+        "volume": 6812446.0
+      },
+      {
+        "date": "2026-10-27",
+        "close": 301.8,
+        "open": 297.11,
+        "high": 304.09,
+        "low": 296.91,
+        "dma50": 322.65,
+        "dma200": 344.1,
+        "volume": 13740816.0
+      },
+      {
+        "date": "2026-10-28",
+        "close": 303.75,
+        "open": 299.19,
+        "high": 302.01,
+        "low": 296.56,
+        "dma50": 321.91,
+        "dma200": 343.7,
+        "volume": 7928372.0
+      },
+      {
+        "date": "2026-10-29",
+        "close": 310.5,
+        "open": 299.14,
+        "high": 309.69,
+        "low": 298.84,
+        "dma50": 321.46,
+        "dma200": 343.37,
+        "volume": 8268884.0
+      },
+      {
+        "date": "2026-10-30",
+        "close": 316.25,
+        "open": 307.56,
+        "high": 314.99,
+        "low": 305.23,
+        "dma50": 321.26,
+        "dma200": 343.1,
+        "volume": 15719099.0
+      },
+      {
+        "date": "2026-11-02",
+        "close": 323.0,
+        "open": 316.92,
+        "high": 324.89,
+        "low": 315.98,
+        "dma50": 321.33,
+        "dma200": 342.9,
+        "volume": 15601459.0
+      },
+      {
+        "date": "2026-11-03",
+        "close": 321.55,
+        "open": 319.94,
+        "high": 320.29,
+        "low": 313.6,
+        "dma50": 321.34,
+        "dma200": 342.68,
+        "volume": 9031672.0
+      },
+      {
+        "date": "2026-11-04",
+        "close": 321.95,
+        "open": 316.97,
+        "high": 318.9,
+        "low": 313.75,
+        "dma50": 321.36,
+        "dma200": 342.48,
+        "volume": 8622856.0
+      },
+      {
+        "date": "2026-11-05",
+        "close": 316.7,
+        "open": 321.03,
+        "high": 322.07,
+        "low": 313.06,
+        "dma50": 321.18,
+        "dma200": 342.22,
+        "volume": 10095120.0
+      },
+      {
+        "date": "2026-11-06",
+        "close": 323.45,
+        "open": 313.0,
+        "high": 323.45,
+        "low": 308.75,
+        "dma50": 321.27,
+        "dma200": 342.03,
+        "volume": 13370344.0
+      },
+      {
+        "date": "2026-11-08",
+        "close": 322.7,
+        "open": 322.7,
+        "high": 322.7,
+        "low": 322.7,
+        "dma50": 321.32,
+        "dma200": 341.84,
+        "volume": 1113666.0
+      },
+      {
+        "date": "2026-11-09",
+        "close": 328.75,
+        "open": 323.1,
+        "high": 328.75,
+        "low": 322.1,
+        "dma50": 321.61,
+        "dma200": 341.71,
+        "volume": 9991883.0
+      },
+      {
+        "date": "2026-11-11",
+        "close": 327.0,
+        "open": 328.5,
+        "high": 333.85,
+        "low": 325.75,
+        "dma50": 321.83,
+        "dma200": 341.57,
+        "volume": 16356947.0
+      },
+      {
+        "date": "2026-11-12",
+        "close": 323.0,
+        "open": 327.05,
+        "high": 327.45,
+        "low": 321.85,
+        "dma50": 321.87,
+        "dma200": 341.38,
+        "volume": 5512649.0
+      },
+      {
+        "date": "2026-11-13",
+        "close": 319.1,
+        "open": 321.0,
+        "high": 322.95,
+        "low": 317.05,
+        "dma50": 321.76,
+        "dma200": 341.16,
+        "volume": 5034469.0
+      }
+    ]
+  },
+  "agent_committee": [
+    {
+      "agent_id": "five_reports_agent",
+      "agent_name": "5-Report Earnings & Performance Agent",
+      "persona_inspiration": "Peter Lynch / Fundamental Growth Analyst",
+      "signal": "BULLISH",
+      "score": 69.0,
+      "confidence": 78,
+      "weight_pct": 25,
+      "headline": "5Y Profit CAGR 12.89% | Latest FY Net Profit \u20b927,546 Cr | ROE 15.1%",
+      "key_metrics": {
+        "5Y Revenue CAGR": "9.0%",
+        "5Y Profit CAGR": "12.9%",
+        "Latest Qtr Net Profit": "\u20b97,351 Cr",
+        "Latest OPM %": "30.0%",
+        "ROE / ROCE": "15.1% / 8.9%",
+        "Piotroski F-Score": "4/9"
+      },
+      "reasoning": [
+        "Steady 5-report annual revenue growth at 9.0% CAGR.",
+        "Consistent 5-year net profit growth (12.9% CAGR).",
+        "Positive sequential profit momentum in 3 of the last 5 quarters."
+      ]
+    },
+    {
+      "agent_id": "cash_balance_agent",
+      "agent_name": "Cash-in-Hand & Balance Sheet Agent",
+      "persona_inspiration": "Benjamin Graham / Balance Sheet Specialist",
+      "signal": "NEUTRAL",
+      "score": 52.0,
+      "confidence": 69,
+      "weight_pct": 20,
+      "headline": "Cash & Investments: \u20b933,052 Cr | Net Cash: \u20b9-246,474 Cr | D/E: 1.31x",
+      "key_metrics": {
+        "Cash Equivalents": "\u20b97,763 Cr",
+        "Liquid Investments": "\u20b925,289 Cr",
+        "Total Cash in Hand": "\u20b933,052 Cr",
+        "Total Borrowings": "\u20b9279,526 Cr",
+        "Debt / Equity": "1.31x",
+        "5Y Cumulative OCF": "\u20b9392 Cr"
+      },
+      "reasoning": [
+        "Elevated leverage: Debt/Equity at 1.31x (Total Borrowings \u20b9279,526 Cr vs Cash \u20b933,052 Cr).",
+        "Generated \u20b9392 Cr in cumulative 5-year Operating Cash Flow (latest FY OCF \u20b90 Cr).",
+        "Cash & investments represent 10.7% of total Market Cap, offering downside protection."
+      ]
+    },
+    {
+      "agent_id": "stockholders_agent",
+      "agent_name": "Stockholders & Institutional Flow Agent",
+      "persona_inspiration": "Smart-Money & Insider Ownership Tracker",
+      "signal": "BULLISH",
+      "score": 70.0,
+      "confidence": 79,
+      "weight_pct": 20,
+      "headline": "Promoters 51.1% (+0.00% 4Q) | FII 15.8% | DII 29.9%",
+      "key_metrics": {
+        "Promoter Holding": "51.10% (+0.00% 4Q)",
+        "FII Holding": "15.79% (-0.61% 4Q)",
+        "DII Holding": "29.86% (+0.93% 4Q)",
+        "Total Institutional": "45.65%",
+        "Public Float": "3.23%",
+        "Shareholder Accounts": "3,134,985"
+      },
+      "reasoning": [
+        "High skin-in-the-game: Promoters hold 51.10% equity.",
+        "Net Institutional Accumulation: Combined FII+DII holding rose +0.32% over 4 quarters (FII -0.61%, DII +0.93%).",
+        "Marquee named stockholders: President Of India (38450.00%)."
+      ]
+    },
+    {
+      "agent_id": "rd_innovation_agent",
+      "agent_name": "R&D Intensity & Innovation Moat Agent",
+      "persona_inspiration": "Charlie Munger / Philip Fisher Moat Analyst",
+      "signal": "BULLISH",
+      "score": 72.0,
+      "confidence": 77,
+      "weight_pct": 15,
+      "headline": "Latest R&D: \u20b9525 Cr (0.28% of Sales) | 5Y R&D: \u20b92,354 Cr",
+      "key_metrics": {
+        "Latest FY R&D Spend": "\u20b9525 Cr",
+        "R&D % of Revenue": "0.28%",
+        "5Y Cumulative R&D": "\u20b92,354 Cr",
+        "5Y R&D CAGR": "11.1%",
+        "Intangible Assets": "\u20b90 Cr",
+        "CapEx WIP (CWIP)": "\u20b984,957 Cr"
+      },
+      "reasoning": [
+        "Latest annual R&D investment of \u20b9525 Cr (0.28% of revenue); 5-year cumulative R&D of \u20b92,354 Cr.",
+        "R&D budget compounding at 11.1% CAGR over the last 5 reports.",
+        "Balance-sheet innovation & capacity pipeline: Intangible Assets \u20b90 Cr and Capital Work-in-Progress (CWIP) \u20b984,957 Cr.",
+        "Strategic R&D Focus: NETRA (NTPC Energy Technology Research Alliance) carbon capture, green methanol & nuclear."
+      ]
+    },
+    {
+      "agent_id": "technical_catalyst_agent",
+      "agent_name": "Next-Day Technical & Catalyst Agent",
+      "persona_inspiration": "Stanley Druckenmiller / Price-Action & Timing Desk",
+      "signal": "NEUTRAL",
+      "score": 59.0,
+      "confidence": 71,
+      "weight_pct": 20,
+      "headline": "RSI(14) 50.8 | 50-DMA \u20b9321.8 | 200-DMA \u20b9341.2 | ATR \u20b97.8",
+      "key_metrics": {
+        "RSI (14)": "50.8",
+        "MACD Histogram": "+1.57",
+        "50-DMA / 200-DMA": "\u20b9321.8 / \u20b9341.2",
+        "ATR (14) Daily Range": "\u20b97.79 (2.44%)",
+        "Volume vs 20D Avg": "0.52x",
+        "Pivot S1 / R1": "\u20b9316.4 / \u20b9322.4"
+      },
+      "reasoning": [
+        "Price below both 50-DMA and 200-DMA; wait for support stabilization",
+        "RSI(14) at 50.76 \u2014 Neutral momentum band",
+        "MACD Bullish Crossover active (Histogram +1.57)",
+        "News Catalyst: 4 positive vs 0 negative recent Indian market headlines."
+      ]
+    }
+  ],
+  "next_day_guidance": {
+    "action": "BUY",
+    "conviction_score": 64.2,
+    "fundamental_score": 65.6,
+    "technical_score": 59.0,
+    "current_price": 319.1,
+    "entry_zone_low": 315.98,
+    "entry_zone_high": 319.88,
+    "target_1_next_day": 328.45,
+    "target_2_swing": 336.63,
+    "stop_loss": 311.7,
+    "risk_reward_ratio": 1.26,
+    "expected_next_day_range_low": 311.31,
+    "expected_next_day_range_high": 326.89,
+    "position_size_suggestion_pct": 5.0,
+    "executive_summary": "NTPC Ltd (NTPC) earns a composite conviction score of 64.2/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b933,052 Cr in cash & investments, 15.1% ROE, 0.28% R&D intensity, and 96.8% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9315.98\u2013\u20b9319.88 zone targeting \u20b9328.45 (T1) and \u20b9336.63 (T2) with a strict ATR-calibrated stop-loss at \u20b9311.70 (Risk:Reward 1:1.26).",
+    "rationale_points": [
+      "5-Report Fundamental Score: 65.6/100 (5Y Profit CAGR: 12.9%, Piotroski: 4/9).",
+      "Balance Sheet & Cash in Hand: \u20b933,052 Cr liquid cash/investments vs \u20b9279,526 Cr total borrowings (D/E 1.31x).",
+      "Stockholder Conviction: Promoters hold 51.10%, FIIs 15.79%, DIIs 29.86% (Total Institutional: 45.65%).",
+      "R&D & Innovation Moat: \u20b9525 Cr annual R&D (0.28% of sales; 5Y cumulative \u20b92,354 Cr).",
+      "Next-Day Technical Trigger (59.0/100): BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA); RSI(14) at 50.8 with ATR(14) daily range of \u20b97.79."
+    ],
+    "key_catalysts": [
+      "Company has been maintaining a healthy dividend payout of 34.3%",
+      "R&D & CapEx Pipeline: NETRA (NTPC Energy Technology Research Alliance) carbon capture, green methanol & nuclear",
+      "Institutional Sponsorship: 45.6% held by FIIs + DIIs"
+    ],
+    "key_risks": [
+      "The company has delivered a poor sales growth of 10.9% over past five years.",
+      "Tax rate seems low",
+      "Company might be capitalizing the interest cost",
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9311.70"
+    ],
+    "llm_synthesized": false,
+    "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
+  },
+  "news": [
+    {
+      "title": "NTPC Share Price Today, NTPC Stock Price Live NSE/BSE Updates - The Economic Times",
+      "source": "The Economic Times",
+      "published": "Thu, 12 Nov 2026 20:58:00",
+      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFAxR1RMOTRQMUlacm5UVXB6czZlc3RwV0JVUHBYa1UyT3I5Q1hWVENBemlhZk1CV29URW9veDIxSjBBS0R6VmVJVnhtUng1OEFmQ0tRZ2t2OUx2MTY4YzJ4Q1V4ZlNYZ0RxaEF2aXV5UVBCcG5yMnN3Q3M1aWk?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Weekly Recap: Coal gasification proposals and long-term dividend appeal - TradingView",
+      "source": "TradingView",
+      "published": "Mon, 16 Nov 2026 01:00:00",
+      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPQXFBU2VlY3hoVkFFNzl3REhVUW9CV1pQQmRjTFBTUGhYZDl1Rl9IWWhUd19tMUNFWmxkUENleEVpVFdqNzliei1uN0N6VEF4NzF4c3hjTWRaeTZYOG9wWlRTXzlocnl0cVpHTFE3a0V0U2V3bDdWZ2FYeFJjZmV3RnF4dkgyMF9MMWhObmdMaFF0ejViWEpaUGhkd0p3SjRlMDNWNGdQdjVWZHdnQjAyUzFjdmoyU1hZTFoxc1NkMC01Nk84V3NSZUVNZHc?oc=5",
+      "sentiment": "POSITIVE"
+    },
+    {
+      "title": "GAIL Share Price - Upstox",
+      "source": "Upstox",
+      "published": "Fri, 13 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTFB1amVaR3NxZDVGeEJycEl5T1JCeDlkWF8tblVMMXdGRXZkdVZkMC1QR0pLWUE0dERLTVRYR2VUMEE1RkZ5OHNGVUlwNXVIYWFUV29pQnJXbmJxRHlZU0Y3OEhFdw?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "33 Best Power Sector Stocks In India November 2026 | Best Energy Stocks To Invest - Samco",
+      "source": "Samco",
+      "published": "Fri, 13 Nov 2026 06:51:15",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5JLVJiY1FqOUtqSDRBanhEV2hCb0stQzFQXzYtWjB3UXZ5UEJDa2ZZZnkxamRKUHItS2Q1aDlPLTRHUW5JQ2Z6MEQyQURNUFRhUTUzd3RvVmdVQnMzdUhyMzRyeVlCQnM5RlptUg?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "High Margin Fast Profit Growth Five-Year Winner Stocks: M&M, NTPC - Univest",
+      "source": "Univest",
+      "published": "Thu, 12 Nov 2026 08:48:00",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQemRhQlpwenRXYndmbHFxOHJOSlBWSEc0elEyem9MeWZULXpORjM5bnpzSm8tTk9pMFhwSGNNME9XOE5vbkp0T0tLMFEtN3owbW1GdzdHR0J5Q25sV29RX0hzX2xoLS1tWnJTTE5zSFlsclE4NEt5dmV0NWVVWEljUnJGSl9RVWpfQnNQdGFHM0xTdzZCT0RPRHFGZ1llSm5WUTVzX2lxUEJmUW45SzFkSXZhbFhUTXAzbnFz?oc=5",
+      "sentiment": "POSITIVE"
+    },
+    {
+      "title": "Tata Power Share Price - Live NSE: TATAPOWER Stock Price & Chart - Upstox",
+      "source": "Upstox",
+      "published": "Fri, 13 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5UVUN0OGR1YVBaQW9KZGJRS25XcElwWU01Z3lqRUdOM2ZlOUx2d3RONV9NRW9GN2RWaWQyRktSdlBtSzgySUdFNDlUelQ4UUJmUjZzSGpObTNjeVVnUDZSSjJBVEtnVzg?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Top 19 PSU Stocks In India To Buy In November 2026 - Samco",
+      "source": "Samco",
+      "published": "Wed, 11 Nov 2026 06:51:10",
+      "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE14aGtfQTlCVjdRUHNUazZWXzBOU0xzZU5KNEpXTHRJTTMxbU9ueVVIWml1bmFFdktuQTNsZklJWFFkSGtGS2FqMzRxd2Q2TERKTjdqYklQWnhNV2I2dEs3eV9uOWh1bU1HV1JlMWRuaUowUjNZNGNxLUlR?oc=5",
+      "sentiment": "POSITIVE"
+    },
+    {
+      "title": "FII Backed Five-Year Winner Fast Profit Growth Stocks to Watch - Univest",
+      "source": "Univest",
+      "published": "Fri, 13 Nov 2026 04:17:00",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQNTc0TVNGdTVEaE5Ca1V1Z3d4bFVCT2dZV21LNmZya1N3amptcnY4VmU0ZVZtdGhWVF9NODlENUJnMjFLVmYzbk1uWDN6YVFqbnhnTV8yWmplc1VfTEYxc0VBR19PVlpDM2JOa0xlS05SUlV3WFVocFA5MWRrOE9yUlRNRzB4ZkRnLTlOVlY5QnJjNFlZLWd4R0hjb0xOWDJ3emp4TUpTSFhqNnZhS3NSQ3YxWGpjdmx1R0E?oc=5",
+      "sentiment": "POSITIVE"
+    }
+  ],
+  "promoter_and_competitor_intel": {
+    "promoter_group": "President Of India (51.10% Total Promoter Stake)",
+    "key_leaders": [
+      {
+        "name": "President Of India",
+        "role": "Principal Promoter & Executive Leadership",
+        "focus": "Capital allocation, operating margin expansion & growth in Power Generation",
+        "handle_or_source": "BSE/NSE Corporate Filings & Earnings Concalls"
+      }
+    ],
+    "key_stakeholders_watch": [
+      "Promoters hold 51.10% (+0.00% 4Q change)",
+      "Foreign Institutions (FII) hold 15.79% (-0.61% 4Q change)",
+      "Domestic Institutions (DII) hold 29.86% (+0.93% 4Q change)"
+    ],
+    "promoter_statements_and_articles": [
+      {
+        "speaker_or_source": "Moneycontrol.com",
+        "published": "Sat, 31 Oct 2026 07:00",
+        "headline": "NTPC Q2 results: Consolidated profit rises 41% to Rs 7,351 crore, revenue up 21%; declares Rs 3 interim... - Moneycontrol.com",
+        "url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxPNUxBN2JzQS0xM3Fvdk9xcmVIRVh1TVhabEN1dkI5b0JFdmw5c3dJNkVnNXFkeXhNd3RSWUxjVHRTQ1otR09aQmc2RE5NaUVOVV9SNkNuU2lFSm5oM3A5R2hETE9NR0pRMjFLdG1rRHI4dEV2VEVjSVhSX1E0SHptODBaUjgyRW1hRnNIYXQxcWNHSHdCMkY0UlVEamxYZEtfYURHeUx4RWY3NjhTcF83QWZYREhUdmxwNFZaeS1aMTk2Y2JsMi1zS3o5VUV1UVpZWjY4MGpBUjBZSTFqV2dPMzY2cnFOVTB0UE1QX1hoS0xsWTVBUVJj0gH8AUFVX3lxTFBfN19mQmRFQmRtb1pkU1FieVBQZ0pqbXBnZmJWSWlKeGg3WDZPTm5sdk9WQkVSWHc0R0drUFpKRkpEdG9Gc25jRzNGUGtqWjZfLXpEejNrcjZKWG5pc1p0MExyTEM5MDNvNC1NWGhDMlNoYXQ0WnZXUmt2bDhUNjRYS1RQRjJsM3JiejhFVFY0dUJ0RHlHRHByU1ZxUWlFaFdhUDlCX29vU0NjOWFqMVUyTW9YS0xvOFVMTWFWSFpwUm1YV0Q3eU8wai1wbDgzWHpIZWJqRDJXSUR1LUFkSzhyUDNLdENYd0V3UHphdlVFWGd2SDB4SExxOWltYw?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "Upstox",
+        "published": "Sun, 01 Nov 2026 07:00",
+        "headline": "NTPC Q2 results: Net profit soars 41% YoY to \u20b97,351 crore; dividend of \u20b93/share declared - Upstox",
+        "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxPY1FxMVlUWGxjek9VbkctQkxsYlh0WnljLURLSV9ta3pUSUFOOUJTYnpKVTVXQnRLOXE3RzFBV3VEUGY5VlpOUk03ZVNVZUYwSkhHcl90cUk1dzBtUjk3SFFqVVRZSlJFc3VVc2FmeTBDY2V3aUZ2THJkNmJvMzBibXNZOVoybVRBaV9QNjlUekFRZ0REa3JTeS1GREN0cXM2N2laTS0zdUIxR3QzdWhPRGZ5bi1Eb2Ezc3U4UXM3dWJFTnMzZnhqVGVlNDJWTExTcHNNVmFFWGNHMFJ6OUE?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "Multibagg AI",
+        "published": "Sat, 31 Oct 2026 10:02",
+        "headline": "NTPC Limited Board Meets for Q2 FY27 Results and Dividend - Multibagg AI",
+        "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNTXBLQ01QQkFvMlluRTBBaGhKOHZha210VVJGSDFKN3BteE02VUJxZUJ5cHVVUXhIMkFDRTUyckY2c2JjQ2ZydkJGeXliLWVJNHFWM0Y2TkRidjZiQmNBbjNsZnBocEE1WkprM1MwR1ZaaEhLQTBqNkhkOG1tRnRFZUt4QzU1cmt4ZkdzcW5OUFJWaDBYakVWYUYtM01OWFU5aGZqM3d3?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Direct order-book / deal-pipeline expansion increases forward 4-quarter revenue visibility and earnings multiples."
+      },
+      {
+        "speaker_or_source": "scanx.trade",
+        "published": "Sat, 31 Oct 2026 07:00",
+        "headline": "NTPC Q2FY27 net profit rises 14% YoY to \u20b97,350 crore - scanx.trade",
+        "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPZTRXcnNxNkdLVENTckgyaEJzeTl5ci1TUm0zYU5uN0pIci0xSk9Vai1sTzJsNXNkdVRhcEpndVhCV1pfd0hlaW9TSlFOMTdNdzlyQjFxVWMzV2J3WnFiRkNYVFZMXzZpTzNWd2F3aTNLX2dVeFB2QzFJRnlfTC03cktFMktrQmg3eGtoUFA0aVB4T25yNWlWVkZWSF9yalpSczRzY09HcHYwTTh1dS1MTV9R?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "TechGraph",
+        "published": "Fri, 13 Nov 2026 08:00",
+        "headline": "NTPC (NTPC) Share Price Today (NSE), Market News - TechGraph",
+        "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE12NlF4T3VocE9pMGNCOVQ3UmVPYmpPM19haW5LNE4xQURLYTk3dVJMZkY4QllreDh2UzE3RDZqNERodHdKbmhFc1ljdzNuLVM3OGlsRVRXRnpGUGFH?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for NTPC Ltd."
+      },
+      {
+        "speaker_or_source": "NiftyTrader",
+        "published": "Fri, 30 Oct 2026 07:00",
+        "headline": "NTPC Q2 FY27 Results Oct 31: Brokerages See Profit Up 66%, Dividend Hopes and What to Watch - NiftyTrader",
+        "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9SWHluY1Ffa05GMHhKN3hNM0x0dVlnSU1sbjFXOGF5YWZ2NS1nR1RUZlVPWF9DOTBYQ0VfUVg3cWU5aEtDODF6ajBOZUYtOFY0ekx4ZFZpTlpnZ1dhQ3FqUm1VeGZrcTNjOWNNZURBLW1NNENpU3pZMUFvRlBKTW8?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      }
+    ],
+    "competitors": [
+      {
+        "symbol": "BHEL",
+        "name": "Bharat Heavy Electricals Ltd",
+        "segment": "Power Equipment",
+        "current_price": 436.3,
+        "day_change_pct": 1.18,
+        "return_1m_pct": -1.37,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "BHEL Share Price Today - Bharat Heavy Electricals on NSE/BSE - scanx.trade",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1wT0xDN1VyUUtzSWhBNkhXb1hMSUdibnR5SnV0QWsyS3pYem4wMGdzNkV3OFdraXRkUGxHQmRMSnVSS0JHcDkydS1oZ1hiamFidGJmbDVaWXR5b1hQb2pDRmFfYm9xUWhUM3ZIdnZn?oc=5",
+        "read_across_signal": "NEUTRAL",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for NTPC Ltd."
+      },
+      {
+        "symbol": "TATAPOWER",
+        "name": "Tata Power Company Ltd",
+        "segment": "Power & Renewables",
+        "current_price": 348.0,
+        "day_change_pct": -2.52,
+        "return_1m_pct": 0.87,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Tata Power Share Price Today, Tata Power Stock Price Live NSE/BSE Updates - The Economic Times",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPMy1VRjNTOFdkbHZKX3JXUExGdkF3SHp3Y1RpakpYa1RSYkZGUFB2Q3FZb1d0blFvYTNScGxUSWo0RGsxdmVJOENBcG9iOTZNMURQa0lCWDZiRmNPUGNwdW1mQXVfS0xzbXZaX2V6Nnh3LW1xUnM2WWJMQkMtbHNnUzNmeUNEcUJGOXRud3luMA?oc=5",
+        "read_across_signal": "COMPETITIVE THREAT",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for NTPC Ltd."
+      },
+      {
+        "symbol": "POWERGRID",
+        "name": "Power Grid Corporation of India Ltd",
+        "segment": "Power Transmission",
+        "current_price": 257.45,
+        "day_change_pct": -0.77,
+        "return_1m_pct": 3.97,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Power Grid Corporation of India (NSEI:POWERGRID) Stock Forecast & Analyst Predictions - Simply Wall St",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOTDNHOVFOeFI5REk3VEh4dENiVmZQTVAzYjRWd3Uwd3ZUWkd2MTVYNnZPUERwWEphYWJXYlBUaXBCZTFRRVZJbkFmRjFaSmdmeEdZSzE0bVk2Y0ZzLW1QUWNoNkhuSGRIU1Z4cW1ZbjQwNzFEVEdnaWozU2NGUkFQRXhSVm5YelBoNnNCcDlFTXQ5T243VTZZVFdNejZLUi1iT0ZV?oc=5",
+        "read_across_signal": "NEUTRAL",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for NTPC Ltd."
+      }
+    ]
+  },
+  "corporate_intelligence": {
+    "symbol": "NTPC",
+    "evaluated_at": "2026-11-16T06:08:12.049775+00:00",
+    "promoter_holding_pct": 51.1,
+    "promoter_chg_1q": 0.0,
+    "promoter_chg_4q": 0.0,
+    "promoter_pledge_pct": null,
+    "fii_holding_pct": 15.79,
+    "fii_chg_1q": -0.51,
+    "fii_chg_4q": -0.61,
+    "dii_holding_pct": 29.86,
+    "dii_chg_1q": 0.42,
+    "dii_chg_4q": 0.93,
+    "net_institutional_flow_4q": 0.32,
+    "is_fno_eligible": true,
+    "latest_delivery_pct": null,
+    "delivery_vs_20d_avg": null,
+    "fno_positioning_heuristic": "Cash / Neutral",
+    "net_bulk_block_value_cr": 0.0,
+    "bulk_block_deals_count": 0,
+    "institutional_conviction_score": 55.0,
+    "smart_money_verdict": "MODERATE ACCUMULATION",
+    "bulk_block_deals": [],
+    "recent_corporate_actions": [],
+    "key_signals": [
+      "Stable majority promoter holding at 51.10%."
+    ]
+  },
+  "market_regime": {
+    "observation_date": "2026-11-16",
+    "regime": "Weak Bull",
+    "nifty_50_close": 25267.85,
+    "nifty_50_day_change_pct": 0.49,
+    "nifty_50_return_20d_pct": 9.87,
+    "nifty_50_dma_50": 23356.03,
+    "nifty_50_dma_200": 23992.31,
+    "india_vix_close": 15.73,
+    "india_vix_change_pct": 1.48,
+    "advance_count": 939,
+    "decline_count": 1777,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.528,
+    "pct_above_50dma": 86.7,
+    "pct_above_200dma": 73.3,
+    "allow_aggressive_longs": true,
+    "regime_rationale": [
+      "Structural uptrend intact above 200-DMA (23,992.3), though short-term momentum is moderate (20D: +9.87%).",
+      "NSE Market Breadth: 939 Advances vs 1777 Declines (A/D Ratio 0.53).",
+      "Universe Breadth: 86.7% above 50-DMA, 73.3% above 200-DMA."
+    ],
+    "sector_performances": [
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 61383.4,
+        "day_change_pct": 0.57,
+        "return_20d_pct": 9.99,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_IT",
+        "index_name": "Nifty IT",
+        "close": 32111.05,
+        "day_change_pct": 0.56,
+        "return_20d_pct": 4.53,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_PHARMA",
+        "index_name": "Nifty Pharma",
+        "close": 28681.7,
+        "day_change_pct": 0.51,
+        "return_20d_pct": 11.09,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_FMCG",
+        "index_name": "Nifty FMCG",
+        "close": 46987.5,
+        "day_change_pct": 0.33,
+        "return_20d_pct": 4.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27851.85,
+        "day_change_pct": -0.28,
+        "return_20d_pct": 8.9,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_ENERGY",
+        "index_name": "Nifty Energy",
+        "close": 37152.2,
+        "day_change_pct": -0.66,
+        "return_20d_pct": 2.59,
+        "pe_ratio": null
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12540.5,
+        "day_change_pct": -0.85,
+        "return_20d_pct": 4.34,
+        "pe_ratio": null
+      }
+    ]
+  }
+}

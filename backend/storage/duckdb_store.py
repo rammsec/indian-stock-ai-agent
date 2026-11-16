@@ -86,6 +86,8 @@ class DuckDBStore:
         self.latest_predictions_json = self.predictions_dir / "latest_predictions.json"
         self.backtest_predictions_parquet = self.backtests_dir / "walk_forward_predictions.parquet"
         self.backtest_summary_json = self.backtests_dir / "walk_forward_summary.json"
+        self.corporate_intel_parquet = self.processed_dir / "corporate_intelligence.parquet"
+        self.bulk_block_parquet = self.processed_dir / "nse_bulk_block_deals.parquet"
 
     @staticmethod
     def _upsert_parquet(
@@ -192,7 +194,7 @@ class DuckDBStore:
         df_combined.to_parquet(self.features_parquet, index=False, compression="zstd")
         return len(df_combined)
 
-    def upsert_predictions(self, records: list[ Any ]) -> int:
+    def upsert_predictions(self, records: list[Any]) -> int:
         """Upsert permanent prediction log records into `/data/predictions/prediction_log.parquet`."""
         import json
 
@@ -219,6 +221,34 @@ class DuckDBStore:
         out = out.sort_values(["model_name", "symbol", "observation_date"]).reset_index(drop=True)
         out.to_parquet(self.backtest_predictions_parquet, index=False, compression="zstd")
         return len(out)
+
+    def upsert_corporate_intelligence(self, summaries: list[Any]) -> int:
+        """Upsert Phase 4 `CorporateIntelligenceSummary` records into `corporate_intelligence.parquet`."""
+        import json
+
+        rows: list[dict[str, Any]] = []
+        for s in summaries:
+            d = s.model_dump() if hasattr(s, "model_dump") else dict(s)
+            d["bulk_block_deals"] = json.dumps(d.get("bulk_block_deals", []))
+            d["recent_corporate_actions"] = json.dumps(d.get("recent_corporate_actions", []))
+            d["key_signals"] = json.dumps(d.get("key_signals", []))
+            rows.append(d)
+        return self._upsert_parquet(
+            self.corporate_intel_parquet,
+            rows,
+            dedup_cols=["symbol"],
+            sort_cols=["symbol"],
+        )
+
+    def upsert_bulk_block_deals(self, deals: list[Any]) -> int:
+        """Upsert official NSE Bulk & Block deal records into `nse_bulk_block_deals.parquet`."""
+        rows = [d.model_dump() if hasattr(d, "model_dump") else dict(d) for d in deals]
+        return self._upsert_parquet(
+            self.bulk_block_parquet,
+            rows,
+            dedup_cols=["deal_type", "deal_date", "symbol", "client_name", "side", "quantity"],
+            sort_cols=["deal_date", "symbol", "deal_type"],
+        )
 
     def query_df(self, sql: str, params: list[Any] | None = None) -> pd.DataFrame:
         """Execute an analytical SQL query over the Parquet views using in-memory DuckDB."""
@@ -255,6 +285,14 @@ class DuckDBStore:
             if self.backtest_predictions_parquet.exists():
                 con.execute(
                     f"CREATE VIEW v_backtest_predictions AS SELECT * FROM read_parquet('{self.backtest_predictions_parquet.as_posix()}')"
+                )
+            if self.corporate_intel_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_corporate_intel AS SELECT * FROM read_parquet('{self.corporate_intel_parquet.as_posix()}')"
+                )
+            if self.bulk_block_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_nse_bulk_block_deals AS SELECT * FROM read_parquet('{self.bulk_block_parquet.as_posix()}')"
                 )
             if params:
                 return con.execute(sql, params).df()

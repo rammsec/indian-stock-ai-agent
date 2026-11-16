@@ -87,6 +87,39 @@ def api_get_market_regime() -> dict[str, Any]:
         raise HTTPException(status_code=500, detail=f"Market regime error: {exc}") from exc
 
 
+@app.get("/api/backtest")
+def api_get_backtest_summary() -> dict[str, Any]:
+    """Return Phase 3 Walk-Forward Out-of-Sample Backtest summary & model comparison."""
+    import json
+
+    bt_file = Path(__file__).resolve().parent.parent / "docs" / "data" / "backtest_summary.json"
+    if bt_file.exists():
+        return json.loads(bt_file.read_text())
+    raise HTTPException(status_code=404, detail="backtest_summary.json not found")
+
+
+@app.get("/api/predictions")
+def api_get_latest_predictions() -> dict[str, Any]:
+    """Return Phase 3 Calibrated Next-Day Predictions & TreeSHAP drivers for all stocks."""
+    import json
+
+    pred_file = Path(__file__).resolve().parent.parent / "docs" / "data" / "latest_predictions.json"
+    if pred_file.exists():
+        return json.loads(pred_file.read_text())
+    raise HTTPException(status_code=404, detail="latest_predictions.json not found")
+
+
+@app.get("/api/corporate-intel")
+def api_get_corporate_intel() -> dict[str, Any]:
+    """Return Phase 4 NSE Bulk/Block deals, institutional ownership flows & delivery intelligence."""
+    import json
+
+    ci_file = Path(__file__).resolve().parent.parent / "docs" / "data" / "corporate_intel.json"
+    if ci_file.exists():
+        return json.loads(ci_file.read_text())
+    raise HTTPException(status_code=404, detail="corporate_intel.json not found")
+
+
 @app.get("/api/research/{symbol}")
 def api_get_research(
     symbol: str,
