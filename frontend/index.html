@@ -759,6 +759,75 @@
     </div>
 
     <!-- ======================================================================
+         PAGE 5: PHASE 5 MULTI-DIMENSIONAL STOCK INTELLIGENCE (5 PILOT STOCKS)
+         ====================================================================== -->
+    <div id="page-intelligence" class="page-view">
+      <section class="collapsible-section open" id="sec-p5-overview">
+        <div class="collapsible-header" data-toggle="sec-p5-overview">
+          <div class="header-left">
+            <span class="sec-num" style="background: rgba(16, 185, 129, 0.14); color: #10b981; border-color: rgba(16, 185, 129, 0.4);">P5</span>
+            <div>
+              <h2 class="sec-heading-title">Phase 5 Multi-Dimensional Stock Intelligence (5 Pilot Stocks)</h2>
+              <p id="p5-freshness-sub" class="sec-heading-sub">Loading 6-category news intelligence, cross-stock impacts, 1D/5D/10D outlooks &amp; monitoring...</p>
+            </div>
+          </div>
+          <button id="btn-refresh-p5" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;">↻ Refresh Live News</button>
+        </div>
+        <div class="collapsible-body">
+          <div id="p5-warnings-banner" style="margin-bottom: 0.85rem; font-size: 0.78rem; color: var(--text-muted);"></div>
+          <div id="p5-monitoring-kpis" class="kpi-strip" style="margin-bottom: 1rem;"></div>
+          <div class="sub-panel" style="margin-bottom: 1rem; font-size: 0.78rem; color: var(--text-secondary);">
+            <strong>Epistemic Separation:</strong> <em>Facts</em> (OHLCV prices, exchange filings, raw headlines with source links) are strictly separated from <em>Interpretations</em> (event category, sentiment, cross-stock read-across) and <em>Model Predictions</em> (1D/5D/10D signals). Paper-trading &amp; research only.
+          </div>
+          <div id="p5-stocks-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="sub-panel">Loading 5-stock intelligence cards...</div>
+          </div>
+
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem;">Controlled Walk-Forward Experiments (A–E across 1D, 5D, 10D)</h3>
+          <div class="table-wrap" style="margin-bottom: 1.25rem;">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Experiment</th>
+                  <th>Features</th>
+                  <th>1D ROC AUC</th>
+                  <th>1D Net Ret</th>
+                  <th>1D Sharpe</th>
+                  <th>5D ROC AUC</th>
+                  <th>5D Rank IC</th>
+                  <th>10D ROC AUC</th>
+                  <th>10D Rank IC</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-p5-experiments">
+                <tr><td colspan="9" style="text-align: center; padding: 1.2rem; color: var(--text-muted);">Loading Phase 5 experiment table...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem;">Consolidated 5-Stock News &amp; Event Feed</h3>
+          <div class="table-wrap">
+            <table class="fin-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Ticker</th>
+                  <th style="text-align: left;">Category</th>
+                  <th style="text-align: left;">Headline (Fact &amp; Source)</th>
+                  <th>Eff. Session</th>
+                  <th>Sentiment</th>
+                  <th>Impact</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-p5-feed">
+                <tr><td colspan="6" style="text-align: center; padding: 1.2rem; color: var(--text-muted);">Loading consolidated feed...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================================================================
          BOTTOM SECTION: 5-DAY PRICE FORECAST, BUY/SELL CALL RANGES & CONDITIONS
          ====================================================================== -->
     <section class="collapsible-section open" id="sec-5d-outlook" style="margin-top: 1.5rem;">

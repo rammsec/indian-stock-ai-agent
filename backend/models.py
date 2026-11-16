@@ -614,3 +614,129 @@ class StockResearchBundle(BaseModel):
     quantitative_prediction: QuantitativePredictionRecord | None = None
     corporate_intelligence: CorporateIntelligenceSummary | None = None
 
+
+class StructuredNewsEvent(BaseModel):
+    """Validated structured news/event record (Phase 5 — Section 3)."""
+
+    event_id: str
+    company_name: str
+    ticker: str
+    related_competitor_or_industry: str | None = None
+    event_category: Literal[
+        "company_news",
+        "promoter_management",
+        "industry_sector",
+        "competitor",
+        "regulatory_government",
+        "global_macro",
+    ]
+    event_description: str
+    original_source: str
+    source_url: str = ""
+    publication_timestamp: str
+    event_timestamp: str | None = None
+    effective_trading_date: str | None = None
+    sentiment: Literal["positive", "negative", "neutral"]
+    impact_magnitude: Literal["low", "medium", "high"]
+    classification_confidence: float = Field(ge=0.0, le=1.0)
+    expected_impact_duration: str = "1-5 trading sessions"
+    relevant_horizon: Literal["1D", "5D", "10D", "LONGER"] = "5D"
+    novelty_score: float = Field(ge=0.0, le=1.0)
+    source_credibility: float = Field(ge=0.0, le=1.0)
+    related_companies: list[str] = Field(default_factory=list)
+    related_sectors: list[str] = Field(default_factory=list)
+    is_duplicate_report: bool = False
+    canonical_event_id: str | None = None
+    extraction_method: Literal["deterministic", "gemini"] = "deterministic"
+    facts_summary: str = ""
+    interpretation_summary: str = ""
+
+
+class CrossStockImpactItem(BaseModel):
+    """Cross-stock & macro relationship impact record (Phase 5 — Section 5)."""
+
+    affected_company: str
+    originating_event_id: str
+    originating_entity: str
+    relationship_type: Literal[
+        "competitor",
+        "supplier_customer",
+        "sector_peer",
+        "commodity_dependency",
+        "regulatory_exposure",
+        "global_macro",
+    ]
+    expected_impact_direction: Literal["positive", "negative", "neutral"]
+    impact_magnitude: Literal["low", "medium", "high"]
+    confidence: float = Field(ge=0.0, le=1.0)
+    expected_duration: str = "1-5 trading sessions"
+    rationale: str = ""
+
+
+class MultiHorizonSignalSummary(BaseModel):
+    """Separated & combined prediction signal per horizon (1D, 5D, 10D) (Phase 5 — Section 6)."""
+
+    horizon: Literal["1D", "5D", "10D"]
+    prob_positive: float
+    expected_gross_return_pct: float
+    expected_net_return_pct: float
+    quant_signal: str
+    news_signal: str
+    cross_stock_signal: str
+    combined_signal: str
+    confidence: float
+    uncertainty: float
+    decision: Literal["BUY", "HOLD", "WATCH", "NO TRADE"]
+
+
+class StockIntelligenceItem(BaseModel):
+    """Consolidated Phase 5 multi-dimensional intelligence view for a single pilot stock."""
+
+    symbol: str
+    company_name: str
+    sector: str
+    observation_date: str
+    quant_score_summary: dict[str, Any] = Field(default_factory=dict)
+    news_sentiment_score: float = 0.0
+    news_features: dict[str, float] = Field(default_factory=dict)
+    promoter_intelligence: list[str] = Field(default_factory=list)
+    industry_outlook: str = "Neutral"
+    competitor_developments: list[str] = Field(default_factory=list)
+    regulatory_developments: list[str] = Field(default_factory=list)
+    global_exposure: list[str] = Field(default_factory=list)
+    events_timeline: list[StructuredNewsEvent] = Field(default_factory=list)
+    cross_stock_impacts: list[CrossStockImpactItem] = Field(default_factory=list)
+    horizon_outlooks: dict[str, MultiHorizonSignalSummary] = Field(default_factory=dict)
+    facts_vs_interpretations_note: str = (
+        "Facts (prices, exchange filings, raw headlines) are separated from extracted interpretations and model predictions."
+    )
+
+
+class MonitoringSnapshot(BaseModel):
+    """Accuracy, drift & data quality monitoring snapshot (Phase 5 — Section 11)."""
+
+    evaluated_at: str
+    total_logged_predictions: int = 0
+    evaluated_outcomes_count: int = 0
+    rolling_directional_accuracy_pct: float | None = None
+    brier_score_recent: float | None = None
+    drift_status: Literal["OK", "WARNING", "INSUFFICIENT_DATA"] = "INSUFFICIENT_DATA"
+    data_quality_warnings: list[str] = Field(default_factory=list)
+    failure_alerts: list[str] = Field(default_factory=list)
+
+
+class Phase5IntelligencePayload(BaseModel):
+    """Top-level payload for the Phase 5 Stock Intelligence dashboard & API."""
+
+    generated_at: str
+    model_version: str = "5.0.0-pilot"
+    last_news_collection_at: str
+    last_quant_update_at: str
+    latest_prediction_at: str
+    pilot_universe: list[str] = Field(default_factory=list)
+    stocks: dict[str, StockIntelligenceItem] = Field(default_factory=dict)
+    consolidated_feed: list[StructuredNewsEvent] = Field(default_factory=list)
+    monitoring: MonitoringSnapshot
+    data_quality_warnings: list[str] = Field(default_factory=list)
+
+

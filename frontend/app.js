@@ -1900,4 +1900,188 @@ function drawRDCanvas(rdHist) {
   ctx.fillText("R&D % of Sales", pad.left + 159, 15);
 }
 
+/* ============================================================================
+   Phase 5 Multi-Dimensional Stock Intelligence & Controlled Experiments
+   ============================================================================ */
+
+async function loadPhase5StockIntelligence(refresh = false) {
+  setLoading(true);
+  try {
+    const [intelRes, expRes] = await Promise.allSettled([
+      fetch(`/api/stock-intelligence?refresh=${refresh ? "true" : "false"}`),
+      fetch("/api/phase5-experiments"),
+    ]);
+    if (intelRes.status === "fulfilled" && intelRes.value.ok) {
+      const data = await intelRes.value.json();
+      renderPhase5Intelligence(data);
+    }
+    if (expRes.status === "fulfilled" && expRes.value.ok) {
+      const exp = await expRes.value.json();
+      renderPhase5ExperimentsTable(exp);
+    }
+  } catch (err) {
+    console.error("Failed loading Phase 5 Stock Intelligence:", err);
+  } finally {
+    setLoading(false);
+  }
+}
+
+function renderPhase5Intelligence(data) {
+  const sub = document.getElementById("p5-freshness-sub");
+  if (sub) {
+    sub.textContent = `Model: ${data.model_version || "5.0.0-pilot"} • News Collected: ${String(data.last_news_collection_at || "").slice(0, 19).replace("T", " ")} IST • Quant Updated: ${String(data.last_quant_update_at || "").slice(0, 19).replace("T", " ")} • Pilot Universe: ${(data.pilot_universe || []).join(", ")}`;
+  }
+
+  const warnEl = document.getElementById("p5-warnings-banner");
+  const allWarnings = [...(data.data_quality_warnings || []), ...(data.monitoring?.failure_alerts || [])];
+  if (warnEl) {
+    warnEl.innerHTML = allWarnings.length
+      ? `<strong>Data Quality &amp; Monitoring Notices:</strong> ${allWarnings.join(" | ")}`
+      : `<span class="text-bull">All 5 pilot stock intelligence feeds active. No failure alerts.</span>`;
+  }
+
+  const monKpi = document.getElementById("p5-monitoring-kpis");
+  const mon = data.monitoring || {};
+  if (monKpi) {
+    monKpi.innerHTML = `
+      <div class="kpi-box">
+        <span class="kpi-label">Logged Predictions</span>
+        <span class="kpi-value">${mon.total_logged_predictions ?? 0}</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Evaluated Outcomes</span>
+        <span class="kpi-value">${mon.evaluated_outcomes_count ?? 0}</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Rolling 1D Accuracy</span>
+        <span class="kpi-value">${mon.rolling_directional_accuracy_pct != null ? fmtPct(mon.rolling_directional_accuracy_pct, 1) : "Pending"}</span>
+      </div>
+      <div class="kpi-box">
+        <span class="kpi-label">Recent Brier / Drift</span>
+        <span class="kpi-value">${mon.brier_score_recent != null ? fmtNum(mon.brier_score_recent, 4) : "—"} (${mon.drift_status || "INSUFFICIENT_DATA"})</span>
+      </div>
+    `;
+  }
+
+  const grid = document.getElementById("p5-stocks-grid");
+  const stocks = data.stocks || {};
+  if (grid) {
+    grid.innerHTML = Object.values(stocks)
+      .map((s) => {
+        const outlooks = s.horizon_outlooks || {};
+        const hRows = ["1D", "5D", "10D"]
+          .filter((h) => outlooks[h])
+          .map((h) => {
+            const o = outlooks[h];
+            const decCls = o.decision === "BUY" ? "text-bull" : o.decision === "NO TRADE" ? "text-bear" : "text-hold";
+            return `
+              <tr>
+                <td><strong>${h}</strong></td>
+                <td>${o.quant_signal}</td>
+                <td>${o.news_signal}</td>
+                <td>${o.cross_stock_signal}</td>
+                <td class="${decCls}" style="font-weight: 700;">${o.decision} (${fmtPct(o.prob_positive * 100, 1)})</td>
+                <td class="${o.expected_net_return_pct >= 0 ? "text-bull" : "text-bear"}">${fmtPct(o.expected_net_return_pct, 2, true)}</td>
+              </tr>
+            `;
+          })
+          .join("");
+        const crossTxt = (s.cross_stock_impacts || [])
+          .slice(0, 2)
+          .map((c) => `<li><strong>[${c.relationship_type}]</strong> ${c.originating_entity}: ${c.expected_impact_direction.toUpperCase()} — ${c.rationale}</li>`)
+          .join("");
+        return `
+          <div class="sub-panel">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.45rem;">
+              <div>
+                <h4 style="font-size: 0.98rem; font-weight: 800;">${s.symbol} <span style="font-weight: 400; font-size: 0.78rem; color: var(--text-muted);">(${s.sector})</span></h4>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Industry: <strong>${s.industry_outlook}</strong> • News Sent: <strong>${fmtNum(s.news_sentiment_score, 3)}</strong></div>
+              </div>
+              <span class="badge-neutral mono">${s.quant_score_summary?.recommended_action || "WATCH"}</span>
+            </div>
+            <div class="table-wrap" style="margin-bottom: 0.55rem;">
+              <table class="fin-table mono" style="font-size: 0.73rem;">
+                <thead><tr><th>Hor</th><th>Quant</th><th>News</th><th>Cross</th><th>Decision</th><th>Net E[R]</th></tr></thead>
+                <tbody>${hRows}</tbody>
+              </table>
+            </div>
+            <div style="font-size: 0.75rem; line-height: 1.45;">
+              <div><strong>Promoter/Insider:</strong> ${(s.promoter_intelligence || [])[0] || "—"}</div>
+              <div><strong>Competitors:</strong> ${(s.competitor_developments || [])[0] || "—"}</div>
+              <div><strong>Regulatory:</strong> ${(s.regulatory_developments || [])[0] || "—"}</div>
+              <div><strong>Global Macro:</strong> ${(s.global_exposure || [])[0] || "—"}</div>
+              ${crossTxt ? `<ul class="agent-reasons" style="margin-top: 0.35rem;">${crossTxt}</ul>` : ""}
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  const feedBody = document.getElementById("tbody-p5-feed");
+  if (feedBody) {
+    const feed = data.consolidated_feed || [];
+    feedBody.innerHTML = feed.length
+      ? feed
+          .map((e) => {
+            const sCls = e.sentiment === "positive" ? "text-bull" : e.sentiment === "negative" ? "text-bear" : "";
+            const linkHtml = e.source_url
+              ? `<a href="${e.source_url}" target="_blank" rel="noopener" style="color: var(--accent-brand); text-decoration: none;">${e.event_description}</a>`
+              : e.event_description;
+            return `
+              <tr>
+                <td><strong>${e.ticker}</strong></td>
+                <td><span class="badge-neutral">${e.event_category}</span></td>
+                <td style="text-align: left;">${linkHtml} <span style="font-size: 0.72rem; color: var(--text-muted);">(${e.original_source})</span></td>
+                <td class="mono">${e.effective_trading_date || "—"}</td>
+                <td class="${sCls}" style="font-weight: 700;">${e.sentiment.toUpperCase()}</td>
+                <td class="mono">${e.impact_magnitude.toUpperCase()}</td>
+              </tr>
+            `;
+          })
+          .join("")
+      : `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">No live news events collected.</td></tr>`;
+  }
+}
+
+function renderPhase5ExperimentsTable(expData) {
+  const tbody = document.getElementById("tbody-p5-experiments");
+  if (!tbody || !expData?.experiments) return;
+  const rows = Object.entries(expData.experiments).map(([name, r]) => {
+    const d1 = r["1D"] || {};
+    const d5 = r["5D"] || {};
+    const d10 = r["10D"] || {};
+    return `
+      <tr>
+        <td style="text-align: left;"><strong>${name}</strong></td>
+        <td>${r.feature_count ?? "—"}</td>
+        <td>${d1.roc_auc != null ? fmtNum(d1.roc_auc, 4) : "—"}</td>
+        <td class="${(d1.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${d1.net_return_pct != null ? fmtPct(d1.net_return_pct, 2, true) : "—"}</td>
+        <td>${d1.net_sharpe != null ? fmtNum(d1.net_sharpe, 3) : "—"}</td>
+        <td>${d5.roc_auc != null ? fmtNum(d5.roc_auc, 4) : "—"}</td>
+        <td>${d5.rank_ic != null ? fmtNum(d5.rank_ic, 4) : "—"}</td>
+        <td>${d10.roc_auc != null ? fmtNum(d10.roc_auc, 4) : "—"}</td>
+        <td>${d10.rank_ic != null ? fmtNum(d10.rank_ic, 4) : "—"}</td>
+      </tr>
+    `;
+  });
+  const nm = expData.naive_momentum_benchmark || {};
+  if (nm["1D"]) {
+    rows.push(`
+      <tr style="background: rgba(56, 189, 248, 0.08);">
+        <td style="text-align: left;"><strong>Benchmark: naive_momentum</strong></td>
+        <td>Rule</td>
+        <td>${fmtNum(nm["1D"].roc_auc, 4)}</td>
+        <td class="${(nm["1D"].net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(nm["1D"].net_return_pct, 2, true)}</td>
+        <td>${fmtNum(nm["1D"].net_sharpe, 3)}</td>
+        <td>${nm["5D"] ? fmtNum(nm["5D"].roc_auc, 4) : "—"}</td>
+        <td>${nm["5D"] ? fmtNum(nm["5D"].rank_ic, 4) : "—"}</td>
+        <td>${nm["10D"] ? fmtNum(nm["10D"].roc_auc, 4) : "—"}</td>
+        <td>${nm["10D"] ? fmtNum(nm["10D"].rank_ic, 4) : "—"}</td>
+      </tr>
+    `);
+  }
+  tbody.innerHTML = rows.join("");
+}
+
 document.addEventListener("DOMContentLoaded", initApp);
