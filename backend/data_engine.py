@@ -566,6 +566,9 @@ def fetch_raw_company_data(symbol: str) -> dict[str, Any]:
     is_consolidated = True
     url = f"https://www.screener.in/company/{urllib.parse.quote(sym)}/consolidated/"
     r = s.get(url, timeout=REQUEST_TIMEOUT)
+    if r.status_code == 429:
+        time.sleep(2.0)
+        r = s.get(url, timeout=REQUEST_TIMEOUT)
     if r.status_code == 404:
         url = f"https://www.screener.in/company/{urllib.parse.quote(sym)}/"
         is_consolidated = False

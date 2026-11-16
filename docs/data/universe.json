@@ -49,6 +49,86 @@
       "symbol": "TRENT",
       "name": "Trent Ltd",
       "sector": "Consumer Discretionary"
+    },
+    {
+      "symbol": "DRREDDY",
+      "name": "Dr Reddys Laboratories Ltd",
+      "sector": "Healthcare"
+    },
+    {
+      "symbol": "BEL",
+      "name": "Bharat Electronics Ltd",
+      "sector": "Industrials"
+    },
+    {
+      "symbol": "HAL",
+      "name": "Hindustan Aeronautics Ltd",
+      "sector": "Industrials"
+    },
+    {
+      "symbol": "MARUTI",
+      "name": "Maruti Suzuki India Ltd",
+      "sector": "Consumer Discretionary"
+    },
+    {
+      "symbol": "M&M",
+      "name": "Mahindra & Mahindra Ltd",
+      "sector": "Consumer Discretionary"
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "name": "Bajaj Finance Ltd",
+      "sector": "Financial Services"
+    },
+    {
+      "symbol": "ITC",
+      "name": "ITC Ltd",
+      "sector": "Fast Moving Consumer Goods"
+    },
+    {
+      "symbol": "DIVISLAB",
+      "name": "Divis Laboratories Ltd",
+      "sector": "Healthcare"
+    },
+    {
+      "symbol": "CIPLA",
+      "name": "Cipla Ltd",
+      "sector": "Healthcare"
+    },
+    {
+      "symbol": "PERSISTENT",
+      "name": "Persistent Systems Ltd",
+      "sector": "Information Technology"
+    },
+    {
+      "symbol": "TATASTEEL",
+      "name": "Tata Steel Ltd",
+      "sector": "Commodities"
+    },
+    {
+      "symbol": "NTPC",
+      "name": "NTPC Ltd",
+      "sector": "Utilities"
+    },
+    {
+      "symbol": "AXISBANK",
+      "name": "Axis Bank Ltd",
+      "sector": "Financial Services"
+    },
+    {
+      "symbol": "TITAN",
+      "name": "Titan Company Ltd",
+      "sector": "Consumer Discretionary"
+    },
+    {
+      "symbol": "TATAPOWER",
+      "name": "Tata Power Company Ltd",
+      "sector": "Utilities"
+    },
+    {
+      "symbol": "COALINDIA",
+      "name": "Coal India Ltd",
+      "sector": "Energy"
     }
   ]
 }

@@ -64,11 +64,10 @@ def main() -> None:
             except Exception:
                 pass
 
-    print(f"Running 5-Agent Indian Market Research across {len(all_symbols)} NSE equities...")
-    with ThreadPoolExecutor(max_workers=6) as pool:
-        results = list(pool.map(fetch_one, all_symbols))
-
-    for sym, payload in results:
+    to_fetch = [s for s in all_symbols if s not in bundles or os.environ.get("FORCE_REFRESH") == "1"]
+    print(f"Loaded {len(bundles)} existing bundles; fetching {len(to_fetch)} NSE equities...")
+    for sym in to_fetch:
+        _, payload = fetch_one(sym)
         if payload is not None:
             bundles[sym] = payload
             (data_dir / f"{sym}.json").write_text(
