@@ -68,9 +68,11 @@ def main() -> None:
     # Load any existing symbols in docs/data so custom user-added stocks persist
     bundles: dict[str, dict] = {}
     for existing_file in data_dir.glob("*.json"):
-        if existing_file.stem.upper() not in ("UNIVERSE", "SCANNER", "META", "MOVERS"):
+        if existing_file.stem.upper() not in ("UNIVERSE", "SCANNER", "META", "MOVERS", "REGIME"):
             try:
-                bundles[existing_file.stem.upper()] = json.loads(existing_file.read_text())
+                loaded = json.loads(existing_file.read_text())
+                if isinstance(loaded, dict) and "overview" in loaded:
+                    bundles[existing_file.stem.upper()] = loaded
             except Exception:
                 pass
 

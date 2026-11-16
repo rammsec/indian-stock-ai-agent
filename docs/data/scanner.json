@@ -162,26 +162,6 @@
       "rsi_14": 70.24
     },
     {
-      "symbol": "BIRLACABLE",
-      "name": "Birla Cable Ltd",
-      "sector": "Telecommunication",
-      "current_price": 325.25,
-      "day_change_pct": 0.76,
-      "action": "STRONG BUY",
-      "conviction_score": 74.5,
-      "fundamental_score": 77.6,
-      "technical_score": 62.0,
-      "entry_zone": "\u20b9320.4 \u2013 \u20b9328.2",
-      "target_1": 351.51,
-      "stop_loss": 307.75,
-      "risk_reward": 1.5,
-      "cash_in_hand_cr": 121.0,
-      "rd_pct": 1.0,
-      "promoters_pct": 66.35,
-      "inst_pct": 0.93,
-      "rsi_14": 46.79
-    },
-    {
       "symbol": "ITC",
       "name": "ITC Ltd",
       "sector": "Fast Moving Consumer Goods",
@@ -222,6 +202,26 @@
       "rsi_14": 54.92
     },
     {
+      "symbol": "BIRLACABLE",
+      "name": "Birla Cable Ltd",
+      "sector": "Telecommunication",
+      "current_price": 322.0,
+      "day_change_pct": -1.0,
+      "action": "BUY",
+      "conviction_score": 71.8,
+      "fundamental_score": 74.2,
+      "technical_score": 62.0,
+      "entry_zone": "\u20b9314.3 \u2013 \u20b9323.9",
+      "target_1": 344.98,
+      "stop_loss": 303.81,
+      "risk_reward": 1.26,
+      "cash_in_hand_cr": 121.0,
+      "rd_pct": 0.65,
+      "promoters_pct": 66.35,
+      "inst_pct": 0.93,
+      "rsi_14": 45.87
+    },
+    {
       "symbol": "TATAELXSI",
       "name": "Tata Elxsi Ltd",
       "sector": "Information Technology",
@@ -236,7 +236,7 @@
       "stop_loss": 3734.96,
       "risk_reward": 1.26,
       "cash_in_hand_cr": 133.0,
-      "rd_pct": 1.0,
+      "rd_pct": 2.85,
       "promoters_pct": 43.89,
       "inst_pct": 17.98,
       "rsi_14": 59.78

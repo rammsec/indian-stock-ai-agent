@@ -740,6 +740,29 @@ def run_full_stock_research(
     )
 
     from .intel_engine import build_promoter_and_competitor_intel
+    from .storage.quality import evaluate_stock_data_quality
+
+    quality_report, _ = evaluate_stock_data_quality(
+        symbol=overview.symbol,
+        overview=overview,
+        annual_5=annual_5,
+        quarterly_5=quarterly_5,
+        cash_bs=cash_bs,
+        shp=shp,
+        rd=rd,
+        tech=tech,
+        price_rows=raw.get("price_rows", []),
+    )
+
+    if not quality_report.trade_eligible:
+        guidance.action = "NO TRADE"
+        guidance.position_size_suggestion_pct = 0.0
+        guidance.key_risks = quality_report.critical_failures + guidance.key_risks[:2]
+        guidance.executive_summary = (
+            f"NO TRADE — Data Quality Gate triggered for {overview.name} ({overview.symbol}) "
+            f"(Data Quality Score: {quality_report.quality_score}/100). "
+            f"Critical issues: {'; '.join(quality_report.critical_failures)}"
+        )
 
     prom_comp_intel = build_promoter_and_competitor_intel(
         overview.symbol, overview, shp
@@ -758,4 +781,5 @@ def run_full_stock_research(
         next_day_guidance=guidance,
         promoter_and_competitor_intel=prom_comp_intel,
         news=news,
+        data_quality=quality_report,
     )

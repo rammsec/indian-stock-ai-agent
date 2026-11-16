@@ -150,51 +150,53 @@ async function liveBrowserResearch(symbol) {
   const annual5 = extractLast5Periods(pl.headers, pl.rows, 5);
   const quarterly5 = extractLast5Periods(qtr.headers, qtr.rows, 5);
 
-  const curPrice = parseIndianNumber(topRatios["Current Price"]) || 100;
+  const curPrice = parseIndianNumber(topRatios["Current Price"]);
   const mcapCr = parseIndianNumber(topRatios["Market Cap"]) || 0;
-  const roePct = parseIndianNumber(topRatios["ROE"]) || 12;
-  const rocePct = parseIndianNumber(topRatios["ROCE"]) || 14;
+  const roePct = parseIndianNumber(topRatios["ROE"]);
+  const rocePct = parseIndianNumber(topRatios["ROCE"]);
   const stockPe = parseIndianNumber(topRatios["Stock P/E"]);
 
-  // Build 5Y Cash & Debt
+  // Build 5Y Cash & Debt without arbitrary multipliers
   const bsYears = bs.headers.slice(-5);
   const cashHist5y = bsYears.map((yr) => {
     const idx = bs.headers.indexOf(yr);
     const getBs = (...nms) => {
       for (const nm of nms) {
         for (const [k, arr] of Object.entries(bs.rows)) {
-          if (k.toLowerCase().startsWith(nm.toLowerCase()) && idx < arr.length) return arr[idx] || 0;
+          if (k.toLowerCase().startsWith(nm.toLowerCase()) && idx < arr.length) return arr[idx] ?? 0;
         }
       }
       return 0;
     };
     const eq = getBs("Equity Capital") + getBs("Reserves");
     const inv = getBs("Investments");
-    const otherAssets = getBs("Other Assets");
-    const cashEq = Math.round(otherAssets * 0.28);
+    const cashEq = getBs("Cash & Equivalents", "Cash");
     const debt = getBs("Borrowings");
     const totCash = cashEq + inv;
     const cfIdx = cf.headers.indexOf(yr);
-    let ocf = 0;
+    let ocf = null;
+    let icf = null;
     if (cfIdx !== -1) {
       for (const [k, arr] of Object.entries(cf.rows)) {
-        if (k.toLowerCase().includes("operating") && cfIdx < arr.length) ocf = arr[cfIdx] || 0;
+        if (k.toLowerCase().includes("operating") && cfIdx < arr.length) ocf = arr[cfIdx];
+        if (k.toLowerCase().includes("investing") && cfIdx < arr.length) icf = arr[cfIdx];
       }
     }
+    const fcf = ocf !== null && icf !== null ? Math.round(ocf + Math.min(0, icf)) : null;
     return {
       period: yr,
       cash_equivalents_cr: cashEq,
       investments_cr: inv,
       total_cash_in_hand_cr: totCash,
-      long_term_debt_cr: Math.round(debt * 0.7),
-      short_term_debt_cr: Math.round(debt * 0.3),
+      long_term_debt_cr: 0,
+      short_term_debt_cr: 0,
       lease_liabilities_cr: 0,
       total_borrowings_cr: debt,
       net_cash_cr: totCash - debt,
       total_equity_cr: eq,
       total_assets_cr: getBs("Total Assets"),
       operating_cash_flow_cr: ocf,
-      free_cash_flow_cr: Math.round(ocf * 0.72),
+      free_cash_flow_cr: fcf,
     };
   });
   const latestCb = cashHist5y[cashHist5y.length - 1] || {
@@ -205,7 +207,7 @@ async function liveBrowserResearch(symbol) {
     total_borrowings_cr: 0,
     net_cash_cr: 0,
     total_equity_cr: 1,
-    operating_cash_flow_cr: 0,
+    operating_cash_flow_cr: null,
   };
 
   // Shareholding

@@ -2,11 +2,82 @@
 
 from __future__ import annotations
 
+from datetime import date, datetime
+import os
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 CACHE_DB_PATH = BASE_DIR / ".cache" / "market_cache.sqlite3"
+
+# Phase 1 Separated Storage Layers
+DATA_ROOT_DIR = BASE_DIR / "data"
+RAW_DATA_DIR = DATA_ROOT_DIR / "raw"
+PROCESSED_DATA_DIR = DATA_ROOT_DIR / "processed"
+FEATURES_DATA_DIR = DATA_ROOT_DIR / "features"
+PREDICTIONS_DATA_DIR = DATA_ROOT_DIR / "predictions"
+BACKTESTS_DATA_DIR = DATA_ROOT_DIR / "backtests"
+DUCKDB_PATH = DATA_ROOT_DIR / "bharat_alpha.duckdb"
+
+DATA_SCHEMA_VERSION = "1.0.0"
+IST_TZ = ZoneInfo("Asia/Kolkata")
+
+# Mandatory Cost-Control & Minimum-Billing Guards (Disabled by Default)
+ENABLE_GEMINI_EXTRACTOR: bool = os.environ.get("ENABLE_GEMINI_EXTRACTOR", "false").lower() == "true"
+MAX_GEMINI_CALLS_PER_DAY: int = int(os.environ.get("MAX_GEMINI_CALLS_PER_DAY", "10"))
+ENABLE_BIGQUERY: bool = os.environ.get("ENABLE_BIGQUERY", "false").lower() == "true"
+BIGQUERY_MAX_BYTES_BILLED: int = int(os.environ.get("BIGQUERY_MAX_BYTES_BILLED", "100000000"))  # 100 MB cap
+
+# Official NSE Trading Holidays (YYYY-MM-DD)
+NSE_TRADING_HOLIDAYS: set[str] = {
+    "2025-02-26", "2025-03-14", "2025-03-31", "2025-04-10", "2025-04-14",
+    "2025-04-18", "2025-05-01", "2025-08-15", "2025-08-27", "2025-10-02",
+    "2025-10-21", "2025-10-22", "2025-11-05", "2025-12-25",
+    "2026-01-26", "2026-03-03", "2026-03-20", "2026-03-31", "2026-04-03",
+    "2026-04-14", "2026-05-01", "2026-05-27", "2026-06-26", "2026-09-14",
+    "2026-10-02", "2026-10-20", "2026-11-09", "2026-11-24", "2026-12-25",
+}
+
+
+def is_nse_trading_day(dt: date | None = None) -> bool:
+    """Return True if `dt` (in Asia/Kolkata time) is a weekday and not an NSE holiday."""
+    target = dt or datetime.now(IST_TZ).date()
+    if target.weekday() >= 5:
+        return False
+    return target.strftime("%Y-%m-%d") not in NSE_TRADING_HOLIDAYS
+
+
+# Core Market & Sector Indices tracked in Phase 1
+NSE_MARKET_INDICES: dict[str, dict[str, str]] = {
+    "NIFTY_50": {"nse_name": "Nifty 50", "yf_ticker": "^NSEI", "category": "broad"},
+    "NIFTY_500": {"nse_name": "Nifty 500", "yf_ticker": "^CRSLDX", "category": "broad"},
+    "NIFTY_MIDCAP_100": {"nse_name": "Nifty Midcap 100", "yf_ticker": "NIFTY_MID_SELECT.NS", "category": "broad"},
+    "NIFTY_SMALLCAP_100": {"nse_name": "Nifty Smallcap 100", "yf_ticker": "^CNXSC", "category": "broad"},
+    "INDIA_VIX": {"nse_name": "India VIX", "yf_ticker": "^INDIAVIX", "category": "volatility"},
+    "NIFTY_BANK": {"nse_name": "Nifty Bank", "yf_ticker": "^NSEBANK", "category": "sector"},
+    "NIFTY_IT": {"nse_name": "Nifty IT", "yf_ticker": "^CNXIT", "category": "sector"},
+    "NIFTY_FMCG": {"nse_name": "Nifty FMCG", "yf_ticker": "^CNXFMCG", "category": "sector"},
+    "NIFTY_PHARMA": {"nse_name": "Nifty Pharma", "yf_ticker": "^CNXPHARMA", "category": "sector"},
+    "NIFTY_AUTO": {"nse_name": "Nifty Auto", "yf_ticker": "^CNXAUTO", "category": "sector"},
+    "NIFTY_METAL": {"nse_name": "Nifty Metal", "yf_ticker": "^CNXMETAL", "category": "sector"},
+    "NIFTY_ENERGY": {"nse_name": "Nifty Energy", "yf_ticker": "^CNXENERGY", "category": "sector"},
+}
+
+SECTOR_TO_NSE_INDEX: dict[str, str] = {
+    "IT Services": "NIFTY_IT",
+    "Auto": "NIFTY_AUTO",
+    "Banking": "NIFTY_BANK",
+    "PSU Banking": "NIFTY_BANK",
+    "NBFC": "NIFTY_BANK",
+    "FMCG": "NIFTY_FMCG",
+    "Pharmaceuticals": "NIFTY_PHARMA",
+    "Steel": "NIFTY_METAL",
+    "Aluminium": "NIFTY_METAL",
+    "Energy": "NIFTY_ENERGY",
+    "Oil": "NIFTY_ENERGY",
+    "Power": "NIFTY_ENERGY",
+}
 
 BROWSER_USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "

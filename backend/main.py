@@ -69,6 +69,24 @@ def api_get_top_20_movers() -> dict[str, Any]:
         raise HTTPException(status_code=500, detail=f"Movers error: {exc}") from exc
 
 
+@app.get("/api/regime")
+def api_get_market_regime() -> dict[str, Any]:
+    """Return latest NSE Market Regime & Breadth snapshot."""
+    try:
+        import json
+
+        regime_file = Path(__file__).resolve().parent.parent / "docs" / "data" / "regime.json"
+        if regime_file.exists():
+            return json.loads(regime_file.read_text())
+        from .collectors import collect_and_classify_market_regime, collect_indices_history
+
+        idx_bars = collect_indices_history(period="1y")
+        snap = collect_and_classify_market_regime(index_bars=idx_bars)
+        return snap.model_dump()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Market regime error: {exc}") from exc
+
+
 @app.get("/api/research/{symbol}")
 def api_get_research(
     symbol: str,

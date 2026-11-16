@@ -126,13 +126,12 @@ def build_technical_snapshot(
         df["open"] = pd.to_numeric(df["open"], errors="coerce").fillna(df["close"])
 
     if "high" not in df.columns or df["high"].isna().all():
-        # Estimate intraday high/low from daily volatility when only close series is present
-        daily_move = df["close"].diff().abs().rolling(10, min_periods=1).mean().fillna(df["close"] * 0.01)
-        df["high"] = df[["open", "close"]].max(axis=1) + daily_move * 0.65
-        df["low"] = df[["open", "close"]].min(axis=1) - daily_move * 0.65
+        # Never fabricate synthetic intraday High/Low ranges; use observed max/min of open/close
+        df["high"] = df[["open", "close"]].max(axis=1)
+        df["low"] = df[["open", "close"]].min(axis=1)
     else:
-        df["high"] = pd.to_numeric(df["high"], errors="coerce").fillna(df["close"])
-        df["low"] = pd.to_numeric(df["low"], errors="coerce").fillna(df["close"])
+        df["high"] = pd.to_numeric(df["high"], errors="coerce").fillna(df[["open", "close"]].max(axis=1))
+        df["low"] = pd.to_numeric(df["low"], errors="coerce").fillna(df[["open", "close"]].min(axis=1))
 
     if "volume" not in df.columns:
         df["volume"] = 0.0

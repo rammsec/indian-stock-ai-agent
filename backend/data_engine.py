@@ -403,7 +403,28 @@ def _enrich_with_yfinance(
     except Exception:
         pass
 
+    # Overlay latest official NSE Bhavcopy (Open, High, Low, Close, VWAP, Deliverable Qty, Delivery %)
+    try:
+        from .collectors.nse_market_collector import fetch_nse_sec_bhavdata_full
+
+        nse_bars, _ = fetch_nse_sec_bhavdata_full(symbols_filter={symbol.upper()})
+        for nb in nse_bars:
+            if nb.close is not None:
+                ohlc_by_date[nb.observation_date] = {
+                    "open": nb.open or nb.close,
+                    "high": nb.high or nb.close,
+                    "low": nb.low or nb.close,
+                    "close": nb.close,
+                    "volume": nb.volume or 0.0,
+                    "vwap": nb.vwap,
+                    "deliverable_qty": nb.deliverable_qty,
+                    "delivery_pct": nb.delivery_pct,
+                }
+    except Exception:
+        pass
+
     if screener_price_rows:
+        existing_dates = {row["date"] for row in screener_price_rows}
         for row in screener_price_rows:
             dt = row["date"]
             if dt in ohlc_by_date:
@@ -413,6 +434,17 @@ def _enrich_with_yfinance(
                 row["low"] = yf_bar["low"]
                 if not row.get("volume"):
                     row["volume"] = yf_bar["volume"]
+                if yf_bar.get("vwap") is not None:
+                    row["vwap"] = yf_bar["vwap"]
+                if yf_bar.get("deliverable_qty") is not None:
+                    row["deliverable_qty"] = yf_bar["deliverable_qty"]
+                if yf_bar.get("delivery_pct") is not None:
+                    row["delivery_pct"] = yf_bar["delivery_pct"]
+        # Append any newer NSE Bhavcopy date not yet in screener_price_rows
+        for dt, vals in sorted(ohlc_by_date.items()):
+            if dt not in existing_dates and vals.get("delivery_pct") is not None:
+                screener_price_rows.append({"date": dt, **vals})
+        screener_price_rows.sort(key=lambda x: x["date"])
         return screener_price_rows, rd_by_year
 
     if ohlc_by_date:
@@ -741,10 +773,9 @@ def fetch_raw_company_data(symbol: str) -> dict[str, Any]:
                     ocf_val = v_list[cf_idx]
                 elif "investing" in k.lower() and cf_idx < len(v_list):
                     icf_val = v_list[cf_idx]
-            if ocf_val is not None:
-                # Approximate FCF = Operating Cash Flow - estimated CapEx (or + Investing CF capped)
-                capex_est = abs(min(0.0, float(icf_val or 0.0))) * 0.65
-                fcf_val = round(float(ocf_val) - capex_est, 2)
+            if ocf_val is not None and icf_val is not None:
+                # Use reported Investing Cash Flow directly when negative (net capex/investments) without arbitrary * 0.65 multiplier
+                fcf_val = round(float(ocf_val) + min(0.0, float(icf_val)), 2)
 
         total_cash_hand = round(cash_eq + investments, 2)
         net_cash = round(total_cash_hand - borrowings_total, 2)
@@ -883,12 +914,10 @@ def fetch_raw_company_data(symbol: str) -> dict[str, Any]:
                     )
                 )
 
-    # R&D & Innovation 5-Year History
+    # R&D & Innovation 5-Year History (No synthetic ramp multiplier!)
     rd_meta = REPORTED_RD_INTENSITY_PCT.get(sym)
-    default_rd_pct = (
-        float(rd_meta["pct_of_sales"])
-        if rd_meta
-        else SECTOR_DEFAULT_RD_PCT.get(sector_str, 1.0)
+    statutory_rd_pct: float | None = (
+        float(rd_meta["pct_of_sales"]) if rd_meta else None
     )
     rd_focus = (
         str(rd_meta["focus"])
@@ -901,7 +930,7 @@ def fetch_raw_company_data(symbol: str) -> dict[str, Any]:
         else (
             "Yahoo Finance IFRS Income Statement (Research & Development)"
             if yf_rd_by_year
-            else "Statutory BRSR / Sector R&D & Intangible Capitalization Model"
+            else "MISSING (R&D not separately disclosed in consolidated P&L)"
         )
     )
 
@@ -909,17 +938,19 @@ def fetch_raw_company_data(symbol: str) -> dict[str, Any]:
     intangible_map = fixed_assets_sched.get("Intangible Assets", {})
     emp_cost_map = expenses_sched.get("Employee Cost %", {})
 
-    for idx_yr, rep in enumerate(last_5_annual):
+    for rep in last_5_annual:
         yr_lbl = rep.period
         rev_val = float(rep.revenue_cr or 0.0)
         if yr_lbl in yf_rd_by_year and yf_rd_by_year[yr_lbl] > 0:
             rd_cr = yf_rd_by_year[yr_lbl]
-            rd_pct = round(rd_cr / rev_val * 100.0, 2) if rev_val > 0 else default_rd_pct
-        else:
-            # Slight progressive ramp across the 5 years reflecting actual R&D scaling
-            scale = 0.94 + 0.015 * idx_yr
-            rd_pct = round(default_rd_pct * scale, 2)
+            rd_pct = round(rd_cr / rev_val * 100.0, 2) if rev_val > 0 else (statutory_rd_pct or 0.0)
+        elif statutory_rd_pct is not None:
+            # Constant statutory BRSR / Board Report R&D intensity % without synthetic ramp
+            rd_pct = round(statutory_rd_pct, 2)
             rd_cr = round(rev_val * rd_pct / 100.0, 2)
+        else:
+            rd_pct = 0.0
+            rd_cr = 0.0
 
         intang_val = _parse_num(intangible_map.get(yr_lbl)) or 0.0
         cwip_val = 0.0

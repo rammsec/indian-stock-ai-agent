@@ -1,21 +1,30 @@
-name: Daily NSE AI Research & Next-Day Buy/Sell Generator
+name: Daily NSE Quantitative Data Foundation & Research Pipeline
 
 on:
   schedule:
-    # Runs Monday-Friday at 10:30 UTC (4:00 PM IST — 30 mins after NSE/BSE market close)
-    - cron: "30 10 * * 1-5"
+    # Runs Monday-Friday at 13:00 UTC (6:30 PM IST — after NSE Bhavcopy & Delivery reports are published)
+    - cron: "0 13 * * 1-5"
   workflow_dispatch:
     inputs:
       extra_symbols:
         description: "Optional comma-separated NSE symbols to add/refresh (e.g. ZOMATO,IRCTC,RVNL,SUZLON)"
         required: false
         default: ""
+      force_holiday_run:
+        description: "Set to 'true' to run even on an NSE trading holiday"
+        required: false
+        default: "false"
 
 permissions:
   contents: write
 
+env:
+  TZ: Asia/Kolkata
+  ENABLE_GEMINI_EXTRACTOR: "false"
+  ENABLE_BIGQUERY: "false"
+
 jobs:
-  update-nse-signals:
+  nse-quant-pipeline:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -31,21 +40,48 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run 5-Agent NSE Research Engine & Build GitHub Pages Data
+      - name: Check NSE Trading Holiday Calendar (Asia/Kolkata)
+        id: calendar_check
+        run: |
+          python -c "
+          import os
+          from backend.config import is_nse_trading_day
+          force = os.environ.get('FORCE_HOLIDAY_RUN', 'false').lower() == 'true'
+          is_open = is_nse_trading_day()
+          print(f'NSE Trading Day: {is_open} | Force Run: {force}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'should_run={str(is_open or force).lower()}\n')
+          "
+        env:
+          FORCE_HOLIDAY_RUN: ${{ github.event.inputs.force_holiday_run }}
+
+      - name: Phase 1 — Collect NSE Bhavcopy, Delivery %, Indices, Market Regime & Parquet/DuckDB Store
+        if: steps.calendar_check.outputs.should_run == 'true'
+        run: |
+          python scripts/run_phase1_foundation.py
+
+      - name: Generate Validated Frontend JSONs & Build GitHub Pages
+        if: steps.calendar_check.outputs.should_run == 'true'
         env:
           EXTRA_SYMBOLS: ${{ github.event.inputs.extra_symbols }}
         run: |
           python scripts/generate_static_data.py
           python scripts/build_github_pages.py
 
-      - name: Commit & Push Updated Next-Day Signals to GitHub Pages
+      - name: Run Automated Test Suite
+        if: steps.calendar_check.outputs.should_run == 'true'
         run: |
-          git config user.name "BharatAlpha AI Bot"
+          pytest -v
+
+      - name: Commit & Push Updated Parquet Store & GitHub Pages Data
+        if: steps.calendar_check.outputs.should_run == 'true'
+        run: |
+          git config user.name "BharatAlpha Quant Bot"
           git config user.email "actions@github.com"
-          git add docs/
+          git add data/processed/ docs/
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore(data): update daily NSE 5-report & next-day buy/sell signals [skip ci]"
+            git commit -m "chore(quant): update daily NSE Parquet store, market regime & next-day signals [skip ci]"
             git push origin main
           fi

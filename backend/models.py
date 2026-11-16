@@ -186,7 +186,14 @@ class AgentVerdict(BaseModel):
 
 
 class NextDayGuidance(BaseModel):
-    action: Literal["STRONG BUY", "BUY", "HOLD / ACCUMULATE", "SELL / BOOK PROFIT", "AVOID / SHORT"]
+    action: Literal[
+        "STRONG BUY",
+        "BUY",
+        "HOLD / ACCUMULATE",
+        "SELL / BOOK PROFIT",
+        "AVOID / SHORT",
+        "NO TRADE",
+    ]
     conviction_score: float
     fundamental_score: float
     technical_score: float
@@ -302,6 +309,128 @@ class CompanyOverview(BaseModel):
     cons: list[str] = Field(default_factory=list)
 
 
+# ============================================================================
+# Phase 1 — Data Foundation, Provenance, Quality & Market Regime Schemas
+# ============================================================================
+
+ValidationStatus = Literal["VERIFIED", "ESTIMATED", "MISSING", "STALE", "CONFLICTING"]
+
+MarketRegimeLabel = Literal[
+    "Strong Bull",
+    "Weak Bull",
+    "Sideways",
+    "Bear",
+    "High Volatility",
+]
+
+
+class DataRecord(BaseModel):
+    """Canonical provenance-tracked data record required by Section 6."""
+
+    symbol: str
+    metric: str
+    value: float | str | None = None
+    source: str
+    observation_date: str
+    publication_timestamp: str
+    collection_timestamp: str
+    validation_status: ValidationStatus
+    data_version: str = "1.0.0"
+
+
+class EquityDailyBar(BaseModel):
+    """Normalized daily equity bar with NSE official delivery & VWAP fields."""
+
+    symbol: str
+    series: str = "EQ"
+    observation_date: str
+    open: float | None = None
+    high: float | None = None
+    low: float | None = None
+    close: float | None = None
+    last_price: float | None = None
+    prev_close: float | None = None
+    vwap: float | None = None
+    adj_close: float | None = None
+    volume: float | None = None
+    turnover_cr: float | None = None
+    trades_count: int | None = None
+    deliverable_qty: float | None = None
+    delivery_pct: float | None = None
+    dividends: float = 0.0
+    stock_splits: float = 0.0
+    source: str
+    publication_timestamp: str
+    collection_timestamp: str
+    ohlcv_validation_status: ValidationStatus = "VERIFIED"
+    delivery_validation_status: ValidationStatus = "MISSING"
+    data_version: str = "1.0.0"
+
+
+class IndexDailyBar(BaseModel):
+    """Normalized daily market or sector index bar."""
+
+    index_code: str
+    index_name: str
+    category: Literal["broad", "volatility", "sector"] = "broad"
+    observation_date: str
+    open: float | None = None
+    high: float | None = None
+    low: float | None = None
+    close: float
+    change_pct: float | None = None
+    volume: float | None = None
+    turnover_cr: float | None = None
+    pe_ratio: float | None = None
+    pb_ratio: float | None = None
+    div_yield: float | None = None
+    source: str
+    publication_timestamp: str
+    collection_timestamp: str
+    validation_status: ValidationStatus = "VERIFIED"
+    data_version: str = "1.0.0"
+
+
+class MarketRegimeSnapshot(BaseModel):
+    """Market regime classification & breadth snapshot."""
+
+    observation_date: str
+    regime: MarketRegimeLabel
+    nifty_50_close: float | None = None
+    nifty_50_day_change_pct: float | None = None
+    nifty_50_return_20d_pct: float | None = None
+    nifty_50_dma_50: float | None = None
+    nifty_50_dma_200: float | None = None
+    india_vix_close: float | None = None
+    india_vix_change_pct: float | None = None
+    advance_count: int = 0
+    decline_count: int = 0
+    unchanged_count: int = 0
+    advance_decline_ratio: float | None = None
+    pct_above_50dma: float | None = None
+    pct_above_200dma: float | None = None
+    allow_aggressive_longs: bool = True
+    regime_rationale: list[str] = Field(default_factory=list)
+    sector_performances: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class DataQualityReport(BaseModel):
+    """Per-stock data quality score & trade eligibility gate."""
+
+    symbol: str
+    evaluated_at: str
+    quality_score: float
+    trade_eligible: bool
+    forced_action: Literal["NO TRADE"] | None = None
+    verified_metrics_count: int = 0
+    estimated_metrics_count: int = 0
+    missing_metrics_count: int = 0
+    stale_metrics_count: int = 0
+    conflicting_metrics_count: int = 0
+    critical_failures: list[str] = Field(default_factory=list)
+    metric_statuses: dict[str, ValidationStatus] = Field(default_factory=dict)
+
+
 class StockResearchBundle(BaseModel):
     fetched_at: str
     overview: CompanyOverview
@@ -317,3 +446,6 @@ class StockResearchBundle(BaseModel):
         default_factory=PromoterAndCompetitorIntel
     )
     news: list[NewsHeadline] = Field(default_factory=list)
+    data_quality: DataQualityReport | None = None
+    market_regime: MarketRegimeSnapshot | None = None
+
