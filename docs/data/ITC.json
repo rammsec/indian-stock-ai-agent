@@ -2261,64 +2261,64 @@
     ]
   },
   "quantitative_prediction": {
-    "prediction_id": "ITC_2026-11-16_ml_ensemble_3.0.0",
+    "prediction_id": "ITC_2026-11-16_ml_ensemble_3.2.0_20261116T070307Z",
     "symbol": "ITC",
     "observation_date": "2026-11-16",
-    "generated_at": "2026-11-16T05:42:38.648075+00:00",
+    "generated_at": "2026-11-16T07:03:07.893884+00:00",
     "model_name": "ml_ensemble",
-    "model_version": "3.0.0",
+    "model_version": "3.2.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.4847,
-    "prob_lgbm_up": 0.4605,
-    "prob_xgb_up": 0.4675999879837036,
-    "prob_linear_up": 0.4838,
-    "expected_next_day_return_pct": -0.0319,
-    "expected_5d_return_pct": 0.1656,
-    "downside_risk_mae_pct": -0.8697,
-    "expected_upside_mfe_pct": 0.9299,
-    "reward_to_risk_ratio": 1.069,
-    "model_agreement_score": 0.7318,
-    "confidence_score": 64.32,
+    "prob_next_day_up": 0.508,
+    "prob_lgbm_up": 0.4731,
+    "prob_xgb_up": 0.4618000090122223,
+    "prob_linear_up": 0.5047,
+    "expected_next_day_return_pct": 0.0366,
+    "expected_5d_return_pct": 0.2199,
+    "downside_risk_mae_pct": -0.9248,
+    "expected_upside_mfe_pct": 0.9684,
+    "reward_to_risk_ratio": 1.047,
+    "model_agreement_score": 0.7644,
+    "confidence_score": 63.97,
     "roundtrip_delivery_cost_pct": 0.3553,
     "roundtrip_intraday_cost_pct": 0.2041,
-    "net_expected_1d_return_pct": -0.236,
-    "net_expected_5d_return_pct": -0.1898,
+    "net_expected_1d_return_pct": -0.1676,
+    "net_expected_5d_return_pct": -0.1354,
     "recommended_action": "NO TRADE",
-    "abstention_reason": "Expected move (1D -0.03%, 5D +0.17%) does not clear Indian round-trip transaction costs (0.20% intraday / 0.36% delivery).",
+    "abstention_reason": "Expected move (1D +0.04%, 5D +0.22%) does not clear Indian round-trip transaction costs (0.20% intraday / 0.36% delivery).",
     "top_bullish_drivers": [
-      {
-        "feature": "vd_vol_trend_5_20",
-        "family": "2. Volume & Delivery",
-        "value": 0.755,
-        "contribution": 0.05165,
-        "direction": "BULLISH"
-      },
       {
         "feature": "ms_nifty_ret_5d_pct",
         "family": "3. Market & Sector Strength",
         "value": 0.9488,
-        "contribution": 0.04179,
+        "contribution": 0.04152,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "vd_vol_trend_5_20",
+        "family": "2. Volume & Delivery",
+        "value": 0.755,
+        "contribution": 0.03409,
         "direction": "BULLISH"
       },
       {
         "feature": "ms_india_vix_zscore_20d",
         "family": "3. Market & Sector Strength",
         "value": -0.2632,
-        "contribution": 0.00604,
+        "contribution": 0.00795,
         "direction": "BULLISH"
       },
       {
         "feature": "inst_retail_dilution_4q",
         "family": "4. Institutional & Promoter Activity",
         "value": 1.77,
-        "contribution": 0.00598,
+        "contribution": 0.0045,
         "direction": "BULLISH"
       },
       {
-        "feature": "pm_dist_sma_50_pct",
-        "family": "1. Price & Technical Momentum",
-        "value": 7.7688,
-        "contribution": 0.00474,
+        "feature": "ms_sector_ret_60d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": -1.5655,
+        "contribution": 0.00338,
         "direction": "BULLISH"
       }
     ],
@@ -2327,38 +2327,56 @@
         "feature": "vd_rel_vol_100d",
         "family": "2. Volume & Delivery",
         "value": 0.1162,
-        "contribution": -0.07491,
+        "contribution": -0.03915,
         "direction": "BEARISH"
       },
       {
         "feature": "ms_corr_nifty_20d",
         "family": "3. Market & Sector Strength",
         "value": 0.5091,
-        "contribution": -0.04145,
+        "contribution": -0.02818,
         "direction": "BEARISH"
       },
       {
-        "feature": "pm_lower_shadow_ratio",
-        "family": "1. Price & Technical Momentum",
-        "value": 0.3239,
-        "contribution": -0.01265,
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 0.8423,
+        "contribution": -0.00896,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "eg_qtr_np_qoq_pct",
+        "family": "7. Earnings & Management Guidance",
+        "value": -6.21,
+        "contribution": -0.00773,
         "direction": "BEARISH"
       },
       {
         "feature": "inst_dii_chg_4q",
         "family": "4. Institutional & Promoter Activity",
         "value": 2.4,
-        "contribution": -0.01096,
-        "direction": "BEARISH"
-      },
-      {
-        "feature": "pm_dist_high_252d_pct",
-        "family": "1. Price & Technical Momentum",
-        "value": -30.3034,
-        "contribution": -0.00605,
+        "contribution": -0.00761,
         "direction": "BEARISH"
       }
     ],
+    "target_session_date": "2026-11-17",
+    "last_close": 287.15,
+    "atr_14_pct": 2.143,
+    "momentum_prob_up": 0.5006,
+    "momentum_5d_return_pct": 2.1078,
+    "feature_snapshot": {
+      "ms_corr_nifty_20d": 0.50914,
+      "fq_asset_turnover": 0.84227,
+      "inst_dii_chg_4q": 2.4,
+      "fq_debt_to_equity": 0.03309,
+      "ms_india_vix_zscore_20d": -0.26324,
+      "inst_named_holders_count": 14.0,
+      "eg_qtr_np_qoq_pct": -6.21,
+      "pm_ret_180d_pct": -11.91718,
+      "fq_interest_coverage": 321.24706,
+      "fq_roce_pct": 36.45369
+    },
+    "outcome_evaluated_at": null,
     "realized_next_day_return_pct": null,
     "realized_5d_return_pct": null
   },

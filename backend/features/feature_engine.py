@@ -338,13 +338,14 @@ def _build_pit_fundamental_frame(
         )
 
     # Strict point-in-time `merge_asof(..., direction="backward")` with ZERO backward-filling!
-    # A financial statement published on `pub_dt` is ONLY visible on `obs_dt >= pub_dt`.
+    # Statutory filings are published at ~18:00 IST (after 15:30 IST market close), so a report
+    # published on `pub_date` is ONLY available on trading sessions strictly after `pub_date` (`pub_dt + 1 day`).
     obs_df = pd.DataFrame({"obs_dt": pd.to_datetime(obs_dates)}, index=obs_dates.index)
     out["_pit_eps_inr"] = np.nan
 
     if annual_events:
         ann_df = pd.DataFrame(annual_events)
-        ann_df["pub_dt"] = pd.to_datetime(ann_df["pub_date"])
+        ann_df["pub_dt"] = pd.to_datetime(ann_df["pub_date"]) + pd.Timedelta(days=1)
         ann_df = ann_df.sort_values("pub_dt").drop_duplicates("pub_dt", keep="last")
         merged_a = pd.merge_asof(
             obs_df.sort_values("obs_dt"),
@@ -358,7 +359,7 @@ def _build_pit_fundamental_frame(
 
     if qtr_events:
         qtr_df = pd.DataFrame(qtr_events)
-        qtr_df["pub_dt"] = pd.to_datetime(qtr_df["pub_date"])
+        qtr_df["pub_dt"] = pd.to_datetime(qtr_df["pub_date"]) + pd.Timedelta(days=1)
         qtr_df = qtr_df.sort_values("pub_dt").drop_duplicates("pub_dt", keep="last")
         merged_q = pd.merge_asof(
             obs_df.sort_values("obs_dt"),
@@ -377,7 +378,7 @@ def _build_pit_fundamental_frame(
 
     if shp_events:
         shp_df = pd.DataFrame(shp_events)
-        shp_df["pub_dt"] = pd.to_datetime(shp_df["pub_date"])
+        shp_df["pub_dt"] = pd.to_datetime(shp_df["pub_date"]) + pd.Timedelta(days=1)
         shp_df = shp_df.sort_values("pub_dt").drop_duplicates("pub_dt", keep="last")
         merged_s = pd.merge_asof(
             obs_df.sort_values("obs_dt"),

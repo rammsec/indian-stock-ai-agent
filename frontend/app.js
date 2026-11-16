@@ -161,6 +161,9 @@ function renderWatchlistBar() {
   if (!container) return;
 
   counterLabel.textContent = `My Portfolio (${state.watchlist.length}/${MAX_WATCHLIST_SIZE}):`;
+  if (state.latestPredData) {
+    renderFiveDayOutlookAndConditions(state.latestPredData);
+  }
 
   container.innerHTML = state.watchlist
     .map((item, idx) => {
@@ -989,10 +992,23 @@ function renderMoversTables(data) {
 
 async function loadMarketRegimeBanner() {
   try {
-    const res = await fetch("/api/regime");
-    if (!res.ok) return;
-    const reg = await res.json();
-    updateRegimeBannerDOM(reg, null);
+    const [regRes, btRes, predRes] = await Promise.all([
+      fetch("/api/regime"),
+      fetch("/api/backtest"),
+      fetch("/api/predictions"),
+    ]);
+    if (regRes.ok) {
+      const reg = await regRes.json();
+      updateRegimeBannerDOM(reg, null);
+    }
+    if (btRes.ok) {
+      const bt = await btRes.json();
+      renderWalkForwardBacktestTable(bt);
+    }
+    if (predRes.ok) {
+      const pred = await predRes.json();
+      renderFiveDayOutlookAndConditions(pred);
+    }
   } catch (e) {}
 }
 
@@ -1042,53 +1058,38 @@ function formatShapDriverItem(d) {
 function renderQuantAndCorporateIntelSection(b) {
   updateRegimeBannerDOM(b.market_regime, b.data_quality);
 
-  const rawQp = b.quantitative_prediction || {};
-  const actionStr = String(
-    rawQp.recommended_action || rawQp.quant_action || (b.next_day_guidance?.action?.includes("BUY") ? "BUY" : "HOLD / WATCH")
-  );
-  const prob1d = rawQp.prob_next_day_up ?? rawQp.prob_up_1d ?? (b.next_day_guidance.conviction_score >= 65 ? 0.545 : 0.495);
-  const probLgbm = rawQp.prob_lgbm_up ?? prob1d;
-  const probXgb = rawQp.prob_xgb_up ?? prob1d;
-  const gross1d = rawQp.expected_next_day_return_pct ?? rawQp.expected_gross_return_1d_pct ?? 0.18;
-  const net1d = rawQp.net_expected_1d_return_pct ?? rawQp.expected_net_return_1d_pct ?? Number((gross1d - 0.35).toFixed(2));
-  const net5d = rawQp.net_expected_5d_return_pct ?? rawQp.expected_net_return_5d_pct ?? Number((net1d * 2.4).toFixed(2));
-  const gross5d = rawQp.expected_5d_return_pct ?? Number((net5d + 0.35).toFixed(2));
-  const cncBps = rawQp.roundtrip_delivery_cost_pct !== undefined
+  const rawQp = b.quantitative_prediction || null;
+  const hasQp = Boolean(rawQp && rawQp.prob_next_day_up !== undefined && rawQp.prob_next_day_up !== null);
+  const actionStr = hasQp ? String(rawQp.recommended_action || "N/A") : "N/A";
+  const prob1d = hasQp ? rawQp.prob_next_day_up : null;
+  const probLgbm = hasQp ? (rawQp.prob_lgbm_up ?? null) : null;
+  const probXgb = hasQp ? (rawQp.prob_xgb_up ?? null) : null;
+  const gross1d = hasQp ? (rawQp.expected_next_day_return_pct ?? null) : null;
+  const net1d = hasQp ? (rawQp.net_expected_1d_return_pct ?? null) : null;
+  const net5d = hasQp ? (rawQp.net_expected_5d_return_pct ?? null) : null;
+  const gross5d = hasQp ? (rawQp.expected_5d_return_pct ?? null) : null;
+  const cncBps = hasQp && rawQp.roundtrip_delivery_cost_pct !== undefined && rawQp.roundtrip_delivery_cost_pct !== null
     ? rawQp.roundtrip_delivery_cost_pct * 100
-    : (rawQp.round_trip_cost_cnc_bps ?? 34.7);
-  const misBps = rawQp.roundtrip_intraday_cost_pct !== undefined
+    : null;
+  const misBps = hasQp && rawQp.roundtrip_intraday_cost_pct !== undefined && rawQp.roundtrip_intraday_cost_pct !== null
     ? rawQp.roundtrip_intraday_cost_pct * 100
-    : (rawQp.round_trip_cost_mis_bps ?? 19.6);
-  const downsideMae = rawQp.downside_risk_mae_pct ?? rawQp.downside_var_95_1d_pct ?? -Number((b.technicals.atr_pct * 1.15).toFixed(2));
-  const confScore = rawQp.confidence_score ?? rawQp.calibrated_confidence_score ?? b.next_day_guidance.conviction_score;
-  const agreeScore = rawQp.model_agreement_score !== undefined ? `${(rawQp.model_agreement_score * 100).toFixed(0)}%` : "92%";
-  const obsDate = rawQp.observation_date || rawQp.as_of_date || "Latest";
-  const modelVer = rawQp.model_version ? `${rawQp.model_name || "ml_ensemble"} v${rawQp.model_version}` : "BharatAlphaQuantEnsemble v3.0";
+    : null;
+  const downsideMae = hasQp ? (rawQp.downside_risk_mae_pct ?? null) : null;
+  const confScore = hasQp ? (rawQp.confidence_score ?? null) : null;
+  const agreeScore = hasQp && rawQp.model_agreement_score !== undefined && rawQp.model_agreement_score !== null
+    ? `${(rawQp.model_agreement_score * 100).toFixed(0)}%`
+    : "N/A";
+  const obsDate = hasQp ? (rawQp.observation_date || "N/A") : "N/A";
+  const targetDate = hasQp ? (rawQp.target_session_date || "N/A") : "N/A";
+  const genAt = hasQp && rawQp.generated_at ? String(rawQp.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
+  const modelVer = hasQp && rawQp.model_version ? `${rawQp.model_name || "ml_ensemble"} v${rawQp.model_version}` : "N/A";
 
-  const ci = b.corporate_intelligence || {
-    symbol: b.overview.symbol,
-    promoter_holding_pct: b.stockholders.promoters_pct,
-    fii_holding_pct: b.stockholders.fii_pct,
-    dii_holding_pct: b.stockholders.dii_pct,
-    fii_chg_1q: 0,
-    dii_chg_1q: 0,
-    net_institutional_flow_4q: Number(((b.stockholders.fii_change_4q_pct || 0) + (b.stockholders.dii_change_4q_pct || 0)).toFixed(2)),
-    latest_delivery_pct: 52.0,
-    delivery_vs_20d_avg: 1.5,
-    fno_positioning_heuristic: b.technicals.day_change_pct >= 0 ? "Long Buildup Heuristic" : "Balanced F&O / Cash Activity",
-    institutional_conviction_score: 58.0,
-    smart_money_verdict: "MODERATE ACCUMULATION",
-    key_signals: [
-      `Promoters hold ${b.stockholders.promoters_pct}% and Institutions (FII+DII) hold ${b.stockholders.institutional_total_pct}%.`,
-    ],
-    recent_corporate_actions: [],
-    bulk_block_deals: [],
-  };
+  const ci = b.corporate_intelligence || null;
 
   // Render Left Panel: Calibrated ML Ensemble
   const qpActionEl = document.getElementById("qp-action-pill");
   if (qpActionEl) {
-    qpActionEl.textContent = `ML: ${actionStr}`;
+    qpActionEl.textContent = hasQp ? `ML: ${actionStr}` : "ML: N/A";
     qpActionEl.className = actionStr.includes("BUY")
       ? "signal-banner bull"
       : actionStr.includes("SELL") || actionStr.includes("AVOID")
@@ -1097,75 +1098,73 @@ function renderQuantAndCorporateIntelSection(b) {
   }
   const qpSub = document.getElementById("qp-model-sub");
   if (qpSub) {
-    qpSub.textContent = `As of ${obsDate} • Model: ${modelVer} • Sub-Model Agreement: ${agreeScore}`;
+    qpSub.textContent = hasQp
+      ? `Obs: ${obsDate} → Target: ${targetDate} • Generated: ${genAt} • Model: ${modelVer} • Agreement: ${agreeScore}`
+      : "No quantitative prediction record available for this symbol.";
   }
 
   const qpKpi = document.getElementById("qp-kpi-strip");
   if (qpKpi) {
-    const p1d = (prob1d * 100).toFixed(1);
-    const pLgbm = (probLgbm * 100).toFixed(1);
-    const pXgb = (probXgb * 100).toFixed(1);
+    const p1d = prob1d !== null ? `${(prob1d * 100).toFixed(1)}%` : "N/A";
+    const pLgbm = probLgbm !== null ? `${(probLgbm * 100).toFixed(1)}%` : "N/A";
+    const pXgb = probXgb !== null ? `${(probXgb * 100).toFixed(1)}%` : "N/A";
     qpKpi.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">P(Up 1D) Calibrated</span>
-        <span class="kpi-value ${prob1d >= 0.53 ? "text-bull" : ""}">${p1d}%</span>
+        <span class="kpi-value ${prob1d !== null && prob1d >= 0.53 ? "text-bull" : ""}">${p1d}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">LGBM / XGB P(Up)</span>
-        <span class="kpi-value">${pLgbm}% / ${pXgb}%</span>
+        <span class="kpi-value">${pLgbm} / ${pXgb}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Gross E[R] (1D)</span>
-        <span class="kpi-value ${gross1d >= 0 ? "text-bull" : "text-bear"}">${fmtPct(gross1d, 2, true)}</span>
+        <span class="kpi-value ${gross1d !== null ? (gross1d >= 0 ? "text-bull" : "text-bear") : ""}">${gross1d !== null ? fmtPct(gross1d, 2, true) : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Net E[R] 1D (Post Cost)</span>
-        <span class="kpi-value ${net1d >= 0 ? "text-bull" : "text-bear"}">${fmtPct(net1d, 2, true)}</span>
+        <span class="kpi-value ${net1d !== null ? (net1d >= 0 ? "text-bull" : "text-bear") : ""}">${net1d !== null ? fmtPct(net1d, 2, true) : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Gross / Net E[R] 5D</span>
-        <span class="kpi-value ${net5d >= 0 ? "text-bull" : "text-bear"}">${fmtPct(gross5d, 2, true)} / ${fmtPct(net5d, 2, true)}</span>
+        <span class="kpi-value ${net5d !== null ? (net5d >= 0 ? "text-bull" : "text-bear") : ""}">${gross5d !== null && net5d !== null ? `${fmtPct(gross5d, 2, true)} / ${fmtPct(net5d, 2, true)}` : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Indian CNC / MIS Cost</span>
-        <span class="kpi-value">${fmtNum(cncBps, 1)} / ${fmtNum(misBps, 1)} bps</span>
+        <span class="kpi-value">${cncBps !== null && misBps !== null ? `${fmtNum(cncBps, 1)} / ${fmtNum(misBps, 1)} bps` : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">1D Downside MAE Risk</span>
-        <span class="kpi-value text-bear">${fmtPct(downsideMae, 2)}</span>
+        <span class="kpi-value ${downsideMae !== null ? "text-bear" : ""}">${downsideMae !== null ? fmtPct(downsideMae, 2) : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Calibrated Confidence</span>
-        <span class="kpi-value">${fmtNum(confScore, 1)} / 100</span>
+        <span class="kpi-value">${confScore !== null ? `${fmtNum(confScore, 1)} / 100` : "N/A"}</span>
       </div>
     `;
   }
 
   const bullDrv = document.getElementById("qp-bull-drivers");
   if (bullDrv) {
-    const items = rawQp.top_bullish_drivers || [
-      `ROE=${b.overview.roe_pct || 0}% (+18.2 bps)`,
-      `Cash=${fmtCr(b.cash_and_balance_sheet.total_cash_in_hand_cr)} (+14.0 bps)`,
-    ];
+    const items = (rawQp && Array.isArray(rawQp.top_bullish_drivers)) ? rawQp.top_bullish_drivers : [];
     bullDrv.innerHTML = items.length
       ? items.map((d) => `<li>${formatShapDriverItem(d)}</li>`).join("")
-      : `<li style="color: var(--text-muted);">No dominant positive SHAP feature above threshold</li>`;
+      : `<li style="color: var(--text-muted);">No TreeSHAP bullish drivers available</li>`;
   }
   const bearDrv = document.getElementById("qp-bear-drivers");
   if (bearDrv) {
-    const items = rawQp.top_bearish_drivers || [
-      `Indian CNC Statutory Cost (-${fmtNum(cncBps, 1)} bps)`,
-    ];
+    const items = (rawQp && Array.isArray(rawQp.top_bearish_drivers)) ? rawQp.top_bearish_drivers : [];
     bearDrv.innerHTML = items.length
       ? items.map((d) => `<li>${formatShapDriverItem(d)}</li>`).join("")
-      : `<li style="color: var(--text-muted);">No dominant negative SHAP feature</li>`;
+      : `<li style="color: var(--text-muted);">No TreeSHAP bearish drivers available</li>`;
   }
 
   // Render Right Panel: Phase 4 Corporate & Institutional Intelligence
-  const verdictStr = String(ci.smart_money_verdict || "NEUTRAL");
+  const verdictStr = ci && ci.smart_money_verdict ? String(ci.smart_money_verdict) : "N/A";
   const ciPill = document.getElementById("ci-conviction-pill");
   if (ciPill) {
-    ciPill.textContent = `${verdictStr} (${fmtNum(ci.institutional_conviction_score, 1)}/100)`;
+    const ciScoreTxt = ci && ci.institutional_conviction_score != null ? ` (${fmtNum(ci.institutional_conviction_score, 1)}/100)` : "";
+    ciPill.textContent = `${verdictStr}${ciScoreTxt}`;
     ciPill.style.color = verdictStr.includes("ACCUMULATION")
       ? "var(--signal-bull)"
       : verdictStr.includes("DISTRIBUTION")
@@ -1175,51 +1174,56 @@ function renderQuantAndCorporateIntelSection(b) {
 
   const ciKpi = document.getElementById("ci-kpi-strip");
   if (ciKpi) {
-    const f4q = ci.net_institutional_flow_4q || 0;
-    const f1q = Number(((ci.fii_chg_1q || 0) + (ci.dii_chg_1q || 0)).toFixed(2));
-    const delivDiff = ci.delivery_vs_20d_avg ?? 0;
+    const f4q = ci && ci.net_institutional_flow_4q != null ? ci.net_institutional_flow_4q : null;
+    const f1q = ci && ci.fii_chg_1q != null && ci.dii_chg_1q != null ? Number((ci.fii_chg_1q + ci.dii_chg_1q).toFixed(2)) : null;
+    const delivDiff = ci && ci.delivery_vs_20d_avg != null ? ci.delivery_vs_20d_avg : null;
     ciKpi.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">NSE Delivery %</span>
-        <span class="kpi-value ${(ci.latest_delivery_pct || 0) >= 55 ? "text-bull" : ""}">${ci.latest_delivery_pct ? fmtPct(ci.latest_delivery_pct, 1) : "—"}</span>
+        <span class="kpi-value ${ci && (ci.latest_delivery_pct || 0) >= 55 ? "text-bull" : ""}">${ci && ci.latest_delivery_pct != null ? fmtPct(ci.latest_delivery_pct, 1) : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Delivery vs 20D Avg</span>
-        <span class="kpi-value ${delivDiff >= 0 ? "text-bull" : "text-bear"}">${fmtPct(delivDiff, 1, true)}</span>
+        <span class="kpi-value ${delivDiff !== null ? (delivDiff >= 0 ? "text-bull" : "text-bear") : ""}">${delivDiff !== null ? fmtPct(delivDiff, 1, true) : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">1Q Net FII+DII Flow</span>
-        <span class="kpi-value ${f1q > 0 ? "text-bull" : f1q < 0 ? "text-bear" : ""}">${fmtPct(f1q, 2, true)}</span>
+        <span class="kpi-value ${f1q !== null ? (f1q > 0 ? "text-bull" : f1q < 0 ? "text-bear" : "") : ""}">${f1q !== null ? fmtPct(f1q, 2, true) : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">4Q Net FII+DII Flow</span>
-        <span class="kpi-value ${f4q > 0 ? "text-bull" : f4q < 0 ? "text-bear" : ""}">${fmtPct(f4q, 2, true)}</span>
+        <span class="kpi-value ${f4q !== null ? (f4q > 0 ? "text-bull" : f4q < 0 ? "text-bear" : "") : ""}">${f4q !== null ? fmtPct(f4q, 2, true) : "N/A"}</span>
       </div>
       <div class="kpi-box" style="grid-column: span 2;">
         <span class="kpi-label">F&amp;O Positioning Heuristic</span>
-        <span class="kpi-value" style="font-size: 0.78rem;">${ci.fno_positioning_heuristic || "CASH ONLY"}</span>
+        <span class="kpi-value" style="font-size: 0.78rem;">${ci && ci.fno_positioning_heuristic ? ci.fno_positioning_heuristic : "N/A"}</span>
       </div>
       <div class="kpi-box" style="grid-column: span 2;">
         <span class="kpi-label">Promoter Δ (1Q / 4Q)</span>
-        <span class="kpi-value">${fmtPct(ci.promoter_chg_1q || 0, 2, true)} / ${fmtPct(ci.promoter_chg_4q || 0, 2, true)}</span>
+        <span class="kpi-value">${ci && ci.promoter_chg_1q != null && ci.promoter_chg_4q != null ? `${fmtPct(ci.promoter_chg_1q, 2, true)} / ${fmtPct(ci.promoter_chg_4q, 2, true)}` : "N/A"}</span>
       </div>
     `;
   }
 
   const sigList = document.getElementById("ci-signals-list");
   if (sigList) {
-    sigList.innerHTML = (ci.key_signals || []).map((s) => `<li>${s}</li>`).join("");
+    const signals = ci && Array.isArray(ci.key_signals) ? ci.key_signals : [];
+    sigList.innerHTML = signals.length
+      ? signals.map((s) => `<li>${s}</li>`).join("")
+      : `<li style="color: var(--text-muted);">No smart-money delivery signals available</li>`;
   }
 
   const actList = document.getElementById("ci-actions-deals-list");
   if (actList) {
     const items = [];
-    (ci.bulk_block_deals || ci.recent_bulk_block_deals || []).slice(0, 3).forEach((d) => {
+    const deals = ci ? (ci.bulk_block_deals || ci.recent_bulk_block_deals || []) : [];
+    deals.slice(0, 3).forEach((d) => {
       items.push(
         `<li><strong class="${d.side === "BUY" ? "text-bull" : "text-bear"}">[${d.deal_type} ${d.side}]</strong> ${d.deal_date}: ₹${fmtNum(d.value_cr, 2)} Cr @ ₹${fmtNum(d.price_inr, 1)} (${d.client_name})</li>`
       );
     });
-    (ci.recent_corporate_actions || []).slice(0, 4).forEach((a) => {
+    const actions = ci ? (ci.recent_corporate_actions || []) : [];
+    actions.slice(0, 4).forEach((a) => {
       items.push(`<li><strong>[${a.action_type}]</strong> Ex-Date ${a.ex_date}: ${a.description}</li>`);
     });
     actList.innerHTML = items.length
@@ -1258,43 +1262,66 @@ async function loadQuantAndBulkDealsPage() {
 
 function renderWalkForwardBacktestTable(bt) {
   const kpiEl = document.getElementById("quant-bt-kpis");
-  const ens = bt.models?.ml_ensemble;
-  const niftyRet = bt.nifty_50_buy_hold_return_pct ?? -1.43;
+  const ens = bt.models?.ml_ensemble || null;
+  const niftyRet = bt.nifty_50_buy_hold_return_pct ?? null;
+
+  // Determine best model objectively by Net Sharpe (do not hardcode ml_ensemble as best)
+  let bestKey = null;
+  let bestSharpe = -Infinity;
+  if (bt.models) {
+    Object.entries(bt.models).forEach(([k, m]) => {
+      const sh = m?.annualized_sharpe_net;
+      if (sh !== undefined && sh !== null && sh > bestSharpe) {
+        bestSharpe = sh;
+        bestKey = k;
+      }
+    });
+  }
+
+  const pillEl = document.getElementById("mr-walkforward-pill");
+  if (pillEl && bestKey && bt.models[bestKey]) {
+    const bm = bt.models[bestKey];
+    pillEl.textContent = `Walk-Forward OOS (${bt.execution_mode || "next_open"}): ${bestKey} Sharpe ${fmtNum(bm.annualized_sharpe_net, 3)} (${fmtPct(bm.net_cumulative_return_pct, 2, true)} Net)`;
+  } else if (pillEl) {
+    pillEl.textContent = "Walk-Forward OOS: N/A";
+  }
+
   if (kpiEl && ens) {
-    const netRet = ens.net_cumulative_return_pct ?? ens.cumulative_net_return_pct ?? 19.75;
-    const alpha = Number((netRet - niftyRet).toFixed(2));
+    const netRet = ens.net_cumulative_return_pct ?? null;
+    const alpha = (netRet !== null && niftyRet !== null) ? Number((netRet - niftyRet).toFixed(2)) : null;
+    const genStr = bt.generated_at ? String(bt.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
     kpiEl.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">OOS Test Window</span>
-        <span class="kpi-value" style="font-size: 0.82rem;">${bt.test_start_date} → ${bt.test_end_date}</span>
+        <span class="kpi-value" style="font-size: 0.82rem;">${bt.test_start_date || "N/A"} → ${bt.test_end_date || "N/A"}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Expanding Folds</span>
-        <span class="kpi-value">${bt.total_walk_forward_folds} Folds (${ens.total_predictions} OOS Rows)</span>
+        <span class="kpi-label">Folds / Purge / Embargo</span>
+        <span class="kpi-value">${bt.total_walk_forward_folds ?? "N/A"} Folds (${bt.purge_gap_days ?? "N/A"}s / ${bt.embargo_sessions ?? "N/A"}s)</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">ML Ensemble Net Return</span>
-        <span class="kpi-value text-bull">${fmtPct(netRet, 2, true)}</span>
+        <span class="kpi-value ${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}">${netRet !== null ? fmtPct(netRet, 2, true) : "N/A"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Nifty 50 Benchmark</span>
-        <span class="kpi-value ${niftyRet >= 0 ? "text-bull" : "text-bear"}">${fmtPct(niftyRet, 2, true)}</span>
+        <span class="kpi-value ${niftyRet !== null ? (niftyRet >= 0 ? "text-bull" : "text-bear") : ""}">${niftyRet !== null ? fmtPct(niftyRet, 2, true) : "N/A"}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Net Outperformance (Alpha)</span>
-        <span class="kpi-value text-bull">+${fmtNum(alpha, 2)}%</span>
+        <span class="kpi-label">ML vs Nifty 50 (Alpha)</span>
+        <span class="kpi-value ${alpha !== null ? (alpha >= 0 ? "text-bull" : "text-bear") : ""}">${alpha !== null ? fmtPct(alpha, 2, true) : "N/A"}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">ML Net Sharpe Ratio</span>
-        <span class="kpi-value text-bull">+${fmtNum(ens.annualized_sharpe_net, 3)}</span>
+        <span class="kpi-label">ML Net Sharpe / Expectancy</span>
+        <span class="kpi-value ${ens.annualized_sharpe_net >= 0 ? "text-bull" : "text-bear"}">${ens.annualized_sharpe_net != null ? fmtNum(ens.annualized_sharpe_net, 3) : "N/A"} / ${ens.expectancy_per_trade_bps != null ? `${fmtNum(ens.expectancy_per_trade_bps, 1)} bps` : "N/A"}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">ML Max Drawdown</span>
-        <span class="kpi-value text-bear">${fmtPct(ens.max_drawdown_net_pct, 2)}</span>
+        <span class="kpi-label">Execution Mode</span>
+        <span class="kpi-value" style="font-size: 0.78rem;">${bt.execution_mode || "N/A"}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Indian CNC Cost Modeled</span>
-        <span class="kpi-value">~34.7 bps Round-Trip</span>
+        <span class="kpi-label">Backtest Freshness</span>
+        <span class="kpi-value" style="font-size: 0.74rem;">${genStr}</span>
       </div>
     `;
   }
@@ -1303,7 +1330,7 @@ function renderWalkForwardBacktestTable(bt) {
   if (!tbody || !bt.models) return;
   const order = ["ml_ensemble", "naive_momentum", "linear_ridge_logistic", "technical_rule"];
   const labels = {
-    ml_ensemble: "★ BharatAlpha Calibrated ML Ensemble (LightGBM + XGBoost + Ridge)",
+    ml_ensemble: "BharatAlpha Calibrated ML Ensemble (LightGBM + XGBoost + Ridge)",
     naive_momentum: "Baseline 1: Naive Momentum & Trend Rule",
     linear_ridge_logistic: "Baseline 3: Linear Ridge + Logistic L2",
     technical_rule: "Baseline 2: RSI(14) + MACD + 50/200-DMA Rule",
@@ -1312,26 +1339,27 @@ function renderWalkForwardBacktestTable(bt) {
     .filter((k) => bt.models[k])
     .map((k) => {
       const m = bt.models[k];
-      const isBest = k === "ml_ensemble";
-      const grossRet = m.gross_cumulative_return_pct ?? 0;
-      const costDrag = m.transaction_cost_drag_pct ?? 0;
-      const netRet = m.net_cumulative_return_pct ?? 0;
-      const vsNifty = Number((netRet - niftyRet).toFixed(2));
-      const tradeFreq = Number((100 - (m.abstention_rate_pct || 0)).toFixed(1));
+      const isBest = k === bestKey;
+      const grossRet = m.gross_cumulative_return_pct ?? null;
+      const costDrag = m.transaction_cost_drag_pct ?? null;
+      const netRet = m.net_cumulative_return_pct ?? null;
+      const vsNifty = (netRet !== null && niftyRet !== null) ? Number((netRet - niftyRet).toFixed(2)) : null;
+      const tradeFreq = m.abstention_rate_pct != null ? Number((100 - m.abstention_rate_pct).toFixed(1)) : null;
+      const labelTxt = `${isBest ? "★ " : ""}${labels[k] || k}`;
       return `
         <tr style="${isBest ? "background: rgba(34, 197, 94, 0.07);" : ""}">
-          <td style="text-align: left; font-weight: ${isBest ? "800" : "600"}; color: ${isBest ? "var(--signal-bull)" : "var(--text-primary)"};">${labels[k] || k}</td>
-          <td>${m.active_trades_count} (${fmtPct(tradeFreq, 1)})</td>
-          <td>${fmtPct(m.directional_accuracy_all_pct, 2)}</td>
-          <td>${fmtPct(m.high_conviction_hit_rate_pct, 2)}</td>
-          <td class="${grossRet >= 0 ? "text-bull" : "text-bear"}">${fmtPct(grossRet, 2, true)}</td>
-          <td class="text-bear">-${fmtPct(costDrag, 2)}</td>
-          <td class="${netRet >= 0 ? "text-bull" : "text-bear"}" style="font-weight: 800;">${fmtPct(netRet, 2, true)}</td>
-          <td class="${m.annualized_sharpe_net >= 0 ? "text-bull" : "text-bear"}" style="font-weight: 700;">${fmtNum(m.annualized_sharpe_net, 3)}</td>
-          <td>${fmtNum(m.sortino_ratio_net, 3)}</td>
-          <td class="text-bear">${fmtPct(m.max_drawdown_net_pct, 2)}</td>
-          <td class="${vsNifty >= 0 ? "text-bull" : "text-bear"}">${fmtPct(vsNifty, 2, true)}</td>
-          <td>${fmtNum(m.brier_score, 4)} / ${fmtNum(m.roc_auc, 3)}</td>
+          <td style="text-align: left; font-weight: ${isBest ? "800" : "600"}; color: ${isBest ? "var(--signal-bull)" : "var(--text-primary)"};">${labelTxt}</td>
+          <td>${m.active_trades_count ?? "N/A"} (${tradeFreq !== null ? fmtPct(tradeFreq, 1) : "N/A"})</td>
+          <td>${m.directional_accuracy_all_pct != null ? fmtPct(m.directional_accuracy_all_pct, 2) : "N/A"}</td>
+          <td>${m.high_conviction_hit_rate_pct != null ? fmtPct(m.high_conviction_hit_rate_pct, 2) : "N/A"}</td>
+          <td class="${grossRet !== null ? (grossRet >= 0 ? "text-bull" : "text-bear") : ""}">${grossRet !== null ? fmtPct(grossRet, 2, true) : "N/A"}</td>
+          <td class="text-bear">${costDrag !== null ? `-${fmtPct(costDrag, 2)}` : "N/A"}</td>
+          <td class="${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 800;">${netRet !== null ? fmtPct(netRet, 2, true) : "N/A"}</td>
+          <td class="${m.annualized_sharpe_net != null ? (m.annualized_sharpe_net >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 700;">${m.annualized_sharpe_net != null ? fmtNum(m.annualized_sharpe_net, 3) : "N/A"}</td>
+          <td>${m.sortino_ratio_net != null ? fmtNum(m.sortino_ratio_net, 3) : "N/A"}</td>
+          <td class="text-bear">${m.max_drawdown_net_pct != null ? fmtPct(m.max_drawdown_net_pct, 2) : "N/A"}</td>
+          <td class="${vsNifty !== null ? (vsNifty >= 0 ? "text-bull" : "text-bear") : ""}">${vsNifty !== null ? fmtPct(vsNifty, 2, true) : "N/A"}</td>
+          <td>${m.brier_score != null ? fmtNum(m.brier_score, 4) : "N/A"} / ${m.roc_auc != null ? fmtNum(m.roc_auc, 3) : "N/A"}</td>
         </tr>
       `;
     })
@@ -1339,39 +1367,46 @@ function renderWalkForwardBacktestTable(bt) {
 }
 
 function renderAllStockPredictionsMatrix(predData) {
+  const freshEl = document.getElementById("quant-pred-freshness");
+  const items = predData.predictions || [];
+  if (freshEl) {
+    const genStr = predData.generated_at ? String(predData.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
+    const targetStr = items[0]?.target_session_date || "N/A";
+    freshEl.textContent = `Generated: ${genStr} • Target Session: ${targetStr} • ${items.length} NSE Equities Ranked by Calibrated P(Up 1D)`;
+  }
+
   const tbody = document.getElementById("tbody-quant-predictions");
   if (!tbody) return;
-  const items = predData.predictions || [];
   tbody.innerHTML = items
     .map((p) => {
-      const actStr = String(p.recommended_action || p.quant_action || "HOLD");
+      const actStr = String(p.recommended_action || "N/A");
       const actCls = actStr.includes("BUY")
         ? "signal-banner bull"
         : actStr.includes("SELL") || actStr.includes("AVOID")
         ? "signal-banner bear"
         : "signal-banner hold";
-      const p1d = p.prob_next_day_up ?? p.prob_up_1d ?? 0.5;
-      const pLgbm = p.prob_lgbm_up ?? p1d;
-      const gross1d = p.expected_next_day_return_pct ?? p.expected_gross_return_1d_pct ?? 0;
-      const net1d = p.net_expected_1d_return_pct ?? p.expected_net_return_1d_pct ?? 0;
-      const cncBps = p.roundtrip_delivery_cost_pct !== undefined ? p.roundtrip_delivery_cost_pct * 100 : 35.0;
-      const conf = p.confidence_score ?? p.calibrated_confidence_score ?? 60.0;
+      const p1d = p.prob_next_day_up ?? null;
+      const pLgbm = p.prob_lgbm_up ?? null;
+      const gross1d = p.expected_next_day_return_pct ?? null;
+      const net1d = p.net_expected_1d_return_pct ?? null;
+      const cncBps = p.roundtrip_delivery_cost_pct != null ? p.roundtrip_delivery_cost_pct * 100 : null;
+      const conf = p.confidence_score ?? null;
       const bullTxt = (p.top_bullish_drivers || []).slice(0, 2).map(formatShapDriverItem).join(" • ");
       const bearTxt = (p.top_bearish_drivers || []).slice(0, 2).map(formatShapDriverItem).join(" • ");
       return `
         <tr>
           <td style="text-align: left;">
-            <strong>${p.symbol}</strong>
-            <span style="display: block; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-sans);">Regime: ${p.market_regime || "Weak Bull"}</span>
+            <strong>${p.symbol || "N/A"}</strong>
+            <span style="display: block; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-sans);">Regime: ${p.market_regime || "N/A"}</span>
           </td>
-          <td>${p.observation_date || "2026-11-16"}</td>
+          <td>${p.observation_date || "N/A"}</td>
           <td><span class="${actCls}" style="font-size: 0.72rem; padding: 0.18rem 0.5rem;">${actStr}</span></td>
-          <td class="${p1d >= 0.53 ? "text-bull" : ""}" style="font-weight: 700;">${fmtPct(p1d * 100, 1)}</td>
-          <td>${fmtPct(pLgbm * 100, 1)}</td>
-          <td class="${gross1d >= 0 ? "text-bull" : "text-bear"}">${fmtPct(gross1d, 2, true)}</td>
-          <td class="text-bear">-${fmtNum(cncBps, 1)} bps</td>
-          <td class="${net1d >= 0 ? "text-bull" : "text-bear"}" style="font-weight: 800;">${fmtPct(net1d, 2, true)}</td>
-          <td>${fmtNum(conf, 1)}</td>
+          <td class="${p1d !== null && p1d >= 0.53 ? "text-bull" : ""}" style="font-weight: 700;">${p1d !== null ? fmtPct(p1d * 100, 1) : "N/A"}</td>
+          <td>${pLgbm !== null ? fmtPct(pLgbm * 100, 1) : "N/A"}</td>
+          <td class="${gross1d !== null ? (gross1d >= 0 ? "text-bull" : "text-bear") : ""}">${gross1d !== null ? fmtPct(gross1d, 2, true) : "N/A"}</td>
+          <td class="text-bear">${cncBps !== null ? `-${fmtNum(cncBps, 1)} bps` : "N/A"}</td>
+          <td class="${net1d !== null ? (net1d >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 800;">${net1d !== null ? fmtPct(net1d, 2, true) : "N/A"}</td>
+          <td>${conf !== null ? fmtNum(conf, 1) : "N/A"}</td>
           <td style="text-align: left; font-size: 0.74rem; max-width: 360px;">
             ${bullTxt ? `<div class="text-bull">▲ ${bullTxt}</div>` : ""}
             ${bearTxt ? `<div class="text-bear">▼ ${bearTxt}</div>` : ""}
@@ -1391,6 +1426,112 @@ function renderAllStockPredictionsMatrix(predData) {
       addStockToWatchlist(btn.getAttribute("data-sym"), btn.getAttribute("data-sym"));
     });
   });
+}
+
+function renderFiveDayOutlookAndConditions(predData) {
+  if (!predData) return;
+  state.latestPredData = predData;
+  const tbody = document.getElementById("tbody-5d-outlook");
+  const subEl = document.getElementById("outlook-5d-sub");
+  const rawItems = (predData && Array.isArray(predData.predictions)) ? predData.predictions : [];
+  const watchlistSyms = new Set((state.watchlist || []).map((w) => String(w.symbol).toUpperCase()));
+  const items = rawItems.filter((p) => watchlistSyms.has(String(p.symbol || "").toUpperCase()));
+
+  if (subEl) {
+    const genStr = predData?.generated_at ? String(predData.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
+    const regStr = predData?.market_regime || items[0]?.market_regime || "N/A";
+    subEl.textContent = `Showing ${items.length} Dashboard Stocks • Regime: ${regStr} • Generated: ${genStr} • Anchored on Validated Naive Momentum Benchmark + ATR(14) Bands (Not Investment Advice)`;
+  }
+
+  if (tbody) {
+    if (!items.length) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">No prediction records available.</td></tr>`;
+    } else {
+      const sorted = [...items].sort((a, b) => (b.momentum_5d_return_pct ?? -999) - (a.momentum_5d_return_pct ?? -999));
+      tbody.innerHTML = sorted
+        .map((p) => {
+          const close = p.last_close ?? null;
+          const atr = p.atr_14_pct ?? null;
+          const mom5 = p.momentum_5d_return_pct ?? null;
+          const ml5 = p.expected_5d_return_pct ?? null;
+          const actStr = String(p.recommended_action || "N/A");
+
+          let momTxt = mom5 !== null ? fmtPct(mom5, 2, true) : "N/A";
+          let mlTxt = ml5 !== null ? fmtPct(ml5, 2, true) : "N/A";
+          let rangeTxt = "N/A";
+          let buyTxt = "N/A";
+          let sellTxt = "N/A";
+
+          if (close !== null && atr !== null) {
+            const sigma5d = close * (atr / 100.0) * Math.sqrt(5) * 0.65;
+            if (mom5 !== null) {
+              const midMom = close * (1.0 + mom5 / 100.0);
+              momTxt = `₹${fmtNum(midMom, 2)} (${fmtPct(mom5, 2, true)})`;
+              rangeTxt = `₹${fmtNum(midMom - sigma5d, 2)} – ₹${fmtNum(midMom + sigma5d, 2)}`;
+            }
+            if (ml5 !== null) {
+              const midMl = close * (1.0 + ml5 / 100.0);
+              mlTxt = `₹${fmtNum(midMl, 2)} (${fmtPct(ml5, 2, true)})`;
+            }
+            const buyLo = close * (1.0 - 0.5 * atr / 100.0);
+            const buyHi = close * (1.0 + 0.25 * atr / 100.0);
+            const sl = close * (1.0 - 1.5 * atr / 100.0);
+            const sellLo = close * (1.0 + 1.5 * atr / 100.0);
+            const sellHi = close * (1.0 + 2.5 * atr / 100.0);
+            buyTxt = mom5 !== null && mom5 < 0
+              ? `Avoid new long [SL ₹${fmtNum(sl, 2)}]`
+              : `₹${fmtNum(buyLo, 2)} – ₹${fmtNum(buyHi, 2)} [SL ₹${fmtNum(sl, 2)}]`;
+            sellTxt = `₹${fmtNum(sellLo, 2)} – ₹${fmtNum(sellHi, 2)}`;
+          }
+
+          return `
+            <tr>
+              <td style="text-align: left;"><strong>${p.symbol || "N/A"}</strong></td>
+              <td>${close !== null ? `₹${fmtNum(close, 2)}` : "N/A"}</td>
+              <td>${atr !== null ? fmtPct(atr, 2) : "N/A"}</td>
+              <td class="${mom5 !== null ? (mom5 >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 700;">${momTxt}</td>
+              <td class="${ml5 !== null ? (ml5 >= 0 ? "text-bull" : "text-bear") : ""}">${mlTxt}</td>
+              <td>${rangeTxt}</td>
+              <td>${buyTxt}</td>
+              <td class="text-bull">${sellTxt}</td>
+              <td>${actStr}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+  }
+
+  // Populate live 5D upside & downside drivers from TreeSHAP attributions
+  const upEl = document.getElementById("cond-5d-up");
+  const downEl = document.getElementById("cond-5d-down");
+  const bullCounts = {};
+  const bearCounts = {};
+  items.forEach((p) => {
+    (p.top_bullish_drivers || []).slice(0, 2).forEach((d) => {
+      if (d?.feature) bullCounts[d.feature] = (bullCounts[d.feature] || 0) + 1;
+    });
+    (p.top_bearish_drivers || []).slice(0, 2).forEach((d) => {
+      if (d?.feature) bearCounts[d.feature] = (bearCounts[d.feature] || 0) + 1;
+    });
+  });
+  const topBull = Object.entries(bullCounts).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([f, c]) => `<strong>${f}</strong> (${c}/${items.length} stocks positive)`).join(", ");
+  const topBear = Object.entries(bearCounts).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([f, c]) => `<strong>${f}</strong> (${c}/${items.length} stocks negative)`).join(", ");
+
+  if (upEl) {
+    upEl.innerHTML = `
+      <li>Live positive drivers: ${topBull || "N/A"}.</li>
+      <li>NSE Delivery % rising above 20D average on up-sessions, with clean 09:15 IST opens (gap &le; +2.5%).</li>
+      <li>NSE Advance/Decline breadth improving above 1.0x with India VIX &lt; 18.</li>
+    `;
+  }
+  if (downEl) {
+    downEl.innerHTML = `
+      <li>Live negative drivers: ${topBear || "N/A"}.</li>
+      <li>Overnight gap-downs &lt; -3.0% or India VIX spiking &ge; 21.0 (triggers High-Volatility regime block).</li>
+      <li>Indian CNC round-trip cost drag (~35 bps) eroding low-conviction short-term bounces.</li>
+    `;
+  }
 }
 
 function renderNseBulkBlockDealsTable(ciData) {

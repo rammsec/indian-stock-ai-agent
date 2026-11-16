@@ -25,8 +25,10 @@ Anti-Overfitting & Calibration Safeguards:
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
+
+from ..config import is_nse_trading_day
 
 import lightgbm as lgb
 import numpy as np
@@ -66,28 +68,41 @@ class BharatAlphaQuantEnsemble:
     """Calibrated LightGBM + XGBoost + Linear + Structural Prior Ensemble for Indian Equities."""
 
     name: str = "ml_ensemble"
-    version: str = "3.0.0"
+    version: str = "3.2.0"
 
     def __init__(
         self,
-        top_k_features: int = 36,
+        top_k_features: int = 40,
+        purge_sessions: int = 5,
+        max_corr_threshold: float = 0.85,
+        max_depth: int = 2,
+        reg_lambda: float = 15.0,
         random_state: int = 42,
     ) -> None:
         self.top_k_features = top_k_features
+        self.purge_sessions = purge_sessions
+        self.max_corr_threshold = max_corr_threshold
+        self.max_depth = max_depth
+        self.reg_lambda = reg_lambda
         self.random_state = random_state
         self.active_features_: list[str] = []
         self.feature_importances_: dict[str, float] = {}
         self.model_weights_: tuple[float, float, float, float] = (0.30, 0.25, 0.25, 0.20)
-        self.calibration_slope_: float = 0.85
+        self.calibration_slope_: float = 1.0
         self.calibration_intercept_: float = 0.0
         self.base_up_rate_: float = 0.50
 
     def _select_in_fold_features(self, train_df: pd.DataFrame, candidate_cols: list[str]) -> list[str]:
-        """Select top-K stationary features with consistent Spearman Rank IC sign across both halves of `train_df`."""
+        """Select top-K stationary, non-redundant features strictly within `train_df`."""
         unique_dates = sorted(train_df["observation_date"].unique())
         mid_date = unique_dates[len(unique_dates) // 2]
         h1_mask = train_df["observation_date"] <= mid_date
         h2_mask = train_df["observation_date"] > mid_date
+
+        # Strictly purge the last `purge_sessions` dates when scoring 5D forward targets
+        cutoff_5d_idx = max(0, len(unique_dates) - (self.purge_sessions + 1))
+        cutoff_5d_date = unique_dates[cutoff_5d_idx]
+        purge_5d_mask = train_df["observation_date"] <= cutoff_5d_date
 
         y1 = pd.to_numeric(train_df["target_next_day_ret"], errors="coerce")
         y5 = pd.to_numeric(train_df.get("target_5d_ret"), errors="coerce")
@@ -105,7 +120,6 @@ class BharatAlphaQuantEnsemble:
             if np.isnan(std_val) or std_val <= 1e-10:
                 continue
 
-            # Evaluate Rank IC on Half 1 and Half 2 separately to enforce temporal stability
             v_h1 = valid1 & h1_mask
             v_h2 = valid1 & h2_mask
             if int(v_h1.sum()) < 20 or int(v_h2.sum()) < 20:
@@ -119,14 +133,13 @@ class BharatAlphaQuantEnsemble:
             ic_h1_f = float(ic_h1)
             ic_h2_f = float(ic_h2)
 
-            # Stability bonus when IC sign agrees across both chronological halves of training data
             sign_matches = (ic_h1_f * ic_h2_f) > 0
             mean_ic1 = 0.5 * (ic_h1_f + ic_h2_f)
             stability_mult = 1.5 if sign_matches else 0.35
 
             ic5_val = 0.0
             if y5 is not None:
-                valid5 = s.notna() & y5.notna()
+                valid5 = s.notna() & y5.notna() & purge_5d_mask
                 if int(valid5.sum()) >= min_non_null:
                     ic5 = s[valid5].rank().corr(y5[valid5].rank())
                     if pd.notna(ic5):
@@ -136,28 +149,44 @@ class BharatAlphaQuantEnsemble:
             scored.append((score, col))
 
         scored.sort(key=lambda item: item[0], reverse=True)
-        selected = [col for _, col in scored[: self.top_k_features]]
+        ranked_cols = [col for _, col in scored]
 
-        # Ensure core stock-specific momentum, volatility, volume, and relative alpha features are present
-        must_include = [
+        # In-fold collinearity pruning (only on train_df!)
+        selected: list[str] = []
+        if ranked_cols:
+            top_pool = ranked_cols[: min(len(ranked_cols), max(self.top_k_features * 3, 90))]
+            corr_mat = (
+                train_df[top_pool]
+                .apply(pd.to_numeric, errors="coerce")
+                .corr()
+                .abs()
+            )
+            for col in top_pool:
+                if len(selected) >= self.top_k_features:
+                    break
+                is_redundant = False
+                for kept in selected:
+                    c_val = corr_mat.loc[col, kept] if (col in corr_mat.index and kept in corr_mat.columns) else 0.0
+                    if pd.notna(c_val) and float(c_val) > self.max_corr_threshold:
+                        is_redundant = True
+                        break
+                if not is_redundant:
+                    selected.append(col)
+
+        # Ensure core stationary momentum/volatility/alpha anchors if budget allows
+        core_anchors = [
             "pm_ret_1d_pct",
-            "pm_ret_3d_pct",
             "pm_ret_5d_pct",
             "pm_ret_20d_pct",
-            "pm_rsi_14",
-            "pm_macd_hist",
-            "pm_dist_sma_20_pct",
-            "pm_dist_sma_50_pct",
-            "pm_bb_pct_b_20",
             "pm_atr_14_pct",
             "vd_rel_vol_20d",
             "ms_alpha_vs_nifty_5d_pct",
             "ms_alpha_vs_sector_5d_pct",
             "ms_india_vix_zscore_20d",
         ]
-        for m_col in must_include:
+        for m_col in core_anchors:
             if m_col in candidate_cols and m_col in train_df.columns and m_col not in selected:
-                if int(train_df[m_col].notna().sum()) >= min_non_null:
+                if int(train_df[m_col].notna().sum()) >= min_non_null and len(selected) < self.top_k_features + 4:
                     selected.append(m_col)
 
         return selected
@@ -185,11 +214,13 @@ class BharatAlphaQuantEnsemble:
         self.mom_prior_ = NaiveMomentumBaseline().fit(sub_1d, self.active_features_)
         self.tech_prior_ = TechnicalRuleBaseline().fit(sub_1d, self.active_features_)
 
-        # 1. Chronological split (first 78% dates vs last 22% dates) to learn optimal non-negative stacking weights
+        # 1. Chronological split (first ~72% dates vs last ~28% dates, with `purge_sessions` gap)
+        #    to learn stacking weights AND Platt probability calibration on a genuinely separate sample
         unique_dates = sorted(sub_1d["observation_date"].unique())
-        if len(unique_dates) >= 35:
-            val_split_idx = int(len(unique_dates) * 0.78)
-            inner_train_end_date = unique_dates[val_split_idx - 2]
+        if len(unique_dates) >= 45:
+            val_split_idx = int(len(unique_dates) * 0.72)
+            inner_train_end_idx = max(10, val_split_idx - self.purge_sessions - 1)
+            inner_train_end_date = unique_dates[inner_train_end_idx]
             inner_val_start_date = unique_dates[val_split_idx]
 
             mask_itr = sub_1d["observation_date"] <= inner_train_end_date
@@ -206,7 +237,7 @@ class BharatAlphaQuantEnsemble:
             val_slice = sub_1d.loc[mask_ival]
             p_lgb_v = lgb_cal.predict_proba(X_all.loc[mask_ival])[:, 1]
             p_xgb_v = xgb_cal.predict_proba(X_all.loc[mask_ival])[:, 1]
-            p_lin_v = lin_cal.predict_proba(X_all.loc[mask_ival])[:, 1]
+            p_lin_v = np.clip(0.50 + 0.55 * (lin_cal.predict_proba(X_all.loc[mask_ival])[:, 1] - 0.50), 0.28, 0.72)
             p_pri_v = (
                 0.55 * self.mom_prior_.predict_df(val_slice, self.active_features_)["prob_next_day_up"].values
                 + 0.45 * self.tech_prior_.predict_df(val_slice, self.active_features_)["prob_next_day_up"].values
@@ -218,7 +249,6 @@ class BharatAlphaQuantEnsemble:
             for p_arr in [p_lgb_v, p_xgb_v, p_lin_v, p_pri_v]:
                 ic_v = pd.Series(p_arr).rank().corr(s_y_val.rank())
                 ic_f = float(ic_v) if pd.notna(ic_v) else 0.0
-                # Soft floor so every family contributes, with boost for positive validation IC
                 ics.append(max(0.08, 0.15 + max(0.0, ic_f) * 4.0))
 
             w_sum = sum(ics)
@@ -228,8 +258,30 @@ class BharatAlphaQuantEnsemble:
                 round(ics[2] / w_sum, 4),
                 round(ics[3] / w_sum, 4),
             )
+
+            # Fit Platt scaling (LogisticRegression on logit(p_raw)) on inner_val
+            p_raw_val = (
+                self.model_weights_[0] * p_lgb_v
+                + self.model_weights_[1] * p_xgb_v
+                + self.model_weights_[2] * p_lin_v
+                + self.model_weights_[3] * p_pri_v
+            )
+            p_clip = np.clip(p_raw_val, 0.05, 0.95)
+            logits_val = np.log(p_clip / (1.0 - p_clip)).reshape(-1, 1)
+            y_val_up = y_up[mask_ival]
+            if len(np.unique(y_val_up)) == 2 and len(y_val_up) >= 30:
+                platt = LogisticRegression(C=1.0, max_iter=500, random_state=self.random_state)
+                platt.fit(logits_val, y_val_up)
+                # Regularize slope into [0.25, 1.25] to avoid extreme extrapolation
+                self.calibration_slope_ = float(np.clip(platt.coef_[0][0], 0.25, 1.25))
+                self.calibration_intercept_ = float(np.clip(platt.intercept_[0], -0.40, 0.40))
+            else:
+                self.calibration_slope_ = 0.85
+                self.calibration_intercept_ = 0.0
         else:
             self.model_weights_ = (0.28, 0.24, 0.24, 0.24)
+            self.calibration_slope_ = 0.85
+            self.calibration_intercept_ = 0.0
 
         # 2. Fit full-fold Direction Classifiers
         self.lgb_clf_ = self._make_lgb_clf()
@@ -255,8 +307,9 @@ class BharatAlphaQuantEnsemble:
         self.lgb_reg_mfe_ = self._make_lgb_reg()
         self.lgb_reg_mfe_.fit(X_all, y_mfe)
 
-        # 4. Fit 5D Return Regressors with strict 5-day tail purge (zero overlap with test fold)
-        cutoff_5d_date = unique_dates[-6] if len(unique_dates) > 10 else unique_dates[-1]
+        # 4. Fit 5D Return Regressors with strict `purge_sessions` tail purge (zero overlap with test fold)
+        cutoff_5d_idx = max(0, len(unique_dates) - (self.purge_sessions + 1))
+        cutoff_5d_date = unique_dates[cutoff_5d_idx]
         sub_5d = train_df[
             (train_df["observation_date"] <= cutoff_5d_date) & train_df["target_5d_ret"].notna()
         ].copy()
@@ -294,14 +347,14 @@ class BharatAlphaQuantEnsemble:
     def _make_lgb_clf(self) -> lgb.LGBMClassifier:
         return lgb.LGBMClassifier(
             n_estimators=75,
-            max_depth=3,
-            num_leaves=6,
+            max_depth=self.max_depth,
+            num_leaves=min(6, 2 ** self.max_depth),
             min_child_samples=60,
             subsample=0.75,
             subsample_freq=1,
             colsample_bytree=0.65,
             reg_alpha=4.0,
-            reg_lambda=10.0,
+            reg_lambda=self.reg_lambda,
             learning_rate=0.025,
             random_state=self.random_state,
             n_jobs=2,
@@ -311,12 +364,12 @@ class BharatAlphaQuantEnsemble:
     def _make_xgb_clf(self) -> xgb.XGBClassifier:
         return xgb.XGBClassifier(
             n_estimators=75,
-            max_depth=3,
+            max_depth=self.max_depth,
             min_child_weight=55,
             subsample=0.75,
             colsample_bytree=0.65,
             reg_alpha=4.0,
-            reg_lambda=10.0,
+            reg_lambda=self.reg_lambda,
             learning_rate=0.025,
             eval_metric="logloss",
             random_state=self.random_state,
@@ -337,14 +390,14 @@ class BharatAlphaQuantEnsemble:
         return lgb.LGBMRegressor(
             objective="huber",
             n_estimators=70,
-            max_depth=3,
-            num_leaves=6,
+            max_depth=self.max_depth,
+            num_leaves=min(6, 2 ** self.max_depth),
             min_child_samples=60,
             subsample=0.75,
             subsample_freq=1,
             colsample_bytree=0.65,
             reg_alpha=4.0,
-            reg_lambda=10.0,
+            reg_lambda=self.reg_lambda,
             learning_rate=0.025,
             random_state=self.random_state,
             n_jobs=2,
@@ -355,12 +408,12 @@ class BharatAlphaQuantEnsemble:
         return xgb.XGBRegressor(
             objective="reg:pseudohubererror",
             n_estimators=70,
-            max_depth=3,
+            max_depth=self.max_depth,
             min_child_weight=55,
             subsample=0.75,
             colsample_bytree=0.65,
             reg_alpha=4.0,
-            reg_lambda=10.0,
+            reg_lambda=self.reg_lambda,
             learning_rate=0.025,
             random_state=self.random_state,
             n_jobs=2,
@@ -394,8 +447,9 @@ class BharatAlphaQuantEnsemble:
         p_pri = 0.55 * mom_df["prob_next_day_up"].values + 0.45 * tech_df["prob_next_day_up"].values
 
         w_lgb, w_xgb, w_lin, w_pri = self.model_weights_
-        p_raw = w_lgb * p_lgb + w_xgb * p_xgb + w_lin * p_lin + w_pri * p_pri
-        p_cal = np.clip(0.50 + self.calibration_slope_ * (p_raw - 0.50), 0.22, 0.78)
+        p_raw = np.clip(w_lgb * p_lgb + w_xgb * p_xgb + w_lin * p_lin + w_pri * p_pri, 0.05, 0.95)
+        logits = np.log(p_raw / (1.0 - p_raw))
+        p_cal = np.clip(1.0 / (1.0 + np.exp(-(self.calibration_intercept_ + self.calibration_slope_ * logits))), 0.22, 0.78)
 
         # Model agreement across the constituent families
         std_m = np.std(np.vstack([p_lgb, p_xgb, p_lin, p_pri]), axis=0)
@@ -570,6 +624,19 @@ def classify_cost_aware_action(
     return "HOLD / WATCH", None
 
 
+def _next_nse_trading_date(obs_date_str: str) -> str:
+    """Return the next NSE trading session date strictly after `obs_date_str`."""
+    try:
+        dt = date.fromisoformat(obs_date_str[:10]) + timedelta(days=1)
+        for _ in range(14):
+            if is_nse_trading_day(dt):
+                return dt.isoformat()
+            dt += timedelta(days=1)
+        return dt.isoformat()
+    except Exception:
+        return obs_date_str
+
+
 def build_latest_prediction_records(
     ensemble: BharatAlphaQuantEnsemble,
     latest_feature_df: pd.DataFrame,
@@ -585,7 +652,10 @@ def build_latest_prediction_records(
     deliv_costs = compute_row_cost_series(latest_feature_df, mode="delivery")
     intra_costs = compute_row_cost_series(latest_feature_df, mode="intraday")
 
-    now_iso = datetime.now(timezone.utc).isoformat()
+    now_utc = datetime.now(timezone.utc)
+    now_iso = now_utc.isoformat()
+    run_tag = now_utc.strftime("%Y%m%dT%H%M%SZ")
+    snapshot_cols = list(ensemble.active_features_[:10])
     records: list[QuantitativePredictionRecord] = []
 
     for idx in latest_feature_df.index:
@@ -593,6 +663,7 @@ def build_latest_prediction_records(
         row_p = preds_df.loc[idx]
         sym = str(row_f["symbol"].iloc[0]).upper()
         obs_date = str(row_f["observation_date"].iloc[0])
+        target_session = _next_nse_trading_date(obs_date)
 
         d_cost = float(deliv_costs.loc[idx])
         i_cost = float(intra_costs.loc[idx])
@@ -622,14 +693,21 @@ def build_latest_prediction_records(
 
         bull_drivers, bear_drivers = ensemble.explain_row_shap(row_f, top_n=5)
 
+        feat_snap: dict[str, float | None] = {}
+        for fc in snapshot_cols:
+            if fc in row_f.columns:
+                val = pd.to_numeric(row_f[fc].iloc[0], errors="coerce")
+                feat_snap[fc] = round(float(val), 5) if pd.notna(val) and np.isfinite(val) else None
+
         realized_1d = row_f["target_next_day_ret"].iloc[0] if "target_next_day_ret" in row_f.columns else None
         realized_5d = row_f["target_5d_ret"].iloc[0] if "target_5d_ret" in row_f.columns else None
 
         records.append(
             QuantitativePredictionRecord(
-                prediction_id=f"{sym}_{obs_date}_{ensemble.name}_{ensemble.version}",
+                prediction_id=f"{sym}_{obs_date}_{ensemble.name}_{ensemble.version}_{run_tag}",
                 symbol=sym,
                 observation_date=obs_date,
+                target_session_date=target_session,
                 generated_at=now_iso,
                 model_name=ensemble.name,
                 model_version=ensemble.version,
@@ -653,6 +731,7 @@ def build_latest_prediction_records(
                 abstention_reason=abstain_reason,
                 top_bullish_drivers=bull_drivers,
                 top_bearish_drivers=bear_drivers,
+                feature_snapshot=feat_snap,
                 realized_next_day_return_pct=(
                     round(float(realized_1d), 4) if pd.notna(realized_1d) else None
                 ),

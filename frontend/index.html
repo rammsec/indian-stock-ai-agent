@@ -87,7 +87,7 @@
     </div>
     <div style="display: flex; align-items: center; gap: 0.6rem;">
       <span class="mono" id="mr-gate-badge" style="font-size: 0.74rem; color: var(--signal-bull);">Data Quality Gate: ACTIVE</span>
-      <span class="mono" id="mr-walkforward-pill" style="font-size: 0.74rem; color: var(--text-muted);">Walk-Forward OOS Net Sharpe: +0.783 (+19.75% Net)</span>
+      <span class="mono" id="mr-walkforward-pill" style="font-size: 0.74rem; color: var(--text-muted);">Walk-Forward OOS: Loading...</span>
     </div>
   </section>
 
@@ -593,7 +593,7 @@
                   <th>Sortino</th>
                   <th>Max Drawdown %</th>
                   <th>vs Nifty 50</th>
-                  <th>Brier / ECE</th>
+                  <th>Brier / ROC AUC</th>
                 </tr>
               </thead>
               <tbody id="tbody-quant-models">
@@ -611,7 +611,7 @@
             <span class="sec-num" style="background: var(--signal-bull-bg); color: var(--signal-bull); border-color: var(--signal-bull);">27</span>
             <div>
               <h2 class="sec-heading-title">All-Stock Calibrated Next-Day Signal Matrix, TreeSHAP Drivers &amp; NSE Delivery</h2>
-              <p class="sec-heading-sub">27 Liquid NSE Equities Ranked by Calibrated `P(Up 1D)` &amp; Net Expected Return after Indian CNC Costs (~35 bps)</p>
+              <p id="quant-pred-freshness" class="sec-heading-sub">Liquid NSE Equities Ranked by Calibrated P(Up 1D) &amp; Net Expected Return after Indian CNC Costs</p>
             </div>
           </div>
         </div>
@@ -620,11 +620,11 @@
             <table class="fin-table mono">
               <thead>
                 <tr>
-                  <th style="text-align: left;">Symbol / Sector</th>
-                  <th>Close (₹)</th>
+                  <th style="text-align: left;">Symbol / Regime</th>
+                  <th>Obs. Date</th>
                   <th>ML Action</th>
                   <th>P(Up 1D)</th>
-                  <th>P(Up 5D)</th>
+                  <th>LGBM P(Up)</th>
                   <th>Gross E[R] 1D</th>
                   <th>CNC Cost</th>
                   <th>Net E[R] 1D</th>
@@ -757,6 +757,92 @@
         </div>
       </div>
     </div>
+
+    <!-- ======================================================================
+         BOTTOM SECTION: 5-DAY PRICE FORECAST, BUY/SELL CALL RANGES & CONDITIONS
+         ====================================================================== -->
+    <section class="collapsible-section open" id="sec-5d-outlook" style="margin-top: 1.5rem;">
+      <div class="collapsible-header" data-toggle="sec-5d-outlook">
+        <div class="header-left">
+          <span class="sec-num" style="background: rgba(56, 189, 248, 0.14); color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">5D</span>
+          <div>
+            <h2 class="sec-heading-title">5-Day Price Forecast, Buy / Sell Call Ranges &amp; Multi-Horizon Conditions</h2>
+            <p id="outlook-5d-sub" class="sec-heading-sub">Anchored on Validated Naive Momentum Benchmark + ATR(14) Volatility Bands (ML Ensemble Audit: No OOS Edge — Shown for Comparison Only)</p>
+          </div>
+        </div>
+        <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+      </div>
+      <div class="collapsible-body">
+        <div class="table-wrap" style="margin-bottom: 1.15rem;">
+          <table class="fin-table mono">
+            <thead>
+              <tr>
+                <th style="text-align: left;">Symbol</th>
+                <th>Last Close (₹)</th>
+                <th>ATR(14)</th>
+                <th>Mom. 5D Mid (₹ / %)</th>
+                <th>ML 5D Mid (₹ / %)</th>
+                <th>5-Day Price Range (₹)</th>
+                <th>Buy Call Range (₹) [Stop-Loss]</th>
+                <th>Sell Call Range (₹)</th>
+                <th>ML Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-5d-outlook">
+              <tr><td colspan="9" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading 5-Day Price Forecast &amp; Call Ranges...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="three-col-grid" id="outlook-conditions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+          <div class="sub-panel">
+            <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Next 5 Days — Catalysts &amp; Risks</h3>
+            <div style="font-size: 0.8rem; line-height: 1.55;">
+              <p class="text-bull" style="font-weight: 700; margin-bottom: 0.25rem;">▲ Upside Conditions</p>
+              <ul id="cond-5d-up" class="agent-reasons" style="margin-bottom: 0.65rem;">
+                <li>Loading live 5D upside drivers...</li>
+              </ul>
+              <p class="text-bear" style="font-weight: 700; margin-bottom: 0.25rem;">▼ Downside Conditions</p>
+              <ul id="cond-5d-down" class="agent-reasons">
+                <li>Loading live 5D downside drivers...</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Next 1 Month — Regime &amp; Flow Conditions</h3>
+            <div style="font-size: 0.8rem; line-height: 1.55;">
+              <p class="text-bull" style="font-weight: 700; margin-bottom: 0.25rem;">▲ Upside Conditions</p>
+              <ul class="agent-reasons" style="margin-bottom: 0.65rem;">
+                <li>Regime transition from <strong>Weak Bull → Strong Bull</strong> (Nifty &gt; SMA50 by &gt;0.5%, Nifty &gt; SMA200, 20D Nifty return &gt; +1.5%).</li>
+                <li>Sustained FII/DII net inflows and positive NSE Bulk/Block Deal accumulation tape.</li>
+              </ul>
+              <p class="text-bear" style="font-weight: 700; margin-bottom: 0.25rem;">▼ Downside Conditions</p>
+              <ul class="agent-reasons">
+                <li>Breakdown into <strong>Bear regime</strong> (Nifty &lt; SMA200 by &gt;1% and &lt; SMA50) or India VIX spike &ge; 21.0.</li>
+                <li>Broadening FII outflows or sector-specific margin/orderbook downgrades in IT or Telecom/OFC.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Next 1 Year — Fundamental &amp; Macro Conditions</h3>
+            <div style="font-size: 0.8rem; line-height: 1.55;">
+              <p class="text-bull" style="font-weight: 700; margin-bottom: 0.25rem;">▲ Upside Conditions</p>
+              <ul class="agent-reasons" style="margin-bottom: 0.65rem;">
+                <li>Quarterly YoY/QoQ PAT &amp; OPM% expansion, ROE/ROCE &gt; 15–20%, and OCF/Net Profit conversion &gt; 0.8x.</li>
+                <li>RBI policy easing / domestic liquidity supporting credit growth and infrastructure capex.</li>
+              </ul>
+              <p class="text-bear" style="font-weight: 700; margin-bottom: 0.25rem;">▼ Downside Conditions</p>
+              <ul class="agent-reasons">
+                <li>Valuation multiple compression when P/E outpaces 5-year profit CAGR, or promoter pledging / stake reduction.</li>
+                <li>Global macro shocks (US/EU IT spending slowdown or crude oil spikes pressuring Indian inflation).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
   </main>
 
