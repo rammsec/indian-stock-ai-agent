@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 from ..models import CrossStockImpactItem, StructuredNewsEvent
-from .extractor import parse_publication_timestamp_ist
+from .extractor import parse_publication_timestamp_ist, try_parse_publication_timestamp_ist
 
 NEWS_FEATURE_NAMES: list[str] = [
     "news_company_sentiment_1d",
@@ -94,9 +94,9 @@ def compute_pit_news_features(
     for evt in events:
         if evt.is_duplicate_report:
             continue
-        evt_dt = parse_publication_timestamp_ist(evt.publication_timestamp)
-        if evt_dt > cutoff:
-            # Strict point-in-time guard: never leak future news!
+        evt_dt = try_parse_publication_timestamp_ist(evt.publication_timestamp)
+        if evt_dt is None or evt_dt > cutoff:
+            # Strict point-in-time guard: never leak future or un-timestamped news!
             continue
         age_days = max(0.0, (cutoff - evt_dt).total_seconds() / 86400.0)
         pit_events.append((evt, age_days))

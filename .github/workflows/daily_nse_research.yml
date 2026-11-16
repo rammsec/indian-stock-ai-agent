@@ -2,6 +2,8 @@ name: Daily NSE Quantitative Data Foundation & Research Pipeline
 
 on:
   schedule:
+    # Runs Monday-Friday at 03:30 UTC (9:00 AM IST — pre-market Phase 5 live news refresh)
+    - cron: "30 3 * * 1-5"
     # Runs Monday-Friday at 13:00 UTC (6:30 PM IST — after NSE Bhavcopy & Delivery reports are published)
     - cron: "0 13 * * 1-5"
   workflow_dispatch:
@@ -55,8 +57,8 @@ jobs:
         env:
           FORCE_HOLIDAY_RUN: ${{ github.event.inputs.force_holiday_run }}
 
-      - name: Phase 1 — Collect NSE Bhavcopy, Delivery %, Indices, Market Regime & Parquet/DuckDB Store
-        if: steps.calendar_check.outputs.should_run == 'true'
+      - name: Phase 1 — Collect NSE Bhavcopy, Delivery %, Indices, Market Regime & Parquet/DuckDB Store (Post-Market Only)
+        if: steps.calendar_check.outputs.should_run == 'true' && github.event.schedule != '30 3 * * 1-5'
         run: |
           python scripts/run_phase1_foundation.py
 
@@ -65,18 +67,30 @@ jobs:
         env:
           EXTRA_SYMBOLS: ${{ github.event.inputs.extra_symbols }}
         run: |
-          python scripts/generate_static_data.py
-          python scripts/run_phase2_features.py
-          python scripts/run_phase3_backtest.py
-          python scripts/run_phase4_corporate_intel.py
-          python -c "from backend.news_intel.pipeline import run_phase5_intelligence_pipeline; run_phase5_intelligence_pipeline(use_network=True, persist=True)"
-          cp data/predictions/phase5_intelligence.json docs/data/phase5_intelligence.json
-          python scripts/build_github_pages.py
+          if [ "${{ github.event.schedule }}" = "30 3 * * 1-5" ]; then
+            echo "9:00 AM IST Pre-Market Refresh: updating Phase 5 live news & cross-stock intelligence only"
+            python -c "from backend.news_intel.pipeline import run_phase5_intelligence_pipeline; run_phase5_intelligence_pipeline(use_network=True, persist=True)"
+            cp data/predictions/phase5_intelligence.json docs/data/phase5_intelligence.json
+            python scripts/build_github_pages.py
+          else
+            python scripts/generate_static_data.py
+            python scripts/run_phase2_features.py
+            python scripts/run_phase3_backtest.py
+            python scripts/run_phase4_corporate_intel.py
+            python scripts/run_phase5_experiments.py --skip-if-fresh
+            cp data/predictions/phase5_intelligence.json docs/data/phase5_intelligence.json
+            cp data/backtests/phase5_experiments.json docs/data/phase5_experiments.json
+            python scripts/build_github_pages.py
+          fi
 
       - name: Run Automated Test Suite
         if: steps.calendar_check.outputs.should_run == 'true'
         run: |
-          pytest -v
+          if [ "${{ github.event.schedule }}" = "30 3 * * 1-5" ]; then
+            pytest tests/test_phase5_news_intel.py tests/test_frontend_contract.py -v
+          else
+            pytest -v
+          fi
 
       - name: Commit & Push Updated Parquet Store & GitHub Pages Data
         if: steps.calendar_check.outputs.should_run == 'true'

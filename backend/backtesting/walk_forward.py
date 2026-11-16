@@ -273,25 +273,26 @@ def run_walk_forward_backtest(
                 fold_feature_sets.append(list(model.active_features_))
             pred_out = model.predict_df(test_slice, selected_features)
 
-            merged_fold = test_slice[
-                [
-                    "symbol",
-                    "observation_date",
-                    "sector",
-                    "pm_atr_14_pct",
-                    "vd_amihud_illiquidity_20d",
-                    "ms_india_vix_level",
-                    "ms_nifty_dist_sma50_pct",
-                    "ms_nifty_dist_sma200_pct",
-                    "ms_nifty_ret_1d_pct",
-                    "ms_nifty_ret_20d_pct",
-                    "target_next_day_ret",
-                    "target_next_day_up",
-                    "target_5d_ret",
-                    "target_next_day_mae",
-                    "target_next_day_mfe",
-                ]
-            ].copy()
+            fold_cols = [
+                "symbol",
+                "observation_date",
+                "sector",
+                "pm_atr_14_pct",
+                "vd_amihud_illiquidity_20d",
+                "ms_india_vix_level",
+                "ms_nifty_dist_sma50_pct",
+                "ms_nifty_dist_sma200_pct",
+                "ms_nifty_ret_1d_pct",
+                "ms_nifty_ret_20d_pct",
+                "target_next_day_ret",
+                "target_next_day_up",
+                "target_5d_ret",
+                "target_next_day_mae",
+                "target_next_day_mfe",
+            ]
+            if "target_10d_ret" in test_slice.columns:
+                fold_cols.append("target_10d_ret")
+            merged_fold = test_slice[fold_cols].copy()
             merged_fold["fold_id"] = fold_count
             merged_fold["model_name"] = m_name
             for p_col in pred_out.columns:

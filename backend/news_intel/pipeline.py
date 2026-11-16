@@ -18,7 +18,7 @@ from ..storage.duckdb_store import DuckDBStore
 from .collector import collect_all_pilot_news
 from .combiner import build_multi_horizon_outlooks
 from .cross_stock import compute_cross_stock_impacts
-from .extractor import extract_structured_events
+from .extractor import extract_structured_events_with_quarantine
 from .features import compute_pit_news_features
 from .monitoring import build_monitoring_snapshot
 from .relationships import PILOT_UNIVERSE_5, get_pilot_relationship
@@ -61,10 +61,16 @@ def run_phase5_intelligence_pipeline(
 
     events_by_sym: dict[str, list[StructuredNewsEvent]] = {}
     all_events: list[StructuredNewsEvent] = []
+    quarantined_total = 0
     for sym, raw_items in raw_by_sym.items():
-        evts = extract_structured_events(raw_items)
+        evts, quarantined = extract_structured_events_with_quarantine(raw_items)
+        quarantined_total += len(quarantined)
         events_by_sym[sym] = evts
         all_events.extend(evts)
+    if quarantined_total > 0:
+        warnings.append(
+            f"Quarantined {quarantined_total} news items due to missing/invalid publication timestamps or entity contamination."
+        )
 
     cross_by_sym = compute_cross_stock_impacts(events_by_sym, universe=tuple(symbols))
     all_cross: list[CrossStockImpactItem] = []

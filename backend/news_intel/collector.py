@@ -117,24 +117,51 @@ def collect_promoter_management_intel(
                 bulk_deals_df = None
 
     if bulk_deals_df is not None and not bulk_deals_df.empty and "symbol" in bulk_deals_df.columns:
+        inst_exclusions = (
+            "mutual fund", "mf", "etf", "asset management", "amc", "morgan", "goldman",
+            "citigroup", "jpmorgan", "bofa", "merrill", "nomura", "ubs", "barclays",
+            "hdfc", "icici", "sbi", "kotak", "axis", "nippon", "uti", "aditya birla sun life",
+            "securities", "broking", "advisors", "partners", "llp", "fii", "fund",
+        )
+        promoter_hints = {
+            "RELIANCE": ("sikka", "ambani", "reliance services", "deccan", "tattvam"),
+            "TCS": ("tata sons",),
+            "TATAELXSI": ("tata sons", "tata investment"),
+            "ITC": ("tobacco manufacturers", "myddleton", "rothmans"),
+            "BIRLACABLE": ("vindhya telelinks", "universal cables", "august agents", "insilco"),
+        }.get(sym, ())
+
         sub = bulk_deals_df[bulk_deals_df["symbol"].astype(str).str.upper() == sym].tail(5)
         for _, r in sub.iterrows():
             side = str(r.get("side", "BUY")).upper()
             deal_type = str(r.get("deal_type", "BULK")).upper()
             client = str(r.get("client_name", "Institutional Investor"))
+            c_low = client.lower()
+            is_inst = any(tok in c_low for tok in inst_exclusions)
+            is_verified_promoter = (not is_inst) and (
+                "promoter" in c_low or "insider" in c_low or any(h in c_low for h in promoter_hints)
+            )
             val_cr = float(r.get("value_cr", 0.0) or 0.0)
             deal_dt = str(r.get("deal_date", ""))
+            cat = "promoter_management" if is_verified_promoter else "company_news"
+            rel_label = promoter_group if is_verified_promoter else "Institutional Bulk/Block Deal"
+            prefix = "Verified Promoter" if is_verified_promoter else "Institutional"
             items.append(
                 RawNewsItem(
                     symbol=sym,
                     company_name=cname,
-                    event_category="promoter_management",
-                    title=f"NSE {deal_type} Deal {side}: {client} ({val_cr:.2f} Cr) in {sym}",
+                    event_category=cat,
+                    title=f"{prefix} NSE {deal_type} Deal {side}: {client} ({val_cr:.2f} Cr) in {sym}",
                     source="NSE Official Bulk/Block Deals",
                     published=f"{deal_dt}T15:45:00+05:30" if deal_dt else "",
                     url="https://www.nseindia.com/report-detail/display-bulk-and-block-deals",
-                    related_competitor_or_industry=promoter_group,
-                    metadata={"deal_type": deal_type, "side": side, "value_cr": val_cr},
+                    related_competitor_or_industry=rel_label,
+                    metadata={
+                        "deal_type": deal_type,
+                        "side": side,
+                        "value_cr": val_cr,
+                        "is_verified_promoter": is_verified_promoter,
+                    },
                 )
             )
     return items

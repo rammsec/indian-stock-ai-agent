@@ -230,3 +230,173 @@ def test_api_stock_intelligence_endpoint() -> None:
     body = resp.json()
     assert body["pilot_universe"] == ["RELIANCE", "TCS", "TATAELXSI", "ITC", "BIRLACABLE"]
     assert "stocks" in body and "monitoring" in body
+
+
+def test_missing_or_invalid_timestamp_is_quarantined_never_now() -> None:
+    import pytest
+    from backend.news_intel.extractor import (
+        extract_structured_events_with_quarantine,
+        parse_publication_timestamp_ist,
+        try_parse_publication_timestamp_ist,
+    )
+
+    assert try_parse_publication_timestamp_ist("") is None
+    assert try_parse_publication_timestamp_ist("not-a-date") is None
+    with pytest.raises(ValueError):
+        parse_publication_timestamp_ist("")
+
+    raw_items = [
+        RawNewsItem(
+            symbol="TCS",
+            company_name="Tata Consultancy Services Ltd",
+            event_category="company_news",
+            title="TCS announces quarterly dividend",
+            source="Mint",
+            published="",  # missing timestamp!
+            url="https://example.com/no-ts",
+        ),
+        RawNewsItem(
+            symbol="TCS",
+            company_name="Tata Consultancy Services Ltd",
+            event_category="company_news",
+            title="TCS signs cloud partnership",
+            source="Mint",
+            published="invalid-timestamp-xyz",
+            url="https://example.com/bad-ts",
+        ),
+        RawNewsItem(
+            symbol="TCS",
+            company_name="Tata Consultancy Services Ltd",
+            event_category="company_news",
+            title="TCS wins $200M banking order",
+            source="Mint",
+            published="2026-04-10T10:00:00+05:30",
+            url="https://example.com/good-ts",
+        ),
+    ]
+    events, quarantined = extract_structured_events_with_quarantine(raw_items, enable_gemini=False)
+    assert len(events) == 1
+    assert len(quarantined) == 2
+    assert all(q["reason"] == "invalid_or_missing_timestamp" for q in quarantined)
+
+
+def test_category_contamination_and_entity_resolution() -> None:
+    from backend.news_intel.extractor import extract_structured_events_with_quarantine
+
+    raw_items = [
+        # Regulatory item fetched under company_news -> must resolve to regulatory_government
+        RawNewsItem(
+            symbol="ITC",
+            company_name="ITC Ltd",
+            event_category="company_news",
+            title="GST Council proposes higher excise duty on cigarettes",
+            source="ET",
+            published="2026-04-10T10:00:00+05:30",
+            url="https://example.com/reg",
+        ),
+        # Competitor item fetched under company_news -> must resolve to competitor (BHARTIARTL)
+        RawNewsItem(
+            symbol="RELIANCE",
+            company_name="Reliance Industries Ltd",
+            event_category="company_news",
+            title="Bharti Airtel wins major enterprise 5G contract",
+            source="Mint",
+            published="2026-04-10T11:00:00+05:30",
+            url="https://example.com/comp",
+        ),
+        # Unrelated company fetched under company_news -> must be quarantined
+        RawNewsItem(
+            symbol="BIRLACABLE",
+            company_name="Birla Cable Ltd",
+            event_category="company_news",
+            title="Zomato launches new food delivery membership",
+            source="Mint",
+            published="2026-04-10T12:00:00+05:30",
+            url="https://example.com/irrelevant",
+        ),
+    ]
+    events, quarantined = extract_structured_events_with_quarantine(raw_items, enable_gemini=False)
+    assert len(events) == 2
+    assert events[0].event_category == "regulatory_government"
+    assert events[1].event_category == "competitor"
+    assert events[1].related_competitor_or_industry == "BHARTIARTL"
+    assert len(quarantined) == 1
+    assert quarantined[0]["reason"] == "irrelevant_entity_contamination"
+
+
+def test_nse_bulk_block_institutional_vs_verified_promoter_separation() -> None:
+    import pandas as pd
+    from backend.news_intel.collector import collect_promoter_management_intel
+
+    deals_df = pd.DataFrame(
+        [
+            {
+                "deal_type": "BULK",
+                "deal_date": "2026-04-10",
+                "symbol": "RELIANCE",
+                "client_name": "MORGAN STANLEY ASIA (SINGAPORE) PTE",
+                "side": "BUY",
+                "value_cr": 150.0,
+            },
+            {
+                "deal_type": "BLOCK",
+                "deal_date": "2026-04-10",
+                "symbol": "TCS",
+                "client_name": "TATA SONS PRIVATE LIMITED",
+                "side": "SELL",
+                "value_cr": 500.0,
+            },
+        ]
+    )
+    rel_items = collect_promoter_management_intel("RELIANCE", use_network=False, bulk_deals_df=deals_df)
+    tcs_items = collect_promoter_management_intel("TCS", use_network=False, bulk_deals_df=deals_df)
+
+    assert len(rel_items) == 1
+    assert rel_items[0].event_category == "company_news"
+    assert rel_items[0].metadata["is_verified_promoter"] is False
+
+    assert len(tcs_items) == 1
+    assert tcs_items[0].event_category == "promoter_management"
+    assert tcs_items[0].metadata["is_verified_promoter"] is True
+
+
+def test_sentiment_word_boundaries_conflicts_and_contrastive_clauses() -> None:
+    from backend.news_intel.extractor import classify_sentiment_contextual
+
+    # "window" must NOT trigger "win"; "execute" must NOT trigger "cut"
+    s_neutral, _, _ = classify_sentiment_contextual("Company plans to execute window schedule")
+    assert s_neutral == "neutral"
+
+    # Contrastive clause: despite positive revenue, profit falls -> negative
+    s_neg, conf_neg, conflict = classify_sentiment_contextual(
+        "Despite strong revenue growth, net profit falls 12% on margin pressure"
+    )
+    assert s_neg == "negative"
+    assert conflict is True
+    assert conf_neg >= 0.55
+
+    # Balanced conflicting headline -> neutral with low confidence
+    s_tie, conf_tie, has_conf = classify_sentiment_contextual("Stock sees upgrade and growth amid fine and penalty")
+    assert s_tie == "neutral"
+    assert has_conf is True
+    assert conf_tie <= 0.55
+
+
+def test_news_collection_failure_produces_neutral_signals() -> None:
+    # Empty events (e.g. RSS offline / all quarantined) must yield 0.0 features and never BUY
+    feats = compute_pit_news_features([], as_of_ts="2026-04-10T15:30:00+05:30")
+    assert all(v == 0.0 for v in feats.values())
+
+    out = build_multi_horizon_outlooks(
+        symbol="ITC",
+        quant_pred=None,
+        news_features=feats,
+        cross_impacts=[],
+        regime_label="Sideways",
+        trade_eligible=True,
+    )
+    for h in ("1D", "5D", "10D"):
+        assert out[h].news_signal == "NEUTRAL"
+        assert out[h].cross_stock_signal == "NEUTRAL"
+        assert out[h].decision != "BUY"
+

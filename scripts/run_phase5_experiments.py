@@ -1,27 +1,23 @@
-"""Phase 5 Controlled Walk-Forward Experiments (A–E across 1D, 5D, 10D) & Live Intelligence Runner.
+"""Phase 5.1 Controlled Walk-Forward Experiments (A–E across 1D, 5D, 10D) & Live Intelligence Runner.
 
-Runs:
-1. Live Phase 5 6-category news collection, extraction, cross-stock impact & 1D/5D/10D outlook
-   pipeline for the 5 pilot stocks (`RELIANCE`, `TCS`, `TATAELXSI`, `ITC`, `BIRLACABLE`).
-2. Controlled Walk-Forward Experiments A–E on the 5 pilot stocks using identical dates,
-   v3.2 5-session purge + 1-session embargo (10-session purge for 10D horizon),
-   in-fold feature selection, next-open execution, Indian transaction costs, and
-   `naive_momentum` benchmark:
-   - Exp A: 237 quantitative features only
-   - Exp B: Exp A + company news features
-   - Exp C: Exp A + company & promoter features
-   - Exp D: Exp A + company, promoter, industry & competitor features
-   - Exp E: Exp A + all 17 news, regulatory, macro & cross-stock features
+Fixes from Phase 5.1 Reliability Audit:
+- Issue 5: Trains and evaluates a genuine 5D prediction model (`target_5d_ret > 0`,
+  5-session purge + 1-session embargo) instead of using 1D probabilities against 5D returns.
+- Issue 6: Audits and verifies 10D metrics (`target_10d_ret > 0`, 10-session purge +
+  1-session embargo) directly from the 10D walk-forward OOS predictions.
+- Issue 9: Adds data-integrity & computational-cost guard (`--skip-if-fresh`) so the
+  expensive experiment suite only refreshes when >= 5 new trading sessions are available
+  (or `--force` is passed) and target integrity checks pass.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from datetime import datetime
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 from sklearn.metrics import brier_score_loss, roc_auc_score
 
@@ -44,21 +40,21 @@ def _load_237_features() -> list[str]:
     cat_path = FEATURES_DATA_DIR / "feature_catalog.json"
     if cat_path.exists():
         raw = json.loads(cat_path.read_text(encoding="utf-8"))
+        if isinstance(raw, dict) and "all_feature_metrics" in raw:
+            return [str(x["feature"]) for x in raw["all_feature_metrics"] if isinstance(x, dict) and "feature" in x]
         if isinstance(raw, list):
             return [str(x["name"]) for x in raw if isinstance(x, dict) and "name" in x]
-        if isinstance(raw, dict) and "features" in raw:
-            return [str(x["name"]) for x in raw["features"] if isinstance(x, dict) and "name" in x]
     return []
 
 
 def _horizon_oos_metrics(oos_df: pd.DataFrame, target_ret_col: str) -> dict[str, float]:
-    """Compute directional accuracy, ROC AUC, Brier, and Rank IC for 5D or 10D target."""
+    """Compute directional accuracy, ROC AUC, Brier, and Rank IC for a specific horizon."""
     if oos_df.empty or target_ret_col not in oos_df.columns:
-        return {"roc_auc": 0.5, "directional_accuracy_pct": 50.0, "brier_score": 0.25, "rank_ic": 0.0}
+        raise ValueError(f"Missing required target column {target_ret_col!r} in OOS predictions.")
 
     sub = oos_df.dropna(subset=[target_ret_col, "prob_next_day_up"]).copy()
     if len(sub) < 20:
-        return {"roc_auc": 0.5, "directional_accuracy_pct": 50.0, "brier_score": 0.25, "rank_ic": 0.0}
+        raise ValueError(f"Insufficient OOS rows ({len(sub)}) for {target_ret_col!r}.")
 
     y_ret = pd.to_numeric(sub[target_ret_col], errors="coerce")
     y_up = (y_ret > 0).astype(int).values
@@ -81,13 +77,45 @@ def _horizon_oos_metrics(oos_df: pd.DataFrame, target_ret_col: str) -> dict[str,
     }
 
 
-def run_all_experiments() -> dict[str, object]:
+def _check_experiment_refresh_needed(df_pilot: pd.DataFrame, out_path: Path, force: bool) -> tuple[bool, str]:
+    """Check data integrity & whether >= 5 new trading sessions exist since last experiment run."""
+    for col in ("target_next_day_ret", "target_5d_ret", "target_10d_ret"):
+        if col not in df_pilot.columns or int(df_pilot[col].notna().sum()) < 300:
+            return False, f"Data integrity check failed: insufficient non-null {col}."
+
+    if force or not out_path.exists():
+        return True, "Forced or initial experiment run."
+
+    try:
+        prev = json.loads(out_path.read_text(encoding="utf-8"))
+        prev_dt = str(prev.get("latest_feature_date") or "")
+        all_dates = sorted(df_pilot["observation_date"].astype(str).unique().tolist())
+        if not prev_dt or prev_dt not in all_dates:
+            return True, "Previous latest_feature_date not found; refreshing."
+        new_sessions = len(all_dates) - 1 - all_dates.index(prev_dt)
+        if new_sessions < 5:
+            return False, f"Only {new_sessions} new trading sessions since {prev_dt} (< 5 threshold); skipping expensive retrain."
+        return True, f"{new_sessions} new trading sessions available; refreshing experiments."
+    except Exception:
+        return True, "Existing experiment report unreadable; refreshing."
+
+
+def run_all_experiments(force: bool = True) -> dict[str, object]:
     feat_path = FEATURES_DATA_DIR / "daily_features.parquet"
     eq_path = PROCESSED_DATA_DIR / "equities_daily.parquet"
+    out_path = BACKTESTS_DATA_DIR / "phase5_experiments.json"
 
     df_all = pd.read_parquet(feat_path)
     df_pilot = df_all[df_all["symbol"].isin(PILOT_UNIVERSE_5)].copy()
     df_pilot = df_pilot.sort_values(["observation_date", "symbol"]).reset_index(drop=True)
+
+    should_run, reason = _check_experiment_refresh_needed(df_pilot, out_path, force=force)
+    if not should_run:
+        print(f"   Skipping experiment retrain: {reason}")
+        if out_path.exists():
+            return json.loads(out_path.read_text(encoding="utf-8"))
+        raise RuntimeError(reason)
+
     df_pilot = reconstruct_pit_historical_news_features(df_pilot)
 
     ohlc_df = pd.read_parquet(eq_path) if eq_path.exists() else None
@@ -121,8 +149,8 @@ def run_all_experiments() -> dict[str, object]:
     naive_benchmark: dict[str, object] = {}
 
     for exp_name, feat_cols in experiments.items():
-        # 1D & 5D share the 5-session purge + 1-session embargo walk-forward
-        summary_1d, oos_all_1d, _ = run_walk_forward_backtest(
+        # 1. Genuine 1D horizon (5-session purge + 1-session embargo)
+        summary_1d, _, _ = run_walk_forward_backtest(
             df_pilot,
             feat_cols,
             initial_train_dates=240,
@@ -133,14 +161,29 @@ def run_all_experiments() -> dict[str, object]:
             top_k_features=40,
         )
         ml_1d = summary_1d.models["ml_ensemble"]
-        ml_oos_1d = oos_all_1d[oos_all_1d["model_name"] == "ml_ensemble"]
-        m5d = _horizon_oos_metrics(ml_oos_1d, "target_5d_ret")
 
-        # 10D horizon with 10-session purge + 1-session embargo to prevent 10-day label overlap
+        # 2. Genuine 5D horizon (trained directly on target_5d_ret > 0, 5-session purge + 1-session embargo)
+        df_5d = df_pilot.copy()
+        df_5d["target_next_day_ret"] = pd.to_numeric(df_5d["target_5d_ret"], errors="coerce")
+        df_5d["target_next_day_up"] = (df_5d["target_next_day_ret"] > 0).astype(float)
+        _, oos_all_5d, _ = run_walk_forward_backtest(
+            df_5d,
+            feat_cols,
+            initial_train_dates=240,
+            step_dates=42,
+            purge_gap_days=5,
+            embargo_sessions=1,
+            ohlc_df=ohlc_df,
+            top_k_features=40,
+        )
+        ml_oos_5d = oos_all_5d[oos_all_5d["model_name"] == "ml_ensemble"]
+        m5d = _horizon_oos_metrics(ml_oos_5d, "target_5d_ret")
+
+        # 3. Genuine 10D horizon (trained directly on target_10d_ret > 0, 10-session purge + 1-session embargo)
         df_10d = df_pilot.copy()
         df_10d["target_next_day_ret"] = pd.to_numeric(df_10d["target_10d_ret"], errors="coerce")
         df_10d["target_next_day_up"] = (df_10d["target_next_day_ret"] > 0).astype(float)
-        summary_10d, oos_all_10d, _ = run_walk_forward_backtest(
+        _, oos_all_10d, _ = run_walk_forward_backtest(
             df_10d,
             feat_cols,
             initial_train_dates=240,
@@ -155,7 +198,6 @@ def run_all_experiments() -> dict[str, object]:
 
         if not naive_benchmark and "naive_momentum" in summary_1d.models:
             nm = summary_1d.models["naive_momentum"]
-            nm_oos = oos_all_1d[oos_all_1d["model_name"] == "naive_momentum"]
             naive_benchmark = {
                 "1D": {
                     "roc_auc": nm.roc_auc,
@@ -168,7 +210,7 @@ def run_all_experiments() -> dict[str, object]:
                     "profit_factor": nm.profit_factor_net,
                     "expectancy_bps": nm.expectancy_per_trade_bps,
                 },
-                "5D": _horizon_oos_metrics(nm_oos, "target_5d_ret"),
+                "5D": _horizon_oos_metrics(oos_all_5d[oos_all_5d["model_name"] == "naive_momentum"], "target_5d_ret"),
                 "10D": _horizon_oos_metrics(oos_all_10d[oos_all_10d["model_name"] == "naive_momentum"], "target_10d_ret"),
             }
 
@@ -193,39 +235,46 @@ def run_all_experiments() -> dict[str, object]:
 
     report = {
         "generated_at": datetime.now(IST_TZ).isoformat(),
+        "latest_feature_date": str(df_pilot["observation_date"].max()),
         "pilot_universe": list(PILOT_UNIVERSE_5),
         "purge_and_embargo": {"1D_5D": "5 sessions purge + 1 session embargo", "10D": "10 sessions purge + 1 session embargo"},
         "execution_mode": "next_open_delivery_capped",
         "historical_pit_note": (
             "Experiments A–E use genuine point-in-time historical event/promoter/sector/macro proxies "
             "(ne_*, inst_*, rel_*, ms_*) reconstructed into the 17 Phase 5 features without fabricating "
-            "historical news articles. Live RSS/Gemini extraction accumulates forward-only in structured_events.parquet."
+            "historical news articles. 5D and 10D models are trained directly on target_5d_ret and target_10d_ret."
         ),
         "naive_momentum_benchmark": naive_benchmark,
         "experiments": results,
     }
 
     BACKTESTS_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = BACKTESTS_DATA_DIR / "phase5_experiments.json"
     out_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     return report
 
 
 def main() -> None:
-    print("1. Running Phase 5 Live News & Cross-Stock Intelligence Pipeline (5 pilot stocks)...")
-    payload = run_phase5_intelligence_pipeline(symbols=PILOT_UNIVERSE_5, use_network=True, persist=True)
-    print(f"   Collected {len(payload.consolidated_feed)} deduplicated feed events across {len(payload.stocks)} stocks.")
+    parser = argparse.ArgumentParser(description="Phase 5.1 Live Intelligence & Controlled Experiments Runner")
+    parser.add_argument("--skip-if-fresh", action="store_true", help="Skip experiment retrain if < 5 new sessions exist.")
+    parser.add_argument("--experiments-only", action="store_true", help="Skip live news collection and run experiments only.")
+    args = parser.parse_args()
+
+    if not args.experiments_only:
+        print("1. Running Phase 5 Live News & Cross-Stock Intelligence Pipeline (5 pilot stocks)...")
+        payload = run_phase5_intelligence_pipeline(symbols=PILOT_UNIVERSE_5, use_network=True, persist=True)
+        print(f"   Collected {len(payload.consolidated_feed)} deduplicated feed events across {len(payload.stocks)} stocks.")
 
     print("2. Running Controlled Walk-Forward Experiments A–E (1D, 5D, 10D) on 5 pilot stocks...")
-    report = run_all_experiments()
+    report = run_all_experiments(force=not args.skip_if_fresh)
     print(f"   Saved -> {BACKTESTS_DATA_DIR / 'phase5_experiments.json'}")
     for name, res in report["experiments"].items():
         d1 = res["1D"]
         d5 = res["5D"]
         d10 = res["10D"]
         print(
-            f"   {name:30s} | 1D AUC={d1['roc_auc']:.4f} Net={d1['net_return_pct']:+.2f}% Sharpe={d1['net_sharpe']:.3f} "
-            f"| 5D AUC={d5['roc_auc']:.4f} | 10D AUC={d10['roc_auc']:.4f}"
+            f"   {name:30s} | 1D AUC={d1['roc_auc']:.4f} Net={d1['net_return_pct']:+.2f}% "
+            f"| 5D AUC={d5['roc_auc']:.4f} IC={d5['rank_ic']:+.4f} "
+            f"| 10D AUC={d10['roc_auc']:.4f} IC={d10['rank_ic']:+.4f}"
         )
 
 

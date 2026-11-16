@@ -1,5 +1,6 @@
 {
-  "generated_at": "2026-11-16T14:29:58.848195+05:30",
+  "generated_at": "2026-11-16T18:36:35.572713+05:30",
+  "latest_feature_date": "2026-11-16",
   "pilot_universe": [
     "RELIANCE",
     "TCS",
@@ -12,7 +13,7 @@
     "10D": "10 sessions purge + 1 session embargo"
   },
   "execution_mode": "next_open_delivery_capped",
-  "historical_pit_note": "Experiments A\u2013E use genuine point-in-time historical event/promoter/sector/macro proxies (ne_*, inst_*, rel_*, ms_*) reconstructed into the 17 Phase 5 features without fabricating historical news articles. Live RSS/Gemini extraction accumulates forward-only in structured_events.parquet.",
+  "historical_pit_note": "Experiments A\u2013E use genuine point-in-time historical event/promoter/sector/macro proxies (ne_*, inst_*, rel_*, ms_*) reconstructed into the 17 Phase 5 features without fabricating historical news articles. 5D and 10D models are trained directly on target_5d_ret and target_10d_ret.",
   "naive_momentum_benchmark": {
     "1D": {
       "roc_auc": 0.4829,
@@ -26,15 +27,15 @@
       "expectancy_bps": 2.55
     },
     "5D": {
-      "roc_auc": 0.492,
-      "directional_accuracy_pct": 56.13,
-      "brier_score": 0.2476,
+      "roc_auc": 0.4833,
+      "directional_accuracy_pct": 55.47,
+      "brier_score": 0.2479,
       "rank_ic": 0.0
     },
     "10D": {
-      "roc_auc": 0.5,
-      "directional_accuracy_pct": 50.0,
-      "brier_score": 0.25,
+      "roc_auc": 0.4732,
+      "directional_accuracy_pct": 60.52,
+      "brier_score": 0.2417,
       "rank_ic": 0.0
     }
   },
@@ -55,16 +56,16 @@
         "active_trades": 16
       },
       "5D": {
-        "roc_auc": 0.4599,
-        "directional_accuracy_pct": 57.7,
-        "brier_score": 0.2488,
-        "rank_ic": -0.0675
+        "roc_auc": 0.4466,
+        "directional_accuracy_pct": 50.45,
+        "brier_score": 0.2642,
+        "rank_ic": -0.0693
       },
       "10D": {
-        "roc_auc": 0.5,
-        "directional_accuracy_pct": 50.0,
-        "brier_score": 0.25,
-        "rank_ic": 0.0
+        "roc_auc": 0.4218,
+        "directional_accuracy_pct": 52.19,
+        "brier_score": 0.2695,
+        "rank_ic": -0.1598
       }
     },
     "B_quant_plus_company_news": {
@@ -83,16 +84,16 @@
         "active_trades": 16
       },
       "5D": {
-        "roc_auc": 0.4599,
-        "directional_accuracy_pct": 57.7,
-        "brier_score": 0.2488,
-        "rank_ic": -0.0675
+        "roc_auc": 0.4466,
+        "directional_accuracy_pct": 50.45,
+        "brier_score": 0.2642,
+        "rank_ic": -0.0693
       },
       "10D": {
-        "roc_auc": 0.5,
-        "directional_accuracy_pct": 50.0,
-        "brier_score": 0.25,
-        "rank_ic": 0.0
+        "roc_auc": 0.4218,
+        "directional_accuracy_pct": 52.19,
+        "brier_score": 0.2695,
+        "rank_ic": -0.1598
       }
     },
     "C_quant_plus_company_promoter": {
@@ -111,16 +112,16 @@
         "active_trades": 16
       },
       "5D": {
-        "roc_auc": 0.4599,
-        "directional_accuracy_pct": 57.7,
-        "brier_score": 0.2488,
-        "rank_ic": -0.0675
+        "roc_auc": 0.4456,
+        "directional_accuracy_pct": 50.45,
+        "brier_score": 0.2641,
+        "rank_ic": -0.0714
       },
       "10D": {
-        "roc_auc": 0.5,
-        "directional_accuracy_pct": 50.0,
-        "brier_score": 0.25,
-        "rank_ic": 0.0
+        "roc_auc": 0.4272,
+        "directional_accuracy_pct": 52.19,
+        "brier_score": 0.2689,
+        "rank_ic": -0.1517
       }
     },
     "D_quant_plus_ind_competitor": {
@@ -139,16 +140,16 @@
         "active_trades": 16
       },
       "5D": {
-        "roc_auc": 0.4599,
-        "directional_accuracy_pct": 57.7,
-        "brier_score": 0.2488,
-        "rank_ic": -0.0675
+        "roc_auc": 0.4456,
+        "directional_accuracy_pct": 50.45,
+        "brier_score": 0.2641,
+        "rank_ic": -0.0714
       },
       "10D": {
-        "roc_auc": 0.5,
-        "directional_accuracy_pct": 50.0,
-        "brier_score": 0.25,
-        "rank_ic": 0.0
+        "roc_auc": 0.4272,
+        "directional_accuracy_pct": 52.19,
+        "brier_score": 0.2689,
+        "rank_ic": -0.1517
       }
     },
     "E_quant_plus_all_news_cross": {
@@ -167,16 +168,16 @@
         "active_trades": 17
       },
       "5D": {
-        "roc_auc": 0.4562,
-        "directional_accuracy_pct": 55.72,
-        "brier_score": 0.2497,
-        "rank_ic": -0.0974
+        "roc_auc": 0.4502,
+        "directional_accuracy_pct": 49.22,
+        "brier_score": 0.2645,
+        "rank_ic": -0.0678
       },
       "10D": {
-        "roc_auc": 0.5,
-        "directional_accuracy_pct": 50.0,
-        "brier_score": 0.25,
-        "rank_ic": 0.0
+        "roc_auc": 0.4315,
+        "directional_accuracy_pct": 52.1,
+        "brier_score": 0.2687,
+        "rank_ic": -0.1442
       }
     }
   }
