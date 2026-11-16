@@ -1,5 +1,5 @@
 {
-  "count": 26,
+  "count": 28,
   "items": [
     {
       "symbol": "BAJFINANCE",
@@ -162,6 +162,26 @@
       "rsi_14": 70.24
     },
     {
+      "symbol": "BIRLACABLE",
+      "name": "Birla Cable Ltd",
+      "sector": "Telecommunication",
+      "current_price": 325.25,
+      "day_change_pct": 0.76,
+      "action": "STRONG BUY",
+      "conviction_score": 74.5,
+      "fundamental_score": 77.6,
+      "technical_score": 62.0,
+      "entry_zone": "\u20b9320.4 \u2013 \u20b9328.2",
+      "target_1": 351.51,
+      "stop_loss": 307.75,
+      "risk_reward": 1.5,
+      "cash_in_hand_cr": 121.0,
+      "rd_pct": 1.0,
+      "promoters_pct": 66.35,
+      "inst_pct": 0.93,
+      "rsi_14": 46.79
+    },
+    {
       "symbol": "ITC",
       "name": "ITC Ltd",
       "sector": "Fast Moving Consumer Goods",
@@ -171,15 +191,15 @@
       "conviction_score": 72.5,
       "fundamental_score": 70.8,
       "technical_score": 79.0,
-      "entry_zone": "\u20b9283.4 \u2013 \u20b9285.9",
-      "target_1": 293.57,
-      "stop_loss": 279.29,
+      "entry_zone": "\u20b9283.5 \u2013 \u20b9285.9",
+      "target_1": 293.13,
+      "stop_loss": 279.58,
       "risk_reward": 1.5,
       "cash_in_hand_cr": 34148.0,
       "rd_pct": 0.38,
       "promoters_pct": 0.0,
       "inst_pct": 83.03,
-      "rsi_14": 66.47
+      "rsi_14": 66.13
     },
     {
       "symbol": "CIPLA",
@@ -200,6 +220,26 @@
       "promoters_pct": 29.2,
       "inst_pct": 54.85,
       "rsi_14": 54.92
+    },
+    {
+      "symbol": "TATAELXSI",
+      "name": "Tata Elxsi Ltd",
+      "sector": "Information Technology",
+      "current_price": 3835.0,
+      "day_change_pct": -0.7,
+      "action": "BUY",
+      "conviction_score": 71.7,
+      "fundamental_score": 74.6,
+      "technical_score": 60.0,
+      "entry_zone": "\u20b93,792.9 \u2013 \u20b93,845.5",
+      "target_1": 3961.37,
+      "stop_loss": 3734.96,
+      "risk_reward": 1.26,
+      "cash_in_hand_cr": 133.0,
+      "rd_pct": 1.0,
+      "promoters_pct": 43.89,
+      "inst_pct": 17.98,
+      "rsi_14": 59.78
     },
     {
       "symbol": "PERSISTENT",
@@ -342,6 +382,26 @@
       "rsi_14": 78.72
     },
     {
+      "symbol": "TCS",
+      "name": "Tata Consultancy Services Ltd",
+      "sector": "Information Technology",
+      "current_price": 2407.5,
+      "day_change_pct": -1.43,
+      "action": "BUY",
+      "conviction_score": 67.8,
+      "fundamental_score": 71.0,
+      "technical_score": 55.0,
+      "entry_zone": "\u20b92,382.2 \u2013 \u20b92,413.8",
+      "target_1": 2483.26,
+      "stop_loss": 2347.53,
+      "risk_reward": 1.26,
+      "cash_in_hand_cr": 54898.0,
+      "rd_pct": 1.15,
+      "promoters_pct": 71.77,
+      "inst_pct": 22.58,
+      "rsi_14": 49.63
+    },
+    {
       "symbol": "LT",
       "name": "Larsen & Toubro Ltd",
       "sector": "Industrials",
@@ -360,26 +420,6 @@
       "promoters_pct": 0.0,
       "inst_pct": 62.07,
       "rsi_14": 70.24
-    },
-    {
-      "symbol": "TCS",
-      "name": "Tata Consultancy Services Ltd",
-      "sector": "Information Technology",
-      "current_price": 2407.5,
-      "day_change_pct": -1.43,
-      "action": "BUY",
-      "conviction_score": 65.8,
-      "fundamental_score": 71.0,
-      "technical_score": 45.0,
-      "entry_zone": "\u20b92,380.7 \u2013 \u20b92,414.2",
-      "target_1": 2487.78,
-      "stop_loss": 2343.95,
-      "risk_reward": 1.26,
-      "cash_in_hand_cr": 54898.0,
-      "rd_pct": 1.15,
-      "promoters_pct": 71.77,
-      "inst_pct": 22.58,
-      "rsi_14": 50.7
     },
     {
       "symbol": "COALINDIA",

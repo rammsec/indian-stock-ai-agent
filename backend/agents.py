@@ -739,6 +739,12 @@ def run_full_stock_research(
         overview, cash_bs, shp, rd, tech, committee, llm_config=llm_config
     )
 
+    from .intel_engine import build_promoter_and_competitor_intel
+
+    prom_comp_intel = build_promoter_and_competitor_intel(
+        overview.symbol, overview, shp
+    )
+
     return StockResearchBundle(
         fetched_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S IST"),
         overview=overview,
@@ -750,5 +756,6 @@ def run_full_stock_research(
         technicals=tech,
         agent_committee=committee,
         next_day_guidance=guidance,
+        promoter_and_competitor_intel=prom_comp_intel,
         news=news,
     )

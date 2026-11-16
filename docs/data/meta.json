@@ -1,6 +1,13 @@
 {
-  "updated_at": "2026-11-16 01:40:40 IST",
-  "stock_count": 26,
+  "updated_at": "2026-11-16 02:35:24 IST",
+  "stock_count": 28,
+  "default_watchlist_5": [
+    "RELIANCE",
+    "TCS",
+    "TATAELXSI",
+    "ITC",
+    "BIRLACABLE"
+  ],
   "symbols": [
     "RELIANCE",
     "TCS",
@@ -27,6 +34,8 @@
     "AXISBANK",
     "TITAN",
     "TATAPOWER",
-    "COALINDIA"
+    "COALINDIA",
+    "TATAELXSI",
+    "BIRLACABLE"
   ]
 }

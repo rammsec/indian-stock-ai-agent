@@ -216,6 +216,66 @@ class NewsHeadline(BaseModel):
     sentiment: Literal["POSITIVE", "NEUTRAL", "NEGATIVE"] = "NEUTRAL"
 
 
+class LeaderProfile(BaseModel):
+    name: str
+    role: str
+    focus: str
+    handle_or_source: str = ""
+
+
+class PromoterStatementItem(BaseModel):
+    speaker_or_source: str
+    published: str
+    headline: str
+    url: str = ""
+    share_price_impact: Literal["BULLISH", "BEARISH", "NEUTRAL"] = "NEUTRAL"
+    why_it_affects_share_value: str = ""
+
+
+class CompetitorIntelItem(BaseModel):
+    symbol: str
+    name: str
+    segment: str = ""
+    current_price: float = 0.0
+    day_change_pct: float = 0.0
+    return_1m_pct: float = 0.0
+    pe: float | None = None
+    roe_pct: float | None = None
+    latest_statement_or_news: str = ""
+    latest_news_url: str = ""
+    read_across_signal: Literal["POSITIVE READ-ACROSS", "COMPETITIVE THREAT", "NEUTRAL"] = "NEUTRAL"
+    impact_on_share_value: str = ""
+
+
+class PromoterAndCompetitorIntel(BaseModel):
+    promoter_group: str = ""
+    key_leaders: list[LeaderProfile] = Field(default_factory=list)
+    key_stakeholders_watch: list[str] = Field(default_factory=list)
+    promoter_statements_and_articles: list[PromoterStatementItem] = Field(default_factory=list)
+    competitors: list[CompetitorIntelItem] = Field(default_factory=list)
+
+
+class TopMoverItem(BaseModel):
+    rank: int
+    symbol: str
+    name: str
+    sector: str
+    current_price: float
+    prev_close: float
+    day_change_pct: float
+    return_5d_pct: float = 0.0
+    volume_surge_ratio: float = 1.0
+    rsi_14: float = 50.0
+    reason_1: str
+    reason_2: str
+    headline_title: str = ""
+    headline_source: str = ""
+    headline_url: str = ""
+    next_day_verdict: str = "HOLD / WATCH"
+    next_day_target: float = 0.0
+    next_day_stop_loss: float = 0.0
+
+
 class CompanyOverview(BaseModel):
     symbol: str
     name: str
@@ -253,4 +313,7 @@ class StockResearchBundle(BaseModel):
     technicals: TechnicalSnapshot
     agent_committee: list[AgentVerdict]
     next_day_guidance: NextDayGuidance
+    promoter_and_competitor_intel: PromoterAndCompetitorIntel = Field(
+        default_factory=PromoterAndCompetitorIntel
+    )
     news: list[NewsHeadline] = Field(default_factory=list)

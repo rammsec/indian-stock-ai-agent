@@ -13,17 +13,18 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from .agents import run_full_stock_research
-from .config import DEFAULT_NSE_UNIVERSE
+from .config import DEFAULT_WATCHLIST_5
 from .data_engine import search_indian_stocks
+from .intel_engine import fetch_top_20_gainers_and_losers
 
 app = FastAPI(
     title="BharatAlpha AI — Indian Market Research & Next-Day Trading Agent",
     description=(
         "Multi-Agent Indian Stock Market (NSE/BSE) Research Engine analyzing "
-        "Last 5 Annual & Quarterly Reports, Cash in Hand, Stockholders (Promoter/FII/DII), "
-        "R&D Intensity, and Next-Day Technical Buy/Sell Triggers."
+        "Last 5 Annual & Quarterly Reports, Cash in Hand, Stockholders, R&D Intensity, "
+        "Promoter/Competitor Intelligence, and Yesterday's Top 20 Gainers & Losers."
     ),
-    version="2.0.0",
+    version="3.0.0",
 )
 
 app.add_middleware(
@@ -51,13 +52,21 @@ def health_check() -> dict[str, str]:
 
 @app.get("/api/universe")
 def get_universe() -> dict[str, Any]:
-    return {"universe": DEFAULT_NSE_UNIVERSE}
+    return {"universe": DEFAULT_WATCHLIST_5}
 
 
 @app.get("/api/search")
 def api_search_stocks(q: str = Query("", description="Stock symbol or company name")) -> dict[str, Any]:
     results = search_indian_stocks(q)
     return {"query": q, "results": results[:15]}
+
+
+@app.get("/api/movers")
+def api_get_top_20_movers() -> dict[str, Any]:
+    try:
+        return fetch_top_20_gainers_and_losers()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Movers error: {exc}") from exc
 
 
 @app.get("/api/research/{symbol}")
@@ -91,11 +100,11 @@ def api_post_research(symbol: str, req: LLMResearchRequest) -> dict[str, Any]:
 @app.get("/api/scanner")
 def api_market_scanner(
     symbols: str = Query(
-        "RELIANCE,TCS,SUNPHARMA,HDFCBANK,INFY,BEL,DRREDDY,ICICIBANK,LT,ITC",
+        "RELIANCE,TCS,TATAELXSI,ITC,BIRLACABLE",
         description="Comma-separated NSE symbols to scan for next-day signals",
     )
 ) -> dict[str, Any]:
-    sym_list = [s.strip().upper() for s in symbols.split(",") if s.strip()][:12]
+    sym_list = [s.strip().upper() for s in symbols.split(",") if s.strip()][:10]
 
     def _scan_one(sym: str) -> dict[str, Any] | None:
         try:
@@ -123,7 +132,7 @@ def api_market_scanner(
         except Exception:
             return None
 
-    with ThreadPoolExecutor(max_workers=6) as pool:
+    with ThreadPoolExecutor(max_workers=5) as pool:
         results = [r for r in pool.map(_scan_one, sym_list) if r is not None]
 
     results.sort(key=lambda x: x["conviction_score"], reverse=True)

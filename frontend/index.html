@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BharatAlpha AI — Indian Market Research & Next-Day Buy/Sell Agent</title>
-  <meta name="description" content="AI-powered Indian Stock Market (NSE/BSE) research agent analyzing last 5 reports, performance, Promoter/FII/DII stockholders, R&D spend, cash in hand, and next-day buy/sell trade setups." />
+  <title>BharatAlpha AI — Indian Market Deep Research, Promoter/Competitor Intel &amp; Top 20 Movers</title>
+  <meta name="description" content="AI-powered Indian Stock Market (NSE/BSE) research agent analyzing last 5 reports, Cash in Hand, R&D, Stockholders, Promoter/Competitor Statements, and Yesterday's Top 20 Gainers & Losers." />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
@@ -19,444 +19,556 @@
           BharatAlpha AI
           <span class="market-tag">NSE • BSE</span>
         </h1>
-        <p class="brand-subtitle">Multi-Agent Fundamental (5-Report, Cash, R&amp;D, Stockholders) &amp; Next-Day Trade Engine</p>
+        <p class="brand-subtitle">Focused 10-Company Deep Research, Promoter &amp; Competitor Intelligence + Top 20 Daily Movers</p>
       </div>
     </div>
 
-    <div class="search-bar-wrap">
-      <div class="search-input-group">
-        <span class="mono" style="color: var(--text-muted); font-size: 0.8rem;">NSE:</span>
-        <input
-          id="stock-search-input"
-          type="text"
-          class="search-input"
-          placeholder="Search any Indian stock (e.g. RELIANCE, SUNPHARMA, TCS, BEL, HAL)..."
-          autocomplete="off"
-        />
-        <button id="btn-run-research" class="btn btn-primary" style="padding: 0.3rem 0.7rem; font-size: 0.76rem;">
-          Analyze
-        </button>
-      </div>
-      <div id="search-dropdown" class="search-dropdown"></div>
-    </div>
+    <!-- Primary Page Switcher -->
+    <nav class="main-page-nav" aria-label="Main Views">
+      <button class="page-nav-btn active" data-page="page-company">
+        🏢 My Companies Deep Research
+      </button>
+      <button class="page-nav-btn" data-page="page-gainers">
+        📈 Yesterday's Top 20 Gainers
+      </button>
+      <button class="page-nav-btn" data-page="page-losers">
+        📉 Yesterday's Top 20 Losers
+      </button>
+    </nav>
 
     <div class="topbar-actions">
-      <button id="btn-open-scanner" class="btn" title="Scan Nifty universe for Next-Day Buy/Sell signals">
-        <span>⚡ Next-Day Scanner</span>
+      <button id="btn-toggle-all-sections" class="btn" title="Expand or Collapse all research sections">
+        <span>↕ Collapse All Sections</span>
       </button>
       <button id="btn-open-llm-modal" class="btn" title="Configure Gemini, OpenAI, Anthropic, or Ollama API Key">
-        <span id="llm-status-badge">🧠 Engine: Quant + LLM</span>
+        <span id="llm-status-badge">🧠 Engine: Quant Committee</span>
       </button>
     </div>
   </header>
 
-  <!-- Quick NSE Ticker Ribbon -->
-  <nav id="ticker-ribbon" class="ticker-ribbon" aria-label="Quick NSE Tickers">
-    <span class="ticker-label">NSE Watchlist:</span>
-  </nav>
+  <!-- Top Company Selector Bar + Direct "+ Add Stock (Up to 10)" Feature -->
+  <section id="company-selector-bar" class="company-selector-bar" aria-label="My Watchlist Company Selector">
+    <div class="watchlist-chips-area">
+      <span id="watchlist-count-label" class="watchlist-counter">My Portfolio (5/10):</span>
+      <div id="watchlist-chips-container" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;"></div>
+      <button id="btn-reset-watchlist" class="btn" style="padding: 0.32rem 0.65rem; font-size: 0.74rem; color: var(--text-muted);" title="Reset back to the core 5 stocks">
+        Reset Default 5
+      </button>
+    </div>
+
+    <div class="add-stock-wrap">
+      <div class="add-input-box">
+        <span class="mono" style="color: var(--text-muted); font-size: 0.78rem;">+ ADD:</span>
+        <input
+          id="stock-search-input"
+          type="text"
+          class="add-stock-input"
+          placeholder="Add NSE stock (max 10, e.g. BEL, SUNPHARMA, KPITTECH)..."
+          autocomplete="off"
+        />
+      </div>
+      <button id="btn-add-stock" class="btn btn-primary" style="padding: 0.45rem 0.85rem; white-space: nowrap;">
+        + Add Stock
+      </button>
+      <div id="search-dropdown" class="search-dropdown"></div>
+    </div>
+  </section>
 
   <!-- Main Workspace -->
   <main class="workspace">
-    <!-- Hero Row: Company Overview + Next-Day Buy/Sell Execution Ticket -->
-    <section class="hero-grid">
-      <!-- Left: Company Overview & Executive Summary -->
-      <div class="panel">
-        <div class="company-header-top">
-          <div class="company-title-area">
-            <h2 id="ov-company-name">Loading NSE Research...</h2>
-            <div class="company-meta-row">
-              <span id="ov-symbol-badge" class="badge-neutral mono">NSE: ---</span>
-              <span id="ov-sector-badge" class="badge-neutral">Sector: ---</span>
-              <span id="ov-piotroski-badge" class="badge-neutral mono">Piotroski F-Score: -/9</span>
-              <span id="ov-timestamp" style="font-size: 0.72rem; color: var(--text-muted);"></span>
-            </div>
-          </div>
-          <div class="price-block">
-            <div id="ov-current-price" class="current-price">₹0.00</div>
-            <div id="ov-day-change" class="price-change">0.00%</div>
-          </div>
-        </div>
 
-        <div class="kpi-strip">
-          <div class="kpi-box">
-            <span class="kpi-label">Market Cap</span>
-            <span id="kpi-mcap" class="kpi-value">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Cash &amp; Liquid Inv.</span>
-            <span id="kpi-cash" class="kpi-value text-bull">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Total Borrowings</span>
-            <span id="kpi-debt" class="kpi-value">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Latest R&amp;D Spend</span>
-            <span id="kpi-rd" class="kpi-value">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">ROE / ROCE</span>
-            <span id="kpi-roe-roce" class="kpi-value">0% / 0%</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Stock P/E</span>
-            <span id="kpi-pe" class="kpi-value">0.0x</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Promoter / Inst. %</span>
-            <span id="kpi-ownership" class="kpi-value">0% / 0%</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">5Y Profit CAGR</span>
-            <span id="kpi-profit-cagr" class="kpi-value">0.0%</span>
-          </div>
-        </div>
+    <!-- ======================================================================
+         PAGE 1: MY COMPANIES DEEP RESEARCH (All Expandable / Collapsible Sections)
+         ====================================================================== -->
+    <div id="page-company" class="page-view active">
 
-        <div class="exec-summary-box">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
-            <strong style="color: var(--text-primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;">
-              AI Chief Investment Officer — Next-Day Thesis
-            </strong>
-            <span id="ov-model-used" class="mono" style="font-size: 0.7rem; color: var(--text-muted);"></span>
-          </div>
-          <p id="ov-exec-summary">Fetching live financial statements, shareholding disclosures, and price action...</p>
-        </div>
-      </div>
-
-      <!-- Right: Next-Day Buy / Sell Execution Ticket -->
-      <div class="panel guidance-card">
-        <div>
-          <div class="guidance-header">
+      <!-- SECTION 1: Executive Overview & Next-Day Buy/Sell Trade Guidance -->
+      <section class="collapsible-section open" id="sec-overview">
+        <div class="collapsible-header" data-toggle="sec-overview">
+          <div class="header-left">
+            <span class="sec-num">01</span>
             <div>
-              <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
-                Next-Day Trading Guidance
-              </span>
-              <div id="gd-action-banner" class="signal-banner bull">BUY</div>
-            </div>
-            <div class="conviction-meter">
-              <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">AI Conviction</span>
-              <span id="gd-conviction-score" class="conviction-score-num">0.0 / 100</span>
+              <h2 class="sec-heading-title">Company Overview &amp; Next-Day Buy / Sell Execution Ticket</h2>
+              <p class="sec-heading-sub">Live Valuation, Key Ratios, AI Chief Investment Officer Thesis &amp; Tomorrow's Entry / Target / Stop-Loss</p>
             </div>
           </div>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="hero-grid">
+            <!-- Left: Company Overview & Executive Summary -->
+            <div class="sub-panel">
+              <div class="company-header-top">
+                <div class="company-title-area">
+                  <h2 id="ov-company-name">Loading NSE Research...</h2>
+                  <div class="company-meta-row">
+                    <span id="ov-symbol-badge" class="badge-neutral mono">NSE: ---</span>
+                    <span id="ov-sector-badge" class="badge-neutral">Sector: ---</span>
+                    <span id="ov-piotroski-badge" class="badge-neutral mono">Piotroski F-Score: -/9</span>
+                    <span id="ov-timestamp" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div id="ov-current-price" class="current-price">₹0.00</div>
+                  <div id="ov-day-change" class="price-change">0.00%</div>
+                </div>
+              </div>
 
-          <div class="trade-levels-grid">
-            <div class="level-cell">
-              <div class="level-title">Next-Day Entry Zone</div>
-              <div id="gd-entry-zone" class="level-price">₹0.00 – ₹0.00</div>
+              <div class="kpi-strip">
+                <div class="kpi-box">
+                  <span class="kpi-label">Market Cap</span>
+                  <span id="kpi-mcap" class="kpi-value">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Cash in Hand</span>
+                  <span id="kpi-cash" class="kpi-value text-bull">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Total Borrowings</span>
+                  <span id="kpi-debt" class="kpi-value">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Annual R&amp;D Spend</span>
+                  <span id="kpi-rd" class="kpi-value">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">ROE / ROCE</span>
+                  <span id="kpi-roe-roce" class="kpi-value">0% / 0%</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Stock P/E</span>
+                  <span id="kpi-pe" class="kpi-value">0.0x</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Promoter / Inst. %</span>
+                  <span id="kpi-ownership" class="kpi-value">0% / 0%</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">5Y Profit CAGR</span>
+                  <span id="kpi-profit-cagr" class="kpi-value">0.0%</span>
+                </div>
+              </div>
+
+              <div class="exec-summary-box">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                  <strong style="color: var(--text-primary); font-size: 0.84rem; text-transform: uppercase; letter-spacing: 0.04em;">
+                    AI Chief Investment Officer — Next-Day Thesis
+                  </strong>
+                  <span id="ov-model-used" class="mono" style="font-size: 0.74rem; color: var(--text-muted);"></span>
+                </div>
+                <p id="ov-exec-summary">Loading deep 5-report financial statements, cash in hand, shareholding, R&amp;D, and promoter/competitor intelligence...</p>
+              </div>
             </div>
-            <div class="level-cell">
-              <div class="level-title">Strict Stop-Loss (SL)</div>
-              <div id="gd-stop-loss" class="level-price text-bear">₹0.00</div>
-            </div>
-            <div class="level-cell">
-              <div class="level-title">Next-Day Target 1 (T1)</div>
-              <div id="gd-target-1" class="level-price text-bull">₹0.00</div>
-            </div>
-            <div class="level-cell">
-              <div class="level-title">Swing Target 2 (T2)</div>
-              <div id="gd-target-2" class="level-price text-bull">₹0.00</div>
+
+            <!-- Right: Next-Day Buy / Sell Execution Ticket -->
+            <div class="sub-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.9rem; border-bottom: 1px solid var(--border-subtle);">
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.3rem;">
+                      Tomorrow's Action Signal
+                    </span>
+                    <div id="gd-action-banner" class="signal-banner bull">BUY</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Composite AI Conviction</span>
+                    <span id="gd-conviction-score" class="mono" style="font-size: 1.45rem; font-weight: 800;">0.0 / 100</span>
+                  </div>
+                </div>
+
+                <div class="trade-levels-grid">
+                  <div class="level-cell">
+                    <div class="level-title">Next-Day Entry Zone</div>
+                    <div id="gd-entry-zone" class="level-price">₹0.00 – ₹0.00</div>
+                  </div>
+                  <div class="level-cell">
+                    <div class="level-title">Strict Stop-Loss (SL)</div>
+                    <div id="gd-stop-loss" class="level-price text-bear">₹0.00</div>
+                  </div>
+                  <div class="level-cell">
+                    <div class="level-title">Next-Day Target 1 (T1)</div>
+                    <div id="gd-target-1" class="level-price text-bull">₹0.00</div>
+                  </div>
+                  <div class="level-cell">
+                    <div class="level-title">Swing Target 2 (T2)</div>
+                    <div id="gd-target-2" class="level-price text-bull">₹0.00</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="score-bars-row">
+                <div class="score-bar-item">
+                  <span style="width: 160px; color: var(--text-secondary);">Fundamental Quality (80%)</span>
+                  <div class="progress-track">
+                    <div id="bar-fund-score" class="progress-fill" style="width: 0%; background: var(--signal-bull);"></div>
+                  </div>
+                  <span id="txt-fund-score" class="mono" style="width: 54px; text-align: right;">0/100</span>
+                </div>
+                <div class="score-bar-item">
+                  <span style="width: 160px; color: var(--text-secondary);">Next-Day Technical (20%)</span>
+                  <div class="progress-track">
+                    <div id="bar-tech-score" class="progress-fill" style="width: 0%; background: var(--accent-brand);"></div>
+                  </div>
+                  <span id="txt-tech-score" class="mono" style="width: 54px; text-align: right;">0/100</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); padding-top: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+                  <span>Risk : Reward: <strong id="gd-rr" class="mono" style="color: var(--text-primary);">1 : 0.0</strong></span>
+                  <span>Allocation: <strong id="gd-pos-size" class="mono" style="color: var(--text-primary);">0%</strong></span>
+                  <span>ATR(14) Range: <strong id="gd-atr-range" class="mono" style="color: var(--text-primary);">₹0</strong></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="score-bars-row">
-          <div class="score-bar-item">
-            <span style="width: 145px; color: var(--text-secondary);">Fundamental Quality (80%)</span>
-            <div class="progress-track">
-              <div id="bar-fund-score" class="progress-fill" style="width: 0%; background: var(--signal-bull);"></div>
-            </div>
-            <span id="txt-fund-score" class="mono" style="width: 48px; text-align: right;">0/100</span>
-          </div>
-          <div class="score-bar-item">
-            <span style="width: 145px; color: var(--text-secondary);">Next-Day Technical (20%)</span>
-            <div class="progress-track">
-              <div id="bar-tech-score" class="progress-fill" style="width: 0%; background: var(--accent-brand);"></div>
-            </div>
-            <span id="txt-tech-score" class="mono" style="width: 48px; text-align: right;">0/100</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); padding-top: 0.35rem;">
-            <span>Risk : Reward Ratio: <strong id="gd-rr" class="mono" style="color: var(--text-primary);">1 : 0.0</strong></span>
-            <span>Suggested Allocation: <strong id="gd-pos-size" class="mono" style="color: var(--text-primary);">0%</strong></span>
-            <span>ATR(14) Range: <strong id="gd-atr-range" class="mono" style="color: var(--text-primary);">₹0</strong></span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Research Pillar Navigation Tabs -->
-    <nav class="research-tabs" aria-label="Research Modules">
-      <button class="tab-btn active" data-tab="tab-committee">1. AI Agent Committee &amp; Next-Day Setup</button>
-      <button class="tab-btn" data-tab="tab-reports">2. Last 5 Reports (Annual &amp; Quarterly)</button>
-      <button class="tab-btn" data-tab="tab-cash">3. Cash in Hand, Debt &amp; Cash Flows</button>
-      <button class="tab-btn" data-tab="tab-stockholders">4. Stockholders (Promoter / FII / DII)</button>
-      <button class="tab-btn" data-tab="tab-rd">5. R&amp;D Spend &amp; Annual Report Filings</button>
-      <button class="tab-btn" data-tab="tab-scanner">6. Multi-Stock Next-Day NSE Scanner</button>
-    </nav>
-
-    <!-- TAB 1: AI Agent Committee + Price/DMA Technical Chart -->
-    <section id="tab-committee" class="tab-pane active">
-      <div class="agents-grid" id="agents-committee-grid"></div>
-
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 2: 5-Agent Committee & Technical Price/DMA Chart -->
+      <section class="collapsible-section open" id="sec-committee">
+        <div class="collapsible-header" data-toggle="sec-committee">
+          <div class="header-left">
+            <span class="sec-num">02</span>
             <div>
-              <h3 class="section-title">Daily Price Action, 50-DMA, 200-DMA &amp; Next-Day Levels</h3>
-              <p id="chart-regime-sub" class="section-sub">180-Trading-Day NSE Trend &amp; Support/Resistance Channels</p>
+              <h2 class="sec-heading-title">5-Agent Investment Committee Verdicts &amp; Technical Setup</h2>
+              <p class="sec-heading-sub">Individual Agent Scores (5-Report, Cash, Stockholders, R&amp;D, Technicals) + 180-Day Price / 50-DMA / 200-DMA Chart</p>
             </div>
-            <span id="rsi-badge" class="badge-neutral mono">RSI(14): --</span>
           </div>
-          <div class="canvas-container">
-            <canvas id="price-dma-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="agents-grid" id="agents-committee-grid"></div>
+
+          <div class="two-col-grid">
+            <div class="sub-panel">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700;">Daily Price Action, 50-DMA, 200-DMA &amp; Next-Day Targets</h3>
+                  <p id="chart-regime-sub" style="font-size: 0.8rem; color: var(--text-muted);">Trend &amp; Support/Resistance Channels</p>
+                </div>
+                <span id="rsi-badge" class="badge-neutral mono">RSI(14): --</span>
+              </div>
+              <div class="canvas-container">
+                <canvas id="price-dma-canvas"></canvas>
+              </div>
+            </div>
+
+            <div class="sub-panel">
+              <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Key Bullish Catalysts, Downside Risks &amp; Live Headlines</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem;">
+                  <strong class="text-bull" style="font-size: 0.78rem; text-transform: uppercase;">Bullish Catalysts</strong>
+                  <ul id="list-catalysts" class="agent-reasons" style="margin-top: 0.5rem;"></ul>
+                </div>
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem;">
+                  <strong class="text-bear" style="font-size: 0.78rem; text-transform: uppercase;">Key Risks &amp; Stop-Loss</strong>
+                  <ul id="list-risks" class="agent-reasons" style="margin-top: 0.5rem;"></ul>
+                </div>
+              </div>
+              <div>
+                <strong style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Recent NSE / BSE News Wire</strong>
+                <div id="news-feed-list" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.45rem; max-height: 155px; overflow-y: auto;"></div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 3: Last 5 Annual Reports & Last 5 Quarterly Reports -->
+      <section class="collapsible-section open" id="sec-reports">
+        <div class="collapsible-header" data-toggle="sec-reports">
+          <div class="header-left">
+            <span class="sec-num">03</span>
             <div>
-              <h3 class="section-title">Catalysts, Risks &amp; Live Indian Market News</h3>
-              <p class="section-sub">Key Drivers for Tomorrow's Trading Session</p>
+              <h2 class="sec-heading-title">Last 5 Financial Reports — Annual &amp; Quarterly Performance</h2>
+              <p class="sec-heading-sub">5-Year Annual P&amp;L Statement + Last 5 Quarterly Interim Reports (Sales, OPM %, Net Profit, EPS &amp; Growth)</p>
             </div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
-            <div style="background: var(--bg-canvas); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-              <strong class="text-bull" style="font-size: 0.76rem; text-transform: uppercase;">Bullish Catalysts</strong>
-              <ul id="list-catalysts" class="agent-reasons" style="margin-top: 0.45rem;"></ul>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">5-Year Annual Revenue vs. Net Profit (₹ Cr)</h3>
+              <div class="canvas-container">
+                <canvas id="reports-bar-canvas"></canvas>
+              </div>
             </div>
-            <div style="background: var(--bg-canvas); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-              <strong class="text-bear" style="font-size: 0.76rem; text-transform: uppercase;">Key Risks &amp; Invalidation</strong>
-              <ul id="list-risks" class="agent-reasons" style="margin-top: 0.45rem;"></ul>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Last 5 Quarterly Reports — Revenue vs. Net Profit (₹ Cr)</h3>
+              <div class="canvas-container">
+                <canvas id="quarterly-bar-canvas"></canvas>
+              </div>
             </div>
           </div>
-          <div>
-            <strong style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Live NSE/BSE Headlines (Google News India)</strong>
-            <div id="news-feed-list" style="display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.45rem; max-height: 150px; overflow-y: auto;"></div>
+
+          <div class="sub-panel" style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Last 5 Annual Reports — Consolidated Profit &amp; Loss (₹ Crores)</h3>
+            <div class="table-wrap">
+              <table id="table-annual-5" class="fin-table mono"></table>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Last 5 Quarterly Reports — Sequential Interim Results (₹ Crores)</h3>
+            <div class="table-wrap">
+              <table id="table-quarterly-5" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- TAB 2: Last 5 Annual Reports & Last 5 Quarterly Reports -->
-    <section id="tab-reports" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 4: Cash in Hand, Balance Sheet & Free Cash Flow -->
+      <section class="collapsible-section open" id="sec-cash">
+        <div class="collapsible-header" data-toggle="sec-cash">
+          <div class="header-left">
+            <span class="sec-num">04</span>
             <div>
-              <h3 class="section-title">5-Year Revenue vs. Net Profit Trajectory (₹ Cr)</h3>
-              <p class="section-sub">Consolidated Annual Performance across Last 5 Fiscal Reports</p>
+              <h2 class="sec-heading-title">Cash in Hand, Borrowings &amp; 5-Year Cash Flow Fortress</h2>
+              <p class="sec-heading-sub">Cash Equivalents + Liquid Investments vs. Long/Short-Term Debt, Net Cash &amp; Operating/Free Cash Flows</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="reports-bar-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">5-Year Cash in Hand vs. Total Borrowings (₹ Cr)</h3>
+              <div class="canvas-container">
+                <canvas id="cash-debt-canvas"></canvas>
+              </div>
+            </div>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Balance Sheet Liquidity &amp; Cash Cushion Summary</h3>
+              <div id="cash-summary-cards" class="kpi-strip"></div>
+              <div id="roce-5y-strip" style="margin-top: 0.85rem;"></div>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">5-Year Cash in Hand, Debt Breakdown &amp; Free Cash Flow Statement (₹ Crores)</h3>
+            <div class="table-wrap">
+              <table id="table-cash-5y" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 5: Stockholders & Institutional Ownership -->
+      <section class="collapsible-section open" id="sec-stockholders">
+        <div class="collapsible-header" data-toggle="sec-stockholders">
+          <div class="header-left">
+            <span class="sec-num">05</span>
             <div>
-              <h3 class="section-title">Last 5 Quarterly Reports — Revenue &amp; Net Profit (₹ Cr)</h3>
-              <p class="section-sub">Sequential Earnings Momentum &amp; Margin Progression</p>
+              <h2 class="sec-heading-title">Stockholders Pattern (Promoters, FIIs, DIIs &amp; Named Institutions)</h2>
+              <p class="sec-heading-sub">Quarterly Ownership History + Named Promoter Entities, Foreign Funds, LIC &amp; Domestic Mutual Funds</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="quarterly-bar-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Quarterly Shareholding Trend (Promoters, FIIs, DIIs, Public %)</h3>
+              <div class="canvas-container">
+                <canvas id="shareholding-canvas"></canvas>
+              </div>
+            </div>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Named Institutional &amp; Promoter Stockholders (&gt;1% Stake)</h3>
+              <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
+                <table id="table-named-holders" class="fin-table"></table>
+              </div>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Historical Quarter-by-Quarter Shareholding Pattern &amp; Shareholder Accounts</h3>
+            <div class="table-wrap">
+              <table id="table-shp-history" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Last 5 Annual Reports — Consolidated Profit &amp; Loss Statement (₹ Crores)</h3>
-            <p class="section-sub">Includes YoY Revenue Growth, Operating Profit Margin (OPM %), Net Profit Growth, EPS &amp; Dividend Payout</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-annual-5" class="fin-table mono"></table>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Last 5 Quarterly Reports — Interim Financial Results (₹ Crores)</h3>
-            <p class="section-sub">Sequential Quarterly Revenue, Operating Profit, OPM %, Net Profit &amp; EPS</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-quarterly-5" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 3: Cash in Hand, Borrowings & Cash Flows -->
-    <section id="tab-cash" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 6: R&D Spend & Official Last 5 Annual Report PDFs -->
+      <section class="collapsible-section open" id="sec-rd">
+        <div class="collapsible-header" data-toggle="sec-rd">
+          <div class="header-left">
+            <span class="sec-num">06</span>
             <div>
-              <h3 class="section-title">5-Year Cash in Hand vs. Total Borrowings (₹ Crores)</h3>
-              <p class="section-sub">Cash Equivalents + Liquid Investments compared against Long &amp; Short-Term Debt</p>
+              <h2 class="sec-heading-title">R&amp;D Expenditure, Innovation Moat &amp; Official Annual Report PDFs</h2>
+              <p class="sec-heading-sub">5-Year R&amp;D Spend (₹ Cr &amp; % of Turnover), Intangible Assets, CapEx WIP (CWIP) &amp; Statutory Annual Reports</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="cash-debt-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.3rem;">5-Year R&amp;D Spend (₹ Cr) &amp; R&amp;D Intensity (% of Sales)</h3>
+              <p id="rd-source-subtitle" style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.6rem;"></p>
+              <div class="canvas-container">
+                <canvas id="rd-chart-canvas"></canvas>
+              </div>
+            </div>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Innovation Focus &amp; Official Last 5 Annual Report PDFs (BSE/NSE)</h3>
+              <div id="rd-focus-banner" class="exec-summary-box" style="margin-bottom: 1rem;"></div>
+              <div id="annual-reports-links" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.65rem;"></div>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">5-Year R&amp;D Expenditure, Intangible Assets, CapEx WIP (CWIP) &amp; Knowledge Cost</h3>
+            <div class="table-wrap">
+              <table id="table-rd-5y" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 7 (BOTTOM): Promoters, Stakeholders, Statements/Tweets/Articles & Competitor War-Room -->
+      <section class="collapsible-section open" id="sec-promoters-competitors">
+        <div class="collapsible-header" data-toggle="sec-promoters-competitors">
+          <div class="header-left">
+            <span class="sec-num">07</span>
             <div>
-              <h3 class="section-title">Balance Sheet Liquidity &amp; Cash Cushion Summary</h3>
-              <p class="section-sub">Latest Fiscal Year Breakdown</p>
+              <h2 class="sec-heading-title">Promoters, Key Stakeholders, Recent Statements / Tweets &amp; Competitor War-Room</h2>
+              <p class="sec-heading-sub">Who Controls the Company, What Promoters/CEOs Are Saying in Media &amp; Concalls, and Direct Competitor Read-Across Impact on Share Value</p>
             </div>
           </div>
-          <div id="cash-summary-cards" class="kpi-strip" style="margin-top: 0.5rem;"></div>
-          <div id="roce-5y-strip" style="margin-top: 1rem;"></div>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
         </div>
-      </div>
+        <div class="collapsible-body">
+          <!-- Promoter Group & Leadership Cards -->
+          <div class="sub-panel" style="margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem;">
+              <div>
+                <h3 style="font-size: 1.02rem; font-weight: 700;">Promoter Group, Key Executive Leadership &amp; Strategic Stakeholders</h3>
+                <p id="prom-group-banner" style="font-size: 0.84rem; color: var(--accent-brand); font-weight: 600; margin-top: 0.2rem;"></p>
+              </div>
+            </div>
+            <div id="prom-leaders-grid" class="leader-grid"></div>
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.9rem 1.1rem;">
+              <strong style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em;">
+                Major Institutional &amp; Promoter Stakeholders Watchlist
+              </strong>
+              <ul id="prom-stakeholders-watch" class="agent-reasons" style="margin-top: 0.5rem;"></ul>
+            </div>
+          </div>
 
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">5-Year Cash in Hand, Debt Breakdown &amp; Free Cash Flow Statement (₹ Crores)</h3>
-            <p class="section-sub">Extracted from Balance Sheet, Cash Flow Statement &amp; Schedules (Other Assets / Borrowings)</p>
+          <!-- Two-Column: Promoter/CEO Statements & Articles vs Direct Competitors & Their Statements -->
+          <div class="two-col-grid">
+            <div class="sub-panel">
+              <div style="margin-bottom: 0.9rem;">
+                <h3 style="font-size: 1.02rem; font-weight: 700;">What Promoters, CEO &amp; Stakeholders Are Saying (Statements, Articles &amp; Mentions)</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Live scraped statements, concall commentary &amp; media articles classified by expected Share-Price Impact</p>
+              </div>
+              <div id="prom-statements-list" class="statement-list"></div>
+            </div>
+
+            <div class="sub-panel">
+              <div style="margin-bottom: 0.9rem;">
+                <h3 style="font-size: 1.02rem; font-weight: 700;">Direct Competitors, Their Performance &amp; Statements (Share-Value Read-Across)</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">How rival order wins, pricing wars, or margin guidance directly affect this stock's value tomorrow</p>
+              </div>
+              <div id="competitors-cards-grid" class="competitor-grid"></div>
+            </div>
           </div>
         </div>
-        <div class="table-wrap">
-          <table id="table-cash-5y" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- TAB 4: Stockholders (Promoters, FIIs, DIIs, Public & Named Investors) -->
-    <section id="tab-stockholders" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+    </div>
+
+    <!-- ======================================================================
+         PAGE 2: YESTERDAY'S TOP 20 GAINERS (NSE) + 2 REASONS WHY IT WENT UP
+         ====================================================================== -->
+    <div id="page-gainers" class="page-view">
+      <div class="collapsible-section open">
+        <div class="collapsible-header">
+          <div class="header-left">
+            <span class="sec-num" style="background: var(--signal-bull-bg); color: var(--signal-bull); border-color: var(--signal-bull);">▲20</span>
             <div>
-              <h3 class="section-title">Quarterly Shareholding Trend (Promoters, FIIs, DIIs, Public %)</h3>
-              <p class="section-sub">Institutional Accumulation / Distribution across Recent Quarters</p>
+              <h2 class="sec-heading-title">Yesterday's Top 20 NSE Gainers — Analysis &amp; 2 Reasons Why Each Stock Went Up</h2>
+              <p class="sec-heading-sub">Ranked by Latest Session % Gain across Liquid NSE Universe with Volume Surge, RSI(14), Catalyst Reasons &amp; Next-Day Follow-Through Verdict</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="shareholding-canvas"></canvas>
+          <button id="btn-refresh-gainers" class="btn btn-primary" style="font-size: 0.8rem;">↻ Refresh Live Gainers</button>
+        </div>
+        <div class="collapsible-body">
+          <div class="table-wrap">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Stock / Sector</th>
+                  <th>Close (₹)</th>
+                  <th>1D Gain %</th>
+                  <th>5D Trend</th>
+                  <th>Vol Surge</th>
+                  <th>RSI(14)</th>
+                  <th style="text-align: left;">Why Stock Went Up (Reason 1 &amp; Reason 2 Analysis)</th>
+                  <th>Next-Day Verdict &amp; Levels</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-top-gainers">
+                <tr><td colspan="10" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading Yesterday's Top 20 NSE Gainers...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="panel">
-          <div class="section-header">
+    <!-- ======================================================================
+         PAGE 3: YESTERDAY'S TOP 20 LOSERS (NSE) + 2 REASONS WHY IT WENT DOWN
+         ====================================================================== -->
+    <div id="page-losers" class="page-view">
+      <div class="collapsible-section open">
+        <div class="collapsible-header">
+          <div class="header-left">
+            <span class="sec-num" style="background: var(--signal-bear-bg); color: var(--signal-bear); border-color: var(--signal-bear);">▼20</span>
             <div>
-              <h3 class="section-title">Named Institutional &amp; Promoter Stockholders (>1% Stake)</h3>
-              <p class="section-sub">Live BSE/NSE Disclosures (Promoter Entities, Sovereign Funds, LIC, Domestic Mutual Funds)</p>
+              <h2 class="sec-heading-title">Yesterday's Top 20 NSE Losers — Analysis &amp; 2 Reasons Why Each Stock Went Down</h2>
+              <p class="sec-heading-sub">Ranked by Latest Session % Drop across Liquid NSE Universe with Volume Spike, RSI(14), Downside Causes &amp; Buy-the-Dip vs. Avoid Verdict</p>
             </div>
           </div>
-          <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
-            <table id="table-named-holders" class="fin-table"></table>
+          <button id="btn-refresh-losers" class="btn btn-primary" style="font-size: 0.8rem;">↻ Refresh Live Losers</button>
+        </div>
+        <div class="collapsible-body">
+          <div class="table-wrap">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Stock / Sector</th>
+                  <th>Close (₹)</th>
+                  <th>1D Drop %</th>
+                  <th>5D Trend</th>
+                  <th>Vol Spike</th>
+                  <th>RSI(14)</th>
+                  <th style="text-align: left;">Why Stock Went Down (Reason 1 &amp; Reason 2 Analysis)</th>
+                  <th>Next-Day Verdict &amp; Support</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-top-losers">
+                <tr><td colspan="10" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading Yesterday's Top 20 NSE Losers...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Historical Shareholding Pattern &amp; Shareholder Count</h3>
-            <p class="section-sub">Quarter-by-Quarter Ownership Breakdown (%)</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-shp-history" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 5: R&D Spend, Intangible Assets, CWIP & Annual Report Filings -->
-    <section id="tab-rd" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
-            <div>
-              <h3 class="section-title">5-Year R&amp;D Spend (₹ Cr) &amp; R&amp;D Intensity (% of Sales)</h3>
-              <p id="rd-source-subtitle" class="section-sub">Research &amp; Development Capital Allocation</p>
-            </div>
-          </div>
-          <div class="canvas-container">
-            <canvas id="rd-chart-canvas"></canvas>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="section-header">
-            <div>
-              <h3 class="section-title">Innovation Moat &amp; Official Last 5 Annual Report PDFs</h3>
-              <p class="section-sub">Direct BSE/NSE Statutory Annual Report Filings &amp; R&amp;D Focus Areas</p>
-            </div>
-          </div>
-          <div id="rd-focus-banner" class="exec-summary-box" style="margin-bottom: 1rem;"></div>
-          <div id="annual-reports-links" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.65rem;"></div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">5-Year R&amp;D Expenditure, Intangible Assets, CapEx WIP (CWIP) &amp; Knowledge Cost</h3>
-            <p class="section-sub">All figures in ₹ Crores except R&amp;D % of Sales and Employee Cost %</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-rd-5y" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 6: Multi-Stock Next-Day NSE Scanner -->
-    <section id="tab-scanner" class="tab-pane">
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Nifty High-Conviction Universe — Next-Day Buy / Sell Ranked Scanner</h3>
-            <p class="section-sub">Simultaneously runs the 5-Agent Research Committee across top NSE stocks to rank tomorrow's highest-conviction setups</p>
-          </div>
-          <button id="btn-refresh-scanner" class="btn btn-primary">Run Live NSE Scan</button>
-        </div>
-        <div class="table-wrap">
-          <table id="table-scanner" class="fin-table mono">
-            <thead>
-              <tr>
-                <th>Symbol / Company</th>
-                <th>LTP (₹)</th>
-                <th>1D Chg</th>
-                <th>Next-Day Signal</th>
-                <th>AI Conviction</th>
-                <th>Fund. Score</th>
-                <th>Tech. Score</th>
-                <th>Entry Zone (₹)</th>
-                <th>Target 1 (₹)</th>
-                <th>Stop-Loss (₹)</th>
-                <th>R:R</th>
-                <th>Cash in Hand</th>
-                <th>R&amp;D %</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="scanner-tbody">
-              <tr><td colspan="14" style="text-align: center; padding: 2rem; color: var(--text-muted);">Click "Run Live NSE Scan" to rank NSE leaders for tomorrow's session...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Pluggable LLM Configuration Modal -->
   <div id="llm-modal" class="modal-backdrop">
     <div class="modal-box">
-      <div class="section-header">
-        <div>
-          <h3 class="section-title">Configure AI / LLM CIO Synthesizer</h3>
-          <p class="section-sub">Works out-of-the-box with the Quantitative Multi-Agent Engine, or plug in your LLM key</p>
-        </div>
+      <div style="margin-bottom: 1rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 700;">Configure AI / LLM CIO Synthesizer</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Works out-of-the-box with the Quantitative Multi-Agent Engine, or plug in your LLM API key</p>
       </div>
       <div class="form-group">
         <label for="llm-provider">AI Provider</label>

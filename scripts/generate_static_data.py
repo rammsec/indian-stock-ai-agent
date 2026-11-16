@@ -1,4 +1,4 @@
-"""Generate static JSON data files (`docs/data/*.json`) and `docs/index.html` for GitHub Pages.
+"""Generate static JSON data files (`docs/data/*.json`) and `docs/data/movers.json` for GitHub Pages.
 
 Used by `.github/workflows/daily_nse_research.yml` so the entire Indian Stock Market
 AI Research & Next-Day Buy/Sell Agent runs 100% from GitHub (GitHub Actions + GitHub Pages)
@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 import os
 import sys
-from concurrent.futures import ThreadPoolExecutor
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -18,18 +18,26 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 from backend.agents import run_full_stock_research  # noqa: E402
-from backend.config import DEFAULT_NSE_UNIVERSE  # noqa: E402
+from backend.config import DEFAULT_NSE_UNIVERSE, DEFAULT_WATCHLIST_5  # noqa: E402
+from backend.intel_engine import build_promoter_and_competitor_intel, fetch_top_20_gainers_and_losers  # noqa: E402
+from backend.models import CompanyOverview, StockholderAnalysis  # noqa: E402
 
-EXTENDED_NSE_SYMBOLS = [
-    item["symbol"] for item in DEFAULT_NSE_UNIVERSE
-] + [
-    "SBIN",
-    "AXISBANK",
-    "TITAN",
-    "TATAPOWER",
-    "TRENT",
-    "COALINDIA",
-]
+CORE_5_SYMBOLS = [item["symbol"] for item in DEFAULT_WATCHLIST_5]
+
+EXTENDED_NSE_SYMBOLS = list(
+    dict.fromkeys(
+        CORE_5_SYMBOLS
+        + [item["symbol"] for item in DEFAULT_NSE_UNIVERSE]
+        + [
+            "SBIN",
+            "AXISBANK",
+            "TITAN",
+            "TATAPOWER",
+            "TRENT",
+            "COALINDIA",
+        ]
+    )
+)
 
 
 def fetch_one(symbol: str) -> tuple[str, dict | None]:
@@ -37,10 +45,12 @@ def fetch_one(symbol: str) -> tuple[str, dict | None]:
     try:
         bundle = run_full_stock_research(sym)
         data = bundle.model_dump()
-        # Keep 90 trading days of price series so each JSON file stays fast (~15KB)
+        # Keep 90 trading days of price series so each JSON file stays fast (~18KB)
         if "technicals" in data and "price_series" in data["technicals"]:
             data["technicals"]["price_series"] = data["technicals"]["price_series"][-90:]
-        print(f"[OK] {sym}: {data['next_day_guidance']['action']} ({data['next_day_guidance']['conviction_score']}/100)")
+        print(
+            f"[OK] {sym}: {data['next_day_guidance']['action']} ({data['next_day_guidance']['conviction_score']}/100)"
+        )
         return sym, data
     except Exception as exc:
         print(f"[WARN] Failed {sym}: {exc}")
@@ -58,14 +68,21 @@ def main() -> None:
     # Load any existing symbols in docs/data so custom user-added stocks persist
     bundles: dict[str, dict] = {}
     for existing_file in data_dir.glob("*.json"):
-        if existing_file.stem.upper() not in ("UNIVERSE", "SCANNER", "META"):
+        if existing_file.stem.upper() not in ("UNIVERSE", "SCANNER", "META", "MOVERS"):
             try:
                 bundles[existing_file.stem.upper()] = json.loads(existing_file.read_text())
             except Exception:
                 pass
 
-    to_fetch = [s for s in all_symbols if s not in bundles or os.environ.get("FORCE_REFRESH") == "1"]
-    print(f"Loaded {len(bundles)} existing bundles; fetching {len(to_fetch)} NSE equities...")
+    force_refresh = os.environ.get("FORCE_REFRESH") == "1"
+    # Always refresh the 5 core watchlist companies (RELIANCE, TCS, TATAELXSI, ITC, BIRLACABLE)
+    # and any missing stock
+    to_fetch = [
+        s
+        for s in all_symbols
+        if s not in bundles or s in CORE_5_SYMBOLS or force_refresh
+    ]
+    print(f"Loaded {len(bundles)} existing bundles; fetching {len(to_fetch)} core/missing NSE equities...")
     for sym in to_fetch:
         _, payload = fetch_one(sym)
         if payload is not None:
@@ -73,6 +90,30 @@ def main() -> None:
             (data_dir / f"{sym}.json").write_text(
                 json.dumps(payload, separators=(",", ":"))
             )
+            time.sleep(0.5)
+
+    # Ensure all cached bundles also have promoter_and_competitor_intel populated
+    for sym, b in list(bundles.items()):
+        if not b.get("promoter_and_competitor_intel") or not b["promoter_and_competitor_intel"].get("competitors"):
+            try:
+                ov = CompanyOverview(**b["overview"])
+                shp = StockholderAnalysis(**b["stockholders"])
+                intel = build_promoter_and_competitor_intel(sym, ov, shp)
+                b["promoter_and_competitor_intel"] = intel.model_dump()
+                (data_dir / f"{sym}.json").write_text(
+                    json.dumps(b, separators=(",", ":"))
+                )
+                print(f"[INTEL] Enriched promoter & competitor intel for {sym}")
+            except Exception as exc:
+                print(f"[WARN] Could not enrich intel for {sym}: {exc}")
+
+    # Generate Yesterday's Top 20 Gainers & Top 20 Losers with 1-2 reasons
+    print("Generating Yesterday's Top 20 Gainers & Top 20 Losers (movers.json)...")
+    movers_payload = fetch_top_20_gainers_and_losers()
+    (data_dir / "movers.json").write_text(json.dumps(movers_payload, indent=2))
+    print(
+        f"[OK] Saved Top {len(movers_payload['top_20_gainers'])} Gainers & Top {len(movers_payload['top_20_losers'])} Losers to movers.json"
+    )
 
     universe_out = []
     scanner_items = []
@@ -118,15 +159,16 @@ def main() -> None:
     meta = {
         "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S IST"),
         "stock_count": len(bundles),
+        "default_watchlist_5": CORE_5_SYMBOLS,
         "symbols": list(bundles.keys()),
     }
 
-    (data_dir / "universe.json").write_text(json.dumps({"universe": universe_out}, indent=2))
+    (data_dir / "universe.json").write_text(json.dumps({"universe": universe_out, "all_universe": universe_out}, indent=2))
     (data_dir / "scanner.json").write_text(
         json.dumps({"count": len(scanner_items), "items": scanner_items}, indent=2)
     )
     (data_dir / "meta.json").write_text(json.dumps(meta, indent=2))
-    print(f"Saved {len(bundles)} stock bundles to {data_dir}")
+    print(f"Saved {len(bundles)} stock bundles + movers.json to {data_dir}")
 
 
 if __name__ == "__main__":

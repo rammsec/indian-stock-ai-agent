@@ -3,46 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BharatAlpha AI — Indian Market Research & Next-Day Buy/Sell Agent</title>
-  <meta name="description" content="AI-powered Indian Stock Market (NSE/BSE) research agent analyzing last 5 reports, performance, Promoter/FII/DII stockholders, R&D spend, cash in hand, and next-day buy/sell trade setups." />
+  <title>BharatAlpha AI — Indian Market Deep Research, Promoter/Competitor Intel &amp; Top 20 Movers</title>
+  <meta name="description" content="AI-powered Indian Stock Market (NSE/BSE) research agent analyzing last 5 reports, Cash in Hand, R&D, Stockholders, Promoter/Competitor Statements, and Yesterday's Top 20 Gainers & Losers." />
   <style>
-/* BharatAlpha AI — Institutional Indian Equity Research & Next-Day Decision Terminal
-   Design System: Function-driven HSL Financial Palette, Tabular Numerics, Responsive Layout
+/* BharatAlpha AI v3.0 — High-Readability Indian Equity Research & Next-Day Decision Terminal
+   Features: Clean Typography (15px base), Collapsible Accordion Sections, Promoter/Competitor War-Room,
+   Yesterday's Top 20 Gainers & Top 20 Losers Pages
 */
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-canvas: hsl(222, 28%, 6.5%);
-  --bg-surface: hsl(222, 24%, 9.8%);
-  --bg-elevated: hsl(222, 21%, 13%);
-  --bg-subtle: hsl(222, 19%, 15.5%);
-  --bg-hover: hsl(222, 18%, 18%);
+  --bg-canvas: hsl(222, 26%, 7%);
+  --bg-surface: hsl(222, 23%, 10.5%);
+  --bg-elevated: hsl(222, 20%, 14%);
+  --bg-subtle: hsl(222, 18%, 16.5%);
+  --bg-hover: hsl(222, 18%, 19.5%);
 
-  --border-subtle: hsl(220, 17%, 16%);
-  --border-strong: hsl(220, 16%, 23%);
+  --border-subtle: hsl(220, 16%, 18%);
+  --border-strong: hsl(220, 16%, 26%);
 
-  --text-primary: hsl(210, 24%, 96%);
-  --text-secondary: hsl(215, 16%, 72%);
-  --text-muted: hsl(215, 14%, 52%);
+  --text-primary: hsl(210, 25%, 97%);
+  --text-secondary: hsl(214, 18%, 78%);
+  --text-muted: hsl(215, 14%, 58%);
 
-  --accent-brand: hsl(210, 90%, 56%);
-  --accent-brand-soft: hsla(210, 90%, 56%, 0.14);
+  --accent-brand: hsl(210, 92%, 58%);
+  --accent-brand-soft: hsla(210, 92%, 58%, 0.16);
 
-  --signal-bull: hsl(154, 70%, 44%);
-  --signal-bull-bg: hsla(154, 70%, 44%, 0.13);
-  --signal-bear: hsl(352, 78%, 58%);
-  --signal-bear-bg: hsla(352, 78%, 58%, 0.13);
-  --signal-hold: hsl(38, 92%, 54%);
-  --signal-hold-bg: hsla(38, 92%, 54%, 0.13);
+  --signal-bull: hsl(152, 72%, 46%);
+  --signal-bull-bg: hsla(152, 72%, 46%, 0.15);
+  --signal-bear: hsl(352, 82%, 60%);
+  --signal-bear-bg: hsla(352, 82%, 60%, 0.15);
+  --signal-hold: hsl(38, 94%, 56%);
+  --signal-hold-bg: hsla(38, 94%, 56%, 0.15);
 
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --shadow-card: 0 8px 24px -6px rgba(0, 0, 0, 0.45);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --shadow-card: 0 10px 28px -8px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -55,8 +56,8 @@ html, body {
   background-color: var(--bg-canvas);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
@@ -66,15 +67,19 @@ html, body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Top Navigation Header */
+.text-bull { color: var(--signal-bull) !important; }
+.text-bear { color: var(--signal-bear) !important; }
+.text-hold { color: var(--signal-hold) !important; }
+
+/* Top Header & Page Navigation */
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 40;
-  background: hsla(222, 26%, 8%, 0.92);
+  z-index: 50;
+  background: hsla(222, 26%, 7.5%, 0.95);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 0.75rem 1.5rem;
+  padding: 0.85rem 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -85,12 +90,12 @@ html, body {
 .brand-group {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.9rem;
 }
 
 .brand-mark {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-sm);
   background: var(--bg-elevated);
   border: 1px solid var(--border-strong);
@@ -99,99 +104,72 @@ html, body {
   font-family: var(--font-mono);
   font-weight: 700;
   color: var(--signal-bull);
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 .brand-title {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
 }
 
 .market-tag {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
+  padding: 0.16rem 0.5rem;
+  border-radius: 5px;
   background: var(--bg-elevated);
   color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
 }
 
 .brand-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-/* Search & Action Controls */
-.search-bar-wrap {
-  position: relative;
-  flex: 1;
-  max-width: 460px;
-  min-width: 240px;
-}
-
-.search-input-group {
+/* Primary Page Navigation Pills */
+.main-page-nav {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
+  padding: 0.3rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+
+.page-nav-btn {
+  padding: 0.52rem 1.05rem;
   border-radius: var(--radius-sm);
-  padding: 0.35rem 0.65rem;
-  transition: border-color 0.15s ease;
-}
-
-.search-input-group:focus-within {
-  border-color: var(--accent-brand);
-}
-
-.search-input {
-  width: 100%;
+  border: 1px solid transparent;
   background: transparent;
-  border: none;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   font-family: var(--font-sans);
-  font-size: 0.88rem;
-  outline: none;
-  padding: 0.25rem 0.5rem;
-}
-
-.search-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-card);
-  max-height: 280px;
-  overflow-y: auto;
-  z-index: 60;
-  display: none;
-}
-
-.search-dropdown.open {
-  display: block;
-}
-
-.search-item {
-  padding: 0.6rem 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  font-size: 0.86rem;
+  font-weight: 700;
   cursor: pointer;
-  border-bottom: 1px solid var(--border-subtle);
-  transition: background 0.12s ease;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
-.search-item:hover {
-  background: var(--bg-hover);
+.page-nav-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+.page-nav-btn.active {
+  background: var(--accent-brand);
+  color: #fff;
+  border-color: var(--accent-brand);
 }
 
 .topbar-actions {
@@ -204,15 +182,15 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.48rem 0.9rem;
+  padding: 0.52rem 0.95rem;
   border-radius: var(--radius-sm);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid var(--border-strong);
   background: var(--bg-elevated);
   color: var(--text-primary);
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .btn:hover {
@@ -230,62 +208,260 @@ html, body {
   background: var(--accent-brand);
 }
 
-/* Quick Ticker Ribbon */
-.ticker-ribbon {
+/* Company Selector & Add-Stock Bar at Top */
+.company-selector-bar {
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 0.5rem 1.5rem;
+  padding: 0.85rem 1.75rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.ticker-label {
-  font-size: 0.72rem;
-  font-weight: 600;
+.watchlist-chips-area {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.watchlist-counter {
+  font-size: 0.76rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
   margin-right: 0.35rem;
-  white-space: nowrap;
 }
 
-.ticker-chip {
-  font-family: var(--font-mono);
-  font-size: 0.76rem;
-  padding: 0.28rem 0.65rem;
-  border-radius: 4px;
+.company-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
   background: var(--bg-canvas);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-strong);
   color: var(--text-secondary);
+  font-size: 0.86rem;
+  font-weight: 600;
   cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.14s ease;
+  transition: all 0.15s ease;
 }
 
-.ticker-chip:hover, .ticker-chip.active {
-  background: var(--accent-brand-soft);
+.company-chip:hover {
   border-color: var(--accent-brand);
   color: var(--text-primary);
 }
 
-/* Main Workspace Container */
-.workspace {
-  max-width: 1520px;
-  margin: 0 auto;
-  padding: 1.25rem 1.5rem 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.company-chip.active {
+  background: var(--accent-brand-soft);
+  border-color: var(--accent-brand);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 1px var(--accent-brand);
 }
 
-/* Top Hero Split: Company Header + Next-Day Trade Guidance Ticket */
+.chip-remove {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.chip-remove:hover {
+  background: var(--signal-bear-bg);
+  color: var(--signal-bear);
+}
+
+/* Inline Add Stock Control */
+.add-stock-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 310px;
+}
+
+.add-input-box {
+  display: flex;
+  align-items: center;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.6rem;
+  flex: 1;
+}
+
+.add-input-box:focus-within {
+  border-color: var(--accent-brand);
+}
+
+.add-stock-input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  outline: none;
+  width: 100%;
+  padding: 0.22rem 0.4rem;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 80;
+  display: none;
+}
+
+.search-dropdown.open {
+  display: block;
+}
+
+.search-item {
+  padding: 0.65rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.86rem;
+}
+
+.search-item:hover {
+  background: var(--bg-hover);
+}
+
+/* Workspace Container */
+.workspace {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 1.5rem 1.75rem 3.5rem;
+}
+
+.page-view {
+  display: none;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.page-view.active {
+  display: flex;
+}
+
+/* Collapsible Section Panels */
+.collapsible-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.collapsible-header {
+  padding: 1.05rem 1.35rem;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.collapsible-header:hover {
+  background: var(--bg-hover);
+}
+
+.collapsible-section.open .collapsible-header {
+  border-bottom-color: var(--border-subtle);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.sec-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--accent-brand-soft);
+  color: var(--accent-brand);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  border: 1px solid hsla(210, 92%, 58%, 0.3);
+}
+
+.sec-heading-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.sec-heading-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.chevron-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-canvas);
+  padding: 0.32rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+}
+
+.chevron-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.collapsible-section.open .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.collapsible-body {
+  display: none;
+  padding: 1.35rem;
+}
+
+.collapsible-section.open .collapsible-body {
+  display: block;
+}
+
+/* Hero Overview + Trade Ticket Grid */
 .hero-grid {
   display: grid;
   grid-template-columns: 1.35fr 1fr;
-  gap: 1.25rem;
+  gap: 1.35rem;
 }
 
 @media (max-width: 1080px) {
@@ -294,12 +470,11 @@ html, body {
   }
 }
 
-.panel {
-  background: var(--bg-surface);
+.sub-panel {
+  background: var(--bg-canvas);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 1.25rem;
-  box-shadow: var(--shadow-card);
 }
 
 .company-header-top {
@@ -313,8 +488,8 @@ html, body {
 }
 
 .company-title-area h2 {
-  font-size: 1.45rem;
-  font-weight: 700;
+  font-size: 1.55rem;
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
@@ -322,150 +497,115 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-top: 0.3rem;
+  margin-top: 0.35rem;
   flex-wrap: wrap;
 }
 
 .badge-neutral {
-  font-size: 0.73rem;
-  padding: 0.15rem 0.55rem;
-  border-radius: 4px;
+  font-size: 0.76rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 5px;
   background: var(--bg-elevated);
   color: var(--text-secondary);
   border: 1px solid var(--border-subtle);
 }
 
-.price-block {
-  text-align: right;
-}
-
 .current-price {
   font-family: var(--font-mono);
-  font-size: 1.65rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 800;
 }
 
 .price-change {
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: 0.88rem;
   font-weight: 600;
 }
 
-.text-bull { color: var(--signal-bull); }
-.text-bear { color: var(--signal-bear); }
-.text-hold { color: var(--signal-hold); }
-
-/* Key KPI Grid inside Overview */
 .kpi-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 0.8rem;
   margin-bottom: 1rem;
 }
 
 .kpi-box {
-  background: var(--bg-canvas);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 0.65rem 0.8rem;
+  padding: 0.75rem 0.9rem;
 }
 
 .kpi-label {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
   display: block;
 }
 
 .kpi-value {
   font-family: var(--font-mono);
-  font-size: 0.98rem;
-  font-weight: 600;
+  font-size: 1.02rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-top: 0.15rem;
+  margin-top: 0.2rem;
   display: block;
 }
 
 .exec-summary-box {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
-  padding: 0.85rem 1rem;
-  font-size: 0.86rem;
+  padding: 1rem 1.15rem;
+  font-size: 0.92rem;
   color: var(--text-secondary);
-  line-height: 1.55;
-}
-
-/* Next-Day Trade Guidance Card */
-.guidance-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.guidance-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: 0.85rem;
-  border-bottom: 1px solid var(--border-subtle);
+  line-height: 1.65;
 }
 
 .signal-banner {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.4rem 0.85rem;
+  padding: 0.45rem 0.95rem;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-size: 1rem;
+  font-weight: 800;
 }
 
 .signal-banner.bull {
   background: var(--signal-bull-bg);
   color: var(--signal-bull);
-  border: 1px solid hsla(154, 70%, 44%, 0.35);
+  border: 1px solid hsla(152, 72%, 46%, 0.4);
 }
 
 .signal-banner.bear {
   background: var(--signal-bear-bg);
   color: var(--signal-bear);
-  border: 1px solid hsla(352, 78%, 58%, 0.35);
+  border: 1px solid hsla(352, 82%, 60%, 0.4);
 }
 
 .signal-banner.hold {
   background: var(--signal-hold-bg);
   color: var(--signal-hold);
-  border: 1px solid hsla(38, 92%, 54%, 0.35);
-}
-
-.conviction-meter {
-  text-align: right;
-}
-
-.conviction-score-num {
-  font-family: var(--font-mono);
-  font-size: 1.35rem;
-  font-weight: 700;
+  border: 1px solid hsla(38, 94%, 56%, 0.4);
 }
 
 .trade-levels-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.7rem;
+  gap: 0.8rem;
   margin: 1rem 0;
 }
 
 .level-cell {
-  background: var(--bg-canvas);
+  background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 0.65rem 0.8rem;
+  padding: 0.75rem 0.9rem;
 }
 
 .level-title {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -473,16 +613,16 @@ html, body {
 
 .level-price {
   font-family: var(--font-mono);
-  font-size: 1.02rem;
+  font-size: 1.1rem;
   font-weight: 700;
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
 }
 
 .score-bars-row {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  padding-top: 0.65rem;
+  gap: 0.55rem;
+  padding-top: 0.75rem;
   border-top: 1px solid var(--border-subtle);
 }
 
@@ -490,14 +630,14 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  font-size: 0.78rem;
+  gap: 0.8rem;
+  font-size: 0.82rem;
 }
 
 .progress-track {
   flex: 1;
-  height: 6px;
-  background: var(--bg-canvas);
+  height: 7px;
+  background: var(--bg-surface);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -505,69 +645,24 @@ html, body {
 .progress-fill {
   height: 100%;
   border-radius: 99px;
-  transition: width 0.4s ease;
-}
-
-/* Navigation Tabs for Deep Research Pillars */
-.research-tabs {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 0.5rem;
-  overflow-x: auto;
-}
-
-.tab-btn {
-  padding: 0.55rem 1rem;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-secondary);
-  font-family: var(--font-sans);
-  font-size: 0.84rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.15s ease;
-}
-
-.tab-btn:hover {
-  color: var(--text-primary);
-  background: var(--bg-surface);
-}
-
-.tab-btn.active {
-  background: var(--bg-elevated);
-  color: var(--text-primary);
-  border-color: var(--border-strong);
-}
-
-.tab-pane {
-  display: none;
-}
-
-.tab-pane.active {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
 }
 
 /* Multi-Agent Committee Cards */
 .agents-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .agent-card {
-  background: var(--bg-surface);
+  background: var(--bg-canvas);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 1rem;
+  padding: 1.1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.8rem;
 }
 
 .agent-card-header {
@@ -578,35 +673,35 @@ html, body {
 }
 
 .agent-name {
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   font-weight: 700;
 }
 
 .agent-persona {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
 }
 
 .agent-pill {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 0.18rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.22rem 0.55rem;
+  border-radius: 5px;
 }
 
 .agent-metrics-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.4rem;
-  background: var(--bg-canvas);
-  padding: 0.6rem;
+  gap: 0.5rem;
+  background: var(--bg-surface);
+  padding: 0.7rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-subtle);
 }
 
 .agent-metric-pair {
-  font-size: 0.73rem;
+  font-size: 0.76rem;
 }
 
 .agent-metric-pair span {
@@ -623,14 +718,14 @@ html, body {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.38rem;
-  font-size: 0.8rem;
+  gap: 0.45rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
 .agent-reasons li {
   position: relative;
-  padding-left: 0.85rem;
+  padding-left: 0.95rem;
 }
 
 .agent-reasons li::before {
@@ -649,12 +744,12 @@ html, body {
 .fin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
 }
 
 .fin-table th,
 .fin-table td {
-  padding: 0.65rem 0.85rem;
+  padding: 0.78rem 0.95rem;
   text-align: right;
   border-bottom: 1px solid var(--border-subtle);
   white-space: nowrap;
@@ -665,13 +760,10 @@ html, body {
   text-align: left;
   font-weight: 600;
   color: var(--text-primary);
-  position: sticky;
-  left: 0;
-  background: var(--bg-surface);
 }
 
 .fin-table th {
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-muted);
@@ -682,34 +774,16 @@ html, body {
   background: var(--bg-elevated);
 }
 
-/* Split Layout for Charts & Tables */
 .two-col-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  gap: 1.35rem;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 980px) {
   .two-col-grid {
     grid-template-columns: 1fr;
   }
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.9rem;
-}
-
-.section-title {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.section-sub {
-  font-size: 0.76rem;
-  color: var(--text-muted);
 }
 
 .canvas-container {
@@ -719,14 +793,73 @@ html, body {
   background: var(--bg-canvas);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  padding: 0.5rem;
+  padding: 0.55rem;
 }
 
-/* Modal for Pluggable LLM Settings */
+/* Promoter, Stakeholder & Competitor Intelligence Cards */
+.leader-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.leader-card {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.95rem;
+}
+
+.statement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.statement-card {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.95rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.competitor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 0.95rem;
+}
+
+.competitor-card {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+/* Top 20 Movers Cards / Table */
+.mover-reason-box {
+  white-space: normal;
+  min-width: 280px;
+  max-width: 420px;
+  text-align: left !important;
+  font-family: var(--font-sans);
+  font-size: 0.83rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+/* Modal */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(4px);
   display: none;
   place-items: center;
@@ -744,17 +877,17 @@ html, body {
   border-radius: var(--radius-md);
   width: 100%;
   max-width: 480px;
-  padding: 1.4rem;
+  padding: 1.5rem;
   box-shadow: var(--shadow-card);
 }
 
 .form-group {
-  margin-bottom: 0.95rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: 0.35rem;
@@ -762,16 +895,15 @@ html, body {
 
 .form-control {
   width: 100%;
-  padding: 0.55rem 0.75rem;
+  padding: 0.6rem 0.8rem;
   background: var(--bg-canvas);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
 }
 
-/* Loading Overlay */
 .loading-bar {
   position: fixed;
   top: 0;
@@ -797,444 +929,556 @@ html, body {
           BharatAlpha AI
           <span class="market-tag">NSE • BSE</span>
         </h1>
-        <p class="brand-subtitle">Multi-Agent Fundamental (5-Report, Cash, R&amp;D, Stockholders) &amp; Next-Day Trade Engine</p>
+        <p class="brand-subtitle">Focused 10-Company Deep Research, Promoter &amp; Competitor Intelligence + Top 20 Daily Movers</p>
       </div>
     </div>
 
-    <div class="search-bar-wrap">
-      <div class="search-input-group">
-        <span class="mono" style="color: var(--text-muted); font-size: 0.8rem;">NSE:</span>
-        <input
-          id="stock-search-input"
-          type="text"
-          class="search-input"
-          placeholder="Search any Indian stock (e.g. RELIANCE, SUNPHARMA, TCS, BEL, HAL)..."
-          autocomplete="off"
-        />
-        <button id="btn-run-research" class="btn btn-primary" style="padding: 0.3rem 0.7rem; font-size: 0.76rem;">
-          Analyze
-        </button>
-      </div>
-      <div id="search-dropdown" class="search-dropdown"></div>
-    </div>
+    <!-- Primary Page Switcher -->
+    <nav class="main-page-nav" aria-label="Main Views">
+      <button class="page-nav-btn active" data-page="page-company">
+        🏢 My Companies Deep Research
+      </button>
+      <button class="page-nav-btn" data-page="page-gainers">
+        📈 Yesterday's Top 20 Gainers
+      </button>
+      <button class="page-nav-btn" data-page="page-losers">
+        📉 Yesterday's Top 20 Losers
+      </button>
+    </nav>
 
     <div class="topbar-actions">
-      <button id="btn-open-scanner" class="btn" title="Scan Nifty universe for Next-Day Buy/Sell signals">
-        <span>⚡ Next-Day Scanner</span>
+      <button id="btn-toggle-all-sections" class="btn" title="Expand or Collapse all research sections">
+        <span>↕ Collapse All Sections</span>
       </button>
       <button id="btn-open-llm-modal" class="btn" title="Configure Gemini, OpenAI, Anthropic, or Ollama API Key">
-        <span id="llm-status-badge">🧠 Engine: Quant + LLM</span>
+        <span id="llm-status-badge">🧠 Engine: Quant Committee</span>
       </button>
     </div>
   </header>
 
-  <!-- Quick NSE Ticker Ribbon -->
-  <nav id="ticker-ribbon" class="ticker-ribbon" aria-label="Quick NSE Tickers">
-    <span class="ticker-label">NSE Watchlist:</span>
-  </nav>
+  <!-- Top Company Selector Bar + Direct "+ Add Stock (Up to 10)" Feature -->
+  <section id="company-selector-bar" class="company-selector-bar" aria-label="My Watchlist Company Selector">
+    <div class="watchlist-chips-area">
+      <span id="watchlist-count-label" class="watchlist-counter">My Portfolio (5/10):</span>
+      <div id="watchlist-chips-container" style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;"></div>
+      <button id="btn-reset-watchlist" class="btn" style="padding: 0.32rem 0.65rem; font-size: 0.74rem; color: var(--text-muted);" title="Reset back to the core 5 stocks">
+        Reset Default 5
+      </button>
+    </div>
+
+    <div class="add-stock-wrap">
+      <div class="add-input-box">
+        <span class="mono" style="color: var(--text-muted); font-size: 0.78rem;">+ ADD:</span>
+        <input
+          id="stock-search-input"
+          type="text"
+          class="add-stock-input"
+          placeholder="Add NSE stock (max 10, e.g. BEL, SUNPHARMA, KPITTECH)..."
+          autocomplete="off"
+        />
+      </div>
+      <button id="btn-add-stock" class="btn btn-primary" style="padding: 0.45rem 0.85rem; white-space: nowrap;">
+        + Add Stock
+      </button>
+      <div id="search-dropdown" class="search-dropdown"></div>
+    </div>
+  </section>
 
   <!-- Main Workspace -->
   <main class="workspace">
-    <!-- Hero Row: Company Overview + Next-Day Buy/Sell Execution Ticket -->
-    <section class="hero-grid">
-      <!-- Left: Company Overview & Executive Summary -->
-      <div class="panel">
-        <div class="company-header-top">
-          <div class="company-title-area">
-            <h2 id="ov-company-name">Loading NSE Research...</h2>
-            <div class="company-meta-row">
-              <span id="ov-symbol-badge" class="badge-neutral mono">NSE: ---</span>
-              <span id="ov-sector-badge" class="badge-neutral">Sector: ---</span>
-              <span id="ov-piotroski-badge" class="badge-neutral mono">Piotroski F-Score: -/9</span>
-              <span id="ov-timestamp" style="font-size: 0.72rem; color: var(--text-muted);"></span>
-            </div>
-          </div>
-          <div class="price-block">
-            <div id="ov-current-price" class="current-price">₹0.00</div>
-            <div id="ov-day-change" class="price-change">0.00%</div>
-          </div>
-        </div>
 
-        <div class="kpi-strip">
-          <div class="kpi-box">
-            <span class="kpi-label">Market Cap</span>
-            <span id="kpi-mcap" class="kpi-value">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Cash &amp; Liquid Inv.</span>
-            <span id="kpi-cash" class="kpi-value text-bull">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Total Borrowings</span>
-            <span id="kpi-debt" class="kpi-value">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Latest R&amp;D Spend</span>
-            <span id="kpi-rd" class="kpi-value">₹0 Cr</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">ROE / ROCE</span>
-            <span id="kpi-roe-roce" class="kpi-value">0% / 0%</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Stock P/E</span>
-            <span id="kpi-pe" class="kpi-value">0.0x</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">Promoter / Inst. %</span>
-            <span id="kpi-ownership" class="kpi-value">0% / 0%</span>
-          </div>
-          <div class="kpi-box">
-            <span class="kpi-label">5Y Profit CAGR</span>
-            <span id="kpi-profit-cagr" class="kpi-value">0.0%</span>
-          </div>
-        </div>
+    <!-- ======================================================================
+         PAGE 1: MY COMPANIES DEEP RESEARCH (All Expandable / Collapsible Sections)
+         ====================================================================== -->
+    <div id="page-company" class="page-view active">
 
-        <div class="exec-summary-box">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
-            <strong style="color: var(--text-primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;">
-              AI Chief Investment Officer — Next-Day Thesis
-            </strong>
-            <span id="ov-model-used" class="mono" style="font-size: 0.7rem; color: var(--text-muted);"></span>
-          </div>
-          <p id="ov-exec-summary">Fetching live financial statements, shareholding disclosures, and price action...</p>
-        </div>
-      </div>
-
-      <!-- Right: Next-Day Buy / Sell Execution Ticket -->
-      <div class="panel guidance-card">
-        <div>
-          <div class="guidance-header">
+      <!-- SECTION 1: Executive Overview & Next-Day Buy/Sell Trade Guidance -->
+      <section class="collapsible-section open" id="sec-overview">
+        <div class="collapsible-header" data-toggle="sec-overview">
+          <div class="header-left">
+            <span class="sec-num">01</span>
             <div>
-              <span style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
-                Next-Day Trading Guidance
-              </span>
-              <div id="gd-action-banner" class="signal-banner bull">BUY</div>
-            </div>
-            <div class="conviction-meter">
-              <span style="font-size: 0.72rem; color: var(--text-muted); display: block;">AI Conviction</span>
-              <span id="gd-conviction-score" class="conviction-score-num">0.0 / 100</span>
+              <h2 class="sec-heading-title">Company Overview &amp; Next-Day Buy / Sell Execution Ticket</h2>
+              <p class="sec-heading-sub">Live Valuation, Key Ratios, AI Chief Investment Officer Thesis &amp; Tomorrow's Entry / Target / Stop-Loss</p>
             </div>
           </div>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="hero-grid">
+            <!-- Left: Company Overview & Executive Summary -->
+            <div class="sub-panel">
+              <div class="company-header-top">
+                <div class="company-title-area">
+                  <h2 id="ov-company-name">Loading NSE Research...</h2>
+                  <div class="company-meta-row">
+                    <span id="ov-symbol-badge" class="badge-neutral mono">NSE: ---</span>
+                    <span id="ov-sector-badge" class="badge-neutral">Sector: ---</span>
+                    <span id="ov-piotroski-badge" class="badge-neutral mono">Piotroski F-Score: -/9</span>
+                    <span id="ov-timestamp" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div id="ov-current-price" class="current-price">₹0.00</div>
+                  <div id="ov-day-change" class="price-change">0.00%</div>
+                </div>
+              </div>
 
-          <div class="trade-levels-grid">
-            <div class="level-cell">
-              <div class="level-title">Next-Day Entry Zone</div>
-              <div id="gd-entry-zone" class="level-price">₹0.00 – ₹0.00</div>
+              <div class="kpi-strip">
+                <div class="kpi-box">
+                  <span class="kpi-label">Market Cap</span>
+                  <span id="kpi-mcap" class="kpi-value">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Cash in Hand</span>
+                  <span id="kpi-cash" class="kpi-value text-bull">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Total Borrowings</span>
+                  <span id="kpi-debt" class="kpi-value">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Annual R&amp;D Spend</span>
+                  <span id="kpi-rd" class="kpi-value">₹0 Cr</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">ROE / ROCE</span>
+                  <span id="kpi-roe-roce" class="kpi-value">0% / 0%</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Stock P/E</span>
+                  <span id="kpi-pe" class="kpi-value">0.0x</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">Promoter / Inst. %</span>
+                  <span id="kpi-ownership" class="kpi-value">0% / 0%</span>
+                </div>
+                <div class="kpi-box">
+                  <span class="kpi-label">5Y Profit CAGR</span>
+                  <span id="kpi-profit-cagr" class="kpi-value">0.0%</span>
+                </div>
+              </div>
+
+              <div class="exec-summary-box">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                  <strong style="color: var(--text-primary); font-size: 0.84rem; text-transform: uppercase; letter-spacing: 0.04em;">
+                    AI Chief Investment Officer — Next-Day Thesis
+                  </strong>
+                  <span id="ov-model-used" class="mono" style="font-size: 0.74rem; color: var(--text-muted);"></span>
+                </div>
+                <p id="ov-exec-summary">Loading deep 5-report financial statements, cash in hand, shareholding, R&amp;D, and promoter/competitor intelligence...</p>
+              </div>
             </div>
-            <div class="level-cell">
-              <div class="level-title">Strict Stop-Loss (SL)</div>
-              <div id="gd-stop-loss" class="level-price text-bear">₹0.00</div>
-            </div>
-            <div class="level-cell">
-              <div class="level-title">Next-Day Target 1 (T1)</div>
-              <div id="gd-target-1" class="level-price text-bull">₹0.00</div>
-            </div>
-            <div class="level-cell">
-              <div class="level-title">Swing Target 2 (T2)</div>
-              <div id="gd-target-2" class="level-price text-bull">₹0.00</div>
+
+            <!-- Right: Next-Day Buy / Sell Execution Ticket -->
+            <div class="sub-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.9rem; border-bottom: 1px solid var(--border-subtle);">
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.3rem;">
+                      Tomorrow's Action Signal
+                    </span>
+                    <div id="gd-action-banner" class="signal-banner bull">BUY</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Composite AI Conviction</span>
+                    <span id="gd-conviction-score" class="mono" style="font-size: 1.45rem; font-weight: 800;">0.0 / 100</span>
+                  </div>
+                </div>
+
+                <div class="trade-levels-grid">
+                  <div class="level-cell">
+                    <div class="level-title">Next-Day Entry Zone</div>
+                    <div id="gd-entry-zone" class="level-price">₹0.00 – ₹0.00</div>
+                  </div>
+                  <div class="level-cell">
+                    <div class="level-title">Strict Stop-Loss (SL)</div>
+                    <div id="gd-stop-loss" class="level-price text-bear">₹0.00</div>
+                  </div>
+                  <div class="level-cell">
+                    <div class="level-title">Next-Day Target 1 (T1)</div>
+                    <div id="gd-target-1" class="level-price text-bull">₹0.00</div>
+                  </div>
+                  <div class="level-cell">
+                    <div class="level-title">Swing Target 2 (T2)</div>
+                    <div id="gd-target-2" class="level-price text-bull">₹0.00</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="score-bars-row">
+                <div class="score-bar-item">
+                  <span style="width: 160px; color: var(--text-secondary);">Fundamental Quality (80%)</span>
+                  <div class="progress-track">
+                    <div id="bar-fund-score" class="progress-fill" style="width: 0%; background: var(--signal-bull);"></div>
+                  </div>
+                  <span id="txt-fund-score" class="mono" style="width: 54px; text-align: right;">0/100</span>
+                </div>
+                <div class="score-bar-item">
+                  <span style="width: 160px; color: var(--text-secondary);">Next-Day Technical (20%)</span>
+                  <div class="progress-track">
+                    <div id="bar-tech-score" class="progress-fill" style="width: 0%; background: var(--accent-brand);"></div>
+                  </div>
+                  <span id="txt-tech-score" class="mono" style="width: 54px; text-align: right;">0/100</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); padding-top: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+                  <span>Risk : Reward: <strong id="gd-rr" class="mono" style="color: var(--text-primary);">1 : 0.0</strong></span>
+                  <span>Allocation: <strong id="gd-pos-size" class="mono" style="color: var(--text-primary);">0%</strong></span>
+                  <span>ATR(14) Range: <strong id="gd-atr-range" class="mono" style="color: var(--text-primary);">₹0</strong></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="score-bars-row">
-          <div class="score-bar-item">
-            <span style="width: 145px; color: var(--text-secondary);">Fundamental Quality (80%)</span>
-            <div class="progress-track">
-              <div id="bar-fund-score" class="progress-fill" style="width: 0%; background: var(--signal-bull);"></div>
-            </div>
-            <span id="txt-fund-score" class="mono" style="width: 48px; text-align: right;">0/100</span>
-          </div>
-          <div class="score-bar-item">
-            <span style="width: 145px; color: var(--text-secondary);">Next-Day Technical (20%)</span>
-            <div class="progress-track">
-              <div id="bar-tech-score" class="progress-fill" style="width: 0%; background: var(--accent-brand);"></div>
-            </div>
-            <span id="txt-tech-score" class="mono" style="width: 48px; text-align: right;">0/100</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); padding-top: 0.35rem;">
-            <span>Risk : Reward Ratio: <strong id="gd-rr" class="mono" style="color: var(--text-primary);">1 : 0.0</strong></span>
-            <span>Suggested Allocation: <strong id="gd-pos-size" class="mono" style="color: var(--text-primary);">0%</strong></span>
-            <span>ATR(14) Range: <strong id="gd-atr-range" class="mono" style="color: var(--text-primary);">₹0</strong></span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Research Pillar Navigation Tabs -->
-    <nav class="research-tabs" aria-label="Research Modules">
-      <button class="tab-btn active" data-tab="tab-committee">1. AI Agent Committee &amp; Next-Day Setup</button>
-      <button class="tab-btn" data-tab="tab-reports">2. Last 5 Reports (Annual &amp; Quarterly)</button>
-      <button class="tab-btn" data-tab="tab-cash">3. Cash in Hand, Debt &amp; Cash Flows</button>
-      <button class="tab-btn" data-tab="tab-stockholders">4. Stockholders (Promoter / FII / DII)</button>
-      <button class="tab-btn" data-tab="tab-rd">5. R&amp;D Spend &amp; Annual Report Filings</button>
-      <button class="tab-btn" data-tab="tab-scanner">6. Multi-Stock Next-Day NSE Scanner</button>
-    </nav>
-
-    <!-- TAB 1: AI Agent Committee + Price/DMA Technical Chart -->
-    <section id="tab-committee" class="tab-pane active">
-      <div class="agents-grid" id="agents-committee-grid"></div>
-
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 2: 5-Agent Committee & Technical Price/DMA Chart -->
+      <section class="collapsible-section open" id="sec-committee">
+        <div class="collapsible-header" data-toggle="sec-committee">
+          <div class="header-left">
+            <span class="sec-num">02</span>
             <div>
-              <h3 class="section-title">Daily Price Action, 50-DMA, 200-DMA &amp; Next-Day Levels</h3>
-              <p id="chart-regime-sub" class="section-sub">180-Trading-Day NSE Trend &amp; Support/Resistance Channels</p>
+              <h2 class="sec-heading-title">5-Agent Investment Committee Verdicts &amp; Technical Setup</h2>
+              <p class="sec-heading-sub">Individual Agent Scores (5-Report, Cash, Stockholders, R&amp;D, Technicals) + 180-Day Price / 50-DMA / 200-DMA Chart</p>
             </div>
-            <span id="rsi-badge" class="badge-neutral mono">RSI(14): --</span>
           </div>
-          <div class="canvas-container">
-            <canvas id="price-dma-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="agents-grid" id="agents-committee-grid"></div>
+
+          <div class="two-col-grid">
+            <div class="sub-panel">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                <div>
+                  <h3 style="font-size: 1rem; font-weight: 700;">Daily Price Action, 50-DMA, 200-DMA &amp; Next-Day Targets</h3>
+                  <p id="chart-regime-sub" style="font-size: 0.8rem; color: var(--text-muted);">Trend &amp; Support/Resistance Channels</p>
+                </div>
+                <span id="rsi-badge" class="badge-neutral mono">RSI(14): --</span>
+              </div>
+              <div class="canvas-container">
+                <canvas id="price-dma-canvas"></canvas>
+              </div>
+            </div>
+
+            <div class="sub-panel">
+              <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Key Bullish Catalysts, Downside Risks &amp; Live Headlines</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem;">
+                  <strong class="text-bull" style="font-size: 0.78rem; text-transform: uppercase;">Bullish Catalysts</strong>
+                  <ul id="list-catalysts" class="agent-reasons" style="margin-top: 0.5rem;"></ul>
+                </div>
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem;">
+                  <strong class="text-bear" style="font-size: 0.78rem; text-transform: uppercase;">Key Risks &amp; Stop-Loss</strong>
+                  <ul id="list-risks" class="agent-reasons" style="margin-top: 0.5rem;"></ul>
+                </div>
+              </div>
+              <div>
+                <strong style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">Recent NSE / BSE News Wire</strong>
+                <div id="news-feed-list" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.45rem; max-height: 155px; overflow-y: auto;"></div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 3: Last 5 Annual Reports & Last 5 Quarterly Reports -->
+      <section class="collapsible-section open" id="sec-reports">
+        <div class="collapsible-header" data-toggle="sec-reports">
+          <div class="header-left">
+            <span class="sec-num">03</span>
             <div>
-              <h3 class="section-title">Catalysts, Risks &amp; Live Indian Market News</h3>
-              <p class="section-sub">Key Drivers for Tomorrow's Trading Session</p>
+              <h2 class="sec-heading-title">Last 5 Financial Reports — Annual &amp; Quarterly Performance</h2>
+              <p class="sec-heading-sub">5-Year Annual P&amp;L Statement + Last 5 Quarterly Interim Reports (Sales, OPM %, Net Profit, EPS &amp; Growth)</p>
             </div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
-            <div style="background: var(--bg-canvas); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-              <strong class="text-bull" style="font-size: 0.76rem; text-transform: uppercase;">Bullish Catalysts</strong>
-              <ul id="list-catalysts" class="agent-reasons" style="margin-top: 0.45rem;"></ul>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">5-Year Annual Revenue vs. Net Profit (₹ Cr)</h3>
+              <div class="canvas-container">
+                <canvas id="reports-bar-canvas"></canvas>
+              </div>
             </div>
-            <div style="background: var(--bg-canvas); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-              <strong class="text-bear" style="font-size: 0.76rem; text-transform: uppercase;">Key Risks &amp; Invalidation</strong>
-              <ul id="list-risks" class="agent-reasons" style="margin-top: 0.45rem;"></ul>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Last 5 Quarterly Reports — Revenue vs. Net Profit (₹ Cr)</h3>
+              <div class="canvas-container">
+                <canvas id="quarterly-bar-canvas"></canvas>
+              </div>
             </div>
           </div>
-          <div>
-            <strong style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase;">Live NSE/BSE Headlines (Google News India)</strong>
-            <div id="news-feed-list" style="display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.45rem; max-height: 150px; overflow-y: auto;"></div>
+
+          <div class="sub-panel" style="margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Last 5 Annual Reports — Consolidated Profit &amp; Loss (₹ Crores)</h3>
+            <div class="table-wrap">
+              <table id="table-annual-5" class="fin-table mono"></table>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Last 5 Quarterly Reports — Sequential Interim Results (₹ Crores)</h3>
+            <div class="table-wrap">
+              <table id="table-quarterly-5" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- TAB 2: Last 5 Annual Reports & Last 5 Quarterly Reports -->
-    <section id="tab-reports" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 4: Cash in Hand, Balance Sheet & Free Cash Flow -->
+      <section class="collapsible-section open" id="sec-cash">
+        <div class="collapsible-header" data-toggle="sec-cash">
+          <div class="header-left">
+            <span class="sec-num">04</span>
             <div>
-              <h3 class="section-title">5-Year Revenue vs. Net Profit Trajectory (₹ Cr)</h3>
-              <p class="section-sub">Consolidated Annual Performance across Last 5 Fiscal Reports</p>
+              <h2 class="sec-heading-title">Cash in Hand, Borrowings &amp; 5-Year Cash Flow Fortress</h2>
+              <p class="sec-heading-sub">Cash Equivalents + Liquid Investments vs. Long/Short-Term Debt, Net Cash &amp; Operating/Free Cash Flows</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="reports-bar-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">5-Year Cash in Hand vs. Total Borrowings (₹ Cr)</h3>
+              <div class="canvas-container">
+                <canvas id="cash-debt-canvas"></canvas>
+              </div>
+            </div>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Balance Sheet Liquidity &amp; Cash Cushion Summary</h3>
+              <div id="cash-summary-cards" class="kpi-strip"></div>
+              <div id="roce-5y-strip" style="margin-top: 0.85rem;"></div>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">5-Year Cash in Hand, Debt Breakdown &amp; Free Cash Flow Statement (₹ Crores)</h3>
+            <div class="table-wrap">
+              <table id="table-cash-5y" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 5: Stockholders & Institutional Ownership -->
+      <section class="collapsible-section open" id="sec-stockholders">
+        <div class="collapsible-header" data-toggle="sec-stockholders">
+          <div class="header-left">
+            <span class="sec-num">05</span>
             <div>
-              <h3 class="section-title">Last 5 Quarterly Reports — Revenue &amp; Net Profit (₹ Cr)</h3>
-              <p class="section-sub">Sequential Earnings Momentum &amp; Margin Progression</p>
+              <h2 class="sec-heading-title">Stockholders Pattern (Promoters, FIIs, DIIs &amp; Named Institutions)</h2>
+              <p class="sec-heading-sub">Quarterly Ownership History + Named Promoter Entities, Foreign Funds, LIC &amp; Domestic Mutual Funds</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="quarterly-bar-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Quarterly Shareholding Trend (Promoters, FIIs, DIIs, Public %)</h3>
+              <div class="canvas-container">
+                <canvas id="shareholding-canvas"></canvas>
+              </div>
+            </div>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Named Institutional &amp; Promoter Stockholders (&gt;1% Stake)</h3>
+              <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
+                <table id="table-named-holders" class="fin-table"></table>
+              </div>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">Historical Quarter-by-Quarter Shareholding Pattern &amp; Shareholder Accounts</h3>
+            <div class="table-wrap">
+              <table id="table-shp-history" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Last 5 Annual Reports — Consolidated Profit &amp; Loss Statement (₹ Crores)</h3>
-            <p class="section-sub">Includes YoY Revenue Growth, Operating Profit Margin (OPM %), Net Profit Growth, EPS &amp; Dividend Payout</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-annual-5" class="fin-table mono"></table>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Last 5 Quarterly Reports — Interim Financial Results (₹ Crores)</h3>
-            <p class="section-sub">Sequential Quarterly Revenue, Operating Profit, OPM %, Net Profit &amp; EPS</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-quarterly-5" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 3: Cash in Hand, Borrowings & Cash Flows -->
-    <section id="tab-cash" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 6: R&D Spend & Official Last 5 Annual Report PDFs -->
+      <section class="collapsible-section open" id="sec-rd">
+        <div class="collapsible-header" data-toggle="sec-rd">
+          <div class="header-left">
+            <span class="sec-num">06</span>
             <div>
-              <h3 class="section-title">5-Year Cash in Hand vs. Total Borrowings (₹ Crores)</h3>
-              <p class="section-sub">Cash Equivalents + Liquid Investments compared against Long &amp; Short-Term Debt</p>
+              <h2 class="sec-heading-title">R&amp;D Expenditure, Innovation Moat &amp; Official Annual Report PDFs</h2>
+              <p class="sec-heading-sub">5-Year R&amp;D Spend (₹ Cr &amp; % of Turnover), Intangible Assets, CapEx WIP (CWIP) &amp; Statutory Annual Reports</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="cash-debt-canvas"></canvas>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
+        </div>
+        <div class="collapsible-body">
+          <div class="two-col-grid" style="margin-bottom: 1.25rem;">
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.3rem;">5-Year R&amp;D Spend (₹ Cr) &amp; R&amp;D Intensity (% of Sales)</h3>
+              <p id="rd-source-subtitle" style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.6rem;"></p>
+              <div class="canvas-container">
+                <canvas id="rd-chart-canvas"></canvas>
+              </div>
+            </div>
+            <div class="sub-panel">
+              <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 0.65rem;">Innovation Focus &amp; Official Last 5 Annual Report PDFs (BSE/NSE)</h3>
+              <div id="rd-focus-banner" class="exec-summary-box" style="margin-bottom: 1rem;"></div>
+              <div id="annual-reports-links" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.65rem;"></div>
+            </div>
+          </div>
+
+          <div class="sub-panel">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem;">5-Year R&amp;D Expenditure, Intangible Assets, CapEx WIP (CWIP) &amp; Knowledge Cost</h3>
+            <div class="table-wrap">
+              <table id="table-rd-5y" class="fin-table mono"></table>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="panel">
-          <div class="section-header">
+      <!-- SECTION 7 (BOTTOM): Promoters, Stakeholders, Statements/Tweets/Articles & Competitor War-Room -->
+      <section class="collapsible-section open" id="sec-promoters-competitors">
+        <div class="collapsible-header" data-toggle="sec-promoters-competitors">
+          <div class="header-left">
+            <span class="sec-num">07</span>
             <div>
-              <h3 class="section-title">Balance Sheet Liquidity &amp; Cash Cushion Summary</h3>
-              <p class="section-sub">Latest Fiscal Year Breakdown</p>
+              <h2 class="sec-heading-title">Promoters, Key Stakeholders, Recent Statements / Tweets &amp; Competitor War-Room</h2>
+              <p class="sec-heading-sub">Who Controls the Company, What Promoters/CEOs Are Saying in Media &amp; Concalls, and Direct Competitor Read-Across Impact on Share Value</p>
             </div>
           </div>
-          <div id="cash-summary-cards" class="kpi-strip" style="margin-top: 0.5rem;"></div>
-          <div id="roce-5y-strip" style="margin-top: 1rem;"></div>
+          <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
         </div>
-      </div>
+        <div class="collapsible-body">
+          <!-- Promoter Group & Leadership Cards -->
+          <div class="sub-panel" style="margin-bottom: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.9rem;">
+              <div>
+                <h3 style="font-size: 1.02rem; font-weight: 700;">Promoter Group, Key Executive Leadership &amp; Strategic Stakeholders</h3>
+                <p id="prom-group-banner" style="font-size: 0.84rem; color: var(--accent-brand); font-weight: 600; margin-top: 0.2rem;"></p>
+              </div>
+            </div>
+            <div id="prom-leaders-grid" class="leader-grid"></div>
+            <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.9rem 1.1rem;">
+              <strong style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em;">
+                Major Institutional &amp; Promoter Stakeholders Watchlist
+              </strong>
+              <ul id="prom-stakeholders-watch" class="agent-reasons" style="margin-top: 0.5rem;"></ul>
+            </div>
+          </div>
 
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">5-Year Cash in Hand, Debt Breakdown &amp; Free Cash Flow Statement (₹ Crores)</h3>
-            <p class="section-sub">Extracted from Balance Sheet, Cash Flow Statement &amp; Schedules (Other Assets / Borrowings)</p>
+          <!-- Two-Column: Promoter/CEO Statements & Articles vs Direct Competitors & Their Statements -->
+          <div class="two-col-grid">
+            <div class="sub-panel">
+              <div style="margin-bottom: 0.9rem;">
+                <h3 style="font-size: 1.02rem; font-weight: 700;">What Promoters, CEO &amp; Stakeholders Are Saying (Statements, Articles &amp; Mentions)</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Live scraped statements, concall commentary &amp; media articles classified by expected Share-Price Impact</p>
+              </div>
+              <div id="prom-statements-list" class="statement-list"></div>
+            </div>
+
+            <div class="sub-panel">
+              <div style="margin-bottom: 0.9rem;">
+                <h3 style="font-size: 1.02rem; font-weight: 700;">Direct Competitors, Their Performance &amp; Statements (Share-Value Read-Across)</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">How rival order wins, pricing wars, or margin guidance directly affect this stock's value tomorrow</p>
+              </div>
+              <div id="competitors-cards-grid" class="competitor-grid"></div>
+            </div>
           </div>
         </div>
-        <div class="table-wrap">
-          <table id="table-cash-5y" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- TAB 4: Stockholders (Promoters, FIIs, DIIs, Public & Named Investors) -->
-    <section id="tab-stockholders" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
+    </div>
+
+    <!-- ======================================================================
+         PAGE 2: YESTERDAY'S TOP 20 GAINERS (NSE) + 2 REASONS WHY IT WENT UP
+         ====================================================================== -->
+    <div id="page-gainers" class="page-view">
+      <div class="collapsible-section open">
+        <div class="collapsible-header">
+          <div class="header-left">
+            <span class="sec-num" style="background: var(--signal-bull-bg); color: var(--signal-bull); border-color: var(--signal-bull);">▲20</span>
             <div>
-              <h3 class="section-title">Quarterly Shareholding Trend (Promoters, FIIs, DIIs, Public %)</h3>
-              <p class="section-sub">Institutional Accumulation / Distribution across Recent Quarters</p>
+              <h2 class="sec-heading-title">Yesterday's Top 20 NSE Gainers — Analysis &amp; 2 Reasons Why Each Stock Went Up</h2>
+              <p class="sec-heading-sub">Ranked by Latest Session % Gain across Liquid NSE Universe with Volume Surge, RSI(14), Catalyst Reasons &amp; Next-Day Follow-Through Verdict</p>
             </div>
           </div>
-          <div class="canvas-container">
-            <canvas id="shareholding-canvas"></canvas>
+          <button id="btn-refresh-gainers" class="btn btn-primary" style="font-size: 0.8rem;">↻ Refresh Live Gainers</button>
+        </div>
+        <div class="collapsible-body">
+          <div class="table-wrap">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Stock / Sector</th>
+                  <th>Close (₹)</th>
+                  <th>1D Gain %</th>
+                  <th>5D Trend</th>
+                  <th>Vol Surge</th>
+                  <th>RSI(14)</th>
+                  <th style="text-align: left;">Why Stock Went Up (Reason 1 &amp; Reason 2 Analysis)</th>
+                  <th>Next-Day Verdict &amp; Levels</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-top-gainers">
+                <tr><td colspan="10" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading Yesterday's Top 20 NSE Gainers...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="panel">
-          <div class="section-header">
+    <!-- ======================================================================
+         PAGE 3: YESTERDAY'S TOP 20 LOSERS (NSE) + 2 REASONS WHY IT WENT DOWN
+         ====================================================================== -->
+    <div id="page-losers" class="page-view">
+      <div class="collapsible-section open">
+        <div class="collapsible-header">
+          <div class="header-left">
+            <span class="sec-num" style="background: var(--signal-bear-bg); color: var(--signal-bear); border-color: var(--signal-bear);">▼20</span>
             <div>
-              <h3 class="section-title">Named Institutional &amp; Promoter Stockholders (>1% Stake)</h3>
-              <p class="section-sub">Live BSE/NSE Disclosures (Promoter Entities, Sovereign Funds, LIC, Domestic Mutual Funds)</p>
+              <h2 class="sec-heading-title">Yesterday's Top 20 NSE Losers — Analysis &amp; 2 Reasons Why Each Stock Went Down</h2>
+              <p class="sec-heading-sub">Ranked by Latest Session % Drop across Liquid NSE Universe with Volume Spike, RSI(14), Downside Causes &amp; Buy-the-Dip vs. Avoid Verdict</p>
             </div>
           </div>
-          <div class="table-wrap" style="max-height: 290px; overflow-y: auto;">
-            <table id="table-named-holders" class="fin-table"></table>
+          <button id="btn-refresh-losers" class="btn btn-primary" style="font-size: 0.8rem;">↻ Refresh Live Losers</button>
+        </div>
+        <div class="collapsible-body">
+          <div class="table-wrap">
+            <table class="fin-table mono">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Stock / Sector</th>
+                  <th>Close (₹)</th>
+                  <th>1D Drop %</th>
+                  <th>5D Trend</th>
+                  <th>Vol Spike</th>
+                  <th>RSI(14)</th>
+                  <th style="text-align: left;">Why Stock Went Down (Reason 1 &amp; Reason 2 Analysis)</th>
+                  <th>Next-Day Verdict &amp; Support</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-top-losers">
+                <tr><td colspan="10" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading Yesterday's Top 20 NSE Losers...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Historical Shareholding Pattern &amp; Shareholder Count</h3>
-            <p class="section-sub">Quarter-by-Quarter Ownership Breakdown (%)</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-shp-history" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 5: R&D Spend, Intangible Assets, CWIP & Annual Report Filings -->
-    <section id="tab-rd" class="tab-pane">
-      <div class="two-col-grid">
-        <div class="panel">
-          <div class="section-header">
-            <div>
-              <h3 class="section-title">5-Year R&amp;D Spend (₹ Cr) &amp; R&amp;D Intensity (% of Sales)</h3>
-              <p id="rd-source-subtitle" class="section-sub">Research &amp; Development Capital Allocation</p>
-            </div>
-          </div>
-          <div class="canvas-container">
-            <canvas id="rd-chart-canvas"></canvas>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="section-header">
-            <div>
-              <h3 class="section-title">Innovation Moat &amp; Official Last 5 Annual Report PDFs</h3>
-              <p class="section-sub">Direct BSE/NSE Statutory Annual Report Filings &amp; R&amp;D Focus Areas</p>
-            </div>
-          </div>
-          <div id="rd-focus-banner" class="exec-summary-box" style="margin-bottom: 1rem;"></div>
-          <div id="annual-reports-links" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.65rem;"></div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">5-Year R&amp;D Expenditure, Intangible Assets, CapEx WIP (CWIP) &amp; Knowledge Cost</h3>
-            <p class="section-sub">All figures in ₹ Crores except R&amp;D % of Sales and Employee Cost %</p>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table id="table-rd-5y" class="fin-table mono"></table>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 6: Multi-Stock Next-Day NSE Scanner -->
-    <section id="tab-scanner" class="tab-pane">
-      <div class="panel">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Nifty High-Conviction Universe — Next-Day Buy / Sell Ranked Scanner</h3>
-            <p class="section-sub">Simultaneously runs the 5-Agent Research Committee across top NSE stocks to rank tomorrow's highest-conviction setups</p>
-          </div>
-          <button id="btn-refresh-scanner" class="btn btn-primary">Run Live NSE Scan</button>
-        </div>
-        <div class="table-wrap">
-          <table id="table-scanner" class="fin-table mono">
-            <thead>
-              <tr>
-                <th>Symbol / Company</th>
-                <th>LTP (₹)</th>
-                <th>1D Chg</th>
-                <th>Next-Day Signal</th>
-                <th>AI Conviction</th>
-                <th>Fund. Score</th>
-                <th>Tech. Score</th>
-                <th>Entry Zone (₹)</th>
-                <th>Target 1 (₹)</th>
-                <th>Stop-Loss (₹)</th>
-                <th>R:R</th>
-                <th>Cash in Hand</th>
-                <th>R&amp;D %</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="scanner-tbody">
-              <tr><td colspan="14" style="text-align: center; padding: 2rem; color: var(--text-muted);">Click "Run Live NSE Scan" to rank NSE leaders for tomorrow's session...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Pluggable LLM Configuration Modal -->
   <div id="llm-modal" class="modal-backdrop">
     <div class="modal-box">
-      <div class="section-header">
-        <div>
-          <h3 class="section-title">Configure AI / LLM CIO Synthesizer</h3>
-          <p class="section-sub">Works out-of-the-box with the Quantitative Multi-Agent Engine, or plug in your LLM key</p>
-        </div>
+      <div style="margin-bottom: 1rem;">
+        <h3 style="font-size: 1.05rem; font-weight: 700;">Configure AI / LLM CIO Synthesizer</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Works out-of-the-box with the Quantitative Multi-Agent Engine, or plug in your LLM API key</p>
       </div>
       <div class="form-group">
         <label for="llm-provider">AI Provider</label>
@@ -1683,6 +1927,31 @@ async function liveBrowserResearch(symbol) {
       key_risks: [`Strict Stop-Loss at ₹${(curPrice - 0.95 * atr).toFixed(2)}`],
       llm_model_used: "GitHub Pages Serverless + Live Browser Engine",
     },
+    promoter_and_competitor_intel: {
+      promoter_group: `${companyName} Promoter & Insider Group (${latestShp.promoters_pct}% Stake)`,
+      key_leaders: [
+        {
+          name: `${companyName} Managing Director & Board`,
+          role: "Promoter & Executive Leadership",
+          focus: "Capital allocation, earnings growth, and institutional stakeholder value",
+          handle_or_source: "BSE/NSE Corporate Filings & Earnings Concalls",
+        },
+      ],
+      key_stakeholders_watch: [
+        `Promoters hold ${latestShp.promoters_pct}% | FIIs hold ${latestShp.fii_pct}% | DIIs hold ${latestShp.dii_pct}%`,
+      ],
+      promoter_statements_and_articles: [
+        {
+          speaker_or_source: `${companyName} Exchange & Earnings Filing`,
+          published: "Latest Quarter",
+          headline: `${companyName} (${sym}) reports ROE of ${roePct}% and Cash & Investments of ₹${latestCb.total_cash_in_hand_cr.toLocaleString("en-IN")} Cr`,
+          url: `https://www.screener.in/company/${encodeURIComponent(sym)}/`,
+          share_price_impact: roePct >= 15 ? "BULLISH" : "NEUTRAL",
+          why_it_affects_share_value: "Return on equity and balance sheet liquidity directly drive institutional valuation multiples.",
+        },
+      ],
+      competitors: [],
+    },
     news: [],
   };
 }
@@ -1701,6 +1970,10 @@ window.fetch = async function (url, opts) {
   // 2. Serve from GitHub Pages static JSON database (`./data/*.json`)
   if (u.includes("/api/universe")) {
     const r = await _nativeFetch("./data/universe.json");
+    if (r.ok) return r;
+  }
+  if (u.includes("/api/movers")) {
+    const r = await _nativeFetch("./data/movers.json");
     if (r.ok) return r;
   }
   if (u.includes("/api/scanner")) {
@@ -1751,12 +2024,49 @@ window.fetch = async function (url, opts) {
   return _nativeFetch(url, opts);
 };
 
-/* BharatAlpha AI — Frontend Application Logic & Custom High-DPI Financial Canvas Charts */
+/* BharatAlpha AI v3.0 — Frontend Application Logic
+   Features:
+   - Focused 5-to-10 Company Watchlist with Direct "+ Add Stock" & Remove on Page
+   - Expand / Collapse Accordion on Every Section Heading + Collapse/Expand All
+   - Deep Promoter, Stakeholder, Statement/Tweet & Competitor War-Room (Section 07)
+   - Yesterday's Top 20 Gainers & Top 20 Losers Pages with 2 Reasons per Stock
+*/
+
+const DEFAULT_5_WATCHLIST = [
+  { symbol: "RELIANCE", name: "Reliance Industries Ltd" },
+  { symbol: "TCS", name: "Tata Consultancy Services Ltd" },
+  { symbol: "TATAELXSI", name: "Tata Elxsi Ltd" },
+  { symbol: "ITC", name: "ITC Ltd" },
+  { symbol: "BIRLACABLE", name: "Birla Cable Ltd" },
+];
+
+const MAX_WATCHLIST_SIZE = 10;
+
+function loadSavedWatchlist() {
+  try {
+    const raw = localStorage.getItem("ba_watchlist_v3");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.slice(0, MAX_WATCHLIST_SIZE);
+      }
+    }
+  } catch (e) {}
+  return [...DEFAULT_5_WATCHLIST];
+}
+
+function saveWatchlist(list) {
+  try {
+    localStorage.setItem("ba_watchlist_v3", JSON.stringify(list.slice(0, MAX_WATCHLIST_SIZE)));
+  } catch (e) {}
+}
 
 const state = {
-  currentSymbol: "SUNPHARMA",
+  watchlist: loadSavedWatchlist(),
+  currentSymbol: "RELIANCE",
   bundle: null,
-  universe: [],
+  moversData: null,
+  allExpanded: true,
   llmConfig: {
     provider: localStorage.getItem("ba_llm_provider") || "quant",
     model: localStorage.getItem("ba_llm_model") || "",
@@ -1800,10 +2110,12 @@ function setLoading(active) {
 }
 
 async function initApp() {
+  state.currentSymbol = state.watchlist[0]?.symbol || "RELIANCE";
   updateLLMBadge();
-  setupTabs();
-  setupSearchAndControls();
-  await loadUniverseRibbon();
+  setupMainPageNavigation();
+  setupCollapsibleSections();
+  setupWatchlistAndAddControls();
+  renderWatchlistBar();
   await loadStockResearch(state.currentSymbol);
 }
 
@@ -1811,64 +2123,145 @@ function updateLLMBadge() {
   const badge = document.getElementById("llm-status-badge");
   if (!badge) return;
   const p = state.llmConfig.provider || "quant";
-  if (p === "quant") {
-    badge.textContent = "🧠 Engine: Quant Committee";
-  } else {
-    badge.textContent = `🧠 Engine: ${p.toUpperCase()} + Quant`;
-  }
+  badge.textContent = p === "quant" ? "🧠 Engine: Quant Committee" : `🧠 Engine: ${p.toUpperCase()} + Quant`;
 }
 
-function setupTabs() {
-  const btns = document.querySelectorAll(".tab-btn");
-  btns.forEach((btn) => {
+function setupMainPageNavigation() {
+  const navBtns = document.querySelectorAll(".page-nav-btn");
+  const companyBar = document.getElementById("company-selector-bar");
+
+  navBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-tab");
-      btns.forEach((b) => b.classList.remove("active"));
-      document.querySelectorAll(".tab-pane").forEach((p) => p.classList.remove("active"));
+      const targetPage = btn.getAttribute("data-page");
+      navBtns.forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".page-view").forEach((p) => p.classList.remove("active"));
       btn.classList.add("active");
-      const pane = document.getElementById(target);
+      const pane = document.getElementById(targetPage);
       if (pane) pane.classList.add("active");
-      if (state.bundle) {
+
+      if (targetPage === "page-company") {
+        companyBar.style.display = "flex";
+        if (state.bundle) requestAnimationFrame(() => renderAllCanvases(state.bundle));
+      } else {
+        companyBar.style.display = "flex";
+        loadTop20Movers();
+      }
+    });
+  });
+
+  document.getElementById("btn-refresh-gainers")?.addEventListener("click", () => loadTop20Movers(true));
+  document.getElementById("btn-refresh-losers")?.addEventListener("click", () => loadTop20Movers(true));
+}
+
+function setupCollapsibleSections() {
+  document.querySelectorAll(".collapsible-header[data-toggle]").forEach((hdr) => {
+    hdr.addEventListener("click", () => {
+      const secId = hdr.getAttribute("data-toggle");
+      const sec = document.getElementById(secId);
+      if (!sec) return;
+      sec.classList.toggle("open");
+      if (sec.classList.contains("open") && state.bundle) {
         requestAnimationFrame(() => renderAllCanvases(state.bundle));
       }
-      if (target === "tab-scanner") {
-        const tbody = document.getElementById("scanner-tbody");
-        if (tbody && tbody.children.length <= 1) {
-          runMarketScanner();
+    });
+  });
+
+  const toggleAllBtn = document.getElementById("btn-toggle-all-sections");
+  toggleAllBtn?.addEventListener("click", () => {
+    state.allExpanded = !state.allExpanded;
+    document.querySelectorAll("#page-company .collapsible-section").forEach((sec) => {
+      sec.classList.toggle("open", state.allExpanded);
+    });
+    toggleAllBtn.innerHTML = state.allExpanded
+      ? `<span>↕ Collapse All Sections</span>`
+      : `<span>↕ Expand All Sections</span>`;
+    if (state.allExpanded && state.bundle) {
+      requestAnimationFrame(() => renderAllCanvases(state.bundle));
+    }
+  });
+}
+
+function renderWatchlistBar() {
+  const container = document.getElementById("watchlist-chips-container");
+  const counterLabel = document.getElementById("watchlist-count-label");
+  if (!container) return;
+
+  counterLabel.textContent = `My Portfolio (${state.watchlist.length}/${MAX_WATCHLIST_SIZE}):`;
+
+  container.innerHTML = state.watchlist
+    .map((item, idx) => {
+      const isAct = item.symbol === state.currentSymbol;
+      return `
+      <div class="company-chip ${isAct ? "active" : ""}" data-sym="${item.symbol}" title="${item.name || item.symbol}">
+        <span class="mono" style="font-size: 0.75rem; color: var(--text-muted);">${idx + 1}.</span>
+        <span>${item.symbol}</span>
+        ${
+          state.watchlist.length > 1
+            ? `<button class="chip-remove" data-remove="${item.symbol}" title="Remove ${item.symbol} from list">×</button>`
+            : ""
         }
+      </div>
+    `;
+    })
+    .join("");
+
+  container.querySelectorAll(".company-chip").forEach((chip) => {
+    chip.addEventListener("click", (e) => {
+      if (e.target.closest(".chip-remove")) return;
+      const sym = chip.getAttribute("data-sym");
+      switchToCompanyPageAndLoad(sym);
+    });
+  });
+
+  container.querySelectorAll(".chip-remove").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const symToRemove = btn.getAttribute("data-remove");
+      state.watchlist = state.watchlist.filter((x) => x.symbol !== symToRemove);
+      saveWatchlist(state.watchlist);
+      if (state.currentSymbol === symToRemove && state.watchlist.length > 0) {
+        state.currentSymbol = state.watchlist[0].symbol;
+        loadStockResearch(state.currentSymbol);
       }
+      renderWatchlistBar();
     });
   });
 }
 
-async function loadUniverseRibbon() {
-  try {
-    const res = await fetch("/api/universe");
-    const data = await res.json();
-    state.universe = data.universe || [];
-    const ribbon = document.getElementById("ticker-ribbon");
-    if (!ribbon) return;
-    ribbon.innerHTML = `<span class="ticker-label">NSE Watchlist:</span>`;
-    state.universe.forEach((item) => {
-      const chip = document.createElement("button");
-      chip.className = `ticker-chip ${item.symbol === state.currentSymbol ? "active" : ""}`;
-      chip.dataset.symbol = item.symbol;
-      chip.textContent = item.symbol;
-      chip.title = `${item.name} (${item.sector})`;
-      chip.addEventListener("click", () => {
-        loadStockResearch(item.symbol);
-      });
-      ribbon.appendChild(chip);
-    });
-  } catch (err) {
-    console.error("Failed loading universe:", err);
+function addStockToWatchlist(symbol, name = "") {
+  const sym = (symbol || "").trim().toUpperCase().replace(".NS", "").replace(".BO", "");
+  if (!sym) return;
+
+  const existing = state.watchlist.find((x) => x.symbol === sym);
+  if (existing) {
+    switchToCompanyPageAndLoad(sym);
+    return;
   }
+
+  if (state.watchlist.length >= MAX_WATCHLIST_SIZE) {
+    alert(`Your watchlist already has ${MAX_WATCHLIST_SIZE} companies. Click '×' on any company chip at the top to free a slot first.`);
+    return;
+  }
+
+  state.watchlist.push({ symbol: sym, name: name || sym });
+  saveWatchlist(state.watchlist);
+  renderWatchlistBar();
+  switchToCompanyPageAndLoad(sym);
 }
 
-function setupSearchAndControls() {
+function switchToCompanyPageAndLoad(symbol) {
+  const compBtn = document.querySelector('.page-nav-btn[data-page="page-company"]');
+  if (compBtn && !compBtn.classList.contains("active")) {
+    compBtn.click();
+  }
+  loadStockResearch(symbol);
+}
+
+function setupWatchlistAndAddControls() {
   const input = document.getElementById("stock-search-input");
   const dropdown = document.getElementById("search-dropdown");
-  const btnRun = document.getElementById("btn-run-research");
+  const btnAdd = document.getElementById("btn-add-stock");
+  const btnReset = document.getElementById("btn-reset-watchlist");
 
   let debounceTimer = null;
   input.addEventListener("input", () => {
@@ -1890,9 +2283,9 @@ function setupSearchAndControls() {
         dropdown.innerHTML = items
           .map(
             (it) => `
-          <div class="search-item" data-sym="${it.symbol}">
+          <div class="search-item" data-sym="${it.symbol}" data-name="${it.name || it.symbol}">
             <span><strong>${it.name}</strong></span>
-            <span class="mono badge-neutral">NSE: ${it.symbol}</span>
+            <span class="mono badge-neutral">+ Add ${it.symbol}</span>
           </div>
         `
           )
@@ -1901,9 +2294,10 @@ function setupSearchAndControls() {
         dropdown.querySelectorAll(".search-item").forEach((el) => {
           el.addEventListener("click", () => {
             const sym = el.getAttribute("data-sym");
-            input.value = sym;
+            const nm = el.getAttribute("data-name");
+            input.value = "";
             dropdown.classList.remove("open");
-            loadStockResearch(sym);
+            addStockToWatchlist(sym, nm);
           });
         });
       } catch (e) {
@@ -1916,28 +2310,36 @@ function setupSearchAndControls() {
     if (e.key === "Enter") {
       dropdown.classList.remove("open");
       const sym = input.value.trim().toUpperCase();
-      if (sym) loadStockResearch(sym);
+      if (sym) {
+        input.value = "";
+        addStockToWatchlist(sym, sym);
+      }
     }
+  });
+
+  btnAdd.addEventListener("click", () => {
+    dropdown.classList.remove("open");
+    const sym = input.value.trim().toUpperCase();
+    if (sym) {
+      input.value = "";
+      addStockToWatchlist(sym, sym);
+    } else {
+      input.focus();
+    }
+  });
+
+  btnReset.addEventListener("click", () => {
+    state.watchlist = [...DEFAULT_5_WATCHLIST];
+    saveWatchlist(state.watchlist);
+    state.currentSymbol = "RELIANCE";
+    renderWatchlistBar();
+    switchToCompanyPageAndLoad("RELIANCE");
   });
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".search-bar-wrap")) {
+    if (!e.target.closest(".add-stock-wrap")) {
       dropdown.classList.remove("open");
     }
-  });
-
-  btnRun.addEventListener("click", () => {
-    const sym = input.value.trim().toUpperCase() || state.currentSymbol;
-    loadStockResearch(sym);
-  });
-
-  document.getElementById("btn-open-scanner").addEventListener("click", () => {
-    const scanTabBtn = document.querySelector('[data-tab="tab-scanner"]');
-    if (scanTabBtn) scanTabBtn.click();
-  });
-
-  document.getElementById("btn-refresh-scanner").addEventListener("click", () => {
-    runMarketScanner();
   });
 
   // LLM Modal controls
@@ -1971,11 +2373,8 @@ function setupSearchAndControls() {
 async function loadStockResearch(symbol) {
   const sym = symbol.trim().toUpperCase();
   state.currentSymbol = sym;
+  renderWatchlistBar();
   setLoading(true);
-
-  document.querySelectorAll(".ticker-chip").forEach((ch) => {
-    ch.classList.toggle("active", ch.dataset.symbol === sym);
-  });
 
   try {
     let res;
@@ -1994,9 +2393,17 @@ async function loadStockResearch(symbol) {
     }
     const bundle = await res.json();
     state.bundle = bundle;
+
+    // Update name in watchlist if found
+    const wlItem = state.watchlist.find((x) => x.symbol === bundle.overview.symbol);
+    if (wlItem && bundle.overview.name) {
+      wlItem.name = bundle.overview.name;
+      saveWatchlist(state.watchlist);
+    }
+
     renderBundle(bundle);
   } catch (err) {
-    alert(`Error analyzing ${sym}: ${err.message}`);
+    alert(`Could not load '${sym}': ${err.message}`);
   } finally {
     setLoading(false);
   }
@@ -2009,13 +2416,14 @@ function renderBundle(b) {
   const shp = b.stockholders;
   const rd = b.rd_and_innovation;
   const tech = b.technicals;
+  const intel = b.promoter_and_competitor_intel || {};
 
-  // Header & Overview
+  // Section 01: Overview & Next-Day Ticket
   document.getElementById("ov-company-name").textContent = ov.name;
   document.getElementById("ov-symbol-badge").textContent = `NSE: ${ov.symbol}`;
   document.getElementById("ov-sector-badge").textContent = `${ov.sector} • ${ov.industry}`;
   document.getElementById("ov-piotroski-badge").textContent = `Piotroski F-Score: ${ov.piotroski_score}/9`;
-  document.getElementById("ov-timestamp").textContent = `As of ${b.fetched_at}`;
+  document.getElementById("ov-timestamp").textContent = `Updated: ${b.fetched_at}`;
 
   document.getElementById("ov-current-price").textContent = `₹${fmtNum(tech.current_price)}`;
   const chgEl = document.getElementById("ov-day-change");
@@ -2023,7 +2431,6 @@ function renderBundle(b) {
   chgEl.textContent = `${isUp ? "▲" : "▼"} ${fmtPct(tech.day_change_pct, 2, true)} (1D) | 1Y: ${fmtPct(tech.return_1y_pct, 1, true)}`;
   chgEl.className = `price-change ${isUp ? "text-bull" : "text-bear"}`;
 
-  // KPI strip
   document.getElementById("kpi-mcap").textContent = fmtCr(ov.market_cap_cr);
   document.getElementById("kpi-cash").textContent = fmtCr(cb.total_cash_in_hand_cr);
   document.getElementById("kpi-debt").textContent = fmtCr(cb.total_borrowings_cr);
@@ -2036,16 +2443,13 @@ function renderBundle(b) {
   document.getElementById("ov-model-used").textContent = gd.llm_model_used;
   document.getElementById("ov-exec-summary").textContent = gd.executive_summary;
 
-  // Next-Day Guidance Card
   const banner = document.getElementById("gd-action-banner");
   banner.textContent = gd.action;
-  if (gd.action.includes("BUY")) {
-    banner.className = "signal-banner bull";
-  } else if (gd.action.includes("SELL") || gd.action.includes("AVOID")) {
-    banner.className = "signal-banner bear";
-  } else {
-    banner.className = "signal-banner hold";
-  }
+  banner.className = gd.action.includes("BUY")
+    ? "signal-banner bull"
+    : gd.action.includes("SELL") || gd.action.includes("AVOID")
+    ? "signal-banner bear"
+    : "signal-banner hold";
 
   document.getElementById("gd-conviction-score").textContent = `${gd.conviction_score.toFixed(1)} / 100`;
   document.getElementById("gd-entry-zone").textContent = `₹${fmtNum(gd.entry_zone_low)} – ₹${fmtNum(gd.entry_zone_high)}`;
@@ -2058,7 +2462,7 @@ function renderBundle(b) {
   document.getElementById("bar-tech-score").style.width = `${gd.technical_score}%`;
   document.getElementById("txt-tech-score").textContent = `${gd.technical_score}/100`;
   document.getElementById("gd-rr").textContent = `1 : ${gd.risk_reward_ratio}`;
-  document.getElementById("gd-pos-size").textContent = `${gd.position_size_suggestion_pct}% of Capital`;
+  document.getElementById("gd-pos-size").textContent = `${gd.position_size_suggestion_pct}% Capital`;
   document.getElementById("gd-atr-range").textContent = `±₹${fmtNum(tech.atr_14)} (${fmtPct(tech.atr_pct, 2)})`;
 
   renderAgentCommittee(b.agent_committee);
@@ -2067,12 +2471,13 @@ function renderBundle(b) {
   renderCashSection(cb);
   renderStockholdersSection(shp);
   renderRDSection(rd);
-  renderAllCanvases(b);
+  renderPromotersAndCompetitorsSection(intel, ov.name);
+  requestAnimationFrame(() => renderAllCanvases(b));
 }
 
 function renderAgentCommittee(committee) {
   const grid = document.getElementById("agents-committee-grid");
-  grid.innerHTML = committee
+  grid.innerHTML = (committee || [])
     .map((ag) => {
       const cls =
         ag.signal === "BULLISH"
@@ -2121,7 +2526,7 @@ function renderCatalystsRisksNews(gd, news, tech) {
 
   const newsEl = document.getElementById("news-feed-list");
   if (!news || !news.length) {
-    newsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.78rem;">No recent news headlines found.</div>`;
+    newsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.82rem;">No recent news headlines found.</div>`;
     return;
   }
   newsEl.innerHTML = news
@@ -2133,9 +2538,9 @@ function renderCatalystsRisksNews(gd, news, tech) {
           ? "var(--signal-bear)"
           : "var(--text-muted)";
       return `
-      <a href="${n.url}" target="_blank" rel="noopener" style="text-decoration: none; color: inherit; background: var(--bg-canvas); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 0.45rem 0.65rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
-        <span style="font-size: 0.78rem; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${n.title}</span>
-        <span class="mono" style="font-size: 0.68rem; color: ${color}; white-space: nowrap;">${n.source} • ${n.sentiment}</span>
+      <a href="${n.url}" target="_blank" rel="noopener" style="text-decoration: none; color: inherit; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.55rem 0.75rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem;">
+        <span style="font-size: 0.84rem; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${n.title}</span>
+        <span class="mono" style="font-size: 0.72rem; color: ${color}; white-space: nowrap;">${n.source} • ${n.sentiment}</span>
       </a>
     `;
     })
@@ -2149,12 +2554,7 @@ function renderReportsTables(annual5, quarterly5) {
     const headers = reports.map((r) => `<th>${r.period}</th>`).join("");
     const rowSpec = [
       { label: "Revenue / Sales (₹ Cr)", key: "revenue_cr", fmt: (v) => fmtNum(v, 0) },
-      {
-        label: "YoY / Seq Revenue Growth %",
-        key: "revenue_growth_pct",
-        fmt: (v) => fmtPct(v, 1, true),
-        colored: true,
-      },
+      { label: "YoY / Seq Revenue Growth %", key: "revenue_growth_pct", fmt: (v) => fmtPct(v, 1, true), colored: true },
       { label: "Total Expenses (₹ Cr)", key: "expenses_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Operating Profit / EBIT (₹ Cr)", key: "operating_profit_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Operating Profit Margin (OPM %)", key: "opm_pct", fmt: (v) => fmtPct(v, 1) },
@@ -2163,20 +2563,11 @@ function renderReportsTables(annual5, quarterly5) {
       { label: "Depreciation (₹ Cr)", key: "depreciation_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Profit Before Tax (₹ Cr)", key: "profit_before_tax_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Net Profit (₹ Cr)", key: "net_profit_cr", fmt: (v) => fmtNum(v, 0) },
-      {
-        label: "Net Profit Growth %",
-        key: "net_profit_growth_pct",
-        fmt: (v) => fmtPct(v, 1, true),
-        colored: true,
-      },
+      { label: "Net Profit Growth %", key: "net_profit_growth_pct", fmt: (v) => fmtPct(v, 1, true), colored: true },
       { label: "EPS (₹ per Share)", key: "eps_inr", fmt: (v) => `₹${fmtNum(v, 2)}` },
     ];
     if (isAnnual) {
-      rowSpec.push({
-        label: "Dividend Payout %",
-        key: "dividend_payout_pct",
-        fmt: (v) => fmtPct(v, 1),
-      });
+      rowSpec.push({ label: "Dividend Payout %", key: "dividend_payout_pct", fmt: (v) => fmtPct(v, 1) });
     }
 
     const bodyHtml = rowSpec
@@ -2243,12 +2634,12 @@ function renderCashSection(cb) {
   const roceStrip = document.getElementById("roce-5y-strip");
   if (cb.roce_5y_series && cb.roce_5y_series.length) {
     roceStrip.innerHTML = `
-      <div style="font-size: 0.76rem; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;">5-Year Return on Capital Employed (ROCE %)</div>
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase;">5-Year Return on Capital Employed (ROCE %)</div>
+      <div style="display: flex; gap: 0.55rem; flex-wrap: wrap;">
         ${cb.roce_5y_series
           .map(
             (r) => `
-          <div class="badge-neutral mono" style="padding: 0.35rem 0.65rem;">
+          <div class="badge-neutral mono" style="padding: 0.4rem 0.7rem;">
             ${r.period}: <strong style="color: var(--text-primary);">${r.roce_pct}%</strong>
           </div>
         `
@@ -2339,11 +2730,7 @@ function renderStockholdersSection(shp) {
     { label: "Domestic Institutions (DII) %", key: "dii_pct", fmt: (v) => fmtPct(v, 2) },
     { label: "Government Holding %", key: "government_pct", fmt: (v) => fmtPct(v, 2) },
     { label: "Public / Retail Float %", key: "public_pct", fmt: (v) => fmtPct(v, 2) },
-    {
-      label: "Total Shareholder Accounts",
-      key: "num_shareholders",
-      fmt: (v) => (v ? Number(v).toLocaleString("en-IN") : "—"),
-    },
+    { label: "Total Shareholder Accounts", key: "num_shareholders", fmt: (v) => (v ? Number(v).toLocaleString("en-IN") : "—") },
   ];
   const body = spec
     .map((s) => {
@@ -2357,9 +2744,9 @@ function renderStockholdersSection(shp) {
 function renderRDSection(rd) {
   document.getElementById("rd-source-subtitle").textContent = `Source: ${rd.rd_data_source}`;
   document.getElementById("rd-focus-banner").innerHTML = `
-    <div style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">R&amp;D &amp; Innovation Pipeline Focus</div>
-    <div style="color: var(--text-primary); font-weight: 500;">${rd.innovation_focus}</div>
-    <div style="margin-top: 0.55rem; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.78rem;" class="mono">
+    <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.3rem;">R&amp;D &amp; Innovation Pipeline Focus</div>
+    <div style="color: var(--text-primary); font-weight: 600;">${rd.innovation_focus}</div>
+    <div style="margin-top: 0.65rem; display: flex; gap: 1.1rem; flex-wrap: wrap; font-size: 0.82rem;" class="mono">
       <span>Latest R&amp;D: <strong class="text-bull">${fmtCr(rd.latest_rd_spend_cr)} (${fmtPct(rd.latest_rd_pct_of_sales, 2)})</strong></span>
       <span>5Y Cumulative R&amp;D: <strong>${fmtCr(rd.cumulative_5y_rd_cr)}</strong></span>
       <span>Intangibles: <strong>${fmtCr(rd.intangible_assets_cr)}</strong></span>
@@ -2370,14 +2757,14 @@ function renderRDSection(rd) {
   const docsEl = document.getElementById("annual-reports-links");
   const docs = rd.annual_reports_5y || [];
   if (!docs.length) {
-    docsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.8rem;">No direct Annual Report PDF links found.</div>`;
+    docsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.84rem;">No direct Annual Report PDF links found.</div>`;
   } else {
     docsEl.innerHTML = docs
       .map(
         (d) => `
       <a href="${d.url}" target="_blank" rel="noopener" class="btn" style="justify-content: space-between; text-decoration: none;">
         <span>📄 ${d.title}</span>
-        <span class="mono" style="font-size: 0.7rem; color: var(--accent-brand);">PDF ↗</span>
+        <span class="mono" style="font-size: 0.74rem; color: var(--accent-brand);">PDF ↗</span>
       </a>
     `
       )
@@ -2407,67 +2794,217 @@ function renderRDSection(rd) {
   tbl.innerHTML = `<thead><tr><th>R&amp;D &amp; Innovation Metric</th>${headers}</tr></thead><tbody>${body}</tbody>`;
 }
 
-async function runMarketScanner() {
-  const tbody = document.getElementById("scanner-tbody");
-  const btn = document.getElementById("btn-refresh-scanner");
-  if (!tbody) return;
-  btn.disabled = true;
-  btn.textContent = "Scanning NSE Universe...";
-  tbody.innerHTML = `<tr><td colspan="14" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Running 5-Agent Research Committee across top NSE stocks...</td></tr>`;
+function renderPromotersAndCompetitorsSection(intel, companyName) {
+  document.getElementById("prom-group-banner").textContent =
+    intel.promoter_group || `Promoters & Strategic Institutional Leadership of ${companyName}`;
 
+  const leadersGrid = document.getElementById("prom-leaders-grid");
+  const leaders = intel.key_leaders || [];
+  leadersGrid.innerHTML = leaders
+    .map(
+      (ld) => `
+    <div class="leader-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+        <strong style="font-size: 0.96rem; color: var(--text-primary);">${ld.name}</strong>
+        <span class="badge-neutral" style="font-size: 0.7rem;">${ld.role}</span>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.45rem;">
+        <strong>Strategic Focus:</strong> ${ld.focus}
+      </p>
+      <div class="mono" style="font-size: 0.73rem; color: var(--text-muted); margin-top: 0.45rem;">
+        📡 Channel: ${ld.handle_or_source || "Corporate Filings & Concalls"}
+      </div>
+    </div>
+  `
+    )
+    .join("");
+
+  const watchEl = document.getElementById("prom-stakeholders-watch");
+  watchEl.innerHTML = (intel.key_stakeholders_watch || [])
+    .map((w) => `<li>${w}</li>`)
+    .join("");
+
+  // Statements & Articles
+  const stmtList = document.getElementById("prom-statements-list");
+  const stmts = intel.promoter_statements_and_articles || [];
+  if (!stmts.length) {
+    stmtList.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem;">No recent promoter or executive statements found.</div>`;
+  } else {
+    stmtList.innerHTML = stmts
+      .map((st) => {
+        const badgeCls =
+          st.share_price_impact === "BULLISH"
+            ? "signal-banner bull"
+            : st.share_price_impact === "BEARISH"
+            ? "signal-banner bear"
+            : "signal-banner hold";
+        return `
+        <div class="statement-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.76rem; font-weight: 700; color: var(--accent-brand);">${st.speaker_or_source}</span>
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+              <span class="mono" style="font-size: 0.7rem; color: var(--text-muted);">${st.published}</span>
+              <span class="${badgeCls}" style="font-size: 0.7rem; padding: 0.14rem 0.5rem;">${st.share_price_impact} IMPACT</span>
+            </div>
+          </div>
+          <a href="${st.url || '#'}" target="_blank" rel="noopener" style="font-size: 0.92rem; font-weight: 700; color: var(--text-primary); text-decoration: none;">
+            “${st.headline}” ↗
+          </a>
+          <div style="font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-surface); padding: 0.45rem 0.65rem; border-radius: 6px; border-left: 3px solid var(--accent-brand);">
+            <strong>Share-Value Effect:</strong> ${st.why_it_affects_share_value}
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+  }
+
+  // Competitors Grid
+  const compGrid = document.getElementById("competitors-cards-grid");
+  const comps = intel.competitors || [];
+  if (!comps.length) {
+    compGrid.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem;">No competitor data mapped.</div>`;
+  } else {
+    compGrid.innerHTML = comps
+      .map((c) => {
+        const chgUp = (c.day_change_pct || 0) >= 0;
+        const sigCls =
+          c.read_across_signal === "POSITIVE READ-ACROSS"
+            ? "text-bull"
+            : c.read_across_signal === "COMPETITIVE THREAT"
+            ? "text-bear"
+            : "text-hold";
+        return `
+        <div class="competitor-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+            <div>
+              <strong style="font-size: 0.95rem;">${c.name} (<span class="mono">${c.symbol}</span>)</strong>
+              <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">${c.segment}</span>
+            </div>
+            <div style="text-align: right;" class="mono">
+              <div style="font-weight: 700;">${c.current_price ? `₹${fmtNum(c.current_price)}` : "NSE Peer"}</div>
+              <div class="${chgUp ? "text-bull" : "text-bear"}" style="font-size: 0.76rem;">
+                1D: ${fmtPct(c.day_change_pct, 2, true)} | 1M: ${fmtPct(c.return_1m_pct, 1, true)}
+              </div>
+            </div>
+          </div>
+
+          <a href="${c.latest_news_url || '#'}" target="_blank" rel="noopener" style="font-size: 0.84rem; color: var(--text-primary); text-decoration: none; background: var(--bg-surface); padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
+            📰 <strong>Latest Peer Statement/News:</strong> ${c.latest_statement_or_news} ↗
+          </a>
+
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">
+            <span class="mono ${sigCls}" style="font-weight: 700;">[${c.read_across_signal}]</span>
+            ${c.impact_on_share_value}
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.2rem;">
+            <button class="btn btn-add-comp" data-sym="${c.symbol}" data-name="${c.name}" style="padding: 0.28rem 0.65rem; font-size: 0.74rem;">
+              + Add ${c.symbol} to My 10
+            </button>
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+
+    compGrid.querySelectorAll(".btn-add-comp").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        addStockToWatchlist(btn.getAttribute("data-sym"), btn.getAttribute("data-name"));
+      });
+    });
+  }
+}
+
+/* ============================================================================
+   Yesterday's Top 20 Gainers & Top 20 Losers Loader & Renderer
+   ============================================================================ */
+
+async function loadTop20Movers(force = false) {
+  if (state.moversData && !force) {
+    renderMoversTables(state.moversData);
+    return;
+  }
+  setLoading(true);
   try {
-    const res = await fetch("/api/scanner");
+    const res = await fetch("/api/movers");
     const data = await res.json();
-    const items = data.items || [];
-    tbody.innerHTML = items
-      .map((it) => {
-        const sigCls = it.action.includes("BUY")
-          ? "text-bull"
-          : it.action.includes("SELL") || it.action.includes("AVOID")
-          ? "text-bear"
-          : "text-hold";
-        const chgCls = it.day_change_pct >= 0 ? "text-bull" : "text-bear";
+    state.moversData = data;
+    renderMoversTables(data);
+  } catch (err) {
+    console.error("Failed loading Top 20 Movers:", err);
+  } finally {
+    setLoading(false);
+  }
+}
+
+function renderMoversTables(data) {
+  const buildMoverRows = (items, isGainer) => {
+    if (!items || !items.length) {
+      return `<tr><td colspan="10" style="text-align:center; padding: 2rem; color: var(--text-muted);">No movers data available.</td></tr>`;
+    }
+    return items
+      .map((m) => {
+        const chgCls = m.day_change_pct >= 0 ? "text-bull" : "text-bear";
+        const trendCls = m.return_5d_pct >= 0 ? "text-bull" : "text-bear";
+        const verdictCls = m.next_day_verdict.includes("BUY") ? "text-bull" : "text-hold";
         return `
         <tr>
+          <td><strong>#${m.rank}</strong></td>
           <td>
-            <strong>${it.symbol}</strong>
-            <span style="display:block; font-size:0.7rem; color:var(--text-muted); font-family:var(--font-sans);">${it.name}</span>
+            <strong style="font-size: 0.92rem;">${m.symbol}</strong>
+            <span style="display: block; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-sans);">${m.name}</span>
+            <span class="badge-neutral" style="font-size: 0.68rem; font-family: var(--font-sans);">${m.sector}</span>
           </td>
-          <td>₹${fmtNum(it.current_price)}</td>
-          <td class="${chgCls}">${fmtPct(it.day_change_pct, 2, true)}</td>
-          <td class="${sigCls}"><strong>${it.action}</strong></td>
-          <td><strong>${it.conviction_score.toFixed(1)}</strong>/100</td>
-          <td>${it.fundamental_score.toFixed(1)}</td>
-          <td>${it.technical_score.toFixed(1)}</td>
-          <td>${it.entry_zone}</td>
-          <td class="text-bull">₹${fmtNum(it.target_1)}</td>
-          <td class="text-bear">₹${fmtNum(it.stop_loss)}</td>
-          <td>1:${it.risk_reward}</td>
-          <td>${fmtCr(it.cash_in_hand_cr)}</td>
-          <td>${fmtPct(it.rd_pct, 2)}</td>
+          <td>₹${fmtNum(m.current_price)}</td>
+          <td class="${chgCls}" style="font-size: 0.96rem; font-weight: 800;">
+            ${isGainer ? "▲" : "▼"} ${fmtPct(m.day_change_pct, 2, true)}
+          </td>
+          <td class="${trendCls}">${fmtPct(m.return_5d_pct, 1, true)}</td>
+          <td>${fmtNum(m.volume_surge_ratio, 2)}x</td>
+          <td>${fmtNum(m.rsi_14, 1)}</td>
+          <td class="mover-reason-box">
+            <div style="margin-bottom: 0.35rem;">
+              <strong style="color: var(--text-primary);">Reason 1 (Fundamental / News):</strong> ${m.reason_1}
+            </div>
+            <div>
+              <strong style="color: var(--text-primary);">Reason 2 (Technical / Volume):</strong> ${m.reason_2}
+            </div>
+            ${
+              m.headline_title
+                ? `<a href="${m.headline_url}" target="_blank" rel="noopener" style="display: inline-block; margin-top: 0.3rem; font-size: 0.75rem; color: var(--accent-brand); text-decoration: none;">📰 Source: ${m.headline_source} ↗</a>`
+                : ""
+            }
+          </td>
+          <td style="text-align: right;">
+            <strong class="${verdictCls}" style="display: block; font-size: 0.78rem;">${m.next_day_verdict}</strong>
+            <span style="font-size: 0.74rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              T1: <span class="text-bull">₹${fmtNum(m.next_day_target)}</span> | SL: <span class="text-bear">₹${fmtNum(m.next_day_stop_loss)}</span>
+            </span>
+          </td>
           <td>
-            <button class="btn btn-primary btn-inspect-scan" data-sym="${it.symbol}" style="padding:0.25rem 0.6rem; font-size:0.72rem;">
-              Deep Dive
-            </button>
+            <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+              <button class="btn btn-primary btn-mover-add" data-sym="${m.symbol}" data-name="${m.name}" style="padding: 0.3rem 0.6rem; font-size: 0.74rem;">
+                + Add &amp; Inspect
+              </button>
+            </div>
           </td>
         </tr>
       `;
       })
       .join("");
+  };
 
-    tbody.querySelectorAll(".btn-inspect-scan").forEach((b) => {
-      b.addEventListener("click", () => {
-        const sym = b.getAttribute("data-sym");
-        document.querySelector('[data-tab="tab-committee"]').click();
-        loadStockResearch(sym);
-      });
+  const gBody = document.getElementById("tbody-top-gainers");
+  const lBody = document.getElementById("tbody-top-losers");
+  if (gBody) gBody.innerHTML = buildMoverRows(data.top_20_gainers, true);
+  if (lBody) lBody.innerHTML = buildMoverRows(data.top_20_losers, false);
+
+  document.querySelectorAll(".btn-mover-add").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      addStockToWatchlist(btn.getAttribute("data-sym"), btn.getAttribute("data-name"));
     });
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="14" class="text-bear" style="text-align:center; padding: 1.5rem;">Scanner error: ${e.message}</td></tr>`;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Run Live NSE Scan";
-  }
+  });
 }
 
 /* ============================================================================
@@ -2552,7 +3089,6 @@ function drawPriceDmaCanvas(tech, gd) {
 
   ctx.clearRect(0, 0, w, h);
 
-  // Horizontal Grid
   ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
   ctx.lineWidth = 1;
   ctx.font = "11px 'JetBrains Mono', monospace";
@@ -2567,7 +3103,6 @@ function drawPriceDmaCanvas(tech, gd) {
     ctx.fillText(`₹${Math.round(val)}`, w - pad.right + 6, y + 4);
   }
 
-  // Draw T1 and SL dashed lines
   const drawLevelLine = (val, color, label) => {
     if (!val || val < minY || val > maxY) return;
     const y = yOf(val);
@@ -2587,7 +3122,6 @@ function drawPriceDmaCanvas(tech, gd) {
   drawLevelLine(gd.target_1_next_day, "#22c55e", "T1");
   drawLevelLine(gd.stop_loss, "#f43f5e", "SL");
 
-  // 200-DMA
   ctx.strokeStyle = "#f59e0b";
   ctx.lineWidth = 1.4;
   ctx.beginPath();
@@ -2597,7 +3131,6 @@ function drawPriceDmaCanvas(tech, gd) {
   });
   ctx.stroke();
 
-  // 50-DMA
   ctx.strokeStyle = "#38bdf8";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -2607,7 +3140,6 @@ function drawPriceDmaCanvas(tech, gd) {
   });
   ctx.stroke();
 
-  // Price line + subtle area gradient
   const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
   grad.addColorStop(0, "rgba(34, 197, 94, 0.22)");
   grad.addColorStop(1, "rgba(34, 197, 94, 0.0)");
@@ -2627,7 +3159,6 @@ function drawPriceDmaCanvas(tech, gd) {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Legend
   ctx.font = "11px 'Plus Jakarta Sans', sans-serif";
   const legend = [
     { label: "Close Price", color: "#22c55e" },
@@ -2718,12 +3249,7 @@ function drawShareholdingCanvas(qHist) {
   const groupW = cw / qHist.length;
   const barW = Math.min(34, groupW * 0.55);
 
-  const colors = {
-    prom: "#3b82f6",
-    fii: "#22c55e",
-    dii: "#f59e0b",
-    pub: "#64748b",
-  };
+  const colors = { prom: "#3b82f6", fii: "#22c55e", dii: "#f59e0b", pub: "#64748b" };
 
   qHist.forEach((q, i) => {
     const cx = pad.left + (i + 0.5) * groupW;
@@ -2794,7 +3320,6 @@ function drawRDCanvas(rdHist) {
     ctx.fillText(`₹${Math.round(r.rd_spend_cr)}Cr`, cx, y - 5);
   });
 
-  // R&D % line
   ctx.strokeStyle = "#22c55e";
   ctx.lineWidth = 2;
   ctx.beginPath();

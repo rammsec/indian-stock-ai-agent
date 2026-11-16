@@ -1,9 +1,46 @@
-/* BharatAlpha AI — Frontend Application Logic & Custom High-DPI Financial Canvas Charts */
+/* BharatAlpha AI v3.0 — Frontend Application Logic
+   Features:
+   - Focused 5-to-10 Company Watchlist with Direct "+ Add Stock" & Remove on Page
+   - Expand / Collapse Accordion on Every Section Heading + Collapse/Expand All
+   - Deep Promoter, Stakeholder, Statement/Tweet & Competitor War-Room (Section 07)
+   - Yesterday's Top 20 Gainers & Top 20 Losers Pages with 2 Reasons per Stock
+*/
+
+const DEFAULT_5_WATCHLIST = [
+  { symbol: "RELIANCE", name: "Reliance Industries Ltd" },
+  { symbol: "TCS", name: "Tata Consultancy Services Ltd" },
+  { symbol: "TATAELXSI", name: "Tata Elxsi Ltd" },
+  { symbol: "ITC", name: "ITC Ltd" },
+  { symbol: "BIRLACABLE", name: "Birla Cable Ltd" },
+];
+
+const MAX_WATCHLIST_SIZE = 10;
+
+function loadSavedWatchlist() {
+  try {
+    const raw = localStorage.getItem("ba_watchlist_v3");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.slice(0, MAX_WATCHLIST_SIZE);
+      }
+    }
+  } catch (e) {}
+  return [...DEFAULT_5_WATCHLIST];
+}
+
+function saveWatchlist(list) {
+  try {
+    localStorage.setItem("ba_watchlist_v3", JSON.stringify(list.slice(0, MAX_WATCHLIST_SIZE)));
+  } catch (e) {}
+}
 
 const state = {
-  currentSymbol: "SUNPHARMA",
+  watchlist: loadSavedWatchlist(),
+  currentSymbol: "RELIANCE",
   bundle: null,
-  universe: [],
+  moversData: null,
+  allExpanded: true,
   llmConfig: {
     provider: localStorage.getItem("ba_llm_provider") || "quant",
     model: localStorage.getItem("ba_llm_model") || "",
@@ -47,10 +84,12 @@ function setLoading(active) {
 }
 
 async function initApp() {
+  state.currentSymbol = state.watchlist[0]?.symbol || "RELIANCE";
   updateLLMBadge();
-  setupTabs();
-  setupSearchAndControls();
-  await loadUniverseRibbon();
+  setupMainPageNavigation();
+  setupCollapsibleSections();
+  setupWatchlistAndAddControls();
+  renderWatchlistBar();
   await loadStockResearch(state.currentSymbol);
 }
 
@@ -58,64 +97,145 @@ function updateLLMBadge() {
   const badge = document.getElementById("llm-status-badge");
   if (!badge) return;
   const p = state.llmConfig.provider || "quant";
-  if (p === "quant") {
-    badge.textContent = "🧠 Engine: Quant Committee";
-  } else {
-    badge.textContent = `🧠 Engine: ${p.toUpperCase()} + Quant`;
-  }
+  badge.textContent = p === "quant" ? "🧠 Engine: Quant Committee" : `🧠 Engine: ${p.toUpperCase()} + Quant`;
 }
 
-function setupTabs() {
-  const btns = document.querySelectorAll(".tab-btn");
-  btns.forEach((btn) => {
+function setupMainPageNavigation() {
+  const navBtns = document.querySelectorAll(".page-nav-btn");
+  const companyBar = document.getElementById("company-selector-bar");
+
+  navBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-tab");
-      btns.forEach((b) => b.classList.remove("active"));
-      document.querySelectorAll(".tab-pane").forEach((p) => p.classList.remove("active"));
+      const targetPage = btn.getAttribute("data-page");
+      navBtns.forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".page-view").forEach((p) => p.classList.remove("active"));
       btn.classList.add("active");
-      const pane = document.getElementById(target);
+      const pane = document.getElementById(targetPage);
       if (pane) pane.classList.add("active");
-      if (state.bundle) {
+
+      if (targetPage === "page-company") {
+        companyBar.style.display = "flex";
+        if (state.bundle) requestAnimationFrame(() => renderAllCanvases(state.bundle));
+      } else {
+        companyBar.style.display = "flex";
+        loadTop20Movers();
+      }
+    });
+  });
+
+  document.getElementById("btn-refresh-gainers")?.addEventListener("click", () => loadTop20Movers(true));
+  document.getElementById("btn-refresh-losers")?.addEventListener("click", () => loadTop20Movers(true));
+}
+
+function setupCollapsibleSections() {
+  document.querySelectorAll(".collapsible-header[data-toggle]").forEach((hdr) => {
+    hdr.addEventListener("click", () => {
+      const secId = hdr.getAttribute("data-toggle");
+      const sec = document.getElementById(secId);
+      if (!sec) return;
+      sec.classList.toggle("open");
+      if (sec.classList.contains("open") && state.bundle) {
         requestAnimationFrame(() => renderAllCanvases(state.bundle));
       }
-      if (target === "tab-scanner") {
-        const tbody = document.getElementById("scanner-tbody");
-        if (tbody && tbody.children.length <= 1) {
-          runMarketScanner();
+    });
+  });
+
+  const toggleAllBtn = document.getElementById("btn-toggle-all-sections");
+  toggleAllBtn?.addEventListener("click", () => {
+    state.allExpanded = !state.allExpanded;
+    document.querySelectorAll("#page-company .collapsible-section").forEach((sec) => {
+      sec.classList.toggle("open", state.allExpanded);
+    });
+    toggleAllBtn.innerHTML = state.allExpanded
+      ? `<span>↕ Collapse All Sections</span>`
+      : `<span>↕ Expand All Sections</span>`;
+    if (state.allExpanded && state.bundle) {
+      requestAnimationFrame(() => renderAllCanvases(state.bundle));
+    }
+  });
+}
+
+function renderWatchlistBar() {
+  const container = document.getElementById("watchlist-chips-container");
+  const counterLabel = document.getElementById("watchlist-count-label");
+  if (!container) return;
+
+  counterLabel.textContent = `My Portfolio (${state.watchlist.length}/${MAX_WATCHLIST_SIZE}):`;
+
+  container.innerHTML = state.watchlist
+    .map((item, idx) => {
+      const isAct = item.symbol === state.currentSymbol;
+      return `
+      <div class="company-chip ${isAct ? "active" : ""}" data-sym="${item.symbol}" title="${item.name || item.symbol}">
+        <span class="mono" style="font-size: 0.75rem; color: var(--text-muted);">${idx + 1}.</span>
+        <span>${item.symbol}</span>
+        ${
+          state.watchlist.length > 1
+            ? `<button class="chip-remove" data-remove="${item.symbol}" title="Remove ${item.symbol} from list">×</button>`
+            : ""
         }
+      </div>
+    `;
+    })
+    .join("");
+
+  container.querySelectorAll(".company-chip").forEach((chip) => {
+    chip.addEventListener("click", (e) => {
+      if (e.target.closest(".chip-remove")) return;
+      const sym = chip.getAttribute("data-sym");
+      switchToCompanyPageAndLoad(sym);
+    });
+  });
+
+  container.querySelectorAll(".chip-remove").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const symToRemove = btn.getAttribute("data-remove");
+      state.watchlist = state.watchlist.filter((x) => x.symbol !== symToRemove);
+      saveWatchlist(state.watchlist);
+      if (state.currentSymbol === symToRemove && state.watchlist.length > 0) {
+        state.currentSymbol = state.watchlist[0].symbol;
+        loadStockResearch(state.currentSymbol);
       }
+      renderWatchlistBar();
     });
   });
 }
 
-async function loadUniverseRibbon() {
-  try {
-    const res = await fetch("/api/universe");
-    const data = await res.json();
-    state.universe = data.universe || [];
-    const ribbon = document.getElementById("ticker-ribbon");
-    if (!ribbon) return;
-    ribbon.innerHTML = `<span class="ticker-label">NSE Watchlist:</span>`;
-    state.universe.forEach((item) => {
-      const chip = document.createElement("button");
-      chip.className = `ticker-chip ${item.symbol === state.currentSymbol ? "active" : ""}`;
-      chip.dataset.symbol = item.symbol;
-      chip.textContent = item.symbol;
-      chip.title = `${item.name} (${item.sector})`;
-      chip.addEventListener("click", () => {
-        loadStockResearch(item.symbol);
-      });
-      ribbon.appendChild(chip);
-    });
-  } catch (err) {
-    console.error("Failed loading universe:", err);
+function addStockToWatchlist(symbol, name = "") {
+  const sym = (symbol || "").trim().toUpperCase().replace(".NS", "").replace(".BO", "");
+  if (!sym) return;
+
+  const existing = state.watchlist.find((x) => x.symbol === sym);
+  if (existing) {
+    switchToCompanyPageAndLoad(sym);
+    return;
   }
+
+  if (state.watchlist.length >= MAX_WATCHLIST_SIZE) {
+    alert(`Your watchlist already has ${MAX_WATCHLIST_SIZE} companies. Click '×' on any company chip at the top to free a slot first.`);
+    return;
+  }
+
+  state.watchlist.push({ symbol: sym, name: name || sym });
+  saveWatchlist(state.watchlist);
+  renderWatchlistBar();
+  switchToCompanyPageAndLoad(sym);
 }
 
-function setupSearchAndControls() {
+function switchToCompanyPageAndLoad(symbol) {
+  const compBtn = document.querySelector('.page-nav-btn[data-page="page-company"]');
+  if (compBtn && !compBtn.classList.contains("active")) {
+    compBtn.click();
+  }
+  loadStockResearch(symbol);
+}
+
+function setupWatchlistAndAddControls() {
   const input = document.getElementById("stock-search-input");
   const dropdown = document.getElementById("search-dropdown");
-  const btnRun = document.getElementById("btn-run-research");
+  const btnAdd = document.getElementById("btn-add-stock");
+  const btnReset = document.getElementById("btn-reset-watchlist");
 
   let debounceTimer = null;
   input.addEventListener("input", () => {
@@ -137,9 +257,9 @@ function setupSearchAndControls() {
         dropdown.innerHTML = items
           .map(
             (it) => `
-          <div class="search-item" data-sym="${it.symbol}">
+          <div class="search-item" data-sym="${it.symbol}" data-name="${it.name || it.symbol}">
             <span><strong>${it.name}</strong></span>
-            <span class="mono badge-neutral">NSE: ${it.symbol}</span>
+            <span class="mono badge-neutral">+ Add ${it.symbol}</span>
           </div>
         `
           )
@@ -148,9 +268,10 @@ function setupSearchAndControls() {
         dropdown.querySelectorAll(".search-item").forEach((el) => {
           el.addEventListener("click", () => {
             const sym = el.getAttribute("data-sym");
-            input.value = sym;
+            const nm = el.getAttribute("data-name");
+            input.value = "";
             dropdown.classList.remove("open");
-            loadStockResearch(sym);
+            addStockToWatchlist(sym, nm);
           });
         });
       } catch (e) {
@@ -163,28 +284,36 @@ function setupSearchAndControls() {
     if (e.key === "Enter") {
       dropdown.classList.remove("open");
       const sym = input.value.trim().toUpperCase();
-      if (sym) loadStockResearch(sym);
+      if (sym) {
+        input.value = "";
+        addStockToWatchlist(sym, sym);
+      }
     }
+  });
+
+  btnAdd.addEventListener("click", () => {
+    dropdown.classList.remove("open");
+    const sym = input.value.trim().toUpperCase();
+    if (sym) {
+      input.value = "";
+      addStockToWatchlist(sym, sym);
+    } else {
+      input.focus();
+    }
+  });
+
+  btnReset.addEventListener("click", () => {
+    state.watchlist = [...DEFAULT_5_WATCHLIST];
+    saveWatchlist(state.watchlist);
+    state.currentSymbol = "RELIANCE";
+    renderWatchlistBar();
+    switchToCompanyPageAndLoad("RELIANCE");
   });
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".search-bar-wrap")) {
+    if (!e.target.closest(".add-stock-wrap")) {
       dropdown.classList.remove("open");
     }
-  });
-
-  btnRun.addEventListener("click", () => {
-    const sym = input.value.trim().toUpperCase() || state.currentSymbol;
-    loadStockResearch(sym);
-  });
-
-  document.getElementById("btn-open-scanner").addEventListener("click", () => {
-    const scanTabBtn = document.querySelector('[data-tab="tab-scanner"]');
-    if (scanTabBtn) scanTabBtn.click();
-  });
-
-  document.getElementById("btn-refresh-scanner").addEventListener("click", () => {
-    runMarketScanner();
   });
 
   // LLM Modal controls
@@ -218,11 +347,8 @@ function setupSearchAndControls() {
 async function loadStockResearch(symbol) {
   const sym = symbol.trim().toUpperCase();
   state.currentSymbol = sym;
+  renderWatchlistBar();
   setLoading(true);
-
-  document.querySelectorAll(".ticker-chip").forEach((ch) => {
-    ch.classList.toggle("active", ch.dataset.symbol === sym);
-  });
 
   try {
     let res;
@@ -241,9 +367,17 @@ async function loadStockResearch(symbol) {
     }
     const bundle = await res.json();
     state.bundle = bundle;
+
+    // Update name in watchlist if found
+    const wlItem = state.watchlist.find((x) => x.symbol === bundle.overview.symbol);
+    if (wlItem && bundle.overview.name) {
+      wlItem.name = bundle.overview.name;
+      saveWatchlist(state.watchlist);
+    }
+
     renderBundle(bundle);
   } catch (err) {
-    alert(`Error analyzing ${sym}: ${err.message}`);
+    alert(`Could not load '${sym}': ${err.message}`);
   } finally {
     setLoading(false);
   }
@@ -256,13 +390,14 @@ function renderBundle(b) {
   const shp = b.stockholders;
   const rd = b.rd_and_innovation;
   const tech = b.technicals;
+  const intel = b.promoter_and_competitor_intel || {};
 
-  // Header & Overview
+  // Section 01: Overview & Next-Day Ticket
   document.getElementById("ov-company-name").textContent = ov.name;
   document.getElementById("ov-symbol-badge").textContent = `NSE: ${ov.symbol}`;
   document.getElementById("ov-sector-badge").textContent = `${ov.sector} • ${ov.industry}`;
   document.getElementById("ov-piotroski-badge").textContent = `Piotroski F-Score: ${ov.piotroski_score}/9`;
-  document.getElementById("ov-timestamp").textContent = `As of ${b.fetched_at}`;
+  document.getElementById("ov-timestamp").textContent = `Updated: ${b.fetched_at}`;
 
   document.getElementById("ov-current-price").textContent = `₹${fmtNum(tech.current_price)}`;
   const chgEl = document.getElementById("ov-day-change");
@@ -270,7 +405,6 @@ function renderBundle(b) {
   chgEl.textContent = `${isUp ? "▲" : "▼"} ${fmtPct(tech.day_change_pct, 2, true)} (1D) | 1Y: ${fmtPct(tech.return_1y_pct, 1, true)}`;
   chgEl.className = `price-change ${isUp ? "text-bull" : "text-bear"}`;
 
-  // KPI strip
   document.getElementById("kpi-mcap").textContent = fmtCr(ov.market_cap_cr);
   document.getElementById("kpi-cash").textContent = fmtCr(cb.total_cash_in_hand_cr);
   document.getElementById("kpi-debt").textContent = fmtCr(cb.total_borrowings_cr);
@@ -283,16 +417,13 @@ function renderBundle(b) {
   document.getElementById("ov-model-used").textContent = gd.llm_model_used;
   document.getElementById("ov-exec-summary").textContent = gd.executive_summary;
 
-  // Next-Day Guidance Card
   const banner = document.getElementById("gd-action-banner");
   banner.textContent = gd.action;
-  if (gd.action.includes("BUY")) {
-    banner.className = "signal-banner bull";
-  } else if (gd.action.includes("SELL") || gd.action.includes("AVOID")) {
-    banner.className = "signal-banner bear";
-  } else {
-    banner.className = "signal-banner hold";
-  }
+  banner.className = gd.action.includes("BUY")
+    ? "signal-banner bull"
+    : gd.action.includes("SELL") || gd.action.includes("AVOID")
+    ? "signal-banner bear"
+    : "signal-banner hold";
 
   document.getElementById("gd-conviction-score").textContent = `${gd.conviction_score.toFixed(1)} / 100`;
   document.getElementById("gd-entry-zone").textContent = `₹${fmtNum(gd.entry_zone_low)} – ₹${fmtNum(gd.entry_zone_high)}`;
@@ -305,7 +436,7 @@ function renderBundle(b) {
   document.getElementById("bar-tech-score").style.width = `${gd.technical_score}%`;
   document.getElementById("txt-tech-score").textContent = `${gd.technical_score}/100`;
   document.getElementById("gd-rr").textContent = `1 : ${gd.risk_reward_ratio}`;
-  document.getElementById("gd-pos-size").textContent = `${gd.position_size_suggestion_pct}% of Capital`;
+  document.getElementById("gd-pos-size").textContent = `${gd.position_size_suggestion_pct}% Capital`;
   document.getElementById("gd-atr-range").textContent = `±₹${fmtNum(tech.atr_14)} (${fmtPct(tech.atr_pct, 2)})`;
 
   renderAgentCommittee(b.agent_committee);
@@ -314,12 +445,13 @@ function renderBundle(b) {
   renderCashSection(cb);
   renderStockholdersSection(shp);
   renderRDSection(rd);
-  renderAllCanvases(b);
+  renderPromotersAndCompetitorsSection(intel, ov.name);
+  requestAnimationFrame(() => renderAllCanvases(b));
 }
 
 function renderAgentCommittee(committee) {
   const grid = document.getElementById("agents-committee-grid");
-  grid.innerHTML = committee
+  grid.innerHTML = (committee || [])
     .map((ag) => {
       const cls =
         ag.signal === "BULLISH"
@@ -368,7 +500,7 @@ function renderCatalystsRisksNews(gd, news, tech) {
 
   const newsEl = document.getElementById("news-feed-list");
   if (!news || !news.length) {
-    newsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.78rem;">No recent news headlines found.</div>`;
+    newsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.82rem;">No recent news headlines found.</div>`;
     return;
   }
   newsEl.innerHTML = news
@@ -380,9 +512,9 @@ function renderCatalystsRisksNews(gd, news, tech) {
           ? "var(--signal-bear)"
           : "var(--text-muted)";
       return `
-      <a href="${n.url}" target="_blank" rel="noopener" style="text-decoration: none; color: inherit; background: var(--bg-canvas); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 0.45rem 0.65rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
-        <span style="font-size: 0.78rem; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${n.title}</span>
-        <span class="mono" style="font-size: 0.68rem; color: ${color}; white-space: nowrap;">${n.source} • ${n.sentiment}</span>
+      <a href="${n.url}" target="_blank" rel="noopener" style="text-decoration: none; color: inherit; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 0.55rem 0.75rem; display: flex; justify-content: space-between; align-items: center; gap: 0.6rem;">
+        <span style="font-size: 0.84rem; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${n.title}</span>
+        <span class="mono" style="font-size: 0.72rem; color: ${color}; white-space: nowrap;">${n.source} • ${n.sentiment}</span>
       </a>
     `;
     })
@@ -396,12 +528,7 @@ function renderReportsTables(annual5, quarterly5) {
     const headers = reports.map((r) => `<th>${r.period}</th>`).join("");
     const rowSpec = [
       { label: "Revenue / Sales (₹ Cr)", key: "revenue_cr", fmt: (v) => fmtNum(v, 0) },
-      {
-        label: "YoY / Seq Revenue Growth %",
-        key: "revenue_growth_pct",
-        fmt: (v) => fmtPct(v, 1, true),
-        colored: true,
-      },
+      { label: "YoY / Seq Revenue Growth %", key: "revenue_growth_pct", fmt: (v) => fmtPct(v, 1, true), colored: true },
       { label: "Total Expenses (₹ Cr)", key: "expenses_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Operating Profit / EBIT (₹ Cr)", key: "operating_profit_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Operating Profit Margin (OPM %)", key: "opm_pct", fmt: (v) => fmtPct(v, 1) },
@@ -410,20 +537,11 @@ function renderReportsTables(annual5, quarterly5) {
       { label: "Depreciation (₹ Cr)", key: "depreciation_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Profit Before Tax (₹ Cr)", key: "profit_before_tax_cr", fmt: (v) => fmtNum(v, 0) },
       { label: "Net Profit (₹ Cr)", key: "net_profit_cr", fmt: (v) => fmtNum(v, 0) },
-      {
-        label: "Net Profit Growth %",
-        key: "net_profit_growth_pct",
-        fmt: (v) => fmtPct(v, 1, true),
-        colored: true,
-      },
+      { label: "Net Profit Growth %", key: "net_profit_growth_pct", fmt: (v) => fmtPct(v, 1, true), colored: true },
       { label: "EPS (₹ per Share)", key: "eps_inr", fmt: (v) => `₹${fmtNum(v, 2)}` },
     ];
     if (isAnnual) {
-      rowSpec.push({
-        label: "Dividend Payout %",
-        key: "dividend_payout_pct",
-        fmt: (v) => fmtPct(v, 1),
-      });
+      rowSpec.push({ label: "Dividend Payout %", key: "dividend_payout_pct", fmt: (v) => fmtPct(v, 1) });
     }
 
     const bodyHtml = rowSpec
@@ -490,12 +608,12 @@ function renderCashSection(cb) {
   const roceStrip = document.getElementById("roce-5y-strip");
   if (cb.roce_5y_series && cb.roce_5y_series.length) {
     roceStrip.innerHTML = `
-      <div style="font-size: 0.76rem; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;">5-Year Return on Capital Employed (ROCE %)</div>
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase;">5-Year Return on Capital Employed (ROCE %)</div>
+      <div style="display: flex; gap: 0.55rem; flex-wrap: wrap;">
         ${cb.roce_5y_series
           .map(
             (r) => `
-          <div class="badge-neutral mono" style="padding: 0.35rem 0.65rem;">
+          <div class="badge-neutral mono" style="padding: 0.4rem 0.7rem;">
             ${r.period}: <strong style="color: var(--text-primary);">${r.roce_pct}%</strong>
           </div>
         `
@@ -586,11 +704,7 @@ function renderStockholdersSection(shp) {
     { label: "Domestic Institutions (DII) %", key: "dii_pct", fmt: (v) => fmtPct(v, 2) },
     { label: "Government Holding %", key: "government_pct", fmt: (v) => fmtPct(v, 2) },
     { label: "Public / Retail Float %", key: "public_pct", fmt: (v) => fmtPct(v, 2) },
-    {
-      label: "Total Shareholder Accounts",
-      key: "num_shareholders",
-      fmt: (v) => (v ? Number(v).toLocaleString("en-IN") : "—"),
-    },
+    { label: "Total Shareholder Accounts", key: "num_shareholders", fmt: (v) => (v ? Number(v).toLocaleString("en-IN") : "—") },
   ];
   const body = spec
     .map((s) => {
@@ -604,9 +718,9 @@ function renderStockholdersSection(shp) {
 function renderRDSection(rd) {
   document.getElementById("rd-source-subtitle").textContent = `Source: ${rd.rd_data_source}`;
   document.getElementById("rd-focus-banner").innerHTML = `
-    <div style="font-size: 0.76rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">R&amp;D &amp; Innovation Pipeline Focus</div>
-    <div style="color: var(--text-primary); font-weight: 500;">${rd.innovation_focus}</div>
-    <div style="margin-top: 0.55rem; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.78rem;" class="mono">
+    <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.3rem;">R&amp;D &amp; Innovation Pipeline Focus</div>
+    <div style="color: var(--text-primary); font-weight: 600;">${rd.innovation_focus}</div>
+    <div style="margin-top: 0.65rem; display: flex; gap: 1.1rem; flex-wrap: wrap; font-size: 0.82rem;" class="mono">
       <span>Latest R&amp;D: <strong class="text-bull">${fmtCr(rd.latest_rd_spend_cr)} (${fmtPct(rd.latest_rd_pct_of_sales, 2)})</strong></span>
       <span>5Y Cumulative R&amp;D: <strong>${fmtCr(rd.cumulative_5y_rd_cr)}</strong></span>
       <span>Intangibles: <strong>${fmtCr(rd.intangible_assets_cr)}</strong></span>
@@ -617,14 +731,14 @@ function renderRDSection(rd) {
   const docsEl = document.getElementById("annual-reports-links");
   const docs = rd.annual_reports_5y || [];
   if (!docs.length) {
-    docsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.8rem;">No direct Annual Report PDF links found.</div>`;
+    docsEl.innerHTML = `<div style="color: var(--text-muted); font-size: 0.84rem;">No direct Annual Report PDF links found.</div>`;
   } else {
     docsEl.innerHTML = docs
       .map(
         (d) => `
       <a href="${d.url}" target="_blank" rel="noopener" class="btn" style="justify-content: space-between; text-decoration: none;">
         <span>📄 ${d.title}</span>
-        <span class="mono" style="font-size: 0.7rem; color: var(--accent-brand);">PDF ↗</span>
+        <span class="mono" style="font-size: 0.74rem; color: var(--accent-brand);">PDF ↗</span>
       </a>
     `
       )
@@ -654,67 +768,217 @@ function renderRDSection(rd) {
   tbl.innerHTML = `<thead><tr><th>R&amp;D &amp; Innovation Metric</th>${headers}</tr></thead><tbody>${body}</tbody>`;
 }
 
-async function runMarketScanner() {
-  const tbody = document.getElementById("scanner-tbody");
-  const btn = document.getElementById("btn-refresh-scanner");
-  if (!tbody) return;
-  btn.disabled = true;
-  btn.textContent = "Scanning NSE Universe...";
-  tbody.innerHTML = `<tr><td colspan="14" style="text-align: center; padding: 2rem; color: var(--text-secondary);">Running 5-Agent Research Committee across top NSE stocks...</td></tr>`;
+function renderPromotersAndCompetitorsSection(intel, companyName) {
+  document.getElementById("prom-group-banner").textContent =
+    intel.promoter_group || `Promoters & Strategic Institutional Leadership of ${companyName}`;
 
+  const leadersGrid = document.getElementById("prom-leaders-grid");
+  const leaders = intel.key_leaders || [];
+  leadersGrid.innerHTML = leaders
+    .map(
+      (ld) => `
+    <div class="leader-card">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+        <strong style="font-size: 0.96rem; color: var(--text-primary);">${ld.name}</strong>
+        <span class="badge-neutral" style="font-size: 0.7rem;">${ld.role}</span>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.45rem;">
+        <strong>Strategic Focus:</strong> ${ld.focus}
+      </p>
+      <div class="mono" style="font-size: 0.73rem; color: var(--text-muted); margin-top: 0.45rem;">
+        📡 Channel: ${ld.handle_or_source || "Corporate Filings & Concalls"}
+      </div>
+    </div>
+  `
+    )
+    .join("");
+
+  const watchEl = document.getElementById("prom-stakeholders-watch");
+  watchEl.innerHTML = (intel.key_stakeholders_watch || [])
+    .map((w) => `<li>${w}</li>`)
+    .join("");
+
+  // Statements & Articles
+  const stmtList = document.getElementById("prom-statements-list");
+  const stmts = intel.promoter_statements_and_articles || [];
+  if (!stmts.length) {
+    stmtList.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem;">No recent promoter or executive statements found.</div>`;
+  } else {
+    stmtList.innerHTML = stmts
+      .map((st) => {
+        const badgeCls =
+          st.share_price_impact === "BULLISH"
+            ? "signal-banner bull"
+            : st.share_price_impact === "BEARISH"
+            ? "signal-banner bear"
+            : "signal-banner hold";
+        return `
+        <div class="statement-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.76rem; font-weight: 700; color: var(--accent-brand);">${st.speaker_or_source}</span>
+            <div style="display: flex; align-items: center; gap: 0.45rem;">
+              <span class="mono" style="font-size: 0.7rem; color: var(--text-muted);">${st.published}</span>
+              <span class="${badgeCls}" style="font-size: 0.7rem; padding: 0.14rem 0.5rem;">${st.share_price_impact} IMPACT</span>
+            </div>
+          </div>
+          <a href="${st.url || '#'}" target="_blank" rel="noopener" style="font-size: 0.92rem; font-weight: 700; color: var(--text-primary); text-decoration: none;">
+            “${st.headline}” ↗
+          </a>
+          <div style="font-size: 0.82rem; color: var(--text-secondary); background: var(--bg-surface); padding: 0.45rem 0.65rem; border-radius: 6px; border-left: 3px solid var(--accent-brand);">
+            <strong>Share-Value Effect:</strong> ${st.why_it_affects_share_value}
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+  }
+
+  // Competitors Grid
+  const compGrid = document.getElementById("competitors-cards-grid");
+  const comps = intel.competitors || [];
+  if (!comps.length) {
+    compGrid.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem;">No competitor data mapped.</div>`;
+  } else {
+    compGrid.innerHTML = comps
+      .map((c) => {
+        const chgUp = (c.day_change_pct || 0) >= 0;
+        const sigCls =
+          c.read_across_signal === "POSITIVE READ-ACROSS"
+            ? "text-bull"
+            : c.read_across_signal === "COMPETITIVE THREAT"
+            ? "text-bear"
+            : "text-hold";
+        return `
+        <div class="competitor-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+            <div>
+              <strong style="font-size: 0.95rem;">${c.name} (<span class="mono">${c.symbol}</span>)</strong>
+              <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">${c.segment}</span>
+            </div>
+            <div style="text-align: right;" class="mono">
+              <div style="font-weight: 700;">${c.current_price ? `₹${fmtNum(c.current_price)}` : "NSE Peer"}</div>
+              <div class="${chgUp ? "text-bull" : "text-bear"}" style="font-size: 0.76rem;">
+                1D: ${fmtPct(c.day_change_pct, 2, true)} | 1M: ${fmtPct(c.return_1m_pct, 1, true)}
+              </div>
+            </div>
+          </div>
+
+          <a href="${c.latest_news_url || '#'}" target="_blank" rel="noopener" style="font-size: 0.84rem; color: var(--text-primary); text-decoration: none; background: var(--bg-surface); padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
+            📰 <strong>Latest Peer Statement/News:</strong> ${c.latest_statement_or_news} ↗
+          </a>
+
+          <div style="font-size: 0.8rem; color: var(--text-secondary);">
+            <span class="mono ${sigCls}" style="font-weight: 700;">[${c.read_across_signal}]</span>
+            ${c.impact_on_share_value}
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.2rem;">
+            <button class="btn btn-add-comp" data-sym="${c.symbol}" data-name="${c.name}" style="padding: 0.28rem 0.65rem; font-size: 0.74rem;">
+              + Add ${c.symbol} to My 10
+            </button>
+          </div>
+        </div>
+      `;
+      })
+      .join("");
+
+    compGrid.querySelectorAll(".btn-add-comp").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        addStockToWatchlist(btn.getAttribute("data-sym"), btn.getAttribute("data-name"));
+      });
+    });
+  }
+}
+
+/* ============================================================================
+   Yesterday's Top 20 Gainers & Top 20 Losers Loader & Renderer
+   ============================================================================ */
+
+async function loadTop20Movers(force = false) {
+  if (state.moversData && !force) {
+    renderMoversTables(state.moversData);
+    return;
+  }
+  setLoading(true);
   try {
-    const res = await fetch("/api/scanner");
+    const res = await fetch("/api/movers");
     const data = await res.json();
-    const items = data.items || [];
-    tbody.innerHTML = items
-      .map((it) => {
-        const sigCls = it.action.includes("BUY")
-          ? "text-bull"
-          : it.action.includes("SELL") || it.action.includes("AVOID")
-          ? "text-bear"
-          : "text-hold";
-        const chgCls = it.day_change_pct >= 0 ? "text-bull" : "text-bear";
+    state.moversData = data;
+    renderMoversTables(data);
+  } catch (err) {
+    console.error("Failed loading Top 20 Movers:", err);
+  } finally {
+    setLoading(false);
+  }
+}
+
+function renderMoversTables(data) {
+  const buildMoverRows = (items, isGainer) => {
+    if (!items || !items.length) {
+      return `<tr><td colspan="10" style="text-align:center; padding: 2rem; color: var(--text-muted);">No movers data available.</td></tr>`;
+    }
+    return items
+      .map((m) => {
+        const chgCls = m.day_change_pct >= 0 ? "text-bull" : "text-bear";
+        const trendCls = m.return_5d_pct >= 0 ? "text-bull" : "text-bear";
+        const verdictCls = m.next_day_verdict.includes("BUY") ? "text-bull" : "text-hold";
         return `
         <tr>
+          <td><strong>#${m.rank}</strong></td>
           <td>
-            <strong>${it.symbol}</strong>
-            <span style="display:block; font-size:0.7rem; color:var(--text-muted); font-family:var(--font-sans);">${it.name}</span>
+            <strong style="font-size: 0.92rem;">${m.symbol}</strong>
+            <span style="display: block; font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-sans);">${m.name}</span>
+            <span class="badge-neutral" style="font-size: 0.68rem; font-family: var(--font-sans);">${m.sector}</span>
           </td>
-          <td>₹${fmtNum(it.current_price)}</td>
-          <td class="${chgCls}">${fmtPct(it.day_change_pct, 2, true)}</td>
-          <td class="${sigCls}"><strong>${it.action}</strong></td>
-          <td><strong>${it.conviction_score.toFixed(1)}</strong>/100</td>
-          <td>${it.fundamental_score.toFixed(1)}</td>
-          <td>${it.technical_score.toFixed(1)}</td>
-          <td>${it.entry_zone}</td>
-          <td class="text-bull">₹${fmtNum(it.target_1)}</td>
-          <td class="text-bear">₹${fmtNum(it.stop_loss)}</td>
-          <td>1:${it.risk_reward}</td>
-          <td>${fmtCr(it.cash_in_hand_cr)}</td>
-          <td>${fmtPct(it.rd_pct, 2)}</td>
+          <td>₹${fmtNum(m.current_price)}</td>
+          <td class="${chgCls}" style="font-size: 0.96rem; font-weight: 800;">
+            ${isGainer ? "▲" : "▼"} ${fmtPct(m.day_change_pct, 2, true)}
+          </td>
+          <td class="${trendCls}">${fmtPct(m.return_5d_pct, 1, true)}</td>
+          <td>${fmtNum(m.volume_surge_ratio, 2)}x</td>
+          <td>${fmtNum(m.rsi_14, 1)}</td>
+          <td class="mover-reason-box">
+            <div style="margin-bottom: 0.35rem;">
+              <strong style="color: var(--text-primary);">Reason 1 (Fundamental / News):</strong> ${m.reason_1}
+            </div>
+            <div>
+              <strong style="color: var(--text-primary);">Reason 2 (Technical / Volume):</strong> ${m.reason_2}
+            </div>
+            ${
+              m.headline_title
+                ? `<a href="${m.headline_url}" target="_blank" rel="noopener" style="display: inline-block; margin-top: 0.3rem; font-size: 0.75rem; color: var(--accent-brand); text-decoration: none;">📰 Source: ${m.headline_source} ↗</a>`
+                : ""
+            }
+          </td>
+          <td style="text-align: right;">
+            <strong class="${verdictCls}" style="display: block; font-size: 0.78rem;">${m.next_day_verdict}</strong>
+            <span style="font-size: 0.74rem; color: var(--text-muted); display: block; margin-top: 0.2rem;">
+              T1: <span class="text-bull">₹${fmtNum(m.next_day_target)}</span> | SL: <span class="text-bear">₹${fmtNum(m.next_day_stop_loss)}</span>
+            </span>
+          </td>
           <td>
-            <button class="btn btn-primary btn-inspect-scan" data-sym="${it.symbol}" style="padding:0.25rem 0.6rem; font-size:0.72rem;">
-              Deep Dive
-            </button>
+            <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+              <button class="btn btn-primary btn-mover-add" data-sym="${m.symbol}" data-name="${m.name}" style="padding: 0.3rem 0.6rem; font-size: 0.74rem;">
+                + Add &amp; Inspect
+              </button>
+            </div>
           </td>
         </tr>
       `;
       })
       .join("");
+  };
 
-    tbody.querySelectorAll(".btn-inspect-scan").forEach((b) => {
-      b.addEventListener("click", () => {
-        const sym = b.getAttribute("data-sym");
-        document.querySelector('[data-tab="tab-committee"]').click();
-        loadStockResearch(sym);
-      });
+  const gBody = document.getElementById("tbody-top-gainers");
+  const lBody = document.getElementById("tbody-top-losers");
+  if (gBody) gBody.innerHTML = buildMoverRows(data.top_20_gainers, true);
+  if (lBody) lBody.innerHTML = buildMoverRows(data.top_20_losers, false);
+
+  document.querySelectorAll(".btn-mover-add").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      addStockToWatchlist(btn.getAttribute("data-sym"), btn.getAttribute("data-name"));
     });
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="14" class="text-bear" style="text-align:center; padding: 1.5rem;">Scanner error: ${e.message}</td></tr>`;
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Run Live NSE Scan";
-  }
+  });
 }
 
 /* ============================================================================
@@ -799,7 +1063,6 @@ function drawPriceDmaCanvas(tech, gd) {
 
   ctx.clearRect(0, 0, w, h);
 
-  // Horizontal Grid
   ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
   ctx.lineWidth = 1;
   ctx.font = "11px 'JetBrains Mono', monospace";
@@ -814,7 +1077,6 @@ function drawPriceDmaCanvas(tech, gd) {
     ctx.fillText(`₹${Math.round(val)}`, w - pad.right + 6, y + 4);
   }
 
-  // Draw T1 and SL dashed lines
   const drawLevelLine = (val, color, label) => {
     if (!val || val < minY || val > maxY) return;
     const y = yOf(val);
@@ -834,7 +1096,6 @@ function drawPriceDmaCanvas(tech, gd) {
   drawLevelLine(gd.target_1_next_day, "#22c55e", "T1");
   drawLevelLine(gd.stop_loss, "#f43f5e", "SL");
 
-  // 200-DMA
   ctx.strokeStyle = "#f59e0b";
   ctx.lineWidth = 1.4;
   ctx.beginPath();
@@ -844,7 +1105,6 @@ function drawPriceDmaCanvas(tech, gd) {
   });
   ctx.stroke();
 
-  // 50-DMA
   ctx.strokeStyle = "#38bdf8";
   ctx.lineWidth = 1.5;
   ctx.beginPath();
@@ -854,7 +1114,6 @@ function drawPriceDmaCanvas(tech, gd) {
   });
   ctx.stroke();
 
-  // Price line + subtle area gradient
   const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + ch);
   grad.addColorStop(0, "rgba(34, 197, 94, 0.22)");
   grad.addColorStop(1, "rgba(34, 197, 94, 0.0)");
@@ -874,7 +1133,6 @@ function drawPriceDmaCanvas(tech, gd) {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Legend
   ctx.font = "11px 'Plus Jakarta Sans', sans-serif";
   const legend = [
     { label: "Close Price", color: "#22c55e" },
@@ -965,12 +1223,7 @@ function drawShareholdingCanvas(qHist) {
   const groupW = cw / qHist.length;
   const barW = Math.min(34, groupW * 0.55);
 
-  const colors = {
-    prom: "#3b82f6",
-    fii: "#22c55e",
-    dii: "#f59e0b",
-    pub: "#64748b",
-  };
+  const colors = { prom: "#3b82f6", fii: "#22c55e", dii: "#f59e0b", pub: "#64748b" };
 
   qHist.forEach((q, i) => {
     const cx = pad.left + (i + 0.5) * groupW;
@@ -1041,7 +1294,6 @@ function drawRDCanvas(rdHist) {
     ctx.fillText(`₹${Math.round(r.rd_spend_cr)}Cr`, cx, y - 5);
   });
 
-  // R&D % line
   ctx.strokeStyle = "#22c55e";
   ctx.lineWidth = 2;
   ctx.beginPath();

@@ -431,6 +431,31 @@ async function liveBrowserResearch(symbol) {
       key_risks: [`Strict Stop-Loss at ₹${(curPrice - 0.95 * atr).toFixed(2)}`],
       llm_model_used: "GitHub Pages Serverless + Live Browser Engine",
     },
+    promoter_and_competitor_intel: {
+      promoter_group: `${companyName} Promoter & Insider Group (${latestShp.promoters_pct}% Stake)`,
+      key_leaders: [
+        {
+          name: `${companyName} Managing Director & Board`,
+          role: "Promoter & Executive Leadership",
+          focus: "Capital allocation, earnings growth, and institutional stakeholder value",
+          handle_or_source: "BSE/NSE Corporate Filings & Earnings Concalls",
+        },
+      ],
+      key_stakeholders_watch: [
+        `Promoters hold ${latestShp.promoters_pct}% | FIIs hold ${latestShp.fii_pct}% | DIIs hold ${latestShp.dii_pct}%`,
+      ],
+      promoter_statements_and_articles: [
+        {
+          speaker_or_source: `${companyName} Exchange & Earnings Filing`,
+          published: "Latest Quarter",
+          headline: `${companyName} (${sym}) reports ROE of ${roePct}% and Cash & Investments of ₹${latestCb.total_cash_in_hand_cr.toLocaleString("en-IN")} Cr`,
+          url: `https://www.screener.in/company/${encodeURIComponent(sym)}/`,
+          share_price_impact: roePct >= 15 ? "BULLISH" : "NEUTRAL",
+          why_it_affects_share_value: "Return on equity and balance sheet liquidity directly drive institutional valuation multiples.",
+        },
+      ],
+      competitors: [],
+    },
     news: [],
   };
 }
@@ -449,6 +474,10 @@ window.fetch = async function (url, opts) {
   // 2. Serve from GitHub Pages static JSON database (`./data/*.json`)
   if (u.includes("/api/universe")) {
     const r = await _nativeFetch("./data/universe.json");
+    if (r.ok) return r;
+  }
+  if (u.includes("/api/movers")) {
+    const r = await _nativeFetch("./data/movers.json");
     if (r.ok) return r;
   }
   if (u.includes("/api/scanner")) {
