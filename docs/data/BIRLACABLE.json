@@ -2006,25 +2006,25 @@
     "prediction_id": "BIRLACABLE_2026-11-16_ml_ensemble_3.0.0",
     "symbol": "BIRLACABLE",
     "observation_date": "2026-11-16",
-    "generated_at": "2026-11-16T05:25:08.410097+00:00",
+    "generated_at": "2026-11-16T05:42:38.648075+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.0.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.4712,
-    "prob_lgbm_up": 0.4825,
-    "prob_xgb_up": 0.4860000014305115,
-    "prob_linear_up": 0.4599,
-    "expected_next_day_return_pct": -0.3257,
-    "expected_5d_return_pct": -1.1413,
-    "downside_risk_mae_pct": -1.4781,
-    "expected_upside_mfe_pct": 1.6006,
-    "reward_to_risk_ratio": 1.083,
-    "model_agreement_score": 0.961,
-    "confidence_score": 71.32,
+    "prob_next_day_up": 0.4731,
+    "prob_lgbm_up": 0.4893,
+    "prob_xgb_up": 0.4799000024795532,
+    "prob_linear_up": 0.4735,
+    "expected_next_day_return_pct": -0.3138,
+    "expected_5d_return_pct": -1.1603,
+    "downside_risk_mae_pct": -1.4722,
+    "expected_upside_mfe_pct": 1.5865,
+    "reward_to_risk_ratio": 1.078,
+    "model_agreement_score": 0.9601,
+    "confidence_score": 69.83,
     "roundtrip_delivery_cost_pct": 0.5154,
     "roundtrip_intraday_cost_pct": 0.3643,
-    "net_expected_1d_return_pct": -0.69,
-    "net_expected_5d_return_pct": -1.6567,
+    "net_expected_1d_return_pct": -0.6781,
+    "net_expected_5d_return_pct": -1.6758,
     "recommended_action": "HOLD / WATCH",
     "abstention_reason": null,
     "top_bullish_drivers": [
@@ -2032,14 +2032,14 @@
         "feature": "vd_vol_trend_5_20",
         "family": "2. Volume & Delivery",
         "value": 0.7766,
-        "contribution": 0.05242,
+        "contribution": 0.05064,
         "direction": "BULLISH"
       },
       {
         "feature": "ms_nifty_ret_5d_pct",
         "family": "3. Market & Sector Strength",
         "value": 0.9488,
-        "contribution": 0.04716,
+        "contribution": 0.04758,
         "direction": "BULLISH"
       },
       {
@@ -2050,17 +2050,17 @@
         "direction": "BULLISH"
       },
       {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": null,
+        "contribution": 0.01296,
+        "direction": "BULLISH"
+      },
+      {
         "feature": "pm_ret_180d_pct",
         "family": "1. Price & Technical Momentum",
         "value": 119.7569,
         "contribution": 0.01038,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "vd_est_turnover_cr",
-        "family": "2. Volume & Delivery",
-        "value": 2.1914,
-        "contribution": 0.00912,
         "direction": "BULLISH"
       }
     ],
@@ -2087,21 +2087,21 @@
         "direction": "BEARISH"
       },
       {
-        "feature": "fq_asset_turnover",
-        "family": "6. Financial Quality",
-        "value": 1.6616,
-        "contribution": -0.0128,
-        "direction": "BEARISH"
-      },
-      {
         "feature": "pm_ret_accel_20d_60d",
         "family": "1. Price & Technical Momentum",
         "value": -0.7866,
         "contribution": -0.00951,
         "direction": "BEARISH"
+      },
+      {
+        "feature": "pm_atr_ratio_7_21",
+        "family": "1. Price & Technical Momentum",
+        "value": 0.9306,
+        "contribution": -0.00716,
+        "direction": "BEARISH"
       }
     ],
-    "realized_next_day_return_pct": -4.3812,
-    "realized_5d_return_pct": -10.8755
+    "realized_next_day_return_pct": null,
+    "realized_5d_return_pct": null
   }
 }

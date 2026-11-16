@@ -1758,7 +1758,7 @@
     "prediction_id": "SBIN_2026-11-16_ml_ensemble_3.0.0",
     "symbol": "SBIN",
     "observation_date": "2026-11-16",
-    "generated_at": "2026-11-16T05:25:08.410097+00:00",
+    "generated_at": "2026-11-16T05:42:38.648075+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.0.0",
     "market_regime": "Weak Bull",
@@ -1853,7 +1853,7 @@
         "direction": "BEARISH"
       }
     ],
-    "realized_next_day_return_pct": 1.2593,
-    "realized_5d_return_pct": 7.3736
+    "realized_next_day_return_pct": null,
+    "realized_5d_return_pct": null
   }
 }

@@ -110,9 +110,9 @@ def run_phase3_pipeline() -> dict[str, Any]:
     # 3. Generate Latest Trading Day Predictions & Permanent Log
     print("\n[3/4] Generating Calibrated Next-Day Predictions & TreeSHAP Attributions...")
     latest_rows_per_sym = (
-        feature_df.sort_values("observation_date")
+        feature_df.sort_values(["symbol", "observation_date"])
         .groupby("symbol", as_index=False)
-        .last()
+        .tail(1)
         .sort_values("symbol")
         .reset_index(drop=True)
     )
