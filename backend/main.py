@@ -120,6 +120,38 @@ def api_get_corporate_intel() -> dict[str, Any]:
     raise HTTPException(status_code=404, detail="corporate_intel.json not found")
 
 
+@app.get("/api/stock-intelligence")
+def api_get_stock_intelligence(refresh: bool = Query(False)) -> dict[str, Any]:
+    """Return Phase 5 Multi-Dimensional Stock Intelligence for the 5 pilot stocks."""
+    import json
+    from .config import BACKTESTS_DATA_DIR, PREDICTIONS_DATA_DIR
+    from .news_intel.pipeline import run_phase5_intelligence_pipeline
+
+    p5_file = PREDICTIONS_DATA_DIR / "phase5_intelligence.json"
+    if p5_file.exists() and not refresh:
+        try:
+            return json.loads(p5_file.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    try:
+        payload = run_phase5_intelligence_pipeline(use_network=refresh, persist=True)
+        return payload.model_dump()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Stock intelligence error: {exc}") from exc
+
+
+@app.get("/api/phase5-experiments")
+def api_get_phase5_experiments() -> dict[str, Any]:
+    """Return Phase 5 Controlled Walk-Forward Experiments (A–E across 1D, 5D, 10D)."""
+    import json
+    from .config import BACKTESTS_DATA_DIR
+
+    exp_file = BACKTESTS_DATA_DIR / "phase5_experiments.json"
+    if exp_file.exists():
+        return json.loads(exp_file.read_text(encoding="utf-8"))
+    raise HTTPException(status_code=404, detail="phase5_experiments.json not found")
+
+
 @app.get("/api/research/{symbol}")
 def api_get_research(
     symbol: str,

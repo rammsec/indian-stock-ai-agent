@@ -502,6 +502,14 @@ window.fetch = async function (url, opts) {
     const r = await _nativeFetch("./data/corporate_intel.json");
     if (r.ok) return r;
   }
+  if (u.includes("/api/stock-intelligence")) {
+    const r = await _nativeFetch("./data/phase5_intelligence.json");
+    if (r.ok) return r;
+  }
+  if (u.includes("/api/phase5-experiments")) {
+    const r = await _nativeFetch("./data/phase5_experiments.json");
+    if (r.ok) return r;
+  }
   if (u.includes("/api/search")) {
     const q = decodeURIComponent(u.split("q=")[1] || "").trim();
     try {

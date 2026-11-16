@@ -89,6 +89,8 @@ class DuckDBStore:
         self.backtest_summary_json = self.backtests_dir / "walk_forward_summary.json"
         self.corporate_intel_parquet = self.processed_dir / "corporate_intelligence.parquet"
         self.bulk_block_parquet = self.processed_dir / "nse_bulk_block_deals.parquet"
+        self.events_parquet = self.predictions_dir / "structured_events.parquet"
+        self.cross_stock_parquet = self.predictions_dir / "cross_stock_impacts.parquet"
 
     @staticmethod
     def _upsert_parquet(
@@ -319,6 +321,35 @@ class DuckDBStore:
             sort_cols=["deal_date", "symbol", "deal_type"],
         )
 
+    def upsert_structured_events(self, events: list[Any]) -> int:
+        """Append immutable structured news events into `structured_events.parquet`."""
+        import json
+
+        rows: list[dict[str, Any]] = []
+        for e in events:
+            d = e.model_dump() if hasattr(e, "model_dump") else dict(e)
+            d["related_companies"] = json.dumps(d.get("related_companies", []))
+            d["related_sectors"] = json.dumps(d.get("related_sectors", []))
+            rows.append(d)
+        return self._upsert_parquet(
+            self.events_parquet,
+            rows,
+            dedup_cols=["event_id", "ticker"],
+            sort_cols=["publication_timestamp", "ticker", "event_id"],
+            keep="first",
+        )
+
+    def upsert_cross_stock_impacts(self, impacts: list[Any]) -> int:
+        """Append cross-stock relationship impact records into `cross_stock_impacts.parquet`."""
+        rows = [i.model_dump() if hasattr(i, "model_dump") else dict(i) for i in impacts]
+        return self._upsert_parquet(
+            self.cross_stock_parquet,
+            rows,
+            dedup_cols=["affected_company", "originating_event_id", "relationship_type"],
+            sort_cols=["affected_company", "originating_event_id"],
+            keep="first",
+        )
+
     def query_df(self, sql: str, params: list[Any] | None = None) -> pd.DataFrame:
         """Execute an analytical SQL query over the Parquet views using in-memory DuckDB."""
         con = duckdb.connect(":memory:")
@@ -362,6 +393,14 @@ class DuckDBStore:
             if self.bulk_block_parquet.exists():
                 con.execute(
                     f"CREATE VIEW v_nse_bulk_block_deals AS SELECT * FROM read_parquet('{self.bulk_block_parquet.as_posix()}')"
+                )
+            if self.events_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_structured_events AS SELECT * FROM read_parquet('{self.events_parquet.as_posix()}')"
+                )
+            if self.cross_stock_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_cross_stock_impacts AS SELECT * FROM read_parquet('{self.cross_stock_parquet.as_posix()}')"
                 )
             if params:
                 return con.execute(sql, params).df()

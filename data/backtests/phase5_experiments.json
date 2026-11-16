@@ -1,0 +1,183 @@
+{
+  "generated_at": "2026-11-16T14:29:58.848195+05:30",
+  "pilot_universe": [
+    "RELIANCE",
+    "TCS",
+    "TATAELXSI",
+    "ITC",
+    "BIRLACABLE"
+  ],
+  "purge_and_embargo": {
+    "1D_5D": "5 sessions purge + 1 session embargo",
+    "10D": "10 sessions purge + 1 session embargo"
+  },
+  "execution_mode": "next_open_delivery_capped",
+  "historical_pit_note": "Experiments A\u2013E use genuine point-in-time historical event/promoter/sector/macro proxies (ne_*, inst_*, rel_*, ms_*) reconstructed into the 17 Phase 5 features without fabricating historical news articles. Live RSS/Gemini extraction accumulates forward-only in structured_events.parquet.",
+  "naive_momentum_benchmark": {
+    "1D": {
+      "roc_auc": 0.4829,
+      "directional_accuracy_pct": 52.96,
+      "brier_score": 0.25056,
+      "rank_ic": -0.01289,
+      "net_return_pct": 0.2,
+      "net_sharpe": 0.064,
+      "max_drawdown_pct": -3.45,
+      "profit_factor": 1.019,
+      "expectancy_bps": 2.55
+    },
+    "5D": {
+      "roc_auc": 0.492,
+      "directional_accuracy_pct": 56.13,
+      "brier_score": 0.2476,
+      "rank_ic": 0.0
+    },
+    "10D": {
+      "roc_auc": 0.5,
+      "directional_accuracy_pct": 50.0,
+      "brier_score": 0.25,
+      "rank_ic": 0.0
+    }
+  },
+  "experiments": {
+    "A_quant_237_only": {
+      "feature_count": 237,
+      "folds": 6,
+      "1D": {
+        "roc_auc": 0.4647,
+        "directional_accuracy_pct": 52.23,
+        "brier_score": 0.25197,
+        "rank_ic": -0.03424,
+        "net_return_pct": -1.74,
+        "net_sharpe": -1.092,
+        "max_drawdown_pct": -2.98,
+        "profit_factor": 0.455,
+        "expectancy_bps": -54.53,
+        "active_trades": 16
+      },
+      "5D": {
+        "roc_auc": 0.4599,
+        "directional_accuracy_pct": 57.7,
+        "brier_score": 0.2488,
+        "rank_ic": -0.0675
+      },
+      "10D": {
+        "roc_auc": 0.5,
+        "directional_accuracy_pct": 50.0,
+        "brier_score": 0.25,
+        "rank_ic": 0.0
+      }
+    },
+    "B_quant_plus_company_news": {
+      "feature_count": 245,
+      "folds": 6,
+      "1D": {
+        "roc_auc": 0.4647,
+        "directional_accuracy_pct": 52.23,
+        "brier_score": 0.25197,
+        "rank_ic": -0.03424,
+        "net_return_pct": -1.74,
+        "net_sharpe": -1.092,
+        "max_drawdown_pct": -2.98,
+        "profit_factor": 0.455,
+        "expectancy_bps": -54.53,
+        "active_trades": 16
+      },
+      "5D": {
+        "roc_auc": 0.4599,
+        "directional_accuracy_pct": 57.7,
+        "brier_score": 0.2488,
+        "rank_ic": -0.0675
+      },
+      "10D": {
+        "roc_auc": 0.5,
+        "directional_accuracy_pct": 50.0,
+        "brier_score": 0.25,
+        "rank_ic": 0.0
+      }
+    },
+    "C_quant_plus_company_promoter": {
+      "feature_count": 247,
+      "folds": 6,
+      "1D": {
+        "roc_auc": 0.4648,
+        "directional_accuracy_pct": 52.23,
+        "brier_score": 0.25197,
+        "rank_ic": -0.0342,
+        "net_return_pct": -1.74,
+        "net_sharpe": -1.092,
+        "max_drawdown_pct": -2.98,
+        "profit_factor": 0.455,
+        "expectancy_bps": -54.53,
+        "active_trades": 16
+      },
+      "5D": {
+        "roc_auc": 0.4599,
+        "directional_accuracy_pct": 57.7,
+        "brier_score": 0.2488,
+        "rank_ic": -0.0675
+      },
+      "10D": {
+        "roc_auc": 0.5,
+        "directional_accuracy_pct": 50.0,
+        "brier_score": 0.25,
+        "rank_ic": 0.0
+      }
+    },
+    "D_quant_plus_ind_competitor": {
+      "feature_count": 250,
+      "folds": 6,
+      "1D": {
+        "roc_auc": 0.4648,
+        "directional_accuracy_pct": 52.23,
+        "brier_score": 0.25197,
+        "rank_ic": -0.0342,
+        "net_return_pct": -1.74,
+        "net_sharpe": -1.092,
+        "max_drawdown_pct": -2.98,
+        "profit_factor": 0.455,
+        "expectancy_bps": -54.53,
+        "active_trades": 16
+      },
+      "5D": {
+        "roc_auc": 0.4599,
+        "directional_accuracy_pct": 57.7,
+        "brier_score": 0.2488,
+        "rank_ic": -0.0675
+      },
+      "10D": {
+        "roc_auc": 0.5,
+        "directional_accuracy_pct": 50.0,
+        "brier_score": 0.25,
+        "rank_ic": 0.0
+      }
+    },
+    "E_quant_plus_all_news_cross": {
+      "feature_count": 254,
+      "folds": 6,
+      "1D": {
+        "roc_auc": 0.4643,
+        "directional_accuracy_pct": 51.26,
+        "brier_score": 0.25274,
+        "rank_ic": -0.03741,
+        "net_return_pct": -1.03,
+        "net_sharpe": -0.624,
+        "max_drawdown_pct": -2.28,
+        "profit_factor": 0.666,
+        "expectancy_bps": -30.03,
+        "active_trades": 17
+      },
+      "5D": {
+        "roc_auc": 0.4562,
+        "directional_accuracy_pct": 55.72,
+        "brier_score": 0.2497,
+        "rank_ic": -0.0974
+      },
+      "10D": {
+        "roc_auc": 0.5,
+        "directional_accuracy_pct": 50.0,
+        "brier_score": 0.25,
+        "rank_ic": 0.0
+      }
+    }
+  }
+}
