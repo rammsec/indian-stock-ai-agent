@@ -56,10 +56,17 @@ def ensure_storage_directories() -> dict[str, Path]:
 class DuckDBStore:
     """Analytical Parquet + DuckDB manager for Indian equity market data."""
 
-    def __init__(self, processed_dir: Path | None = None, db_path: Path | None = None) -> None:
+    def __init__(
+        self,
+        processed_dir: Path | None = None,
+        features_dir: Path | None = None,
+        db_path: Path | None = None,
+    ) -> None:
         ensure_storage_directories()
         self.processed_dir = processed_dir or PROCESSED_DATA_DIR
         self.processed_dir.mkdir(parents=True, exist_ok=True)
+        self.features_dir = features_dir or FEATURES_DATA_DIR
+        self.features_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = db_path or DUCKDB_PATH
 
         self.equities_parquet = self.processed_dir / "equities_daily.parquet"
@@ -67,6 +74,8 @@ class DuckDBStore:
         self.provenance_parquet = self.processed_dir / "provenance_records.parquet"
         self.regime_parquet = self.processed_dir / "market_regimes.parquet"
         self.quality_parquet = self.processed_dir / "data_quality.parquet"
+        self.features_parquet = self.features_dir / "daily_features.parquet"
+        self.feature_catalog_json = self.features_dir / "feature_catalog.json"
 
     @staticmethod
     def _upsert_parquet(
@@ -155,6 +164,24 @@ class DuckDBStore:
             sort_cols=["symbol"],
         )
 
+    def upsert_feature_matrix(self, df: pd.DataFrame) -> int:
+        """Upsert historical + current feature rows into `/data/features/daily_features.parquet`."""
+        if df.empty:
+            return 0
+        if self.features_parquet.exists():
+            try:
+                df_existing = pd.read_parquet(self.features_parquet)
+                df_combined = pd.concat([df_existing, df], ignore_index=True)
+            except Exception:
+                df_combined = df.copy()
+        else:
+            df_combined = df.copy()
+
+        df_combined = df_combined.drop_duplicates(subset=["symbol", "observation_date"], keep="last")
+        df_combined = df_combined.sort_values(["symbol", "observation_date"]).reset_index(drop=True)
+        df_combined.to_parquet(self.features_parquet, index=False, compression="zstd")
+        return len(df_combined)
+
     def query_df(self, sql: str, params: list[Any] | None = None) -> pd.DataFrame:
         """Execute an analytical SQL query over the Parquet views using in-memory DuckDB."""
         con = duckdb.connect(":memory:")
@@ -178,6 +205,10 @@ class DuckDBStore:
             if self.quality_parquet.exists():
                 con.execute(
                     f"CREATE VIEW v_data_quality AS SELECT * FROM read_parquet('{self.quality_parquet.as_posix()}')"
+                )
+            if self.features_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_daily_features AS SELECT * FROM read_parquet('{self.features_parquet.as_posix()}')"
                 )
             if params:
                 return con.execute(sql, params).df()
