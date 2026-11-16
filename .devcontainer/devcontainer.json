@@ -1,0 +1,13 @@
+{
+  "name": "BharatAlpha AI — Indian Market Research Agent (GitHub Codespace)",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "postCreateCommand": "pip install -r requirements.txt",
+  "postAttachCommand": "uvicorn backend.main:app --host 0.0.0.0 --port 8000",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "BharatAlpha NSE Research Terminal",
+      "onAutoForward": "openBrowser"
+    }
+  }
+}

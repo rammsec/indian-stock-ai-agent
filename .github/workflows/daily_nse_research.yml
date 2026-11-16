@@ -1,0 +1,51 @@
+name: Daily NSE AI Research & Next-Day Buy/Sell Generator
+
+on:
+  schedule:
+    # Runs Monday-Friday at 10:30 UTC (4:00 PM IST — 30 mins after NSE/BSE market close)
+    - cron: "30 10 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      extra_symbols:
+        description: "Optional comma-separated NSE symbols to add/refresh (e.g. ZOMATO,IRCTC,RVNL,SUZLON)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  update-nse-signals:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run 5-Agent NSE Research Engine & Build GitHub Pages Data
+        env:
+          EXTRA_SYMBOLS: ${{ github.event.inputs.extra_symbols }}
+        run: |
+          python scripts/generate_static_data.py
+          python scripts/build_github_pages.py
+
+      - name: Commit & Push Updated Next-Day Signals to GitHub Pages
+        run: |
+          git config user.name "BharatAlpha AI Bot"
+          git config user.email "actions@github.com"
+          git add docs/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore(data): update daily NSE 5-report & next-day buy/sell signals [skip ci]"
+            git push origin main
+          fi
