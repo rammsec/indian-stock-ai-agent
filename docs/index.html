@@ -2417,6 +2417,7 @@ async function initApp() {
   setupCollapsibleSections();
   setupWatchlistAndAddControls();
   renderWatchlistBar();
+  loadMarketRegimeBanner();
   await loadStockResearch(state.currentSymbol);
 }
 
@@ -3319,21 +3320,21 @@ function renderMoversTables(data) {
 
 async function loadMarketRegimeBanner() {
   try {
-    const [regRes, btRes, predRes] = await Promise.all([
+    const [regRes, btRes, predRes] = await Promise.allSettled([
       fetch("/api/regime"),
       fetch("/api/backtest"),
       fetch("/api/predictions"),
     ]);
-    if (regRes.ok) {
-      const reg = await regRes.json();
+    if (regRes.status === "fulfilled" && regRes.value.ok) {
+      const reg = await regRes.value.json();
       updateRegimeBannerDOM(reg, null);
     }
-    if (btRes.ok) {
-      const bt = await btRes.json();
+    if (btRes.status === "fulfilled" && btRes.value.ok) {
+      const bt = await btRes.value.json();
       renderWalkForwardBacktestTable(bt);
     }
-    if (predRes.ok) {
-      const pred = await predRes.json();
+    if (predRes.status === "fulfilled" && predRes.value.ok) {
+      const pred = await predRes.value.json();
       renderFiveDayOutlookAndConditions(pred);
     }
   } catch (e) {}
