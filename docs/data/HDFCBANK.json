@@ -1,1 +1,2176 @@
-{"fetched_at":"2026-11-16 01:38:03 IST","overview":{"symbol":"HDFCBANK","name":"HDFC Bank Ltd","exchange":"NSE","bse_code":null,"nse_code":"HDFCBANK","sector":"Financial Services","industry":"Private Sector Bank","about":"HDFC Bank Limited (also known as HDFC) is an Indian banking and financial services company headquartered in Mumbai. It is India's largest private sector bank by assets and the world's tenth-largest bank by market capitalization as of May 2024. As of April 2024, HDFC Bank has a market capitalization of $145 billion, making it the third-largest company on the Indian stock exchanges. [1]","market_cap_cr":1240766.0,"current_price":804.0,"high_52w":1018.0,"low_52w":669.0,"stock_pe":15.5,"book_value":391.0,"dividend_yield_pct":1.62,"roce_pct":7.02,"roe_pct":13.6,"face_value":1.0,"revenue_cagr_5y_pct":26.55,"profit_cagr_5y_pct":20.04,"piotroski_score":5,"pros":["Company has delivered good profit growth of 18.9% CAGR over last 5 years","Company has been maintaining a healthy dividend payout of 26.1%","Company's median sales growth is 16.3% of last 10 years"],"cons":["Company has low interest coverage ratio.","Contingent liabilities of Rs.35,61,957 Cr.","Earnings include an other income of Rs.1,46,360 Cr."]},"last_5_annual_reports":[{"period":"Mar 2022","revenue_cr":135936.0,"expenses_cr":56557.0,"operating_profit_cr":20795.0,"opm_pct":15.0,"other_income_cr":31759.0,"interest_cr":58584.0,"depreciation_cr":1681.0,"profit_before_tax_cr":50873.0,"tax_pct":25.0,"net_profit_cr":38151.0,"eps_inr":34.31,"dividend_payout_pct":23.0,"revenue_growth_pct":5.74,"net_profit_growth_pct":19.76},{"period":"Mar 2023","revenue_cr":170754.0,"expenses_cr":63042.0,"operating_profit_cr":29932.0,"opm_pct":18.0,"other_income_cr":33912.0,"interest_cr":77780.0,"depreciation_cr":2345.0,"profit_before_tax_cr":61498.0,"tax_pct":25.0,"net_profit_cr":46149.0,"eps_inr":41.22,"dividend_payout_pct":23.0,"revenue_growth_pct":25.61,"net_profit_growth_pct":20.96},{"period":"Mar 2024","revenue_cr":283649.0,"expenses_cr":174196.0,"operating_profit_cr":-44685.0,"opm_pct":-16.0,"other_income_cr":124346.0,"interest_cr":154139.0,"depreciation_cr":3092.0,"profit_before_tax_cr":76569.0,"tax_pct":15.0,"net_profit_cr":65446.0,"eps_inr":42.16,"dividend_payout_pct":23.0,"revenue_growth_pct":66.12,"net_profit_growth_pct":41.81},{"period":"Mar 2025","revenue_cr":336367.0,"expenses_cr":186974.0,"operating_profit_cr":-34501.0,"opm_pct":-10.0,"other_income_cr":134548.0,"interest_cr":183894.0,"depreciation_cr":3805.0,"profit_before_tax_cr":96242.0,"tax_pct":24.0,"net_profit_cr":73440.0,"eps_inr":46.26,"dividend_payout_pct":24.0,"revenue_growth_pct":18.59,"net_profit_growth_pct":12.21},{"period":"Mar 2026","revenue_cr":348615.0,"expenses_cr":203635.0,"operating_profit_cr":-40511.0,"opm_pct":-12.0,"other_income_cr":146848.0,"interest_cr":185491.0,"depreciation_cr":4195.0,"profit_before_tax_cr":102141.0,"tax_pct":22.0,"net_profit_cr":79219.0,"eps_inr":49.39,"dividend_payout_pct":31.0,"revenue_growth_pct":3.64,"net_profit_growth_pct":7.87}],"last_5_quarterly_reports":[{"period":"Sep 2025","revenue_cr":86994.0,"expenses_cr":45161.0,"operating_profit_cr":-4908.0,"opm_pct":-6.0,"other_income_cr":31567.0,"interest_cr":46741.0,"depreciation_cr":0.0,"profit_before_tax_cr":26659.0,"tax_pct":24.0,"net_profit_cr":20364.0,"eps_inr":12.76,"dividend_payout_pct":null,"revenue_growth_pct":-0.43,"net_profit_growth_pct":19.16},{"period":"Dec 2025","revenue_cr":87067.0,"expenses_cr":54145.0,"operating_profit_cr":-12899.0,"opm_pct":-15.0,"other_income_cr":39860.0,"interest_cr":45821.0,"depreciation_cr":0.0,"profit_before_tax_cr":26961.0,"tax_pct":23.0,"net_profit_cr":20691.0,"eps_inr":12.87,"dividend_payout_pct":null,"revenue_growth_pct":0.08,"net_profit_growth_pct":1.61},{"period":"Mar 2026","revenue_cr":87182.0,"expenses_cr":44028.0,"operating_profit_cr":-2066.0,"opm_pct":-2.0,"other_income_cr":29737.0,"interest_cr":45220.0,"depreciation_cr":0.0,"profit_before_tax_cr":27672.0,"tax_pct":24.0,"net_profit_cr":21074.0,"eps_inr":13.22,"dividend_payout_pct":null,"revenue_growth_pct":0.13,"net_profit_growth_pct":1.85},{"period":"Jun 2026","revenue_cr":90575.0,"expenses_cr":58292.0,"operating_profit_cr":-15342.0,"opm_pct":-17.0,"other_income_cr":42535.0,"interest_cr":47626.0,"depreciation_cr":0.0,"profit_before_tax_cr":27193.0,"tax_pct":25.0,"net_profit_cr":20383.0,"eps_inr":12.5,"dividend_payout_pct":null,"revenue_growth_pct":3.89,"net_profit_growth_pct":-3.28},{"period":"Sep 2026","revenue_cr":95132.0,"expenses_cr":50029.0,"operating_profit_cr":-5565.0,"opm_pct":-6.0,"other_income_cr":34227.0,"interest_cr":50667.0,"depreciation_cr":0.0,"profit_before_tax_cr":28663.0,"tax_pct":25.0,"net_profit_cr":21537.0,"eps_inr":13.43,"dividend_payout_pct":null,"revenue_growth_pct":5.03,"net_profit_growth_pct":5.66}],"cash_and_balance_sheet":{"latest_period":"Sep 2026","cash_equivalents_cr":175156.0,"liquid_investments_cr":1356850.0,"total_cash_in_hand_cr":1532006.0,"total_borrowings_cr":3324146.0,"net_cash_position_cr":-1792140.0,"debt_to_equity":5.51,"cash_to_debt_ratio":0.46,"cash_pct_of_mcap":123.47,"latest_ocf_cr":0.0,"latest_fcf_cr":0.0,"cumulative_5y_ocf_cr":280631.0,"cumulative_5y_fcf_cr":276313.05,"roce_5y_series":[],"history_5y":[{"period":"Mar 2023","cash_equivalents_cr":117189.0,"investments_cr":511582.0,"total_cash_in_hand_cr":628771.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":1882663.0,"net_cash_cr":-1253892.0,"total_equity_cr":289438.0,"total_assets_cr":2530432.0,"operating_cash_flow_cr":20814.0,"investing_cash_flow_cr":-2992.0,"free_cash_flow_cr":18869.2},{"period":"Mar 2024","cash_equivalents_cr":178719.0,"investments_cr":1005682.0,"total_cash_in_hand_cr":1184401.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":2376887.0,"net_cash_cr":-1192486.0,"total_equity_cr":456396.0,"total_assets_cr":4030194.0,"operating_cash_flow_cr":19069.0,"investing_cash_flow_cr":16600.0,"free_cash_flow_cr":19069.0},{"period":"Mar 2025","cash_equivalents_cr":144390.0,"investments_cr":1186473.0,"total_cash_in_hand_cr":1330863.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":2710898.0,"net_cash_cr":-1380035.0,"total_equity_cr":521789.0,"total_assets_cr":4392110.0,"operating_cash_flow_cr":127242.0,"investing_cash_flow_cr":-3651.0,"free_cash_flow_cr":124868.85},{"period":"Mar 2026","cash_equivalents_cr":200707.0,"investments_cr":1280216.0,"total_cash_in_hand_cr":1480923.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":3099638.0,"net_cash_cr":-1618715.0,"total_equity_cr":586059.0,"total_assets_cr":4907701.0,"operating_cash_flow_cr":113506.0,"investing_cash_flow_cr":7477.0,"free_cash_flow_cr":113506.0},{"period":"Sep 2026","cash_equivalents_cr":175156.0,"investments_cr":1356850.0,"total_cash_in_hand_cr":1532006.0,"long_term_debt_cr":0.0,"short_term_debt_cr":0.0,"lease_liabilities_cr":0.0,"total_borrowings_cr":3324146.0,"net_cash_cr":-1792140.0,"total_equity_cr":603469.0,"total_assets_cr":5165842.0,"operating_cash_flow_cr":null,"investing_cash_flow_cr":null,"free_cash_flow_cr":null}]},"stockholders":{"latest_period":"Sep 2026","promoters_pct":0.0,"fii_pct":39.39,"dii_pct":43.44,"government_pct":0.19,"public_pct":16.96,"institutional_total_pct":82.83,"promoter_change_4q_pct":0.0,"fii_change_4q_pct":-8.99,"dii_change_4q_pct":7.37,"num_shareholders":4807998,"quarterly_history":[{"period":"Dec 2024","promoters_pct":0.0,"fii_pct":49.21,"dii_pct":34.37,"government_pct":0.18,"public_pct":16.23,"num_shareholders":3924442},{"period":"Mar 2025","promoters_pct":0.0,"fii_pct":48.3,"dii_pct":35.68,"government_pct":0.18,"public_pct":15.84,"num_shareholders":3829146},{"period":"Jun 2025","promoters_pct":0.0,"fii_pct":48.84,"dii_pct":35.77,"government_pct":0.18,"public_pct":15.19,"num_shareholders":3725911},{"period":"Sep 2025","promoters_pct":0.0,"fii_pct":48.38,"dii_pct":36.07,"government_pct":0.18,"public_pct":15.33,"num_shareholders":3701272},{"period":"Dec 2025","promoters_pct":0.0,"fii_pct":47.67,"dii_pct":37.0,"government_pct":0.18,"public_pct":15.11,"num_shareholders":3650087},{"period":"Mar 2026","promoters_pct":0.0,"fii_pct":44.05,"dii_pct":40.14,"government_pct":0.18,"public_pct":15.64,"num_shareholders":4230425},{"period":"Jun 2026","promoters_pct":0.0,"fii_pct":41.82,"dii_pct":41.75,"government_pct":0.18,"public_pct":16.27,"num_shareholders":4532753},{"period":"Sep 2026","promoters_pct":0.0,"fii_pct":39.39,"dii_pct":43.44,"government_pct":0.19,"public_pct":16.96,"num_shareholders":4807998}],"named_stockholders":[{"name":"Government Of Singapore","category":"FII","latest_holding_pct":4978.0,"previous_holding_pct":2.13,"change_4q_pct":4975.61,"trend":[{"period":"Dec 2025","pct":2.27},{"period":"Mar 2026","pct":2.39},{"period":"Jun 2026","pct":2.17},{"period":"Sep 2026","pct":2.13},{"period":"setAttributes","pct":4978.0}]},{"name":"Government Pension Fund Global","category":"FII","latest_holding_pct":84688.0,"previous_holding_pct":1.25,"change_4q_pct":84686.67,"trend":[{"period":"Dec 2025","pct":1.22},{"period":"Mar 2026","pct":1.33},{"period":"Jun 2026","pct":1.34},{"period":"Sep 2026","pct":1.25},{"period":"setAttributes","pct":84688.0}]},{"name":"Vanguard Total International Stock Index Fund","category":"FII","latest_holding_pct":298.0,"previous_holding_pct":1.26,"change_4q_pct":296.76,"trend":[{"period":"Dec 2025","pct":1.24},{"period":"Mar 2026","pct":1.24},{"period":"Jun 2026","pct":1.25},{"period":"Sep 2026","pct":1.26},{"period":"setAttributes","pct":298.0}]},{"name":"Vanguard Emerging Markets Stock Index Fund, A Series Of Vanguard International Equity Index Funds","category":"FII","latest_holding_pct":17239.0,"previous_holding_pct":1.21,"change_4q_pct":17237.83,"trend":[{"period":"Mar 2026","pct":1.17},{"period":"Jun 2026","pct":1.19},{"period":"Sep 2026","pct":1.21},{"period":"setAttributes","pct":17239.0}]},{"name":"Sbi Nifty 50 Etf","category":"DII","latest_holding_pct":123139.0,"previous_holding_pct":7.68,"change_4q_pct":123131.55,"trend":[{"period":"Dec 2025","pct":7.28},{"period":"Mar 2026","pct":7.45},{"period":"Jun 2026","pct":7.48},{"period":"Sep 2026","pct":7.68},{"period":"setAttributes","pct":123139.0}]},{"name":"Life Insurance Corporation Of India","category":"DII","latest_holding_pct":123150.0,"previous_holding_pct":4.89,"change_4q_pct":123145.33,"trend":[{"period":"Dec 2025","pct":4.77},{"period":"Mar 2026","pct":4.67},{"period":"Jun 2026","pct":4.77},{"period":"Sep 2026","pct":4.89},{"period":"setAttributes","pct":123150.0}]},{"name":"Icici Prudential Large Cap Fund","category":"DII","latest_holding_pct":181089.0,"previous_holding_pct":5.03,"change_4q_pct":181084.72,"trend":[{"period":"Dec 2025","pct":3.45},{"period":"Mar 2026","pct":4.28},{"period":"Jun 2026","pct":4.84},{"period":"Sep 2026","pct":5.03},{"period":"setAttributes","pct":181089.0}]},{"name":"Icici Prudential Bluechip Fund","category":"DII","latest_holding_pct":174.0,"previous_holding_pct":3.01,"change_4q_pct":170.98,"trend":[{"period":"Dec 2024","pct":3.02},{"period":"Mar 2025","pct":3.25},{"period":"Jun 2025","pct":3.01},{"period":"setAttributes","pct":174.0}]},{"name":"Hdfc Trustee Company Limited-Hdfc Flexi Cap Fund","category":"DII","latest_holding_pct":145464.0,"previous_holding_pct":3.12,"change_4q_pct":145461.02,"trend":[{"period":"Dec 2025","pct":2.87},{"period":"Mar 2026","pct":2.98},{"period":"Jun 2026","pct":3.05},{"period":"Sep 2026","pct":3.12},{"period":"setAttributes","pct":145464.0}]},{"name":"Icici Prudential Value Discovery Fund","category":"DII","latest_holding_pct":129992.0,"previous_holding_pct":3.13,"change_4q_pct":129989.49,"trend":[{"period":"Mar 2024","pct":2.51},{"period":"Jun 2024","pct":2.67},{"period":"Sep 2024","pct":3.13},{"period":"setAttributes","pct":129992.0}]},{"name":"Hdfc Trustee Company Ltd. A/C Hdfc Balanced Advantage Fund","category":"DII","latest_holding_pct":42255.0,"previous_holding_pct":2.6,"change_4q_pct":42252.83,"trend":[{"period":"Dec 2023","pct":2.17},{"period":"Mar 2024","pct":2.6},{"period":"setAttributes","pct":42255.0}]},{"name":"Uti Nifty 50 Etf","category":"DII","latest_holding_pct":156709.0,"previous_holding_pct":2.53,"change_4q_pct":156706.67,"trend":[{"period":"Dec 2025","pct":2.22},{"period":"Mar 2026","pct":2.33},{"period":"Jun 2026","pct":2.46},{"period":"Sep 2026","pct":2.53},{"period":"setAttributes","pct":156709.0}]}]},"rd_and_innovation":{"latest_rd_spend_cr":2963.23,"latest_rd_pct_of_sales":0.85,"cumulative_5y_rd_cr":10585.23,"intangible_assets_cr":0.0,"cwip_cr":0.0,"rd_cagr_5y_pct":28.48,"innovation_focus":"Core banking cloud modernization, UPI high-throughput rails & AI credit underwriting","rd_data_source":"Technology & Digital CapEx Estimate","history_5y":[{"period":"Mar 2022","revenue_cr":135936.0,"rd_spend_cr":1087.49,"rd_pct_of_sales":0.8,"intangible_assets_cr":0.0,"cwip_cr":0.0,"employee_cost_pct":11.7},{"period":"Mar 2023","revenue_cr":170754.0,"rd_spend_cr":1383.11,"rd_pct_of_sales":0.81,"intangible_assets_cr":0.0,"cwip_cr":0.0,"employee_cost_pct":11.73},{"period":"Mar 2024","revenue_cr":283649.0,"rd_spend_cr":2325.92,"rd_pct_of_sales":0.82,"intangible_assets_cr":0.0,"cwip_cr":0.0,"employee_cost_pct":10.95},{"period":"Mar 2025","revenue_cr":336367.0,"rd_spend_cr":2825.48,"rd_pct_of_sales":0.84,"intangible_assets_cr":0.0,"cwip_cr":0.0,"employee_cost_pct":10.16},{"period":"Mar 2026","revenue_cr":348615.0,"rd_spend_cr":2963.23,"rd_pct_of_sales":0.85,"intangible_assets_cr":0.0,"cwip_cr":0.0,"employee_cost_pct":10.8}],"annual_reports_5y":[{"title":"Annual Report 2026","year":"2026","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/7d621500-082a-4342-b98d-ba677d3890c5.pdf"},{"title":"Annual Report 2025","year":"2025","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/411e22d2-0720-4cec-b659-9ccd639f0f1a.pdf"},{"title":"Annual Report 2024","year":"2024","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/2160dea5-d49e-4409-83a4-c2b111a3bd12.pdf"},{"title":"Annual Report 2023","year":"2023","url":"https://www.bseindia.com/xml-data/corpfiling/AttachHis/0fb0e6bd-7110-44c3-a750-76933ddf105c.pdf"},{"title":"Annual Report 2022","year":"2022","url":"https://www.bseindia.com/bseplus/AnnualReport/500180/73256500180.pdf"}]},"technicals":{"current_price":804.0,"prev_close":812.3,"day_change_pct":-1.02,"day_high":808.8,"day_low":798.0,"high_52w":1018.0,"low_52w":669.0,"return_5d_pct":5.79,"return_1m_pct":12.61,"return_6m_pct":9.03,"return_1y_pct":-17.16,"rsi_14":73.4,"macd_line":24.13,"macd_signal":11.63,"macd_hist":12.5,"ema_20":747.52,"dma_50":720.77,"dma_200":775.55,"bb_upper":824.42,"bb_middle":731.13,"bb_lower":637.84,"atr_14":17.25,"atr_pct":2.15,"volume_latest":23442886.0,"volume_20d_avg":39388947.7,"volume_Surge_ratio":0.6,"annualized_volatility_pct":26.68,"pivot_point":803.6,"support_1":798.4,"support_2":792.8,"resistance_1":809.2,"resistance_2":814.4,"trend_regime":"BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA)","technical_signals":["Price below both 50-DMA and 200-DMA; wait for support stabilization","RSI(14) at 73.4 \u2014 Overbought zone, watch for profit-booking near R1","MACD Bullish Crossover active (Histogram +12.50)"],"price_series":[{"date":"2026-07-07","close":829.3,"open":843.0,"high":843.0,"low":826.1,"dma50":765.19,"dma200":856.1,"volume":57611729.0},{"date":"2026-07-08","close":810.3,"open":825.9,"high":834.35,"low":806.95,"dma50":765.95,"dma200":855.81,"volume":38754632.0},{"date":"2026-07-09","close":817.55,"open":813.0,"high":822.85,"low":812.3,"dma50":766.77,"dma200":855.58,"volume":39891798.0},{"date":"2026-07-10","close":824.95,"open":824.0,"high":827.7,"low":820.3,"dma50":767.87,"dma200":855.39,"volume":23595785.0},{"date":"2026-07-13","close":817.95,"open":817.0,"high":821.95,"low":811.0,"dma50":768.9,"dma200":855.16,"volume":21741736.0},{"date":"2026-07-14","close":809.4,"open":811.4,"high":818.4,"low":807.0,"dma50":769.91,"dma200":854.88,"volume":25605395.0},{"date":"2026-07-15","close":815.45,"open":811.0,"high":819.7,"low":809.7,"dma50":770.88,"dma200":854.64,"volume":21488739.0},{"date":"2026-07-16","close":808.3,"open":814.5,"high":818.0,"low":806.5,"dma50":771.85,"dma200":854.36,"volume":18698186.0},{"date":"2026-07-17","close":819.6,"open":810.0,"high":823.7,"low":808.5,"dma50":772.57,"dma200":854.15,"volume":17415322.0},{"date":"2026-07-20","close":777.6,"open":790.0,"high":790.0,"low":774.55,"dma50":772.46,"dma200":853.7,"volume":56061789.0},{"date":"2026-07-21","close":761.45,"open":769.15,"high":772.5,"low":760.1,"dma50":772.33,"dma200":853.15,"volume":42246009.0},{"date":"2026-07-22","close":753.15,"open":760.25,"high":761.35,"low":750.35,"dma50":772.37,"dma200":852.56,"volume":23385446.0},{"date":"2026-07-23","close":747.25,"open":749.4,"high":751.0,"low":743.25,"dma50":772.55,"dma200":851.95,"volume":32532090.0},{"date":"2026-07-24","close":742.8,"open":738.5,"high":748.25,"low":737.25,"dma50":772.66,"dma200":851.31,"volume":23837859.0},{"date":"2026-07-27","close":739.55,"open":746.1,"high":747.95,"low":738.1,"dma50":772.31,"dma200":850.67,"volume":29678752.0},{"date":"2026-07-28","close":735.4,"open":732.0,"high":740.25,"low":732.0,"dma50":771.91,"dma200":850.0,"volume":33886037.0},{"date":"2026-07-29","close":748.2,"open":743.0,"high":751.25,"low":740.8,"dma50":771.76,"dma200":849.42,"volume":20460659.0},{"date":"2026-07-30","close":753.95,"open":752.8,"high":757.9,"low":745.5,"dma50":771.83,"dma200":848.88,"volume":35844392.0},{"date":"2026-07-31","close":748.15,"open":753.95,"high":757.55,"low":747.2,"dma50":771.85,"dma200":848.31,"volume":25522483.0},{"date":"2026-08-03","close":753.0,"open":753.05,"high":756.85,"low":750.05,"dma50":771.98,"dma200":847.77,"volume":14827841.0},{"date":"2026-08-04","close":742.0,"open":753.2,"high":753.2,"low":738.0,"dma50":771.73,"dma200":847.18,"volume":31559802.0},{"date":"2026-08-05","close":735.0,"open":733.8,"high":741.95,"low":732.6,"dma50":770.95,"dma200":846.56,"volume":60050538.0},{"date":"2026-08-06","close":734.3,"open":739.0,"high":740.5,"low":733.55,"dma50":770.31,"dma200":845.94,"volume":44772122.0},{"date":"2026-08-07","close":731.0,"open":733.0,"high":736.0,"low":728.2,"dma50":770.01,"dma200":845.31,"volume":19382042.0},{"date":"2026-08-10","close":731.0,"open":731.5,"high":737.55,"low":728.5,"dma50":769.98,"dma200":844.68,"volume":23660590.0},{"date":"2026-08-11","close":729.0,"open":730.5,"high":730.85,"low":726.55,"dma50":769.94,"dma200":844.05,"volume":29154365.0},{"date":"2026-08-12","close":729.0,"open":729.0,"high":730.65,"low":722.0,"dma50":769.8,"dma200":843.43,"volume":26993177.0},{"date":"2026-08-13","close":725.0,"open":726.9,"high":729.0,"low":724.5,"dma50":769.47,"dma200":842.8,"volume":22129893.0},{"date":"2026-08-14","close":727.0,"open":725.0,"high":729.6,"low":723.5,"dma50":769.18,"dma200":842.18,"volume":20364131.0},{"date":"2026-08-17","close":729.0,"open":727.05,"high":732.1,"low":724.5,"dma50":769.06,"dma200":841.57,"volume":14823722.0},{"date":"2026-08-18","close":723.0,"open":726.3,"high":729.0,"low":723.0,"dma50":768.99,"dma200":840.95,"volume":17916507.0},{"date":"2026-08-19","close":720.0,"open":724.0,"high":725.4,"low":715.1,"dma50":768.86,"dma200":840.31,"volume":21342651.0},{"date":"2026-08-20","close":725.05,"open":725.5,"high":728.3,"low":724.3,"dma50":768.67,"dma200":839.71,"volume":17603805.0},{"date":"2026-08-21","close":726.95,"open":728.3,"high":732.8,"low":726.6,"dma50":768.55,"dma200":839.12,"volume":26029811.0},{"date":"2026-08-24","close":729.0,"open":732.5,"high":734.4,"low":724.1,"dma50":767.94,"dma200":838.55,"volume":11408345.0},{"date":"2026-08-25","close":727.5,"open":726.6,"high":728.7,"low":722.0,"dma50":767.19,"dma200":837.98,"volume":17511874.0},{"date":"2026-08-26","close":727.2,"open":728.0,"high":731.0,"low":724.15,"dma50":766.29,"dma200":837.41,"volume":21156463.0},{"date":"2026-08-27","close":711.0,"open":728.15,"high":728.15,"low":710.0,"dma50":765.03,"dma200":836.76,"volume":46515020.0},{"date":"2026-08-28","close":720.3,"open":710.85,"high":720.3,"low":707.0,"dma50":763.72,"dma200":836.17,"volume":16494301.0},{"date":"2026-08-31","close":709.0,"open":723.05,"high":739.75,"low":704.15,"dma50":762.3,"dma200":835.53,"volume":78157067.0},{"date":"2026-09-01","close":711.9,"open":705.05,"high":715.45,"low":698.5,"dma50":760.81,"dma200":834.91,"volume":44417092.0},{"date":"2026-09-02","close":700.8,"open":702.3,"high":705.65,"low":700.0,"dma50":759.33,"dma200":834.24,"volume":36950338.0},{"date":"2026-09-03","close":706.65,"open":705.0,"high":712.6,"low":705.0,"dma50":757.6,"dma200":832.92,"volume":27770641.0},{"date":"2026-09-04","close":712.1,"open":708.35,"high":716.5,"low":708.35,"dma50":755.92,"dma200":831.61,"volume":14488024.0},{"date":"2026-09-07","close":710.5,"open":712.1,"high":713.0,"low":707.05,"dma50":754.15,"dma200":830.26,"volume":12180390.0},{"date":"2026-09-08","close":703.0,"open":707.1,"high":708.9,"low":703.0,"dma50":752.25,"dma200":828.9,"volume":19883515.0},{"date":"2026-09-09","close":687.1,"open":698.0,"high":700.0,"low":687.1,"dma50":750.07,"dma200":827.44,"volume":39173990.0},{"date":"2026-09-10","close":693.8,"open":687.1,"high":694.5,"low":686.2,"dma50":748.03,"dma200":825.95,"volume":27108053.0},{"date":"2026-09-11","close":708.25,"open":683.9,"high":709.0,"low":681.9,"dma50":746.17,"dma200":824.58,"volume":31411934.0},{"date":"2026-09-15","close":716.55,"open":722.4,"high":730.75,"low":715.05,"dma50":743.9,"dma200":823.25,"volume":50387632.0},{"date":"2026-09-16","close":721.5,"open":714.9,"high":725.4,"low":710.85,"dma50":741.75,"dma200":821.99,"volume":27476943.0},{"date":"2026-09-17","close":713.0,"open":717.5,"high":719.4,"low":713.0,"dma50":739.8,"dma200":820.61,"volume":21543303.0},{"date":"2026-09-18","close":731.0,"open":715.25,"high":733.8,"low":715.25,"dma50":738.07,"dma200":819.3,"volume":39400710.0},{"date":"2026-09-21","close":739.5,"open":731.0,"high":742.65,"low":729.05,"dma50":736.36,"dma200":818.04,"volume":35482683.0},{"date":"2026-09-22","close":738.6,"open":738.85,"high":749.3,"low":738.6,"dma50":734.78,"dma200":816.81,"volume":35483669.0},{"date":"2026-09-23","close":737.25,"open":735.65,"high":742.8,"low":734.0,"dma50":733.33,"dma200":815.63,"volume":23197231.0},{"date":"2026-09-24","close":728.9,"open":725.0,"high":734.85,"low":722.7,"dma50":731.6,"dma200":814.35,"volume":29575194.0},{"date":"2026-09-25","close":735.6,"open":723.0,"high":739.65,"low":723.0,"dma50":730.15,"dma200":813.12,"volume":19853034.0},{"date":"2026-09-28","close":719.05,"open":731.6,"high":733.0,"low":718.1,"dma50":728.14,"dma200":811.78,"volume":21675579.0},{"date":"2026-09-29","close":722.7,"open":713.7,"high":722.7,"low":706.25,"dma50":727.04,"dma200":810.46,"volume":42755901.0},{"date":"2026-09-30","close":708.7,"open":711.5,"high":720.3,"low":708.7,"dma50":725.98,"dma200":809.1,"volume":39365496.0},{"date":"2026-10-01","close":721.2,"open":708.4,"high":721.3,"low":707.1,"dma50":725.35,"dma200":807.84,"volume":37389857.0},{"date":"2026-10-05","close":704.8,"open":731.95,"high":734.2,"low":701.25,"dma50":724.5,"dma200":806.44,"volume":66056690.0},{"date":"2026-10-06","close":711.45,"open":705.6,"high":714.7,"low":701.0,"dma50":723.87,"dma200":805.07,"volume":26568270.0},{"date":"2026-10-07","close":702.75,"open":708.55,"high":711.0,"low":701.7,"dma50":723.13,"dma200":803.69,"volume":29944008.0},{"date":"2026-10-08","close":692.25,"open":704.05,"high":705.8,"low":690.5,"dma50":722.27,"dma200":802.26,"volume":26808765.0},{"date":"2026-10-09","close":707.25,"open":696.6,"high":710.15,"low":695.3,"dma50":721.45,"dma200":800.96,"volume":18397972.0},{"date":"2026-10-12","close":704.9,"open":707.5,"high":711.85,"low":700.35,"dma50":720.47,"dma200":799.66,"volume":18197879.0},{"date":"2026-10-13","close":714.0,"open":707.0,"high":716.5,"low":705.1,"dma50":719.79,"dma200":798.38,"volume":18838639.0},{"date":"2026-10-14","close":710.7,"open":712.3,"high":718.55,"low":707.95,"dma50":718.94,"dma200":797.08,"volume":23945373.0},{"date":"2026-10-15","close":726.85,"open":715.0,"high":728.0,"low":710.7,"dma50":718.64,"dma200":795.81,"volume":37365177.0},{"date":"2026-10-16","close":728.85,"open":727.9,"high":734.9,"low":724.3,"dma50":718.51,"dma200":794.55,"volume":28936902.0},{"date":"2026-10-19","close":712.0,"open":733.4,"high":733.4,"low":707.15,"dma50":718.07,"dma200":793.23,"volume":33524133.0},{"date":"2026-10-21","close":706.95,"open":709.55,"high":715.4,"low":698.25,"dma50":717.59,"dma200":791.89,"volume":26573703.0},{"date":"2026-10-22","close":694.05,"open":701.45,"high":703.35,"low":689.1,"dma50":716.85,"dma200":790.48,"volume":60280576.0},{"date":"2026-10-23","close":692.8,"open":692.55,"high":696.8,"low":686.85,"dma50":716.12,"dma200":789.07,"volume":18989022.0},{"date":"2026-10-26","close":688.05,"open":692.1,"high":693.8,"low":684.0,"dma50":715.31,"dma200":787.64,"volume":23489755.0},{"date":"2026-10-27","close":680.2,"open":689.7,"high":690.25,"low":678.65,"dma50":714.41,"dma200":786.11,"volume":40614930.0},{"date":"2026-10-28","close":685.3,"open":674.15,"high":687.1,"low":669.2,"dma50":713.58,"dma200":784.73,"volume":28534206.0},{"date":"2026-10-29","close":683.3,"open":681.2,"high":686.8,"low":678.1,"dma50":712.66,"dma200":783.41,"volume":31422790.0},{"date":"2026-10-30","close":692.8,"open":683.3,"high":695.5,"low":680.85,"dma50":712.06,"dma200":782.21,"volume":21296902.0},{"date":"2026-11-02","close":700.0,"open":694.3,"high":700.75,"low":688.6,"dma50":711.66,"dma200":781.05,"volume":21480587.0},{"date":"2026-11-03","close":725.5,"open":708.0,"high":725.8,"low":706.05,"dma50":711.67,"dma200":780.06,"volume":42746644.0},{"date":"2026-11-04","close":736.7,"open":722.8,"high":741.3,"low":719.25,"dma50":711.86,"dma200":779.14,"volume":50677695.0},{"date":"2026-11-05","close":760.0,"open":760.0,"high":762.7,"low":749.1,"dma50":712.48,"dma200":778.33,"volume":65401905.0},{"date":"2026-11-06","close":788.25,"open":764.4,"high":788.25,"low":754.05,"dma50":713.7,"dma200":777.72,"volume":73482878.0},{"date":"2026-11-09","close":798.15,"open":797.0,"high":801.9,"low":785.95,"dma50":715.12,"dma200":777.16,"volume":64826814.0},{"date":"2026-11-11","close":806.6,"open":810.1,"high":817.85,"low":800.55,"dma50":717.03,"dma200":776.61,"volume":56398940.0},{"date":"2026-11-12","close":812.3,"open":803.0,"high":815.0,"low":798.65,"dma50":718.87,"dma200":776.11,"volume":38292509.0},{"date":"2026-11-13","close":804.0,"open":808.0,"high":808.8,"low":798.0,"dma50":720.77,"dma200":775.55,"volume":23442886.0}]},"agent_committee":[{"agent_id":"five_reports_agent","agent_name":"5-Report Earnings & Performance Agent","persona_inspiration":"Peter Lynch / Fundamental Growth Analyst","signal":"BULLISH","score":82.0,"confidence":87,"weight_pct":25,"headline":"5Y Profit CAGR 20.04% | Latest FY Net Profit \u20b979,219 Cr | ROE 13.6%","key_metrics":{"5Y Revenue CAGR":"26.6%","5Y Profit CAGR":"20.0%","Latest Qtr Net Profit":"\u20b921,537 Cr","Latest OPM %":"-12.0%","ROE / ROCE":"13.6% / 7.0%","Piotroski F-Score":"5/9"},"reasoning":["Strong 5-report annual revenue compounding at 26.6% CAGR.","Superior bottom-line expansion: Net Profit grew at 20.0% 5Y CAGR.","Positive sequential profit momentum in 4 of the last 5 quarters."]},{"agent_id":"cash_balance_agent","agent_name":"Cash-in-Hand & Balance Sheet Agent","persona_inspiration":"Benjamin Graham / Balance Sheet Specialist","signal":"BULLISH","score":64.0,"confidence":77,"weight_pct":20,"headline":"Cash & Investments: \u20b91,532,006 Cr | Net Cash: \u20b9-1,792,140 Cr | D/E: 5.51x","key_metrics":{"Cash Equivalents":"\u20b9175,156 Cr","Liquid Investments":"\u20b91,356,850 Cr","Total Cash in Hand":"\u20b91,532,006 Cr","Total Borrowings":"\u20b93,324,146 Cr","Debt / Equity":"5.51x","5Y Cumulative OCF":"\u20b9280,631 Cr"},"reasoning":["Strong liquidity buffer: \u20b91,532,006 Cr in cash & investment book (Financial Services)."]},{"agent_id":"stockholders_agent","agent_name":"Stockholders & Institutional Flow Agent","persona_inspiration":"Smart-Money & Insider Ownership Tracker","signal":"NEUTRAL","score":52.0,"confidence":67,"weight_pct":20,"headline":"Promoters 0.0% (+0.00% 4Q) | FII 39.4% | DII 43.4%","key_metrics":{"Promoter Holding":"0.00% (+0.00% 4Q)","FII Holding":"39.39% (-8.99% 4Q)","DII Holding":"43.44% (+7.37% 4Q)","Total Institutional":"82.83%","Public Float":"16.96%","Shareholder Accounts":"4,807,998"},"reasoning":["Professionally managed institutional blue-chip: FIIs (39.39%) + DIIs (43.44%) hold 82.83%.","Institutional trimming: Combined FII+DII stake fell -1.62% over 4 quarters.","Marquee named stockholders: Government Of Singapore (4978.00%), Government Pension Fund Global (84688.00%), Vanguard Total International Stock Index Fund (298.00%), Vanguard Emerging Markets Stock Index Fund, A Series Of Vanguard International Equity Index Funds (17239.00%)."]},{"agent_id":"rd_innovation_agent","agent_name":"R&D Intensity & Innovation Moat Agent","persona_inspiration":"Charlie Munger / Philip Fisher Moat Analyst","signal":"BULLISH","score":66.0,"confidence":73,"weight_pct":15,"headline":"Latest R&D: \u20b92,963 Cr (0.85% of Sales) | 5Y R&D: \u20b910,585 Cr","key_metrics":{"Latest FY R&D Spend":"\u20b92,963 Cr","R&D % of Revenue":"0.85%","5Y Cumulative R&D":"\u20b910,585 Cr","5Y R&D CAGR":"28.5%","Intangible Assets":"\u20b90 Cr","CapEx WIP (CWIP)":"\u20b90 Cr"},"reasoning":["Latest annual R&D investment of \u20b92,963 Cr (0.85% of revenue); 5-year cumulative R&D of \u20b910,585 Cr.","R&D budget compounding at 28.5% CAGR over the last 5 reports.","Strategic R&D Focus: Core banking cloud modernization, UPI high-throughput rails & AI credit underwriting."]},{"agent_id":"technical_catalyst_agent","agent_name":"Next-Day Technical & Catalyst Agent","persona_inspiration":"Stanley Druckenmiller / Price-Action & Timing Desk","signal":"BEARISH","score":41.0,"confidence":71,"weight_pct":20,"headline":"RSI(14) 73.4 | 50-DMA \u20b9720.8 | 200-DMA \u20b9775.5 | ATR \u20b917.2","key_metrics":{"RSI (14)":"73.4","MACD Histogram":"+12.50","50-DMA / 200-DMA":"\u20b9720.8 / \u20b9775.5","ATR (14) Daily Range":"\u20b917.25 (2.15%)","Volume vs 20D Avg":"0.60x","Pivot S1 / R1":"\u20b9798.4 / \u20b9809.2"},"reasoning":["Price below both 50-DMA and 200-DMA; wait for support stabilization","RSI(14) at 73.4 \u2014 Overbought zone, watch for profit-booking near R1","MACD Bullish Crossover active (Histogram +12.50)","News Catalyst: 1 positive vs 0 negative recent Indian market headlines."]}],"next_day_guidance":{"action":"BUY","conviction_score":61.8,"fundamental_score":67.0,"technical_score":41.0,"current_price":804.0,"entry_zone_low":797.1,"entry_zone_high":805.73,"target_1_next_day":824.7,"target_2_swing":842.81,"stop_loss":787.61,"risk_reward_ratio":1.26,"expected_next_day_range_low":786.75,"expected_next_day_range_high":821.25,"position_size_suggestion_pct":5.0,"executive_summary":"HDFC Bank Ltd (HDFCBANK) earns a composite conviction score of 61.8/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b91,532,006 Cr in cash & investments, 13.6% ROE, 0.85% R&D intensity, and 82.8% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9797.10\u2013\u20b9805.73 zone targeting \u20b9824.70 (T1) and \u20b9842.81 (T2) with a strict ATR-calibrated stop-loss at \u20b9787.61 (Risk:Reward 1:1.26).","rationale_points":["5-Report Fundamental Score: 67.0/100 (5Y Profit CAGR: 20.0%, Piotroski: 5/9).","Balance Sheet & Cash in Hand: \u20b91,532,006 Cr liquid cash/investments vs \u20b93,324,146 Cr total borrowings (D/E 5.51x).","Stockholder Conviction: Promoters hold 0.00%, FIIs 39.39%, DIIs 43.44% (Total Institutional: 82.83%).","R&D & Innovation Moat: \u20b92,963 Cr annual R&D (0.85% of sales; 5Y cumulative \u20b910,585 Cr).","Next-Day Technical Trigger (41.0/100): BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA); RSI(14) at 73.4 with ATR(14) daily range of \u20b917.25."],"key_catalysts":["Company has delivered good profit growth of 18.9% CAGR over last 5 years","Company has been maintaining a healthy dividend payout of 26.1%","Company's median sales growth is 16.3% of last 10 years","R&D & CapEx Pipeline: Core banking cloud modernization, UPI high-throughput rails & AI credit underwriting"],"key_risks":["Company has low interest coverage ratio.","Contingent liabilities of Rs.35,61,957 Cr.","Earnings include an other income of Rs.1,46,360 Cr.","Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9787.61"],"llm_synthesized":false,"llm_model_used":"Quantitative Multi-Agent Committee Engine v2"},"news":[{"title":"HDFC Bank Limited (HDFCBANK.NS) stock price, news, quote and history - Yahoo Finance Singapore","source":"Yahoo Finance Singapore","published":"Fri, 13 Nov 2026 20:03:59","url":"https://news.google.com/rss/articles/CBMiW0FVX3lxTE1WdkJlRjNJZE9HNjlMcXd2U25qbnUtMFhSRXRscVA3UW9nRElrZ0oxTWdEaENMS1J1YWNsU2xUTG9uMV9GZkhaeU0zcmtoV1B1RjA1bExTNE1sNDA?oc=5","sentiment":"NEUTRAL"},{"title":"HDFC Bank Share Price - Live NSE: HDFCBANK Stock Price & Chart - Upstox","source":"Upstox","published":"Fri, 13 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMiYkFVX3lxTE1haXVDV2V3Wm5yQXBKZFJjZjkyQ0syd3BZWnRJZmo5UEdhckVTeTViZWtfVnkyRF9LVGRwSXZwMEo4Q1lUSDZfUzFlQmM1bEJhaFZEMXhSRHQ3S0h0THNBdXBB?oc=5","sentiment":"NEUTRAL"},{"title":"HDFC Bank (HDFCBANK) Share Price Today (NSE), Market News - TechGraph","source":"TechGraph","published":"Fri, 13 Nov 2026 09:58:00","url":"https://news.google.com/rss/articles/CBMiYkFVX3lxTE9zTTZEM0d6dExZRVlWUF8tV2VmOFk5aGpqdC1nX0YxRVFOMWZ4UFNpd3YtT3drTUJua2RVZUl5QXN2OFJUY3lRcWhRLW1saHEtUTh2NVRzdnBRcjF2ZFhNdmpR?oc=5","sentiment":"NEUTRAL"},{"title":"HDFC BANK LTD Option Chain - Live HDFC BANK LTD Option Chain Data, OI & Price - Upstox","source":"Upstox","published":"Fri, 13 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMiWkFVX3lxTFBXVDVlRXJIVGdILW01bnRnZVdUcGhSLVY4TWVOX3JWUmpzeGtNclhUdE5iRjcxTUt6ME53aWlnWlNUczdheXpPVVZQTVh3bVdReTR0enlBLUJtZw?oc=5","sentiment":"NEUTRAL"},{"title":"HDFC Bank Ltd Share Price Today,, HDFCBANK Share Price NSE, BSE - Business Today","source":"Business Today","published":"Fri, 13 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMigwFBVV95cUxQYl9PSEdSWjNuX0l2V1g2UGEydHExQ2lVREdwNzB4dUthSDV6Y0FCYVdXNHVPRG51dXFWbXQ4RjAwSnlFZGlhOTNYWUZpaVJfaHM4ZzFEOUlISGNDVHg2OWFzN1B0eDd1Wml1NWI4U2tUVGdaMjNYME1HNGZVVmZoRHFyYw?oc=5","sentiment":"NEUTRAL"},{"title":"HDFC Bank Share Price, Stock Price - NSE/BSE Live - NDTV Profit","source":"NDTV Profit","published":"Fri, 13 Nov 2026 08:00:00","url":"https://news.google.com/rss/articles/CBMickFVX3lxTE8xVWhRc1lydXNhZjJSREw0VlJKSTRIbUxQejRMLXlrbDFla2F6azZJd1l5eUUyM3hYaVlLT1hvNjdlMU5rVWQzUTh3azUzaF9nUlNMSjk5MTBrN3pyVXgwaEpScnR4RU02SDVXVGs3Tm9QQQ?oc=5","sentiment":"POSITIVE"}],"promoter_and_competitor_intel":{"promoter_group":"Promoter & Insider Group (0.00% Stake)","key_leaders":[{"name":"HDFC Bank Ltd Managing Director & Board","role":"Principal Promoter & Executive Leadership","focus":"Capital allocation, operating margin expansion & growth in Private Sector Bank","handle_or_source":"BSE/NSE Corporate Filings & Earnings Concalls"}],"key_stakeholders_watch":["Government Of Singapore (FII \u2014 4978.00%)","Government Pension Fund Global (FII \u2014 84688.00%)","Vanguard Total International Stock Index Fund (FII \u2014 298.00%)","Vanguard Emerging Markets Stock Index Fund, A Series Of Vanguard International Equity Index Funds (FII \u2014 17239.00%)"],"promoter_statements_and_articles":[{"speaker_or_source":"NiftyTrader","published":"Mon, 19 Oct 2026 07:00","headline":"HDFC Bank Shares Slip 2% After Q2, but 6 Brokerages Aren\u2019t Backing Off. What\u2019s Going On? - NiftyTrader","url":"https://news.google.com/rss/articles/CBMid0FVX3lxTFBJeW1ud0l1T185NGJEaXAwQ0NLZTgwaHZMcGxJVHpXVzlBZVpGWDhGQ1dyN0JzVThVZjNkeXhqeGhPSkNnZ1Uyd0MzUXZxaHpHMmVsQkdiS0lOT1VPdXd5TWMxMHplaXJfaVBGTjNNbHY2Y3JpbHAw?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."},{"speaker_or_source":"The Economist","published":"Sat, 17 Oct 2026 07:00","headline":"A new era for Indian banking - The Economist","url":"https://news.google.com/rss/articles/CBMilwFBVV95cUxPTVRFb3U2ZFBsYmw5b28xakptTGw5Q2JPYWUzQUxXU2JHVGZ3SWxDM185UFF4eWRpRHk0UU55XzNtekZiTlB6ZkMxWHB5dnkyLW80MlJQa3doNTFCa1pSNV95MDNtbUlBLXpUZi1FVlc2VnZPaTZnUTVGajlyaEtBNGtxT1JIUUU4Vld3Ul9uc0w5WHA2US00?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."},{"speaker_or_source":"Business Standard","published":"Sat, 17 Oct 2026 07:00","headline":"Q2 results today: HDFC Bank, ICICI Bank, Axis Bank among 18 firms on Oct 17 - Business Standard","url":"https://news.google.com/rss/articles/CBMi6gFBVV95cUxNY2xUSzlIUmVIcS0xMWxpT0xocDZ5dFlqZmEzSm9zRV9sRzdsb0ViOEh5VUJ0VG9PeFRZWmhNb1l1RjZCM0RaNjJYTW1BUWpYTkRGbjc0OHlSWkd4NVJBMWdUSFlKamN5SXgtcWZReEtTaVN0NHNZQnM0aks4MFR1VzdOX1RRZjA5Y2VlbjdNVVhublFmdFg2RFBIWUhCQmRJblVrQ1dKVm9KU3JVX1lWeDF2ZzFQcnlOWXVpcFduT2czWU53TG5venNjaDlmMEVtVTEyeHRJdHpsV3RxdmtDWTNXdGg3MHpaT1E?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."},{"speaker_or_source":"Fortune India","published":"Sat, 17 Oct 2026 07:00","headline":"HDFC Bank\u2019s Q2FY27 net profit edges up 4.7%; asset quality improves - Fortune India","url":"https://news.google.com/rss/articles/CBMiwgFBVV95cUxOamZVdmRnZFJ2d2EwNlJuYTQzS0JSUXhRSnc0WENGcGNESk0xdF96c19xQ0R5RGFZYjZ3b3BsUS1BYmtzZm55OWxRRThGem00RUwtOGhvazdBNHBZR0M0ZUxkS0tjOFRYMWRqdmNuR3JDeUQzX1dfb2xzSXVLV3hlRm9sQ1oyYjhCY05ZY1hPUFVOX0xhMk5PVEY4dTZpUkxYOFdoTHI1LThsZktHd1JUSmJKSVNQaGNzWHI1bm1DMXVod9IBzwFBVV95cUxORzM0VTJLcG01NUd3VVdOb3RrLWdsQ2hFYjZHUlFiLXAzcXZsOEJjWEVoS1FGSWdqV1JkN1dpYnhRbDBGcFRTd0w3eTltY2lPeDd4SGo1UXJaZDV6OXJXcjhSY3pjc1JhczF0cEMycGFVMGJnS19rZzFGSF81UDgxdmQyZHctZXlzQzE0UFI2akJfUkdxSGUzNXJzOHFBUmw3ZjRwdTZRUHNSNnY5LV9XTHRTQWVHaEdyY3BoWXVGNEE4Z0JZVW1HakIxQVdwbGM?oc=5","share_price_impact":"BULLISH","why_it_affects_share_value":"Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."},{"speaker_or_source":"Yahoo! Finance Canada","published":"Fri, 13 Nov 2026 22:00","headline":"HDFC Bank Limited (HDFCBANK.NS) Stock Price, News, Quote & History - Yahoo! Finance Canada","url":"https://news.google.com/rss/articles/CBMiW0FVX3lxTE5XTzhGSUFMZ1NyVWthWVk2cEZ3RHZQc0VuT3BxQTBWM3B2V2hIQTBBOENtV0loTTBwXy0tczFvQXEwZlRLTlVhS2hmSkdJb3hFX3JlSlJBTU1weTg?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."},{"speaker_or_source":"TechGraph","published":"Fri, 13 Nov 2026 09:58","headline":"HDFC Bank (HDFCBANK) Share Price Today (NSE), Market News - TechGraph","url":"https://news.google.com/rss/articles/CBMiYkFVX3lxTE9zTTZEM0d6dExZRVlWUF8tV2VmOFk5aGpqdC1nX0YxRVFOMWZ4UFNpd3YtT3drTUJua2RVZUl5QXN2OFJUY3lRcWhRLW1saHEtUTh2NVRzdnBRcjF2ZFhNdmpR?oc=5","share_price_impact":"NEUTRAL","why_it_affects_share_value":"Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."}],"competitors":[{"symbol":"TCS","name":"Tata Consultancy Services Ltd","segment":"IT Services","current_price":2407.5,"day_change_pct":-1.43,"return_1m_pct":6.65,"pe":null,"roe_pct":null,"latest_statement_or_news":"Tata Consultancy Services Limited (TCS.NS) stock price, news, quote and history - Yahoo Finance Singapore","latest_news_url":"https://news.google.com/rss/articles/CBMiVEFVX3lxTE4yZG1MMUJWTjQzeUxZdV9QMF90azdyZlhNOTctMFZTMTYyRVhVWlZKbDFRenlSZXN2aEpLWTRkVHlROVpBNmpZYWZ5V3EwZ2FQU2loLQ?oc=5","read_across_signal":"POSITIVE READ-ACROSS","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."},{"symbol":"INFY","name":"Infosys Ltd","segment":"IT Services","current_price":1141.5,"day_change_pct":-0.84,"return_1m_pct":9.94,"pe":null,"roe_pct":null,"latest_statement_or_news":"Weekly Recap: Q2 revenue, AI growth and Guidance cut, wage margin risk - TradingView","latest_news_url":"https://news.google.com/rss/articles/CBMiyAFBVV95cUxOaTdtWU5zTzRITW5YSFJfUmF0VWt2NTQyVDZBa29WbUduZlhVLXRIM2h3Z1l0ZmozcTlzcGMyQVFhbXJGSFd2ZVk5MGEtNWduVnd6UnVPeGdNMFF1ZTEzdlBlTzBPNUMtMm9uMXBGcHFoTENOTENaMGxReWlkZ1RObTJFdnlmbmdaci1MN2ZBNzNsQl9hb1pSWTNoQlhWWFdOUjdrN2s1el9TZXhDQWVMUzQ0NGFEV2tGT3kySWM1eVZjcUhZV1BKUQ?oc=5","read_across_signal":"POSITIVE READ-ACROSS","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."},{"symbol":"HCLTECH","name":"HCL Technologies Ltd","segment":"IT Services","current_price":1378.0,"day_change_pct":-0.2,"return_1m_pct":4.85,"pe":null,"roe_pct":null,"latest_statement_or_news":"HCL Tech Share Price Today, HCL Tech Stock Price Live NSE/BSE Updates - The Economic Times","latest_news_url":"https://news.google.com/rss/articles/CBMiiwFBVV95cUxNM0tuT0d3S2tscVlhVTY2eHktNWY3YU03ZDhuUlNwa05YcGVpYno3VWM1bU1ldFVJTVZLNEZOTEo5NFpCT3RYZnBRTmctazdreEc5R0xiT281bUtBSGVjSTMyWWZPS2NzTXNfUUREQTVTekQ1V3ZVeTZRZDM5a3d2Y3FoQ3czeDQ0RzM4?oc=5","read_across_signal":"NEUTRAL","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."},{"symbol":"WIPRO","name":"Wipro Ltd","segment":"IT Services","current_price":194.6,"day_change_pct":-0.82,"return_1m_pct":15.15,"pe":null,"roe_pct":null,"latest_statement_or_news":"Wipro Appoints Angan Guha as President and Chief Executive Officer for Americas 2 Strategic Market Unit - Wipro","latest_news_url":"https://news.google.com/rss/articles/CBMi6wFBVV95cUxNTHZkM1RzVHh4aUp1UkpVWnp1ZWhZc1VCQTJMRTJCc3ZOQ2JuQUZOdGZkUkRpTlpWdkI3SG9CYUtqTDRNa3EtOWpHUmNnT1FnNlV3bG5UNkhwajJxeC1OQ2x2MGhxY2x1cUJGWWtBb1RPSmNha0hZZGZublNZOVh6TmZFV1BvSmZ6RGRXaU9KU0dfdVI1aTZXSkNSY1BSMURxLUJBa0ZBTjdvQnNtRHk0eG1vaWVldVdPZ1RsWjRJUTR1eGttXzM2Q2VvTk1DVldwRHdpYS0yVzlic0l1S09JOWMydk1JTnQ3cjVZ?oc=5","read_across_signal":"POSITIVE READ-ACROSS","impact_on_share_value":"Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."}]}}
+{
+  "fetched_at": "2026-11-16 01:38:03 IST",
+  "overview": {
+    "symbol": "HDFCBANK",
+    "name": "HDFC Bank Ltd",
+    "exchange": "NSE",
+    "bse_code": null,
+    "nse_code": "HDFCBANK",
+    "sector": "Financial Services",
+    "industry": "Private Sector Bank",
+    "about": "HDFC Bank Limited (also known as HDFC) is an Indian banking and financial services company headquartered in Mumbai. It is India's largest private sector bank by assets and the world's tenth-largest bank by market capitalization as of May 2024. As of April 2024, HDFC Bank has a market capitalization of $145 billion, making it the third-largest company on the Indian stock exchanges. [1]",
+    "market_cap_cr": 1240766.0,
+    "current_price": 804.0,
+    "high_52w": 1018.0,
+    "low_52w": 669.0,
+    "stock_pe": 15.5,
+    "book_value": 391.0,
+    "dividend_yield_pct": 1.62,
+    "roce_pct": 7.02,
+    "roe_pct": 13.6,
+    "face_value": 1.0,
+    "revenue_cagr_5y_pct": 26.55,
+    "profit_cagr_5y_pct": 20.04,
+    "piotroski_score": 5,
+    "pros": [
+      "Company has delivered good profit growth of 18.9% CAGR over last 5 years",
+      "Company has been maintaining a healthy dividend payout of 26.1%",
+      "Company's median sales growth is 16.3% of last 10 years"
+    ],
+    "cons": [
+      "Company has low interest coverage ratio.",
+      "Contingent liabilities of Rs.35,61,957 Cr.",
+      "Earnings include an other income of Rs.1,46,360 Cr."
+    ]
+  },
+  "last_5_annual_reports": [
+    {
+      "period": "Mar 2022",
+      "revenue_cr": 135936.0,
+      "expenses_cr": 56557.0,
+      "operating_profit_cr": 20795.0,
+      "opm_pct": 15.0,
+      "other_income_cr": 31759.0,
+      "interest_cr": 58584.0,
+      "depreciation_cr": 1681.0,
+      "profit_before_tax_cr": 50873.0,
+      "tax_pct": 25.0,
+      "net_profit_cr": 38151.0,
+      "eps_inr": 34.31,
+      "dividend_payout_pct": 23.0,
+      "revenue_growth_pct": 5.74,
+      "net_profit_growth_pct": 19.76
+    },
+    {
+      "period": "Mar 2023",
+      "revenue_cr": 170754.0,
+      "expenses_cr": 63042.0,
+      "operating_profit_cr": 29932.0,
+      "opm_pct": 18.0,
+      "other_income_cr": 33912.0,
+      "interest_cr": 77780.0,
+      "depreciation_cr": 2345.0,
+      "profit_before_tax_cr": 61498.0,
+      "tax_pct": 25.0,
+      "net_profit_cr": 46149.0,
+      "eps_inr": 41.22,
+      "dividend_payout_pct": 23.0,
+      "revenue_growth_pct": 25.61,
+      "net_profit_growth_pct": 20.96
+    },
+    {
+      "period": "Mar 2024",
+      "revenue_cr": 283649.0,
+      "expenses_cr": 174196.0,
+      "operating_profit_cr": -44685.0,
+      "opm_pct": -16.0,
+      "other_income_cr": 124346.0,
+      "interest_cr": 154139.0,
+      "depreciation_cr": 3092.0,
+      "profit_before_tax_cr": 76569.0,
+      "tax_pct": 15.0,
+      "net_profit_cr": 65446.0,
+      "eps_inr": 42.16,
+      "dividend_payout_pct": 23.0,
+      "revenue_growth_pct": 66.12,
+      "net_profit_growth_pct": 41.81
+    },
+    {
+      "period": "Mar 2025",
+      "revenue_cr": 336367.0,
+      "expenses_cr": 186974.0,
+      "operating_profit_cr": -34501.0,
+      "opm_pct": -10.0,
+      "other_income_cr": 134548.0,
+      "interest_cr": 183894.0,
+      "depreciation_cr": 3805.0,
+      "profit_before_tax_cr": 96242.0,
+      "tax_pct": 24.0,
+      "net_profit_cr": 73440.0,
+      "eps_inr": 46.26,
+      "dividend_payout_pct": 24.0,
+      "revenue_growth_pct": 18.59,
+      "net_profit_growth_pct": 12.21
+    },
+    {
+      "period": "Mar 2026",
+      "revenue_cr": 348615.0,
+      "expenses_cr": 203635.0,
+      "operating_profit_cr": -40511.0,
+      "opm_pct": -12.0,
+      "other_income_cr": 146848.0,
+      "interest_cr": 185491.0,
+      "depreciation_cr": 4195.0,
+      "profit_before_tax_cr": 102141.0,
+      "tax_pct": 22.0,
+      "net_profit_cr": 79219.0,
+      "eps_inr": 49.39,
+      "dividend_payout_pct": 31.0,
+      "revenue_growth_pct": 3.64,
+      "net_profit_growth_pct": 7.87
+    }
+  ],
+  "last_5_quarterly_reports": [
+    {
+      "period": "Sep 2025",
+      "revenue_cr": 86994.0,
+      "expenses_cr": 45161.0,
+      "operating_profit_cr": -4908.0,
+      "opm_pct": -6.0,
+      "other_income_cr": 31567.0,
+      "interest_cr": 46741.0,
+      "depreciation_cr": 0.0,
+      "profit_before_tax_cr": 26659.0,
+      "tax_pct": 24.0,
+      "net_profit_cr": 20364.0,
+      "eps_inr": 12.76,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": -0.43,
+      "net_profit_growth_pct": 19.16
+    },
+    {
+      "period": "Dec 2025",
+      "revenue_cr": 87067.0,
+      "expenses_cr": 54145.0,
+      "operating_profit_cr": -12899.0,
+      "opm_pct": -15.0,
+      "other_income_cr": 39860.0,
+      "interest_cr": 45821.0,
+      "depreciation_cr": 0.0,
+      "profit_before_tax_cr": 26961.0,
+      "tax_pct": 23.0,
+      "net_profit_cr": 20691.0,
+      "eps_inr": 12.87,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 0.08,
+      "net_profit_growth_pct": 1.61
+    },
+    {
+      "period": "Mar 2026",
+      "revenue_cr": 87182.0,
+      "expenses_cr": 44028.0,
+      "operating_profit_cr": -2066.0,
+      "opm_pct": -2.0,
+      "other_income_cr": 29737.0,
+      "interest_cr": 45220.0,
+      "depreciation_cr": 0.0,
+      "profit_before_tax_cr": 27672.0,
+      "tax_pct": 24.0,
+      "net_profit_cr": 21074.0,
+      "eps_inr": 13.22,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 0.13,
+      "net_profit_growth_pct": 1.85
+    },
+    {
+      "period": "Jun 2026",
+      "revenue_cr": 90575.0,
+      "expenses_cr": 58292.0,
+      "operating_profit_cr": -15342.0,
+      "opm_pct": -17.0,
+      "other_income_cr": 42535.0,
+      "interest_cr": 47626.0,
+      "depreciation_cr": 0.0,
+      "profit_before_tax_cr": 27193.0,
+      "tax_pct": 25.0,
+      "net_profit_cr": 20383.0,
+      "eps_inr": 12.5,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 3.89,
+      "net_profit_growth_pct": -3.28
+    },
+    {
+      "period": "Sep 2026",
+      "revenue_cr": 95132.0,
+      "expenses_cr": 50029.0,
+      "operating_profit_cr": -5565.0,
+      "opm_pct": -6.0,
+      "other_income_cr": 34227.0,
+      "interest_cr": 50667.0,
+      "depreciation_cr": 0.0,
+      "profit_before_tax_cr": 28663.0,
+      "tax_pct": 25.0,
+      "net_profit_cr": 21537.0,
+      "eps_inr": 13.43,
+      "dividend_payout_pct": null,
+      "revenue_growth_pct": 5.03,
+      "net_profit_growth_pct": 5.66
+    }
+  ],
+  "cash_and_balance_sheet": {
+    "latest_period": "Sep 2026",
+    "cash_equivalents_cr": 175156.0,
+    "liquid_investments_cr": 1356850.0,
+    "total_cash_in_hand_cr": 1532006.0,
+    "total_borrowings_cr": 3324146.0,
+    "net_cash_position_cr": -1792140.0,
+    "debt_to_equity": 5.51,
+    "cash_to_debt_ratio": 0.46,
+    "cash_pct_of_mcap": 123.47,
+    "latest_ocf_cr": 0.0,
+    "latest_fcf_cr": 0.0,
+    "cumulative_5y_ocf_cr": 280631.0,
+    "cumulative_5y_fcf_cr": 276313.05,
+    "roce_5y_series": [],
+    "history_5y": [
+      {
+        "period": "Mar 2023",
+        "cash_equivalents_cr": 117189.0,
+        "investments_cr": 511582.0,
+        "total_cash_in_hand_cr": 628771.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 1882663.0,
+        "net_cash_cr": -1253892.0,
+        "total_equity_cr": 289438.0,
+        "total_assets_cr": 2530432.0,
+        "operating_cash_flow_cr": 20814.0,
+        "investing_cash_flow_cr": -2992.0,
+        "free_cash_flow_cr": 18869.2
+      },
+      {
+        "period": "Mar 2024",
+        "cash_equivalents_cr": 178719.0,
+        "investments_cr": 1005682.0,
+        "total_cash_in_hand_cr": 1184401.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 2376887.0,
+        "net_cash_cr": -1192486.0,
+        "total_equity_cr": 456396.0,
+        "total_assets_cr": 4030194.0,
+        "operating_cash_flow_cr": 19069.0,
+        "investing_cash_flow_cr": 16600.0,
+        "free_cash_flow_cr": 19069.0
+      },
+      {
+        "period": "Mar 2025",
+        "cash_equivalents_cr": 144390.0,
+        "investments_cr": 1186473.0,
+        "total_cash_in_hand_cr": 1330863.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 2710898.0,
+        "net_cash_cr": -1380035.0,
+        "total_equity_cr": 521789.0,
+        "total_assets_cr": 4392110.0,
+        "operating_cash_flow_cr": 127242.0,
+        "investing_cash_flow_cr": -3651.0,
+        "free_cash_flow_cr": 124868.85
+      },
+      {
+        "period": "Mar 2026",
+        "cash_equivalents_cr": 200707.0,
+        "investments_cr": 1280216.0,
+        "total_cash_in_hand_cr": 1480923.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 3099638.0,
+        "net_cash_cr": -1618715.0,
+        "total_equity_cr": 586059.0,
+        "total_assets_cr": 4907701.0,
+        "operating_cash_flow_cr": 113506.0,
+        "investing_cash_flow_cr": 7477.0,
+        "free_cash_flow_cr": 113506.0
+      },
+      {
+        "period": "Sep 2026",
+        "cash_equivalents_cr": 175156.0,
+        "investments_cr": 1356850.0,
+        "total_cash_in_hand_cr": 1532006.0,
+        "long_term_debt_cr": 0.0,
+        "short_term_debt_cr": 0.0,
+        "lease_liabilities_cr": 0.0,
+        "total_borrowings_cr": 3324146.0,
+        "net_cash_cr": -1792140.0,
+        "total_equity_cr": 603469.0,
+        "total_assets_cr": 5165842.0,
+        "operating_cash_flow_cr": null,
+        "investing_cash_flow_cr": null,
+        "free_cash_flow_cr": null
+      }
+    ]
+  },
+  "stockholders": {
+    "latest_period": "Sep 2026",
+    "promoters_pct": 0.0,
+    "fii_pct": 39.39,
+    "dii_pct": 43.44,
+    "government_pct": 0.19,
+    "public_pct": 16.96,
+    "institutional_total_pct": 82.83,
+    "promoter_change_4q_pct": 0.0,
+    "fii_change_4q_pct": -8.99,
+    "dii_change_4q_pct": 7.37,
+    "num_shareholders": 4807998,
+    "quarterly_history": [
+      {
+        "period": "Dec 2024",
+        "promoters_pct": 0.0,
+        "fii_pct": 49.21,
+        "dii_pct": 34.37,
+        "government_pct": 0.18,
+        "public_pct": 16.23,
+        "num_shareholders": 3924442
+      },
+      {
+        "period": "Mar 2025",
+        "promoters_pct": 0.0,
+        "fii_pct": 48.3,
+        "dii_pct": 35.68,
+        "government_pct": 0.18,
+        "public_pct": 15.84,
+        "num_shareholders": 3829146
+      },
+      {
+        "period": "Jun 2025",
+        "promoters_pct": 0.0,
+        "fii_pct": 48.84,
+        "dii_pct": 35.77,
+        "government_pct": 0.18,
+        "public_pct": 15.19,
+        "num_shareholders": 3725911
+      },
+      {
+        "period": "Sep 2025",
+        "promoters_pct": 0.0,
+        "fii_pct": 48.38,
+        "dii_pct": 36.07,
+        "government_pct": 0.18,
+        "public_pct": 15.33,
+        "num_shareholders": 3701272
+      },
+      {
+        "period": "Dec 2025",
+        "promoters_pct": 0.0,
+        "fii_pct": 47.67,
+        "dii_pct": 37.0,
+        "government_pct": 0.18,
+        "public_pct": 15.11,
+        "num_shareholders": 3650087
+      },
+      {
+        "period": "Mar 2026",
+        "promoters_pct": 0.0,
+        "fii_pct": 44.05,
+        "dii_pct": 40.14,
+        "government_pct": 0.18,
+        "public_pct": 15.64,
+        "num_shareholders": 4230425
+      },
+      {
+        "period": "Jun 2026",
+        "promoters_pct": 0.0,
+        "fii_pct": 41.82,
+        "dii_pct": 41.75,
+        "government_pct": 0.18,
+        "public_pct": 16.27,
+        "num_shareholders": 4532753
+      },
+      {
+        "period": "Sep 2026",
+        "promoters_pct": 0.0,
+        "fii_pct": 39.39,
+        "dii_pct": 43.44,
+        "government_pct": 0.19,
+        "public_pct": 16.96,
+        "num_shareholders": 4807998
+      }
+    ],
+    "named_stockholders": [
+      {
+        "name": "Government Of Singapore",
+        "category": "FII",
+        "latest_holding_pct": 4978.0,
+        "previous_holding_pct": 2.13,
+        "change_4q_pct": 4975.61,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 2.27
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 2.39
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 2.17
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 2.13
+          },
+          {
+            "period": "setAttributes",
+            "pct": 4978.0
+          }
+        ]
+      },
+      {
+        "name": "Government Pension Fund Global",
+        "category": "FII",
+        "latest_holding_pct": 84688.0,
+        "previous_holding_pct": 1.25,
+        "change_4q_pct": 84686.67,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 1.22
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 1.33
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 1.34
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 1.25
+          },
+          {
+            "period": "setAttributes",
+            "pct": 84688.0
+          }
+        ]
+      },
+      {
+        "name": "Vanguard Total International Stock Index Fund",
+        "category": "FII",
+        "latest_holding_pct": 298.0,
+        "previous_holding_pct": 1.26,
+        "change_4q_pct": 296.76,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 1.24
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 1.24
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 1.25
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 1.26
+          },
+          {
+            "period": "setAttributes",
+            "pct": 298.0
+          }
+        ]
+      },
+      {
+        "name": "Vanguard Emerging Markets Stock Index Fund, A Series Of Vanguard International Equity Index Funds",
+        "category": "FII",
+        "latest_holding_pct": 17239.0,
+        "previous_holding_pct": 1.21,
+        "change_4q_pct": 17237.83,
+        "trend": [
+          {
+            "period": "Mar 2026",
+            "pct": 1.17
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 1.19
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 1.21
+          },
+          {
+            "period": "setAttributes",
+            "pct": 17239.0
+          }
+        ]
+      },
+      {
+        "name": "Sbi Nifty 50 Etf",
+        "category": "DII",
+        "latest_holding_pct": 123139.0,
+        "previous_holding_pct": 7.68,
+        "change_4q_pct": 123131.55,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 7.28
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 7.45
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 7.48
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 7.68
+          },
+          {
+            "period": "setAttributes",
+            "pct": 123139.0
+          }
+        ]
+      },
+      {
+        "name": "Life Insurance Corporation Of India",
+        "category": "DII",
+        "latest_holding_pct": 123150.0,
+        "previous_holding_pct": 4.89,
+        "change_4q_pct": 123145.33,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 4.77
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 4.67
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 4.77
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 4.89
+          },
+          {
+            "period": "setAttributes",
+            "pct": 123150.0
+          }
+        ]
+      },
+      {
+        "name": "Icici Prudential Large Cap Fund",
+        "category": "DII",
+        "latest_holding_pct": 181089.0,
+        "previous_holding_pct": 5.03,
+        "change_4q_pct": 181084.72,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 3.45
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 4.28
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 4.84
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 5.03
+          },
+          {
+            "period": "setAttributes",
+            "pct": 181089.0
+          }
+        ]
+      },
+      {
+        "name": "Icici Prudential Bluechip Fund",
+        "category": "DII",
+        "latest_holding_pct": 174.0,
+        "previous_holding_pct": 3.01,
+        "change_4q_pct": 170.98,
+        "trend": [
+          {
+            "period": "Dec 2024",
+            "pct": 3.02
+          },
+          {
+            "period": "Mar 2025",
+            "pct": 3.25
+          },
+          {
+            "period": "Jun 2025",
+            "pct": 3.01
+          },
+          {
+            "period": "setAttributes",
+            "pct": 174.0
+          }
+        ]
+      },
+      {
+        "name": "Hdfc Trustee Company Limited-Hdfc Flexi Cap Fund",
+        "category": "DII",
+        "latest_holding_pct": 145464.0,
+        "previous_holding_pct": 3.12,
+        "change_4q_pct": 145461.02,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 2.87
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 2.98
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 3.05
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 3.12
+          },
+          {
+            "period": "setAttributes",
+            "pct": 145464.0
+          }
+        ]
+      },
+      {
+        "name": "Icici Prudential Value Discovery Fund",
+        "category": "DII",
+        "latest_holding_pct": 129992.0,
+        "previous_holding_pct": 3.13,
+        "change_4q_pct": 129989.49,
+        "trend": [
+          {
+            "period": "Mar 2024",
+            "pct": 2.51
+          },
+          {
+            "period": "Jun 2024",
+            "pct": 2.67
+          },
+          {
+            "period": "Sep 2024",
+            "pct": 3.13
+          },
+          {
+            "period": "setAttributes",
+            "pct": 129992.0
+          }
+        ]
+      },
+      {
+        "name": "Hdfc Trustee Company Ltd. A/C Hdfc Balanced Advantage Fund",
+        "category": "DII",
+        "latest_holding_pct": 42255.0,
+        "previous_holding_pct": 2.6,
+        "change_4q_pct": 42252.83,
+        "trend": [
+          {
+            "period": "Dec 2023",
+            "pct": 2.17
+          },
+          {
+            "period": "Mar 2024",
+            "pct": 2.6
+          },
+          {
+            "period": "setAttributes",
+            "pct": 42255.0
+          }
+        ]
+      },
+      {
+        "name": "Uti Nifty 50 Etf",
+        "category": "DII",
+        "latest_holding_pct": 156709.0,
+        "previous_holding_pct": 2.53,
+        "change_4q_pct": 156706.67,
+        "trend": [
+          {
+            "period": "Dec 2025",
+            "pct": 2.22
+          },
+          {
+            "period": "Mar 2026",
+            "pct": 2.33
+          },
+          {
+            "period": "Jun 2026",
+            "pct": 2.46
+          },
+          {
+            "period": "Sep 2026",
+            "pct": 2.53
+          },
+          {
+            "period": "setAttributes",
+            "pct": 156709.0
+          }
+        ]
+      }
+    ]
+  },
+  "rd_and_innovation": {
+    "latest_rd_spend_cr": 2963.23,
+    "latest_rd_pct_of_sales": 0.85,
+    "cumulative_5y_rd_cr": 10585.23,
+    "intangible_assets_cr": 0.0,
+    "cwip_cr": 0.0,
+    "rd_cagr_5y_pct": 28.48,
+    "innovation_focus": "Core banking cloud modernization, UPI high-throughput rails & AI credit underwriting",
+    "rd_data_source": "Technology & Digital CapEx Estimate",
+    "history_5y": [
+      {
+        "period": "Mar 2022",
+        "revenue_cr": 135936.0,
+        "rd_spend_cr": 1087.49,
+        "rd_pct_of_sales": 0.8,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 0.0,
+        "employee_cost_pct": 11.7
+      },
+      {
+        "period": "Mar 2023",
+        "revenue_cr": 170754.0,
+        "rd_spend_cr": 1383.11,
+        "rd_pct_of_sales": 0.81,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 0.0,
+        "employee_cost_pct": 11.73
+      },
+      {
+        "period": "Mar 2024",
+        "revenue_cr": 283649.0,
+        "rd_spend_cr": 2325.92,
+        "rd_pct_of_sales": 0.82,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 0.0,
+        "employee_cost_pct": 10.95
+      },
+      {
+        "period": "Mar 2025",
+        "revenue_cr": 336367.0,
+        "rd_spend_cr": 2825.48,
+        "rd_pct_of_sales": 0.84,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 0.0,
+        "employee_cost_pct": 10.16
+      },
+      {
+        "period": "Mar 2026",
+        "revenue_cr": 348615.0,
+        "rd_spend_cr": 2963.23,
+        "rd_pct_of_sales": 0.85,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 0.0,
+        "employee_cost_pct": 10.8
+      }
+    ],
+    "annual_reports_5y": [
+      {
+        "title": "Annual Report 2026",
+        "year": "2026",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/7d621500-082a-4342-b98d-ba677d3890c5.pdf"
+      },
+      {
+        "title": "Annual Report 2025",
+        "year": "2025",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/411e22d2-0720-4cec-b659-9ccd639f0f1a.pdf"
+      },
+      {
+        "title": "Annual Report 2024",
+        "year": "2024",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/2160dea5-d49e-4409-83a4-c2b111a3bd12.pdf"
+      },
+      {
+        "title": "Annual Report 2023",
+        "year": "2023",
+        "url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/0fb0e6bd-7110-44c3-a750-76933ddf105c.pdf"
+      },
+      {
+        "title": "Annual Report 2022",
+        "year": "2022",
+        "url": "https://www.bseindia.com/bseplus/AnnualReport/500180/73256500180.pdf"
+      }
+    ]
+  },
+  "technicals": {
+    "current_price": 804.0,
+    "prev_close": 812.3,
+    "day_change_pct": -1.02,
+    "day_high": 808.8,
+    "day_low": 798.0,
+    "high_52w": 1018.0,
+    "low_52w": 669.0,
+    "return_5d_pct": 5.79,
+    "return_1m_pct": 12.61,
+    "return_6m_pct": 9.03,
+    "return_1y_pct": -17.16,
+    "rsi_14": 73.4,
+    "macd_line": 24.13,
+    "macd_signal": 11.63,
+    "macd_hist": 12.5,
+    "ema_20": 747.52,
+    "dma_50": 720.77,
+    "dma_200": 775.55,
+    "bb_upper": 824.42,
+    "bb_middle": 731.13,
+    "bb_lower": 637.84,
+    "atr_14": 17.25,
+    "atr_pct": 2.15,
+    "volume_latest": 23442886.0,
+    "volume_20d_avg": 39388947.7,
+    "volume_Surge_ratio": 0.6,
+    "annualized_volatility_pct": 26.68,
+    "pivot_point": 803.6,
+    "support_1": 798.4,
+    "support_2": 792.8,
+    "resistance_1": 809.2,
+    "resistance_2": 814.4,
+    "trend_regime": "BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA)",
+    "technical_signals": [
+      "Price below both 50-DMA and 200-DMA; wait for support stabilization",
+      "RSI(14) at 73.4 \u2014 Overbought zone, watch for profit-booking near R1",
+      "MACD Bullish Crossover active (Histogram +12.50)"
+    ],
+    "price_series": [
+      {
+        "date": "2026-07-07",
+        "close": 829.3,
+        "open": 843.0,
+        "high": 843.0,
+        "low": 826.1,
+        "dma50": 765.19,
+        "dma200": 856.1,
+        "volume": 57611729.0
+      },
+      {
+        "date": "2026-07-08",
+        "close": 810.3,
+        "open": 825.9,
+        "high": 834.35,
+        "low": 806.95,
+        "dma50": 765.95,
+        "dma200": 855.81,
+        "volume": 38754632.0
+      },
+      {
+        "date": "2026-07-09",
+        "close": 817.55,
+        "open": 813.0,
+        "high": 822.85,
+        "low": 812.3,
+        "dma50": 766.77,
+        "dma200": 855.58,
+        "volume": 39891798.0
+      },
+      {
+        "date": "2026-07-10",
+        "close": 824.95,
+        "open": 824.0,
+        "high": 827.7,
+        "low": 820.3,
+        "dma50": 767.87,
+        "dma200": 855.39,
+        "volume": 23595785.0
+      },
+      {
+        "date": "2026-07-13",
+        "close": 817.95,
+        "open": 817.0,
+        "high": 821.95,
+        "low": 811.0,
+        "dma50": 768.9,
+        "dma200": 855.16,
+        "volume": 21741736.0
+      },
+      {
+        "date": "2026-07-14",
+        "close": 809.4,
+        "open": 811.4,
+        "high": 818.4,
+        "low": 807.0,
+        "dma50": 769.91,
+        "dma200": 854.88,
+        "volume": 25605395.0
+      },
+      {
+        "date": "2026-07-15",
+        "close": 815.45,
+        "open": 811.0,
+        "high": 819.7,
+        "low": 809.7,
+        "dma50": 770.88,
+        "dma200": 854.64,
+        "volume": 21488739.0
+      },
+      {
+        "date": "2026-07-16",
+        "close": 808.3,
+        "open": 814.5,
+        "high": 818.0,
+        "low": 806.5,
+        "dma50": 771.85,
+        "dma200": 854.36,
+        "volume": 18698186.0
+      },
+      {
+        "date": "2026-07-17",
+        "close": 819.6,
+        "open": 810.0,
+        "high": 823.7,
+        "low": 808.5,
+        "dma50": 772.57,
+        "dma200": 854.15,
+        "volume": 17415322.0
+      },
+      {
+        "date": "2026-07-20",
+        "close": 777.6,
+        "open": 790.0,
+        "high": 790.0,
+        "low": 774.55,
+        "dma50": 772.46,
+        "dma200": 853.7,
+        "volume": 56061789.0
+      },
+      {
+        "date": "2026-07-21",
+        "close": 761.45,
+        "open": 769.15,
+        "high": 772.5,
+        "low": 760.1,
+        "dma50": 772.33,
+        "dma200": 853.15,
+        "volume": 42246009.0
+      },
+      {
+        "date": "2026-07-22",
+        "close": 753.15,
+        "open": 760.25,
+        "high": 761.35,
+        "low": 750.35,
+        "dma50": 772.37,
+        "dma200": 852.56,
+        "volume": 23385446.0
+      },
+      {
+        "date": "2026-07-23",
+        "close": 747.25,
+        "open": 749.4,
+        "high": 751.0,
+        "low": 743.25,
+        "dma50": 772.55,
+        "dma200": 851.95,
+        "volume": 32532090.0
+      },
+      {
+        "date": "2026-07-24",
+        "close": 742.8,
+        "open": 738.5,
+        "high": 748.25,
+        "low": 737.25,
+        "dma50": 772.66,
+        "dma200": 851.31,
+        "volume": 23837859.0
+      },
+      {
+        "date": "2026-07-27",
+        "close": 739.55,
+        "open": 746.1,
+        "high": 747.95,
+        "low": 738.1,
+        "dma50": 772.31,
+        "dma200": 850.67,
+        "volume": 29678752.0
+      },
+      {
+        "date": "2026-07-28",
+        "close": 735.4,
+        "open": 732.0,
+        "high": 740.25,
+        "low": 732.0,
+        "dma50": 771.91,
+        "dma200": 850.0,
+        "volume": 33886037.0
+      },
+      {
+        "date": "2026-07-29",
+        "close": 748.2,
+        "open": 743.0,
+        "high": 751.25,
+        "low": 740.8,
+        "dma50": 771.76,
+        "dma200": 849.42,
+        "volume": 20460659.0
+      },
+      {
+        "date": "2026-07-30",
+        "close": 753.95,
+        "open": 752.8,
+        "high": 757.9,
+        "low": 745.5,
+        "dma50": 771.83,
+        "dma200": 848.88,
+        "volume": 35844392.0
+      },
+      {
+        "date": "2026-07-31",
+        "close": 748.15,
+        "open": 753.95,
+        "high": 757.55,
+        "low": 747.2,
+        "dma50": 771.85,
+        "dma200": 848.31,
+        "volume": 25522483.0
+      },
+      {
+        "date": "2026-08-03",
+        "close": 753.0,
+        "open": 753.05,
+        "high": 756.85,
+        "low": 750.05,
+        "dma50": 771.98,
+        "dma200": 847.77,
+        "volume": 14827841.0
+      },
+      {
+        "date": "2026-08-04",
+        "close": 742.0,
+        "open": 753.2,
+        "high": 753.2,
+        "low": 738.0,
+        "dma50": 771.73,
+        "dma200": 847.18,
+        "volume": 31559802.0
+      },
+      {
+        "date": "2026-08-05",
+        "close": 735.0,
+        "open": 733.8,
+        "high": 741.95,
+        "low": 732.6,
+        "dma50": 770.95,
+        "dma200": 846.56,
+        "volume": 60050538.0
+      },
+      {
+        "date": "2026-08-06",
+        "close": 734.3,
+        "open": 739.0,
+        "high": 740.5,
+        "low": 733.55,
+        "dma50": 770.31,
+        "dma200": 845.94,
+        "volume": 44772122.0
+      },
+      {
+        "date": "2026-08-07",
+        "close": 731.0,
+        "open": 733.0,
+        "high": 736.0,
+        "low": 728.2,
+        "dma50": 770.01,
+        "dma200": 845.31,
+        "volume": 19382042.0
+      },
+      {
+        "date": "2026-08-10",
+        "close": 731.0,
+        "open": 731.5,
+        "high": 737.55,
+        "low": 728.5,
+        "dma50": 769.98,
+        "dma200": 844.68,
+        "volume": 23660590.0
+      },
+      {
+        "date": "2026-08-11",
+        "close": 729.0,
+        "open": 730.5,
+        "high": 730.85,
+        "low": 726.55,
+        "dma50": 769.94,
+        "dma200": 844.05,
+        "volume": 29154365.0
+      },
+      {
+        "date": "2026-08-12",
+        "close": 729.0,
+        "open": 729.0,
+        "high": 730.65,
+        "low": 722.0,
+        "dma50": 769.8,
+        "dma200": 843.43,
+        "volume": 26993177.0
+      },
+      {
+        "date": "2026-08-13",
+        "close": 725.0,
+        "open": 726.9,
+        "high": 729.0,
+        "low": 724.5,
+        "dma50": 769.47,
+        "dma200": 842.8,
+        "volume": 22129893.0
+      },
+      {
+        "date": "2026-08-14",
+        "close": 727.0,
+        "open": 725.0,
+        "high": 729.6,
+        "low": 723.5,
+        "dma50": 769.18,
+        "dma200": 842.18,
+        "volume": 20364131.0
+      },
+      {
+        "date": "2026-08-17",
+        "close": 729.0,
+        "open": 727.05,
+        "high": 732.1,
+        "low": 724.5,
+        "dma50": 769.06,
+        "dma200": 841.57,
+        "volume": 14823722.0
+      },
+      {
+        "date": "2026-08-18",
+        "close": 723.0,
+        "open": 726.3,
+        "high": 729.0,
+        "low": 723.0,
+        "dma50": 768.99,
+        "dma200": 840.95,
+        "volume": 17916507.0
+      },
+      {
+        "date": "2026-08-19",
+        "close": 720.0,
+        "open": 724.0,
+        "high": 725.4,
+        "low": 715.1,
+        "dma50": 768.86,
+        "dma200": 840.31,
+        "volume": 21342651.0
+      },
+      {
+        "date": "2026-08-20",
+        "close": 725.05,
+        "open": 725.5,
+        "high": 728.3,
+        "low": 724.3,
+        "dma50": 768.67,
+        "dma200": 839.71,
+        "volume": 17603805.0
+      },
+      {
+        "date": "2026-08-21",
+        "close": 726.95,
+        "open": 728.3,
+        "high": 732.8,
+        "low": 726.6,
+        "dma50": 768.55,
+        "dma200": 839.12,
+        "volume": 26029811.0
+      },
+      {
+        "date": "2026-08-24",
+        "close": 729.0,
+        "open": 732.5,
+        "high": 734.4,
+        "low": 724.1,
+        "dma50": 767.94,
+        "dma200": 838.55,
+        "volume": 11408345.0
+      },
+      {
+        "date": "2026-08-25",
+        "close": 727.5,
+        "open": 726.6,
+        "high": 728.7,
+        "low": 722.0,
+        "dma50": 767.19,
+        "dma200": 837.98,
+        "volume": 17511874.0
+      },
+      {
+        "date": "2026-08-26",
+        "close": 727.2,
+        "open": 728.0,
+        "high": 731.0,
+        "low": 724.15,
+        "dma50": 766.29,
+        "dma200": 837.41,
+        "volume": 21156463.0
+      },
+      {
+        "date": "2026-08-27",
+        "close": 711.0,
+        "open": 728.15,
+        "high": 728.15,
+        "low": 710.0,
+        "dma50": 765.03,
+        "dma200": 836.76,
+        "volume": 46515020.0
+      },
+      {
+        "date": "2026-08-28",
+        "close": 720.3,
+        "open": 710.85,
+        "high": 720.3,
+        "low": 707.0,
+        "dma50": 763.72,
+        "dma200": 836.17,
+        "volume": 16494301.0
+      },
+      {
+        "date": "2026-08-31",
+        "close": 709.0,
+        "open": 723.05,
+        "high": 739.75,
+        "low": 704.15,
+        "dma50": 762.3,
+        "dma200": 835.53,
+        "volume": 78157067.0
+      },
+      {
+        "date": "2026-09-01",
+        "close": 711.9,
+        "open": 705.05,
+        "high": 715.45,
+        "low": 698.5,
+        "dma50": 760.81,
+        "dma200": 834.91,
+        "volume": 44417092.0
+      },
+      {
+        "date": "2026-09-02",
+        "close": 700.8,
+        "open": 702.3,
+        "high": 705.65,
+        "low": 700.0,
+        "dma50": 759.33,
+        "dma200": 834.24,
+        "volume": 36950338.0
+      },
+      {
+        "date": "2026-09-03",
+        "close": 706.65,
+        "open": 705.0,
+        "high": 712.6,
+        "low": 705.0,
+        "dma50": 757.6,
+        "dma200": 832.92,
+        "volume": 27770641.0
+      },
+      {
+        "date": "2026-09-04",
+        "close": 712.1,
+        "open": 708.35,
+        "high": 716.5,
+        "low": 708.35,
+        "dma50": 755.92,
+        "dma200": 831.61,
+        "volume": 14488024.0
+      },
+      {
+        "date": "2026-09-07",
+        "close": 710.5,
+        "open": 712.1,
+        "high": 713.0,
+        "low": 707.05,
+        "dma50": 754.15,
+        "dma200": 830.26,
+        "volume": 12180390.0
+      },
+      {
+        "date": "2026-09-08",
+        "close": 703.0,
+        "open": 707.1,
+        "high": 708.9,
+        "low": 703.0,
+        "dma50": 752.25,
+        "dma200": 828.9,
+        "volume": 19883515.0
+      },
+      {
+        "date": "2026-09-09",
+        "close": 687.1,
+        "open": 698.0,
+        "high": 700.0,
+        "low": 687.1,
+        "dma50": 750.07,
+        "dma200": 827.44,
+        "volume": 39173990.0
+      },
+      {
+        "date": "2026-09-10",
+        "close": 693.8,
+        "open": 687.1,
+        "high": 694.5,
+        "low": 686.2,
+        "dma50": 748.03,
+        "dma200": 825.95,
+        "volume": 27108053.0
+      },
+      {
+        "date": "2026-09-11",
+        "close": 708.25,
+        "open": 683.9,
+        "high": 709.0,
+        "low": 681.9,
+        "dma50": 746.17,
+        "dma200": 824.58,
+        "volume": 31411934.0
+      },
+      {
+        "date": "2026-09-15",
+        "close": 716.55,
+        "open": 722.4,
+        "high": 730.75,
+        "low": 715.05,
+        "dma50": 743.9,
+        "dma200": 823.25,
+        "volume": 50387632.0
+      },
+      {
+        "date": "2026-09-16",
+        "close": 721.5,
+        "open": 714.9,
+        "high": 725.4,
+        "low": 710.85,
+        "dma50": 741.75,
+        "dma200": 821.99,
+        "volume": 27476943.0
+      },
+      {
+        "date": "2026-09-17",
+        "close": 713.0,
+        "open": 717.5,
+        "high": 719.4,
+        "low": 713.0,
+        "dma50": 739.8,
+        "dma200": 820.61,
+        "volume": 21543303.0
+      },
+      {
+        "date": "2026-09-18",
+        "close": 731.0,
+        "open": 715.25,
+        "high": 733.8,
+        "low": 715.25,
+        "dma50": 738.07,
+        "dma200": 819.3,
+        "volume": 39400710.0
+      },
+      {
+        "date": "2026-09-21",
+        "close": 739.5,
+        "open": 731.0,
+        "high": 742.65,
+        "low": 729.05,
+        "dma50": 736.36,
+        "dma200": 818.04,
+        "volume": 35482683.0
+      },
+      {
+        "date": "2026-09-22",
+        "close": 738.6,
+        "open": 738.85,
+        "high": 749.3,
+        "low": 738.6,
+        "dma50": 734.78,
+        "dma200": 816.81,
+        "volume": 35483669.0
+      },
+      {
+        "date": "2026-09-23",
+        "close": 737.25,
+        "open": 735.65,
+        "high": 742.8,
+        "low": 734.0,
+        "dma50": 733.33,
+        "dma200": 815.63,
+        "volume": 23197231.0
+      },
+      {
+        "date": "2026-09-24",
+        "close": 728.9,
+        "open": 725.0,
+        "high": 734.85,
+        "low": 722.7,
+        "dma50": 731.6,
+        "dma200": 814.35,
+        "volume": 29575194.0
+      },
+      {
+        "date": "2026-09-25",
+        "close": 735.6,
+        "open": 723.0,
+        "high": 739.65,
+        "low": 723.0,
+        "dma50": 730.15,
+        "dma200": 813.12,
+        "volume": 19853034.0
+      },
+      {
+        "date": "2026-09-28",
+        "close": 719.05,
+        "open": 731.6,
+        "high": 733.0,
+        "low": 718.1,
+        "dma50": 728.14,
+        "dma200": 811.78,
+        "volume": 21675579.0
+      },
+      {
+        "date": "2026-09-29",
+        "close": 722.7,
+        "open": 713.7,
+        "high": 722.7,
+        "low": 706.25,
+        "dma50": 727.04,
+        "dma200": 810.46,
+        "volume": 42755901.0
+      },
+      {
+        "date": "2026-09-30",
+        "close": 708.7,
+        "open": 711.5,
+        "high": 720.3,
+        "low": 708.7,
+        "dma50": 725.98,
+        "dma200": 809.1,
+        "volume": 39365496.0
+      },
+      {
+        "date": "2026-10-01",
+        "close": 721.2,
+        "open": 708.4,
+        "high": 721.3,
+        "low": 707.1,
+        "dma50": 725.35,
+        "dma200": 807.84,
+        "volume": 37389857.0
+      },
+      {
+        "date": "2026-10-05",
+        "close": 704.8,
+        "open": 731.95,
+        "high": 734.2,
+        "low": 701.25,
+        "dma50": 724.5,
+        "dma200": 806.44,
+        "volume": 66056690.0
+      },
+      {
+        "date": "2026-10-06",
+        "close": 711.45,
+        "open": 705.6,
+        "high": 714.7,
+        "low": 701.0,
+        "dma50": 723.87,
+        "dma200": 805.07,
+        "volume": 26568270.0
+      },
+      {
+        "date": "2026-10-07",
+        "close": 702.75,
+        "open": 708.55,
+        "high": 711.0,
+        "low": 701.7,
+        "dma50": 723.13,
+        "dma200": 803.69,
+        "volume": 29944008.0
+      },
+      {
+        "date": "2026-10-08",
+        "close": 692.25,
+        "open": 704.05,
+        "high": 705.8,
+        "low": 690.5,
+        "dma50": 722.27,
+        "dma200": 802.26,
+        "volume": 26808765.0
+      },
+      {
+        "date": "2026-10-09",
+        "close": 707.25,
+        "open": 696.6,
+        "high": 710.15,
+        "low": 695.3,
+        "dma50": 721.45,
+        "dma200": 800.96,
+        "volume": 18397972.0
+      },
+      {
+        "date": "2026-10-12",
+        "close": 704.9,
+        "open": 707.5,
+        "high": 711.85,
+        "low": 700.35,
+        "dma50": 720.47,
+        "dma200": 799.66,
+        "volume": 18197879.0
+      },
+      {
+        "date": "2026-10-13",
+        "close": 714.0,
+        "open": 707.0,
+        "high": 716.5,
+        "low": 705.1,
+        "dma50": 719.79,
+        "dma200": 798.38,
+        "volume": 18838639.0
+      },
+      {
+        "date": "2026-10-14",
+        "close": 710.7,
+        "open": 712.3,
+        "high": 718.55,
+        "low": 707.95,
+        "dma50": 718.94,
+        "dma200": 797.08,
+        "volume": 23945373.0
+      },
+      {
+        "date": "2026-10-15",
+        "close": 726.85,
+        "open": 715.0,
+        "high": 728.0,
+        "low": 710.7,
+        "dma50": 718.64,
+        "dma200": 795.81,
+        "volume": 37365177.0
+      },
+      {
+        "date": "2026-10-16",
+        "close": 728.85,
+        "open": 727.9,
+        "high": 734.9,
+        "low": 724.3,
+        "dma50": 718.51,
+        "dma200": 794.55,
+        "volume": 28936902.0
+      },
+      {
+        "date": "2026-10-19",
+        "close": 712.0,
+        "open": 733.4,
+        "high": 733.4,
+        "low": 707.15,
+        "dma50": 718.07,
+        "dma200": 793.23,
+        "volume": 33524133.0
+      },
+      {
+        "date": "2026-10-21",
+        "close": 706.95,
+        "open": 709.55,
+        "high": 715.4,
+        "low": 698.25,
+        "dma50": 717.59,
+        "dma200": 791.89,
+        "volume": 26573703.0
+      },
+      {
+        "date": "2026-10-22",
+        "close": 694.05,
+        "open": 701.45,
+        "high": 703.35,
+        "low": 689.1,
+        "dma50": 716.85,
+        "dma200": 790.48,
+        "volume": 60280576.0
+      },
+      {
+        "date": "2026-10-23",
+        "close": 692.8,
+        "open": 692.55,
+        "high": 696.8,
+        "low": 686.85,
+        "dma50": 716.12,
+        "dma200": 789.07,
+        "volume": 18989022.0
+      },
+      {
+        "date": "2026-10-26",
+        "close": 688.05,
+        "open": 692.1,
+        "high": 693.8,
+        "low": 684.0,
+        "dma50": 715.31,
+        "dma200": 787.64,
+        "volume": 23489755.0
+      },
+      {
+        "date": "2026-10-27",
+        "close": 680.2,
+        "open": 689.7,
+        "high": 690.25,
+        "low": 678.65,
+        "dma50": 714.41,
+        "dma200": 786.11,
+        "volume": 40614930.0
+      },
+      {
+        "date": "2026-10-28",
+        "close": 685.3,
+        "open": 674.15,
+        "high": 687.1,
+        "low": 669.2,
+        "dma50": 713.58,
+        "dma200": 784.73,
+        "volume": 28534206.0
+      },
+      {
+        "date": "2026-10-29",
+        "close": 683.3,
+        "open": 681.2,
+        "high": 686.8,
+        "low": 678.1,
+        "dma50": 712.66,
+        "dma200": 783.41,
+        "volume": 31422790.0
+      },
+      {
+        "date": "2026-10-30",
+        "close": 692.8,
+        "open": 683.3,
+        "high": 695.5,
+        "low": 680.85,
+        "dma50": 712.06,
+        "dma200": 782.21,
+        "volume": 21296902.0
+      },
+      {
+        "date": "2026-11-02",
+        "close": 700.0,
+        "open": 694.3,
+        "high": 700.75,
+        "low": 688.6,
+        "dma50": 711.66,
+        "dma200": 781.05,
+        "volume": 21480587.0
+      },
+      {
+        "date": "2026-11-03",
+        "close": 725.5,
+        "open": 708.0,
+        "high": 725.8,
+        "low": 706.05,
+        "dma50": 711.67,
+        "dma200": 780.06,
+        "volume": 42746644.0
+      },
+      {
+        "date": "2026-11-04",
+        "close": 736.7,
+        "open": 722.8,
+        "high": 741.3,
+        "low": 719.25,
+        "dma50": 711.86,
+        "dma200": 779.14,
+        "volume": 50677695.0
+      },
+      {
+        "date": "2026-11-05",
+        "close": 760.0,
+        "open": 760.0,
+        "high": 762.7,
+        "low": 749.1,
+        "dma50": 712.48,
+        "dma200": 778.33,
+        "volume": 65401905.0
+      },
+      {
+        "date": "2026-11-06",
+        "close": 788.25,
+        "open": 764.4,
+        "high": 788.25,
+        "low": 754.05,
+        "dma50": 713.7,
+        "dma200": 777.72,
+        "volume": 73482878.0
+      },
+      {
+        "date": "2026-11-09",
+        "close": 798.15,
+        "open": 797.0,
+        "high": 801.9,
+        "low": 785.95,
+        "dma50": 715.12,
+        "dma200": 777.16,
+        "volume": 64826814.0
+      },
+      {
+        "date": "2026-11-11",
+        "close": 806.6,
+        "open": 810.1,
+        "high": 817.85,
+        "low": 800.55,
+        "dma50": 717.03,
+        "dma200": 776.61,
+        "volume": 56398940.0
+      },
+      {
+        "date": "2026-11-12",
+        "close": 812.3,
+        "open": 803.0,
+        "high": 815.0,
+        "low": 798.65,
+        "dma50": 718.87,
+        "dma200": 776.11,
+        "volume": 38292509.0
+      },
+      {
+        "date": "2026-11-13",
+        "close": 804.0,
+        "open": 808.0,
+        "high": 808.8,
+        "low": 798.0,
+        "dma50": 720.77,
+        "dma200": 775.55,
+        "volume": 23442886.0
+      }
+    ]
+  },
+  "agent_committee": [
+    {
+      "agent_id": "five_reports_agent",
+      "agent_name": "5-Report Earnings & Performance Agent",
+      "persona_inspiration": "Peter Lynch / Fundamental Growth Analyst",
+      "signal": "BULLISH",
+      "score": 82.0,
+      "confidence": 87,
+      "weight_pct": 25,
+      "headline": "5Y Profit CAGR 20.04% | Latest FY Net Profit \u20b979,219 Cr | ROE 13.6%",
+      "key_metrics": {
+        "5Y Revenue CAGR": "26.6%",
+        "5Y Profit CAGR": "20.0%",
+        "Latest Qtr Net Profit": "\u20b921,537 Cr",
+        "Latest OPM %": "-12.0%",
+        "ROE / ROCE": "13.6% / 7.0%",
+        "Piotroski F-Score": "5/9"
+      },
+      "reasoning": [
+        "Strong 5-report annual revenue compounding at 26.6% CAGR.",
+        "Superior bottom-line expansion: Net Profit grew at 20.0% 5Y CAGR.",
+        "Positive sequential profit momentum in 4 of the last 5 quarters."
+      ]
+    },
+    {
+      "agent_id": "cash_balance_agent",
+      "agent_name": "Cash-in-Hand & Balance Sheet Agent",
+      "persona_inspiration": "Benjamin Graham / Balance Sheet Specialist",
+      "signal": "BULLISH",
+      "score": 64.0,
+      "confidence": 77,
+      "weight_pct": 20,
+      "headline": "Cash & Investments: \u20b91,532,006 Cr | Net Cash: \u20b9-1,792,140 Cr | D/E: 5.51x",
+      "key_metrics": {
+        "Cash Equivalents": "\u20b9175,156 Cr",
+        "Liquid Investments": "\u20b91,356,850 Cr",
+        "Total Cash in Hand": "\u20b91,532,006 Cr",
+        "Total Borrowings": "\u20b93,324,146 Cr",
+        "Debt / Equity": "5.51x",
+        "5Y Cumulative OCF": "\u20b9280,631 Cr"
+      },
+      "reasoning": [
+        "Strong liquidity buffer: \u20b91,532,006 Cr in cash & investment book (Financial Services)."
+      ]
+    },
+    {
+      "agent_id": "stockholders_agent",
+      "agent_name": "Stockholders & Institutional Flow Agent",
+      "persona_inspiration": "Smart-Money & Insider Ownership Tracker",
+      "signal": "NEUTRAL",
+      "score": 52.0,
+      "confidence": 67,
+      "weight_pct": 20,
+      "headline": "Promoters 0.0% (+0.00% 4Q) | FII 39.4% | DII 43.4%",
+      "key_metrics": {
+        "Promoter Holding": "0.00% (+0.00% 4Q)",
+        "FII Holding": "39.39% (-8.99% 4Q)",
+        "DII Holding": "43.44% (+7.37% 4Q)",
+        "Total Institutional": "82.83%",
+        "Public Float": "16.96%",
+        "Shareholder Accounts": "4,807,998"
+      },
+      "reasoning": [
+        "Professionally managed institutional blue-chip: FIIs (39.39%) + DIIs (43.44%) hold 82.83%.",
+        "Institutional trimming: Combined FII+DII stake fell -1.62% over 4 quarters.",
+        "Marquee named stockholders: Government Of Singapore (4978.00%), Government Pension Fund Global (84688.00%), Vanguard Total International Stock Index Fund (298.00%), Vanguard Emerging Markets Stock Index Fund, A Series Of Vanguard International Equity Index Funds (17239.00%)."
+      ]
+    },
+    {
+      "agent_id": "rd_innovation_agent",
+      "agent_name": "R&D Intensity & Innovation Moat Agent",
+      "persona_inspiration": "Charlie Munger / Philip Fisher Moat Analyst",
+      "signal": "BULLISH",
+      "score": 66.0,
+      "confidence": 73,
+      "weight_pct": 15,
+      "headline": "Latest R&D: \u20b92,963 Cr (0.85% of Sales) | 5Y R&D: \u20b910,585 Cr",
+      "key_metrics": {
+        "Latest FY R&D Spend": "\u20b92,963 Cr",
+        "R&D % of Revenue": "0.85%",
+        "5Y Cumulative R&D": "\u20b910,585 Cr",
+        "5Y R&D CAGR": "28.5%",
+        "Intangible Assets": "\u20b90 Cr",
+        "CapEx WIP (CWIP)": "\u20b90 Cr"
+      },
+      "reasoning": [
+        "Latest annual R&D investment of \u20b92,963 Cr (0.85% of revenue); 5-year cumulative R&D of \u20b910,585 Cr.",
+        "R&D budget compounding at 28.5% CAGR over the last 5 reports.",
+        "Strategic R&D Focus: Core banking cloud modernization, UPI high-throughput rails & AI credit underwriting."
+      ]
+    },
+    {
+      "agent_id": "technical_catalyst_agent",
+      "agent_name": "Next-Day Technical & Catalyst Agent",
+      "persona_inspiration": "Stanley Druckenmiller / Price-Action & Timing Desk",
+      "signal": "BEARISH",
+      "score": 41.0,
+      "confidence": 71,
+      "weight_pct": 20,
+      "headline": "RSI(14) 73.4 | 50-DMA \u20b9720.8 | 200-DMA \u20b9775.5 | ATR \u20b917.2",
+      "key_metrics": {
+        "RSI (14)": "73.4",
+        "MACD Histogram": "+12.50",
+        "50-DMA / 200-DMA": "\u20b9720.8 / \u20b9775.5",
+        "ATR (14) Daily Range": "\u20b917.25 (2.15%)",
+        "Volume vs 20D Avg": "0.60x",
+        "Pivot S1 / R1": "\u20b9798.4 / \u20b9809.2"
+      },
+      "reasoning": [
+        "Price below both 50-DMA and 200-DMA; wait for support stabilization",
+        "RSI(14) at 73.4 \u2014 Overbought zone, watch for profit-booking near R1",
+        "MACD Bullish Crossover active (Histogram +12.50)",
+        "News Catalyst: 1 positive vs 0 negative recent Indian market headlines."
+      ]
+    }
+  ],
+  "next_day_guidance": {
+    "action": "BUY",
+    "conviction_score": 61.8,
+    "fundamental_score": 67.0,
+    "technical_score": 41.0,
+    "current_price": 804.0,
+    "entry_zone_low": 797.1,
+    "entry_zone_high": 805.73,
+    "target_1_next_day": 824.7,
+    "target_2_swing": 842.81,
+    "stop_loss": 787.61,
+    "risk_reward_ratio": 1.26,
+    "expected_next_day_range_low": 786.75,
+    "expected_next_day_range_high": 821.25,
+    "position_size_suggestion_pct": 5.0,
+    "executive_summary": "HDFC Bank Ltd (HDFCBANK) earns a composite conviction score of 61.8/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b91,532,006 Cr in cash & investments, 13.6% ROE, 0.85% R&D intensity, and 82.8% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9797.10\u2013\u20b9805.73 zone targeting \u20b9824.70 (T1) and \u20b9842.81 (T2) with a strict ATR-calibrated stop-loss at \u20b9787.61 (Risk:Reward 1:1.26).",
+    "rationale_points": [
+      "5-Report Fundamental Score: 67.0/100 (5Y Profit CAGR: 20.0%, Piotroski: 5/9).",
+      "Balance Sheet & Cash in Hand: \u20b91,532,006 Cr liquid cash/investments vs \u20b93,324,146 Cr total borrowings (D/E 5.51x).",
+      "Stockholder Conviction: Promoters hold 0.00%, FIIs 39.39%, DIIs 43.44% (Total Institutional: 82.83%).",
+      "R&D & Innovation Moat: \u20b92,963 Cr annual R&D (0.85% of sales; 5Y cumulative \u20b910,585 Cr).",
+      "Next-Day Technical Trigger (41.0/100): BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA); RSI(14) at 73.4 with ATR(14) daily range of \u20b917.25."
+    ],
+    "key_catalysts": [
+      "Company has delivered good profit growth of 18.9% CAGR over last 5 years",
+      "Company has been maintaining a healthy dividend payout of 26.1%",
+      "Company's median sales growth is 16.3% of last 10 years",
+      "R&D & CapEx Pipeline: Core banking cloud modernization, UPI high-throughput rails & AI credit underwriting"
+    ],
+    "key_risks": [
+      "Company has low interest coverage ratio.",
+      "Contingent liabilities of Rs.35,61,957 Cr.",
+      "Earnings include an other income of Rs.1,46,360 Cr.",
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9787.61"
+    ],
+    "llm_synthesized": false,
+    "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
+  },
+  "news": [
+    {
+      "title": "HDFC Bank Limited (HDFCBANK.NS) stock price, news, quote and history - Yahoo Finance Singapore",
+      "source": "Yahoo Finance Singapore",
+      "published": "Fri, 13 Nov 2026 20:03:59",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1WdkJlRjNJZE9HNjlMcXd2U25qbnUtMFhSRXRscVA3UW9nRElrZ0oxTWdEaENMS1J1YWNsU2xUTG9uMV9GZkhaeU0zcmtoV1B1RjA1bExTNE1sNDA?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "HDFC Bank Share Price - Live NSE: HDFCBANK Stock Price & Chart - Upstox",
+      "source": "Upstox",
+      "published": "Fri, 13 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1haXVDV2V3Wm5yQXBKZFJjZjkyQ0syd3BZWnRJZmo5UEdhckVTeTViZWtfVnkyRF9LVGRwSXZwMEo4Q1lUSDZfUzFlQmM1bEJhaFZEMXhSRHQ3S0h0THNBdXBB?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "HDFC Bank (HDFCBANK) Share Price Today (NSE), Market News - TechGraph",
+      "source": "TechGraph",
+      "published": "Fri, 13 Nov 2026 09:58:00",
+      "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9zTTZEM0d6dExZRVlWUF8tV2VmOFk5aGpqdC1nX0YxRVFOMWZ4UFNpd3YtT3drTUJua2RVZUl5QXN2OFJUY3lRcWhRLW1saHEtUTh2NVRzdnBRcjF2ZFhNdmpR?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "HDFC BANK LTD Option Chain - Live HDFC BANK LTD Option Chain Data, OI & Price - Upstox",
+      "source": "Upstox",
+      "published": "Fri, 13 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBXVDVlRXJIVGdILW01bnRnZVdUcGhSLVY4TWVOX3JWUmpzeGtNclhUdE5iRjcxTUt6ME53aWlnWlNUczdheXpPVVZQTVh3bVdReTR0enlBLUJtZw?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "HDFC Bank Ltd Share Price Today,, HDFCBANK Share Price NSE, BSE - Business Today",
+      "source": "Business Today",
+      "published": "Fri, 13 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQYl9PSEdSWjNuX0l2V1g2UGEydHExQ2lVREdwNzB4dUthSDV6Y0FCYVdXNHVPRG51dXFWbXQ4RjAwSnlFZGlhOTNYWUZpaVJfaHM4ZzFEOUlISGNDVHg2OWFzN1B0eDd1Wml1NWI4U2tUVGdaMjNYME1HNGZVVmZoRHFyYw?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "HDFC Bank Share Price, Stock Price - NSE/BSE Live - NDTV Profit",
+      "source": "NDTV Profit",
+      "published": "Fri, 13 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE8xVWhRc1lydXNhZjJSREw0VlJKSTRIbUxQejRMLXlrbDFla2F6azZJd1l5eUUyM3hYaVlLT1hvNjdlMU5rVWQzUTh3azUzaF9nUlNMSjk5MTBrN3pyVXgwaEpScnR4RU02SDVXVGs3Tm9QQQ?oc=5",
+      "sentiment": "POSITIVE"
+    }
+  ],
+  "promoter_and_competitor_intel": {
+    "promoter_group": "Promoter & Insider Group (0.00% Stake)",
+    "key_leaders": [
+      {
+        "name": "HDFC Bank Ltd Managing Director & Board",
+        "role": "Principal Promoter & Executive Leadership",
+        "focus": "Capital allocation, operating margin expansion & growth in Private Sector Bank",
+        "handle_or_source": "BSE/NSE Corporate Filings & Earnings Concalls"
+      }
+    ],
+    "key_stakeholders_watch": [
+      "Government Of Singapore (FII \u2014 4978.00%)",
+      "Government Pension Fund Global (FII \u2014 84688.00%)",
+      "Vanguard Total International Stock Index Fund (FII \u2014 298.00%)",
+      "Vanguard Emerging Markets Stock Index Fund, A Series Of Vanguard International Equity Index Funds (FII \u2014 17239.00%)"
+    ],
+    "promoter_statements_and_articles": [
+      {
+        "speaker_or_source": "NiftyTrader",
+        "published": "Mon, 19 Oct 2026 07:00",
+        "headline": "HDFC Bank Shares Slip 2% After Q2, but 6 Brokerages Aren\u2019t Backing Off. What\u2019s Going On? - NiftyTrader",
+        "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBJeW1ud0l1T185NGJEaXAwQ0NLZTgwaHZMcGxJVHpXVzlBZVpGWDhGQ1dyN0JzVThVZjNkeXhqeGhPSkNnZ1Uyd0MzUXZxaHpHMmVsQkdiS0lOT1VPdXd5TWMxMHplaXJfaVBGTjNNbHY2Y3JpbHAw?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."
+      },
+      {
+        "speaker_or_source": "The Economist",
+        "published": "Sat, 17 Oct 2026 07:00",
+        "headline": "A new era for Indian banking - The Economist",
+        "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPTVRFb3U2ZFBsYmw5b28xakptTGw5Q2JPYWUzQUxXU2JHVGZ3SWxDM185UFF4eWRpRHk0UU55XzNtekZiTlB6ZkMxWHB5dnkyLW80MlJQa3doNTFCa1pSNV95MDNtbUlBLXpUZi1FVlc2VnZPaTZnUTVGajlyaEtBNGtxT1JIUUU4Vld3Ul9uc0w5WHA2US00?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."
+      },
+      {
+        "speaker_or_source": "Business Standard",
+        "published": "Sat, 17 Oct 2026 07:00",
+        "headline": "Q2 results today: HDFC Bank, ICICI Bank, Axis Bank among 18 firms on Oct 17 - Business Standard",
+        "url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxNY2xUSzlIUmVIcS0xMWxpT0xocDZ5dFlqZmEzSm9zRV9sRzdsb0ViOEh5VUJ0VG9PeFRZWmhNb1l1RjZCM0RaNjJYTW1BUWpYTkRGbjc0OHlSWkd4NVJBMWdUSFlKamN5SXgtcWZReEtTaVN0NHNZQnM0aks4MFR1VzdOX1RRZjA5Y2VlbjdNVVhublFmdFg2RFBIWUhCQmRJblVrQ1dKVm9KU3JVX1lWeDF2ZzFQcnlOWXVpcFduT2czWU53TG5venNjaDlmMEVtVTEyeHRJdHpsV3RxdmtDWTNXdGg3MHpaT1E?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."
+      },
+      {
+        "speaker_or_source": "Fortune India",
+        "published": "Sat, 17 Oct 2026 07:00",
+        "headline": "HDFC Bank\u2019s Q2FY27 net profit edges up 4.7%; asset quality improves - Fortune India",
+        "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOamZVdmRnZFJ2d2EwNlJuYTQzS0JSUXhRSnc0WENGcGNESk0xdF96c19xQ0R5RGFZYjZ3b3BsUS1BYmtzZm55OWxRRThGem00RUwtOGhvazdBNHBZR0M0ZUxkS0tjOFRYMWRqdmNuR3JDeUQzX1dfb2xzSXVLV3hlRm9sQ1oyYjhCY05ZY1hPUFVOX0xhMk5PVEY4dTZpUkxYOFdoTHI1LThsZktHd1JUSmJKSVNQaGNzWHI1bm1DMXVod9IBzwFBVV95cUxORzM0VTJLcG01NUd3VVdOb3RrLWdsQ2hFYjZHUlFiLXAzcXZsOEJjWEVoS1FGSWdqV1JkN1dpYnhRbDBGcFRTd0w3eTltY2lPeDd4SGo1UXJaZDV6OXJXcjhSY3pjc1JhczF0cEMycGFVMGJnS19rZzFGSF81UDgxdmQyZHctZXlzQzE0UFI2akJfUkdxSGUzNXJzOHFBUmw3ZjRwdTZRUHNSNnY5LV9XTHRTQWVHaEdyY3BoWXVGNEE4Z0JZVW1HakIxQVdwbGM?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "Yahoo! Finance Canada",
+        "published": "Fri, 13 Nov 2026 22:00",
+        "headline": "HDFC Bank Limited (HDFCBANK.NS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+        "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5XTzhGSUFMZ1NyVWthWVk2cEZ3RHZQc0VuT3BxQTBWM3B2V2hIQTBBOENtV0loTTBwXy0tczFvQXEwZlRLTlVhS2hmSkdJb3hFX3JlSlJBTU1weTg?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."
+      },
+      {
+        "speaker_or_source": "TechGraph",
+        "published": "Fri, 13 Nov 2026 09:58",
+        "headline": "HDFC Bank (HDFCBANK) Share Price Today (NSE), Market News - TechGraph",
+        "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9zTTZEM0d6dExZRVlWUF8tV2VmOFk5aGpqdC1nX0YxRVFOMWZ4UFNpd3YtT3drTUJua2RVZUl5QXN2OFJUY3lRcWhRLW1saHEtUTh2NVRzdnBRcjF2ZFhNdmpR?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for HDFC Bank Ltd."
+      }
+    ],
+    "competitors": [
+      {
+        "symbol": "TCS",
+        "name": "Tata Consultancy Services Ltd",
+        "segment": "IT Services",
+        "current_price": 2407.5,
+        "day_change_pct": -1.43,
+        "return_1m_pct": 6.65,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Tata Consultancy Services Limited (TCS.NS) stock price, news, quote and history - Yahoo Finance Singapore",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE4yZG1MMUJWTjQzeUxZdV9QMF90azdyZlhNOTctMFZTMTYyRVhVWlZKbDFRenlSZXN2aEpLWTRkVHlROVpBNmpZYWZ5V3EwZ2FQU2loLQ?oc=5",
+        "read_across_signal": "POSITIVE READ-ACROSS",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."
+      },
+      {
+        "symbol": "INFY",
+        "name": "Infosys Ltd",
+        "segment": "IT Services",
+        "current_price": 1141.5,
+        "day_change_pct": -0.84,
+        "return_1m_pct": 9.94,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Weekly Recap: Q2 revenue, AI growth and Guidance cut, wage margin risk - TradingView",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOaTdtWU5zTzRITW5YSFJfUmF0VWt2NTQyVDZBa29WbUduZlhVLXRIM2h3Z1l0ZmozcTlzcGMyQVFhbXJGSFd2ZVk5MGEtNWduVnd6UnVPeGdNMFF1ZTEzdlBlTzBPNUMtMm9uMXBGcHFoTENOTENaMGxReWlkZ1RObTJFdnlmbmdaci1MN2ZBNzNsQl9hb1pSWTNoQlhWWFdOUjdrN2s1el9TZXhDQWVMUzQ0NGFEV2tGT3kySWM1eVZjcUhZV1BKUQ?oc=5",
+        "read_across_signal": "POSITIVE READ-ACROSS",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."
+      },
+      {
+        "symbol": "HCLTECH",
+        "name": "HCL Technologies Ltd",
+        "segment": "IT Services",
+        "current_price": 1378.0,
+        "day_change_pct": -0.2,
+        "return_1m_pct": 4.85,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "HCL Tech Share Price Today, HCL Tech Stock Price Live NSE/BSE Updates - The Economic Times",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNM0tuT0d3S2tscVlhVTY2eHktNWY3YU03ZDhuUlNwa05YcGVpYno3VWM1bU1ldFVJTVZLNEZOTEo5NFpCT3RYZnBRTmctazdreEc5R0xiT281bUtBSGVjSTMyWWZPS2NzTXNfUUREQTVTekQ1V3ZVeTZRZDM5a3d2Y3FoQ3czeDQ0RzM4?oc=5",
+        "read_across_signal": "NEUTRAL",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."
+      },
+      {
+        "symbol": "WIPRO",
+        "name": "Wipro Ltd",
+        "segment": "IT Services",
+        "current_price": 194.6,
+        "day_change_pct": -0.82,
+        "return_1m_pct": 15.15,
+        "pe": null,
+        "roe_pct": null,
+        "latest_statement_or_news": "Wipro Appoints Angan Guha as President and Chief Executive Officer for Americas 2 Strategic Market Unit - Wipro",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxNTHZkM1RzVHh4aUp1UkpVWnp1ZWhZc1VCQTJMRTJCc3ZOQ2JuQUZOdGZkUkRpTlpWdkI3SG9CYUtqTDRNa3EtOWpHUmNnT1FnNlV3bG5UNkhwajJxeC1OQ2x2MGhxY2x1cUJGWWtBb1RPSmNha0hZZGZublNZOVh6TmZFV1BvSmZ6RGRXaU9KU0dfdVI1aTZXSkNSY1BSMURxLUJBa0ZBTjdvQnNtRHk0eG1vaWVldVdPZ1RsWjRJUTR1eGttXzM2Q2VvTk1DVldwRHdpYS0yVzlic0l1S09JOWMydk1JTnQ3cjVZ?oc=5",
+        "read_across_signal": "POSITIVE READ-ACROSS",
+        "impact_on_share_value": "Sector peer valuation, order wins, and margin read-across for HDFC Bank Ltd."
+      }
+    ]
+  },
+  "quantitative_prediction": {
+    "prediction_id": "HDFCBANK_2026-11-16_ml_ensemble_3.0.0",
+    "symbol": "HDFCBANK",
+    "observation_date": "2026-11-16",
+    "generated_at": "2026-11-16T05:25:08.410097+00:00",
+    "model_name": "ml_ensemble",
+    "model_version": "3.0.0",
+    "market_regime": "Weak Bull",
+    "prob_next_day_up": 0.4833,
+    "prob_lgbm_up": 0.4703,
+    "prob_xgb_up": 0.45980000495910645,
+    "prob_linear_up": 0.4505,
+    "expected_next_day_return_pct": -0.0422,
+    "expected_5d_return_pct": 0.2927,
+    "downside_risk_mae_pct": -0.8317,
+    "expected_upside_mfe_pct": 0.9226,
+    "reward_to_risk_ratio": 1.109,
+    "model_agreement_score": 0.7215,
+    "confidence_score": 64.3,
+    "roundtrip_delivery_cost_pct": 0.3531,
+    "roundtrip_intraday_cost_pct": 0.2019,
+    "net_expected_1d_return_pct": -0.2441,
+    "net_expected_5d_return_pct": -0.0604,
+    "recommended_action": "NO TRADE",
+    "abstention_reason": "Expected move (1D -0.04%, 5D +0.29%) does not clear Indian round-trip transaction costs (0.20% intraday / 0.35% delivery).",
+    "top_bullish_drivers": [
+      {
+        "feature": "ms_corr_nifty_20d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.819,
+        "contribution": 0.05426,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "ms_nifty_ret_5d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": 0.9488,
+        "contribution": 0.04417,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "inst_retail_dilution_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": 1.63,
+        "contribution": 0.01153,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 0.071,
+        "contribution": 0.01078,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "ms_india_vix_zscore_20d",
+        "family": "3. Market & Sector Strength",
+        "value": -0.2632,
+        "contribution": 0.00931,
+        "direction": "BULLISH"
+      }
+    ],
+    "top_bearish_drivers": [
+      {
+        "feature": "vd_rel_vol_100d",
+        "family": "2. Volume & Delivery",
+        "value": 0.0801,
+        "contribution": -0.08696,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "vd_vol_trend_5_20",
+        "family": "2. Volume & Delivery",
+        "value": 0.9856,
+        "contribution": -0.04134,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "inst_dii_chg_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": 7.37,
+        "contribution": -0.01116,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "pm_atr_ratio_7_21",
+        "family": "1. Price & Technical Momentum",
+        "value": 1.0435,
+        "contribution": -0.00828,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "pm_rsi_14",
+        "family": "1. Price & Technical Momentum",
+        "value": 73.6455,
+        "contribution": -0.00563,
+        "direction": "BEARISH"
+      }
+    ],
+    "realized_next_day_return_pct": 0.1617,
+    "realized_5d_return_pct": 2.163
+  }
+}

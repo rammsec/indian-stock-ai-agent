@@ -60,6 +60,8 @@ class DuckDBStore:
         self,
         processed_dir: Path | None = None,
         features_dir: Path | None = None,
+        predictions_dir: Path | None = None,
+        backtests_dir: Path | None = None,
         db_path: Path | None = None,
     ) -> None:
         ensure_storage_directories()
@@ -67,6 +69,10 @@ class DuckDBStore:
         self.processed_dir.mkdir(parents=True, exist_ok=True)
         self.features_dir = features_dir or FEATURES_DATA_DIR
         self.features_dir.mkdir(parents=True, exist_ok=True)
+        self.predictions_dir = predictions_dir or PREDICTIONS_DATA_DIR
+        self.predictions_dir.mkdir(parents=True, exist_ok=True)
+        self.backtests_dir = backtests_dir or BACKTESTS_DATA_DIR
+        self.backtests_dir.mkdir(parents=True, exist_ok=True)
         self.db_path = db_path or DUCKDB_PATH
 
         self.equities_parquet = self.processed_dir / "equities_daily.parquet"
@@ -76,6 +82,10 @@ class DuckDBStore:
         self.quality_parquet = self.processed_dir / "data_quality.parquet"
         self.features_parquet = self.features_dir / "daily_features.parquet"
         self.feature_catalog_json = self.features_dir / "feature_catalog.json"
+        self.predictions_parquet = self.predictions_dir / "prediction_log.parquet"
+        self.latest_predictions_json = self.predictions_dir / "latest_predictions.json"
+        self.backtest_predictions_parquet = self.backtests_dir / "walk_forward_predictions.parquet"
+        self.backtest_summary_json = self.backtests_dir / "walk_forward_summary.json"
 
     @staticmethod
     def _upsert_parquet(
@@ -182,6 +192,34 @@ class DuckDBStore:
         df_combined.to_parquet(self.features_parquet, index=False, compression="zstd")
         return len(df_combined)
 
+    def upsert_predictions(self, records: list[ Any ]) -> int:
+        """Upsert permanent prediction log records into `/data/predictions/prediction_log.parquet`."""
+        import json
+
+        rows: list[dict[str, Any]] = []
+        for rec in records:
+            d = rec.model_dump() if hasattr(rec, "model_dump") else dict(rec)
+            d["top_bullish_drivers"] = json.dumps(d.get("top_bullish_drivers", []))
+            d["top_bearish_drivers"] = json.dumps(d.get("top_bearish_drivers", []))
+            rows.append(d)
+        return self._upsert_parquet(
+            self.predictions_parquet,
+            rows,
+            dedup_cols=["symbol", "observation_date", "model_name"],
+            sort_cols=["symbol", "observation_date", "model_name"],
+        )
+
+    def upsert_backtest_predictions(self, df: pd.DataFrame) -> int:
+        """Persist walk-forward out-of-sample predictions into `/data/backtests/walk_forward_predictions.parquet`."""
+        if df.empty:
+            return 0
+        out = df.copy()
+        if "prob_bin" in out.columns:
+            out = out.drop(columns=["prob_bin"])
+        out = out.sort_values(["model_name", "symbol", "observation_date"]).reset_index(drop=True)
+        out.to_parquet(self.backtest_predictions_parquet, index=False, compression="zstd")
+        return len(out)
+
     def query_df(self, sql: str, params: list[Any] | None = None) -> pd.DataFrame:
         """Execute an analytical SQL query over the Parquet views using in-memory DuckDB."""
         con = duckdb.connect(":memory:")
@@ -209,6 +247,14 @@ class DuckDBStore:
             if self.features_parquet.exists():
                 con.execute(
                     f"CREATE VIEW v_daily_features AS SELECT * FROM read_parquet('{self.features_parquet.as_posix()}')"
+                )
+            if self.predictions_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_predictions AS SELECT * FROM read_parquet('{self.predictions_parquet.as_posix()}')"
+                )
+            if self.backtest_predictions_parquet.exists():
+                con.execute(
+                    f"CREATE VIEW v_backtest_predictions AS SELECT * FROM read_parquet('{self.backtest_predictions_parquet.as_posix()}')"
                 )
             if params:
                 return con.execute(sql, params).df()

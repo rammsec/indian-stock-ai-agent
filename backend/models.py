@@ -431,6 +431,102 @@ class DataQualityReport(BaseModel):
     metric_statuses: dict[str, ValidationStatus] = Field(default_factory=dict)
 
 
+class FeatureAttributionItem(BaseModel):
+    """Per-prediction numerical feature contribution (SHAP / linear attribution)."""
+
+    feature: str
+    family: str
+    value: float | None = None
+    contribution: float
+    direction: Literal["BULLISH", "BEARISH"]
+
+
+class QuantitativePredictionRecord(BaseModel):
+    """Calibrated multi-horizon quantitative prediction record (Phase 3 — Section 8)."""
+
+    prediction_id: str
+    symbol: str
+    observation_date: str
+    generated_at: str
+    model_name: str = "ml_ensemble_v1"
+    model_version: str = "3.0.0"
+    market_regime: str = "Sideways"
+    prob_next_day_up: float
+    prob_lgbm_up: float | None = None
+    prob_xgb_up: float | None = None
+    prob_linear_up: float | None = None
+    expected_next_day_return_pct: float
+    expected_5d_return_pct: float
+    downside_risk_mae_pct: float
+    expected_upside_mfe_pct: float
+    reward_to_risk_ratio: float
+    model_agreement_score: float
+    confidence_score: float
+    roundtrip_delivery_cost_pct: float
+    roundtrip_intraday_cost_pct: float
+    net_expected_1d_return_pct: float
+    net_expected_5d_return_pct: float
+    recommended_action: Literal[
+        "STRONG BUY",
+        "BUY / ACCUMULATE",
+        "HOLD / WATCH",
+        "REDUCE / SELL",
+        "AVOID / SHORT",
+        "NO TRADE",
+    ]
+    abstention_reason: str | None = None
+    top_bullish_drivers: list[FeatureAttributionItem] = Field(default_factory=list)
+    top_bearish_drivers: list[FeatureAttributionItem] = Field(default_factory=list)
+    realized_next_day_return_pct: float | None = None
+    realized_5d_return_pct: float | None = None
+
+
+class ModelEvaluationMetrics(BaseModel):
+    """Out-of-sample walk-forward evaluation metrics for a single model or benchmark."""
+
+    model_name: str
+    total_predictions: int
+    active_trades_count: int
+    abstention_rate_pct: float
+    directional_accuracy_all_pct: float
+    high_conviction_hit_rate_pct: float
+    roc_auc: float
+    brier_score: float
+    log_loss_val: float
+    rank_ic_1d: float
+    rank_ic_5d: float
+    gross_cumulative_return_pct: float
+    transaction_cost_drag_pct: float
+    net_cumulative_return_pct: float
+    annualized_sharpe_gross: float
+    annualized_sharpe_net: float
+    sortino_ratio_net: float
+    max_drawdown_net_pct: float
+    profit_factor_net: float
+    avg_win_loss_ratio: float
+    expectancy_per_trade_bps: float
+
+
+class BacktestComparisonSummary(BaseModel):
+    """Full walk-forward backtest report comparing ML ensemble against baselines & Nifty 50."""
+
+    generated_at: str
+    train_start_date: str
+    test_start_date: str
+    test_end_date: str
+    total_walk_forward_folds: int
+    purge_gap_days: int
+    symbols_evaluated: list[str]
+    nifty_50_buy_hold_return_pct: float
+    equal_weight_universe_return_pct: float
+    models: dict[str, ModelEvaluationMetrics]
+    calibration_curve: list[dict[str, float]] = Field(default_factory=list)
+    by_regime_performance: dict[str, dict[str, float]] = Field(default_factory=dict)
+    by_sector_performance: dict[str, dict[str, float]] = Field(default_factory=dict)
+    by_symbol_performance: dict[str, dict[str, float]] = Field(default_factory=dict)
+    top_global_features: list[dict[str, Any]] = Field(default_factory=list)
+
+
 class StockResearchBundle(BaseModel):
     fetched_at: str
     overview: CompanyOverview
@@ -448,4 +544,5 @@ class StockResearchBundle(BaseModel):
     news: list[NewsHeadline] = Field(default_factory=list)
     data_quality: DataQualityReport | None = None
     market_regime: MarketRegimeSnapshot | None = None
+    quantitative_prediction: QuantitativePredictionRecord | None = None
 
