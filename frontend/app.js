@@ -89,6 +89,7 @@ async function initApp() {
   setupMainPageNavigation();
   setupCollapsibleSections();
   setupWatchlistAndAddControls();
+  initBeginnerHelpTooltips();
   renderWatchlistBar();
   loadMarketRegimeBanner();
   await loadStockResearch(state.currentSymbol);
@@ -117,6 +118,12 @@ function setupMainPageNavigation() {
       if (targetPage === "page-company") {
         companyBar.style.display = "flex";
         if (state.bundle) requestAnimationFrame(() => renderAllCanvases(state.bundle));
+      } else if (targetPage === "page-quant") {
+        companyBar.style.display = "flex";
+        loadQuantAndBulkDealsPage();
+      } else if (targetPage === "page-intelligence") {
+        companyBar.style.display = "flex";
+        loadPhase5StockIntelligence(false);
       } else {
         companyBar.style.display = "flex";
         loadTop20Movers();
@@ -126,6 +133,7 @@ function setupMainPageNavigation() {
 
   document.getElementById("btn-refresh-gainers")?.addEventListener("click", () => loadTop20Movers(true));
   document.getElementById("btn-refresh-losers")?.addEventListener("click", () => loadTop20Movers(true));
+  document.getElementById("btn-refresh-p5")?.addEventListener("click", () => loadPhase5StockIntelligence(true));
 }
 
 function setupCollapsibleSections() {
