@@ -32,6 +32,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 from backend.backtesting.walk_forward import run_walk_forward_backtest
+from backend.features.selector import get_candidate_feature_columns
 from backend.prediction.cost_model import estimate_indian_roundtrip_cost
 from backend.prediction.ensemble_model import build_latest_prediction_records
 from backend.storage.duckdb_store import DuckDBStore
@@ -41,14 +42,14 @@ DOCS_DATA_DIR = ROOT_DIR / "docs" / "data"
 
 def run_phase3_pipeline() -> dict[str, Any]:
     store = DuckDBStore()
-    if not store.features_parquet.exists() or not store.feature_catalog_json.exists():
+    if not store.features_parquet.exists():
         raise FileNotFoundError(
             "Phase 2 feature files not found. Run `scripts/run_phase2_features.py` first."
         )
 
     feature_df = pd.read_parquet(store.features_parquet)
-    catalog = json.loads(store.feature_catalog_json.read_text())
-    selected_features: list[str] = catalog["selected_features"]
+    candidate_features = get_candidate_feature_columns(feature_df)
+    ohlc_df = pd.read_parquet(store.equities_parquet) if store.equities_parquet.exists() else None
 
     print("=" * 84)
     print("BHARATALPHA AI — PHASE 3 WALK-FORWARD BACKTESTING & PREDICTION ENGINE")
@@ -67,14 +68,17 @@ def run_phase3_pipeline() -> dict[str, Any]:
         f"Slippage={intra_cost_ex.slippage_pct:.3f}%]"
     )
 
-    # 2. Run Purged Walk-Forward Time-Series Backtest
-    print(f"\n[2/4] Running Purged Expanding-Window Walk-Forward Backtest ({len(selected_features)} features)...")
+    # 2. Run Purged & Embargoed Walk-Forward Time-Series Backtest (strictly in-fold feature selection)
+    print(f"\n[2/4] Running Purged Walk-Forward Backtest ({len(candidate_features)} candidate features, in-fold selection)...")
     summary, all_oos_df, final_ensemble = run_walk_forward_backtest(
         feature_df=feature_df,
-        selected_features=selected_features,
+        selected_features=candidate_features,
         initial_train_dates=240,
         step_dates=42,
-        purge_gap_days=1,
+        purge_gap_days=5,
+        embargo_sessions=1,
+        ohlc_df=ohlc_df,
+        top_k_features=40,
     )
 
     bt_rows = store.upsert_backtest_predictions(all_oos_df)
@@ -85,7 +89,8 @@ def run_phase3_pipeline() -> dict[str, Any]:
 
     print(
         f"  -> Completed {summary.total_walk_forward_folds} walk-forward folds "
-        f"({summary.test_start_date} to {summary.test_end_date}, purge_gap={summary.purge_gap_days}d)\n"
+        f"({summary.test_start_date} to {summary.test_end_date}, purge={summary.purge_gap_days}s, embargo={summary.embargo_sessions}s, mode={summary.execution_mode})\n"
+        f"  -> Feature Stability Jaccard            : {summary.feature_stability_jaccard:.4f}\n"
         f"  -> Saved {bt_rows} out-of-sample rows to {store.backtest_predictions_parquet}\n"
         f"  -> Nifty 50 Buy & Hold OOS Return        : {summary.nifty_50_buy_hold_return_pct:+.2f}%\n"
         f"  -> Equal-Weight Universe OOS Return      : {summary.equal_weight_universe_return_pct:+.2f}%"
@@ -137,7 +142,38 @@ def run_phase3_pipeline() -> dict[str, Any]:
         quality_map=quality_map,
     )
 
+    # Attach exact last_close, atr_14_pct, and NaiveMomentumBaseline 5D benchmark
+    from backend.prediction.baselines import NaiveMomentumBaseline
+
+    mom_model = NaiveMomentumBaseline()
+    mom_model.fit(feature_df[feature_df["target_next_day_ret"].notna()], [])
+    mom_preds = mom_model.predict_df(latest_rows_per_sym, [])
+    mom_by_sym = {
+        str(latest_rows_per_sym.iloc[i]["symbol"]).upper(): mom_preds.iloc[i].to_dict()
+        for i in range(len(latest_rows_per_sym))
+    }
+    atr_by_sym = {
+        str(latest_rows_per_sym.iloc[i]["symbol"]).upper(): float(latest_rows_per_sym.iloc[i]["pm_atr_14_pct"])
+        for i in range(len(latest_rows_per_sym))
+        if pd.notna(latest_rows_per_sym.iloc[i].get("pm_atr_14_pct"))
+    }
+    close_by_sym: dict[str, float] = {}
+    if ohlc_df is not None and not ohlc_df.empty:
+        latest_eq = ohlc_df.sort_values(["symbol", "observation_date"]).groupby("symbol", as_index=False).tail(1)
+        for _, eq_r in latest_eq.iterrows():
+            if pd.notna(eq_r.get("close")):
+                close_by_sym[str(eq_r["symbol"]).upper()] = float(eq_r["close"])
+
+    for rec in latest_records:
+        rec.last_close = round(close_by_sym[rec.symbol], 2) if rec.symbol in close_by_sym else None
+        rec.atr_14_pct = round(atr_by_sym[rec.symbol], 3) if rec.symbol in atr_by_sym else None
+        if rec.symbol in mom_by_sym:
+            rec.momentum_prob_up = round(float(mom_by_sym[rec.symbol]["prob_next_day_up"]), 4)
+            rec.momentum_5d_return_pct = round(float(mom_by_sym[rec.symbol]["expected_5d_return_pct"]), 4)
+
     pred_log_cnt = store.upsert_predictions(latest_records)
+    if ohlc_df is not None:
+        store.evaluate_realized_outcomes(ohlc_df)
     latest_payload = {
         "generated_at": summary.generated_at,
         "market_regime": market_regime_label,

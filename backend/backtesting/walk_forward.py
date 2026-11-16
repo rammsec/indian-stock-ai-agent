@@ -30,8 +30,8 @@ from ..prediction.baselines import (
     NaiveMomentumBaseline,
     TechnicalRuleBaseline,
 )
-from ..prediction.cost_model import compute_row_cost_series
 from ..prediction.ensemble_model import BharatAlphaQuantEnsemble
+from .execution_simulator import ExecutionConfig, simulate_oos_execution
 
 
 def _infer_row_regime_label(df: pd.DataFrame) -> pd.Series:
@@ -51,13 +51,32 @@ def _infer_row_regime_label(df: pd.DataFrame) -> pd.Series:
     return pd.Series(np.select(conds, choices, default="Sideways"), index=df.index)
 
 
+def _compute_ece(y_true: np.ndarray, y_prob: np.ndarray, n_bins: int = 5) -> float:
+    """Compute Expected Calibration Error (ECE) across quantile probability bins."""
+    if len(y_true) == 0:
+        return 0.0
+    s_prob = pd.Series(y_prob)
+    try:
+        bins = pd.qcut(s_prob, q=n_bins, duplicates="drop")
+    except Exception:
+        return 0.0
+    ece = 0.0
+    n = len(y_true)
+    for b_idx in bins.cat.categories:
+        mask = (bins == b_idx).values
+        cnt = int(mask.sum())
+        if cnt > 0:
+            ece += (cnt / n) * abs(float(y_true[mask].mean()) - float(y_prob[mask].mean()))
+    return round(float(ece), 5)
+
+
 def _evaluate_model_oos_predictions(
     model_name: str,
     oos_df: pd.DataFrame,
-    long_prob_entry: float = 0.535,
-    long_prob_hold: float = 0.502,
-) -> tuple[ModelEvaluationMetrics, pd.DataFrame]:
-    """Evaluate out-of-sample predictions with realistic Indian transaction costs & turnover accounting."""
+    ohlc_df: pd.DataFrame | None = None,
+    execution_config: ExecutionConfig | None = None,
+) -> tuple[ModelEvaluationMetrics, pd.DataFrame, dict[str, Any]]:
+    """Evaluate out-of-sample predictions with realistic next-day execution & Indian costs."""
     df = oos_df.sort_values(["symbol", "observation_date"]).copy()
     valid_mask = df["target_next_day_ret"].notna() & df["target_next_day_up"].notna()
     df = df.loc[valid_mask].reset_index(drop=True)
@@ -67,7 +86,6 @@ def _evaluate_model_oos_predictions(
     y_true_r5 = pd.to_numeric(df.get("target_5d_ret"), errors="coerce")
 
     p_up = pd.to_numeric(df["prob_next_day_up"], errors="coerce").fillna(0.50).clip(0.01, 0.99).values
-    exp_r1 = pd.to_numeric(df["expected_next_day_return_pct"], errors="coerce").fillna(0.0).values
     exp_r5 = pd.to_numeric(df["expected_5d_return_pct"], errors="coerce").fillna(0.0)
 
     # Classification & Calibration metrics across all OOS rows
@@ -81,6 +99,7 @@ def _evaluate_model_oos_predictions(
 
     brier_val = float(brier_score_loss(y_true_up, p_up))
     logloss_val = float(log_loss(y_true_up, p_up, labels=[0, 1]))
+    ece_val = _compute_ece(y_true_up, p_up, n_bins=5)
 
     # Spearman Rank IC (1D and 5D)
     s_p = pd.Series(p_up)
@@ -104,97 +123,12 @@ def _evaluate_model_oos_predictions(
         top_q = np.argsort(np.abs(p_up - 0.50))[-max(10, len(p_up) // 5):]
         hc_hit_rate = float((pred_dir[top_q] == y_true_up[top_q]).mean() * 100.0)
 
-    # Simulate realistic position persistence per stock to avoid redundant daily churn:
-    # - Enter Long (`pos = 1.0`) when `p_up >= long_prob_entry`, `exp_r1 > 0.12%`, and regime != "High Volatility"
-    # - Hold existing Long (`pos = 1.0`) while `p_up >= long_prob_hold` (up to 10 sessions per swing trade)
-    # - Round-trip delivery cost (`roundtrip_delivery_cost_pct`, ~35 bps) is charged ½ on Entry and ½ on Exit
-    deliv_cost_s = compute_row_cost_series(df, mode="delivery")
-    df["roundtrip_cost_pct"] = deliv_cost_s.values
     df["regime_label"] = _infer_row_regime_label(df)
+    cfg = execution_config or ExecutionConfig()
+    df, daily_port, exec_stats = simulate_oos_execution(df, ohlc_df=ohlc_df, config=cfg)
 
-    positions = np.zeros(len(df), dtype=float)
-    cost_incurred = np.zeros(len(df), dtype=float)
-    trade_entries = 0
-
-    for _, grp in df.groupby("symbol", sort=False):
-        idxs = grp.index.values
-        in_pos = False
-        hold_days = 0
-        for i, row_idx in enumerate(idxs):
-            pr = p_up[row_idx]
-            er1 = exp_r1[row_idx]
-            er5 = float(exp_r5.iloc[row_idx])
-            reg = df.loc[row_idx, "regime_label"]
-            rt_cost = float(deliv_cost_s.iloc[row_idx])
-
-            if not in_pos:
-                can_enter = (
-                    (pr >= long_prob_entry)
-                    and (er1 >= 0.08 or er5 >= rt_cost * 1.15)
-                    and (reg != "High Volatility")
-                )
-                if can_enter:
-                    in_pos = True
-                    hold_days = 1
-                    positions[row_idx] = 1.0
-                    # Pay entry half of round-trip cost on day 1, and if it's the last bar of series pay full
-                    cost_incurred[row_idx] = rt_cost * 0.5
-                    trade_entries += 1
-            else:
-                keep_holding = (pr >= long_prob_hold) and (hold_days < 12) and (reg != "High Volatility")
-                if keep_holding:
-                    hold_days += 1
-                    positions[row_idx] = 1.0
-                    cost_incurred[row_idx] = 0.0
-                else:
-                    # Exit position at start of session -> pay exit half of round-trip cost on previous held bar
-                    prev_idx = idxs[i - 1]
-                    cost_incurred[prev_idx] += rt_cost * 0.5
-                    in_pos = False
-                    hold_days = 0
-        # If still in position on final bar, charge exit leg cost
-        if in_pos and len(idxs) > 0:
-            last_idx = idxs[-1]
-            cost_incurred[last_idx] += float(deliv_cost_s.iloc[last_idx]) * 0.5
-
-    df["position"] = positions
-    df["gross_trade_ret_pct"] = positions * y_true_r1
-    df["cost_drag_pct"] = cost_incurred
-    df["net_trade_ret_pct"] = df["gross_trade_ret_pct"] - df["cost_drag_pct"]
-
-    active_days_count = int((positions > 0).sum())
+    active_days_count = int((df["position"] > 0).sum())
     abstention_rate = round((1.0 - active_days_count / max(1, len(df))) * 100.0, 2)
-
-    # Aggregate into daily equal-weight portfolio return across active stocks on each date
-    # (Wait: if 0 stocks are active on date t, portfolio sits in cash earning 0.0% return on date t)
-    daily_port = (
-        df.groupby("observation_date", as_index=False)
-        .apply(
-            lambda g: pd.Series(
-                {
-                    "active_cnt": int((g["position"] > 0).sum()),
-                    "gross_ret_pct": (
-                        float(g.loc[g["position"] > 0, "gross_trade_ret_pct"].mean())
-                        if (g["position"] > 0).any()
-                        else 0.0
-                    ),
-                    "cost_drag_pct": (
-                        float(g.loc[g["position"] > 0, "cost_drag_pct"].mean())
-                        if (g["position"] > 0).any()
-                        else 0.0
-                    ),
-                    "net_ret_pct": (
-                        float(g.loc[g["position"] > 0, "net_trade_ret_pct"].mean())
-                        if (g["position"] > 0).any()
-                        else 0.0
-                    ),
-                }
-            ),
-            include_groups=False,
-        )
-        .sort_values("observation_date")
-        .reset_index(drop=True)
-    )
 
     gross_curve = (1.0 + daily_port["gross_ret_pct"] / 100.0).cumprod()
     net_curve = (1.0 + daily_port["net_ret_pct"] / 100.0).cumprod()
@@ -247,6 +181,7 @@ def _evaluate_model_oos_predictions(
         roc_auc=round(auc_val, 4),
         brier_score=round(brier_val, 5),
         log_loss_val=round(logloss_val, 5),
+        calibration_ece=ece_val,
         rank_ic_1d=round(ic_1d, 5),
         rank_ic_5d=round(ic_5d, 5),
         gross_cumulative_return_pct=round(gross_cum_pct, 2),
@@ -260,7 +195,20 @@ def _evaluate_model_oos_predictions(
         avg_win_loss_ratio=round(win_loss_ratio, 3),
         expectancy_per_trade_bps=round(expectancy_bps, 2),
     )
-    return metrics, df
+    return metrics, df, exec_stats
+
+
+def _compute_jaccard_stability(feature_sets: list[list[str]]) -> float:
+    """Compute average pairwise Jaccard similarity of selected features across consecutive folds."""
+    if len(feature_sets) < 2:
+        return 1.0
+    scores: list[float] = []
+    for i in range(len(feature_sets) - 1):
+        a = set(feature_sets[i])
+        b = set(feature_sets[i + 1])
+        union = len(a | b)
+        scores.append(len(a & b) / union if union > 0 else 0.0)
+    return round(float(np.mean(scores)), 4)
 
 
 def run_walk_forward_backtest(
@@ -268,32 +216,42 @@ def run_walk_forward_backtest(
     selected_features: list[str],
     initial_train_dates: int = 240,
     step_dates: int = 42,
-    purge_gap_days: int = 1,
+    purge_gap_days: int = 5,
+    embargo_sessions: int = 1,
+    ohlc_df: pd.DataFrame | None = None,
+    execution_config: ExecutionConfig | None = None,
+    top_k_features: int = 40,
 ) -> tuple[BacktestComparisonSummary, pd.DataFrame, BharatAlphaQuantEnsemble]:
-    """Run purged expanding-window walk-forward validation across all models & benchmarks."""
+    """Run purged & embargoed expanding-window walk-forward validation across all models & benchmarks."""
     df_all = feature_df.sort_values(["observation_date", "symbol"]).reset_index(drop=True)
     all_dates = sorted(df_all["observation_date"].unique().tolist())
     symbols = sorted(df_all["symbol"].unique().tolist())
 
-    if len(all_dates) <= initial_train_dates + purge_gap_days + 10:
+    total_gap = purge_gap_days + embargo_sessions
+    if len(all_dates) <= initial_train_dates + total_gap + 10:
         raise ValueError(
             f"Insufficient historical trading dates ({len(all_dates)}) for initial_train_dates={initial_train_dates}."
         )
 
     model_builders = {
-        "ml_ensemble": lambda: BharatAlphaQuantEnsemble(top_k_features=50, random_state=42),
+        "ml_ensemble": lambda: BharatAlphaQuantEnsemble(
+            top_k_features=top_k_features,
+            purge_sessions=purge_gap_days,
+            random_state=42,
+        ),
         "linear_ridge_logistic": lambda: LinearRidgeLogisticBaseline(c_logreg=0.05, ridge_alpha=120.0),
         "technical_rule": lambda: TechnicalRuleBaseline(),
         "naive_momentum": lambda: NaiveMomentumBaseline(),
     }
 
-    oos_Collector: dict[str, list[pd.DataFrame]] = {m: [] for m in model_builders}
+    oos_collector: dict[str, list[pd.DataFrame]] = {m: [] for m in model_builders}
+    fold_feature_sets: list[list[str]] = []
     fold_count = 0
     cursor = initial_train_dates
 
-    while cursor + purge_gap_days < len(all_dates):
+    while cursor + total_gap < len(all_dates):
         train_end_date = all_dates[cursor - 1]
-        test_start_idx = cursor + purge_gap_days
+        test_start_idx = cursor + total_gap
         test_end_idx = min(len(all_dates) - 1, test_start_idx + step_dates - 1)
         test_start_date = all_dates[test_start_idx]
         test_end_date = all_dates[test_end_idx]
@@ -311,6 +269,8 @@ def run_walk_forward_backtest(
         for m_name, builder in model_builders.items():
             model = builder()
             model.fit(train_slice, selected_features)
+            if m_name == "ml_ensemble":
+                fold_feature_sets.append(list(model.active_features_))
             pred_out = model.predict_df(test_slice, selected_features)
 
             merged_fold = test_slice[
@@ -336,21 +296,28 @@ def run_walk_forward_backtest(
             merged_fold["model_name"] = m_name
             for p_col in pred_out.columns:
                 merged_fold[p_col] = pred_out[p_col].values
-            oos_Collector[m_name].append(merged_fold)
+            oos_collector[m_name].append(merged_fold)
 
-        cursor = test_end_idx + 1 - purge_gap_days
+        cursor += step_dates
         if test_end_idx >= len(all_dates) - 1:
             break
 
-    # Evaluate each model across the concatenated out-of-sample period
+    cfg = execution_config or ExecutionConfig()
     metrics_by_model: dict[str, ModelEvaluationMetrics] = {}
     evaluated_frames: dict[str, pd.DataFrame] = {}
+    exec_diagnostics: dict[str, dict[str, Any]] = {}
 
-    for m_name, fold_list in oos_Collector.items():
+    for m_name, fold_list in oos_collector.items():
         oos_full = pd.concat(fold_list, ignore_index=True)
-        m_metrics, eval_df = _evaluate_model_oos_predictions(m_name, oos_full)
+        m_metrics, eval_df, m_exec_stats = _evaluate_model_oos_predictions(
+            m_name,
+            oos_full,
+            ohlc_df=ohlc_df,
+            execution_config=cfg,
+        )
         metrics_by_model[m_name] = m_metrics
         evaluated_frames[m_name] = eval_df
+        exec_diagnostics[m_name] = m_exec_stats
 
     ml_oos_df = evaluated_frames["ml_ensemble"]
     test_start_dt = str(ml_oos_df["observation_date"].min())
@@ -426,7 +393,11 @@ def run_walk_forward_backtest(
         }
 
     # Fit final production `BharatAlphaQuantEnsemble` on all historical rows where `target_next_day_ret` is known
-    final_ensemble = BharatAlphaQuantEnsemble(top_k_features=50, random_state=42)
+    final_ensemble = BharatAlphaQuantEnsemble(
+        top_k_features=top_k_features,
+        purge_sessions=purge_gap_days,
+        random_state=42,
+    )
     final_ensemble.fit(df_all[df_all["target_next_day_ret"].notna()], selected_features)
 
     top_global_features = [
@@ -441,6 +412,10 @@ def run_walk_forward_backtest(
         test_end_date=test_end_dt,
         total_walk_forward_folds=fold_count,
         purge_gap_days=purge_gap_days,
+        embargo_sessions=embargo_sessions,
+        execution_mode=cfg.name,
+        execution_diagnostics=exec_diagnostics,
+        feature_stability_jaccard=_compute_jaccard_stability(fold_feature_sets),
         symbols_evaluated=symbols,
         nifty_50_buy_hold_return_pct=round(nifty_cum_ret, 2),
         equal_weight_universe_return_pct=round(eq_univ_cum_ret, 2),
@@ -454,3 +429,205 @@ def run_walk_forward_backtest(
 
     all_models_oos_df = pd.concat(list(evaluated_frames.values()), ignore_index=True)
     return summary, all_models_oos_df, final_ensemble
+
+
+def compare_execution_assumptions(
+    oos_df: pd.DataFrame,
+    ohlc_df: pd.DataFrame | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Compare identical OOS predictions under alternative entry, cost, and sizing assumptions."""
+    configs = [
+        ExecutionConfig(
+            name="same_close_legacy",
+            entry_timing="same_close_legacy",
+            cost_mode="delivery",
+            use_sl_tp=False,
+            max_position_weight=1.0,
+            max_portfolio_exposure=1.0,
+        ),
+        ExecutionConfig(
+            name="next_open_delivery_capped",
+            entry_timing="next_open",
+            cost_mode="delivery",
+            use_sl_tp=True,
+            max_position_weight=0.20,
+            max_portfolio_exposure=1.0,
+        ),
+        ExecutionConfig(
+            name="next_open_intraday_mis",
+            entry_timing="next_open",
+            cost_mode="intraday",
+            max_hold_sessions=1,
+            use_sl_tp=True,
+            max_position_weight=0.20,
+            max_portfolio_exposure=1.0,
+        ),
+    ]
+    results: dict[str, dict[str, Any]] = {}
+    for cfg in configs:
+        m, _, stats = _evaluate_model_oos_predictions(
+            "ml_ensemble",
+            oos_df,
+            ohlc_df=ohlc_df,
+            execution_config=cfg,
+        )
+        results[cfg.name] = {
+            "net_return_pct": m.net_cumulative_return_pct,
+            "net_sharpe": m.annualized_sharpe_net,
+            "max_drawdown_pct": m.max_drawdown_net_pct,
+            "profit_factor": m.profit_factor_net,
+            "expectancy_bps": m.expectancy_per_trade_bps,
+            "active_trades": m.active_trades_count,
+            "diagnostics": stats,
+        }
+    return results
+
+
+def run_nested_feature_count_ablation(
+    feature_df: pd.DataFrame,
+    candidate_features: list[str],
+    ohlc_df: pd.DataFrame | None = None,
+    k_values: tuple[int, ...] = (20, 40, 80),
+    initial_train_dates: int = 240,
+    step_dates: int = 42,
+    purge_gap_days: int = 5,
+    embargo_sessions: int = 1,
+) -> dict[str, Any]:
+    """Run nested walk-forward validation across `top_k_features` in {20, 40, 80}."""
+    df_all = feature_df.sort_values(["observation_date", "symbol"]).reset_index(drop=True)
+    all_dates = sorted(df_all["observation_date"].unique().tolist())
+    total_gap = purge_gap_days + embargo_sessions
+
+    fixed_k_results: dict[int, dict[str, Any]] = {}
+    for k in k_values:
+        summary, _, _ = run_walk_forward_backtest(
+            df_all,
+            candidate_features,
+            initial_train_dates=initial_train_dates,
+            step_dates=step_dates,
+            purge_gap_days=purge_gap_days,
+            embargo_sessions=embargo_sessions,
+            ohlc_df=ohlc_df,
+            top_k_features=k,
+        )
+        ml = summary.models["ml_ensemble"]
+        fixed_k_results[k] = {
+            "roc_auc": ml.roc_auc,
+            "brier_score": ml.brier_score,
+            "log_loss": ml.log_loss_val,
+            "calibration_ece": ml.calibration_ece,
+            "rank_ic_1d": ml.rank_ic_1d,
+            "net_return_pct": ml.net_cumulative_return_pct,
+            "net_sharpe": ml.annualized_sharpe_net,
+            "expectancy_bps": ml.expectancy_per_trade_bps,
+            "profit_factor": ml.profit_factor_net,
+            "feature_stability_jaccard": summary.feature_stability_jaccard,
+        }
+
+    # Nested outer loop: pick best k on chronological inner validation inside each outer train fold
+    nested_oos: list[pd.DataFrame] = []
+    chosen_ks: list[int] = []
+    cursor = initial_train_dates
+    while cursor + total_gap < len(all_dates):
+        train_dates = all_dates[:cursor]
+        test_start_idx = cursor + total_gap
+        test_end_idx = min(len(all_dates) - 1, test_start_idx + step_dates - 1)
+        train_slice = df_all[df_all["observation_date"] <= train_dates[-1]].copy()
+        test_slice = df_all[
+            (df_all["observation_date"] >= all_dates[test_start_idx])
+            & (df_all["observation_date"] <= all_dates[test_end_idx])
+        ].copy()
+        if len(test_slice) == 0:
+            break
+
+        inner_split = int(len(train_dates) * 0.80)
+        inner_train_end = train_dates[max(10, inner_split - purge_gap_days - 1)]
+        inner_val_start = train_dates[min(len(train_dates) - 1, inner_split)]
+        in_tr = train_slice[train_slice["observation_date"] <= inner_train_end]
+        in_va = train_slice[train_slice["observation_date"] >= inner_val_start]
+
+        best_k = k_values[0]
+        best_ll = 999.0
+        if len(in_tr) >= 120 and len(in_va) >= 30:
+            y_va = in_va["target_next_day_up"].astype(int).values
+            for k in k_values:
+                m = BharatAlphaQuantEnsemble(top_k_features=k, purge_sessions=purge_gap_days, random_state=42)
+                m.fit(in_tr, candidate_features)
+                p_va = np.clip(m.predict_df(in_va, candidate_features)["prob_next_day_up"].values, 0.01, 0.99)
+                ll = float(log_loss(y_va, p_va, labels=[0, 1]))
+                if ll < best_ll:
+                    best_ll = ll
+                    best_k = k
+        chosen_ks.append(best_k)
+
+        outer_m = BharatAlphaQuantEnsemble(top_k_features=best_k, purge_sessions=purge_gap_days, random_state=42)
+        outer_m.fit(train_slice, candidate_features)
+        pred_out = outer_m.predict_df(test_slice, candidate_features)
+        merged = test_slice[
+            [
+                "symbol", "observation_date", "sector", "pm_atr_14_pct",
+                "vd_amihud_illiquidity_20d", "ms_india_vix_level",
+                "ms_nifty_dist_sma50_pct", "ms_nifty_dist_sma200_pct",
+                "ms_nifty_ret_1d_pct", "ms_nifty_ret_20d_pct",
+                "target_next_day_ret", "target_next_day_up", "target_5d_ret",
+            ]
+        ].copy()
+        for c in pred_out.columns:
+            merged[c] = pred_out[c].values
+        nested_oos.append(merged)
+        cursor += step_dates
+        if test_end_idx >= len(all_dates) - 1:
+            break
+
+    nested_summary: dict[str, Any] = {"chosen_k_per_fold": chosen_ks}
+    if nested_oos:
+        nm, _, _ = _evaluate_model_oos_predictions(
+            "nested_ml_ensemble",
+            pd.concat(nested_oos, ignore_index=True),
+            ohlc_df=ohlc_df,
+        )
+        nested_summary.update(
+            {
+                "roc_auc": nm.roc_auc,
+                "brier_score": nm.brier_score,
+                "log_loss": nm.log_loss_val,
+                "calibration_ece": nm.calibration_ece,
+                "net_return_pct": nm.net_cumulative_return_pct,
+                "net_sharpe": nm.annualized_sharpe_net,
+                "expectancy_bps": nm.expectancy_per_trade_bps,
+                "profit_factor": nm.profit_factor_net,
+            }
+        )
+
+    return {"fixed_k": fixed_k_results, "nested_cv": nested_summary}
+
+
+def evaluate_regime_filtered_variants(
+    oos_df: pd.DataFrame,
+    ohlc_df: pd.DataFrame | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Evaluate out-of-sample regime/volatility filter variants without cherry-picking."""
+    df = oos_df.copy()
+    df["regime_label"] = _infer_row_regime_label(df)
+
+    variants: dict[str, pd.Series] = {
+        "baseline_block_high_vol": df["regime_label"] != "High Volatility",
+        "block_bear_and_high_vol": ~df["regime_label"].isin(["High Volatility", "Bear"]),
+        "bull_and_sideways_only": df["regime_label"].isin(["Strong Bull", "Sideways"]),
+        "nifty_above_sma50_only": pd.to_numeric(df["ms_nifty_dist_sma50_pct"], errors="coerce").fillna(0.0) > 0.0,
+    }
+    out: dict[str, dict[str, Any]] = {}
+    for name, allow_mask in variants.items():
+        mod = df.copy()
+        # Gate entry by setting prob below entry threshold when regime filter blocks
+        mod.loc[~allow_mask, "prob_next_day_up"] = np.minimum(mod.loc[~allow_mask, "prob_next_day_up"], 0.49)
+        m, _, _ = _evaluate_model_oos_predictions(name, mod, ohlc_df=ohlc_df)
+        out[name] = {
+            "active_trades": m.active_trades_count,
+            "net_return_pct": m.net_cumulative_return_pct,
+            "net_sharpe": m.annualized_sharpe_net,
+            "max_drawdown_pct": m.max_drawdown_net_pct,
+            "profit_factor": m.profit_factor_net,
+            "expectancy_bps": m.expectancy_per_trade_bps,
+        }
+    return out

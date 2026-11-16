@@ -13,8 +13,9 @@ DuckDB SQL views for zero-cost analytical queries.
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import duckdb
 import pandas as pd
@@ -95,6 +96,7 @@ class DuckDBStore:
         new_rows: list[dict[str, Any]],
         dedup_cols: list[str],
         sort_cols: list[str],
+        keep: Literal["first", "last"] = "last",
     ) -> int:
         if not new_rows:
             return 0
@@ -108,7 +110,7 @@ class DuckDBStore:
         else:
             df_combined = df_new
 
-        df_combined = df_combined.drop_duplicates(subset=dedup_cols, keep="last")
+        df_combined = df_combined.drop_duplicates(subset=dedup_cols, keep=keep)
         df_combined = df_combined.sort_values(sort_cols).reset_index(drop=True)
         df_combined.to_parquet(parquet_path, index=False, compression="zstd")
         return len(df_combined)
@@ -195,7 +197,7 @@ class DuckDBStore:
         return len(df_combined)
 
     def upsert_predictions(self, records: list[Any]) -> int:
-        """Upsert permanent prediction log records into `/data/predictions/prediction_log.parquet`."""
+        """Append immutable prediction records into `/data/predictions/prediction_log.parquet`."""
         import json
 
         rows: list[dict[str, Any]] = []
@@ -203,13 +205,80 @@ class DuckDBStore:
             d = rec.model_dump() if hasattr(rec, "model_dump") else dict(rec)
             d["top_bullish_drivers"] = json.dumps(d.get("top_bullish_drivers", []))
             d["top_bearish_drivers"] = json.dumps(d.get("top_bearish_drivers", []))
+            d["feature_snapshot"] = json.dumps(d.get("feature_snapshot", {}))
             rows.append(d)
         return self._upsert_parquet(
             self.predictions_parquet,
             rows,
-            dedup_cols=["symbol", "observation_date", "model_name"],
-            sort_cols=["symbol", "observation_date", "model_name"],
+            dedup_cols=["prediction_id"],
+            sort_cols=["observation_date", "symbol", "generated_at"],
+            keep="first",
         )
+
+    def evaluate_realized_outcomes(self, equities_df: pd.DataFrame) -> int:
+        """Match historical predictions to realized 1D/5D outcomes strictly after target session closes."""
+        if not self.predictions_parquet.exists() or equities_df.empty:
+            return 0
+        pred_df = pd.read_parquet(self.predictions_parquet)
+        if pred_df.empty:
+            return 0
+
+        for col in ("realized_next_day_return_pct", "realized_5d_return_pct", "outcome_evaluated_at"):
+            if col not in pred_df.columns:
+                pred_df[col] = None
+
+        eq = equities_df[["symbol", "observation_date", "close"]].dropna(subset=["close"]).copy()
+        eq["symbol"] = eq["symbol"].astype(str).str.upper()
+        eq["observation_date"] = eq["observation_date"].astype(str)
+        eq = eq.sort_values(["symbol", "observation_date"]).reset_index(drop=True)
+
+        sym_dates: dict[str, list[str]] = {}
+        sym_closes: dict[str, list[float]] = {}
+        for sym, grp in eq.groupby("symbol", sort=False):
+            sym_dates[str(sym)] = grp["observation_date"].tolist()
+            sym_closes[str(sym)] = grp["close"].astype(float).tolist()
+
+        updated_count = 0
+        now_iso = datetime.now(timezone.utc).isoformat()
+        for idx in pred_df.index:
+            sym = str(pred_df.loc[idx, "symbol"]).upper()
+            obs_dt = str(pred_df.loc[idx, "observation_date"])
+            if sym not in sym_dates:
+                continue
+            dates_list = sym_dates[sym]
+            closes_list = sym_closes[sym]
+
+            # Find observation_date index (or latest trading date <= observation_date)
+            base_idx = None
+            for i, d_str in enumerate(dates_list):
+                if d_str == obs_dt:
+                    base_idx = i
+                    break
+            if base_idx is None:
+                continue
+
+            base_close = closes_list[base_idx]
+            if base_close <= 0:
+                continue
+
+            changed = False
+            if pd.isna(pred_df.loc[idx, "realized_next_day_return_pct"]) and base_idx + 1 < len(closes_list):
+                r1 = (closes_list[base_idx + 1] / base_close - 1.0) * 100.0
+                pred_df.loc[idx, "realized_next_day_return_pct"] = round(float(r1), 4)
+                changed = True
+
+            if pd.isna(pred_df.loc[idx, "realized_5d_return_pct"]) and base_idx + 5 < len(closes_list):
+                r5 = (closes_list[base_idx + 5] / base_close - 1.0) * 100.0
+                pred_df.loc[idx, "realized_5d_return_pct"] = round(float(r5), 4)
+                changed = True
+
+            if changed:
+                pred_df.loc[idx, "outcome_evaluated_at"] = now_iso
+                updated_count += 1
+
+        if updated_count > 0:
+            pred_df.to_parquet(self.predictions_parquet, index=False, compression="zstd")
+        return updated_count
 
     def upsert_backtest_predictions(self, df: pd.DataFrame) -> int:
         """Persist walk-forward out-of-sample predictions into `/data/backtests/walk_forward_predictions.parquet`."""

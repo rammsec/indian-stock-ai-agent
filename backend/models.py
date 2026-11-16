@@ -477,6 +477,13 @@ class QuantitativePredictionRecord(BaseModel):
     abstention_reason: str | None = None
     top_bullish_drivers: list[FeatureAttributionItem] = Field(default_factory=list)
     top_bearish_drivers: list[FeatureAttributionItem] = Field(default_factory=list)
+    target_session_date: str | None = None
+    last_close: float | None = None
+    atr_14_pct: float | None = None
+    momentum_prob_up: float | None = None
+    momentum_5d_return_pct: float | None = None
+    feature_snapshot: dict[str, float | None] = Field(default_factory=dict)
+    outcome_evaluated_at: str | None = None
     realized_next_day_return_pct: float | None = None
     realized_5d_return_pct: float | None = None
 
@@ -505,6 +512,7 @@ class ModelEvaluationMetrics(BaseModel):
     profit_factor_net: float
     avg_win_loss_ratio: float
     expectancy_per_trade_bps: float
+    calibration_ece: float | None = None
 
 
 class BacktestComparisonSummary(BaseModel):
@@ -516,6 +524,8 @@ class BacktestComparisonSummary(BaseModel):
     test_end_date: str
     total_walk_forward_folds: int
     purge_gap_days: int
+    embargo_sessions: int = 1
+    execution_mode: str = "next_open_delivery_capped"
     symbols_evaluated: list[str]
     nifty_50_buy_hold_return_pct: float
     equal_weight_universe_return_pct: float
@@ -525,6 +535,8 @@ class BacktestComparisonSummary(BaseModel):
     by_sector_performance: dict[str, dict[str, float]] = Field(default_factory=dict)
     by_symbol_performance: dict[str, dict[str, float]] = Field(default_factory=dict)
     top_global_features: list[dict[str, Any]] = Field(default_factory=list)
+    execution_diagnostics: dict[str, Any] = Field(default_factory=dict)
+    feature_stability_jaccard: float | None = None
 
 
 class BulkBlockDealRecord(BaseModel):
