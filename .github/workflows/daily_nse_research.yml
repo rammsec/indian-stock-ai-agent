@@ -60,7 +60,7 @@ jobs:
         run: |
           python scripts/run_phase1_foundation.py
 
-      - name: Generate Validated Frontend JSONs & Run Phases 2-4 Quant & Corporate Pipelines
+      - name: Generate Validated Frontend JSONs & Run Phases 2-5 Quant, Corporate & News Pipelines
         if: steps.calendar_check.outputs.should_run == 'true'
         env:
           EXTRA_SYMBOLS: ${{ github.event.inputs.extra_symbols }}
@@ -69,6 +69,8 @@ jobs:
           python scripts/run_phase2_features.py
           python scripts/run_phase3_backtest.py
           python scripts/run_phase4_corporate_intel.py
+          python -c "from backend.news_intel.pipeline import run_phase5_intelligence_pipeline; run_phase5_intelligence_pipeline(use_network=True, persist=True)"
+          cp data/predictions/phase5_intelligence.json docs/data/phase5_intelligence.json
           python scripts/build_github_pages.py
 
       - name: Run Automated Test Suite
