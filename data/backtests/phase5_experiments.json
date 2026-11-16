@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-16T18:36:35.572713+05:30",
+  "generated_at": "2026-11-16T19:01:24.087393+05:30",
   "latest_feature_date": "2026-11-16",
   "pilot_universe": [
     "RELIANCE",
@@ -30,13 +30,33 @@
       "roc_auc": 0.4833,
       "directional_accuracy_pct": 55.47,
       "brier_score": 0.2479,
-      "rank_ic": 0.0
+      "rank_ic": 0.0,
+      "execution": {
+        "executed_trades": 15,
+        "hold_sessions": 5,
+        "gross_return_pct": 5.67,
+        "cost_drag_pct": 1.48,
+        "net_return_pct": 4.19,
+        "net_sharpe": 0.54,
+        "max_drawdown_pct": -4.83,
+        "expectancy_bps": 148.5
+      }
     },
     "10D": {
       "roc_auc": 0.4732,
       "directional_accuracy_pct": 60.52,
       "brier_score": 0.2417,
-      "rank_ic": 0.0
+      "rank_ic": 0.0,
+      "execution": {
+        "executed_trades": 1,
+        "hold_sessions": 10,
+        "gross_return_pct": -0.51,
+        "cost_drag_pct": 0.1,
+        "net_return_pct": -0.61,
+        "net_sharpe": -1.04,
+        "max_drawdown_pct": -0.61,
+        "expectancy_bps": -302.91
+      }
     }
   },
   "experiments": {
@@ -59,13 +79,33 @@
         "roc_auc": 0.4466,
         "directional_accuracy_pct": 50.45,
         "brier_score": 0.2642,
-        "rank_ic": -0.0693
+        "rank_ic": -0.0693,
+        "execution": {
+          "executed_trades": 44,
+          "hold_sessions": 5,
+          "gross_return_pct": -4.89,
+          "cost_drag_pct": 3.22,
+          "net_return_pct": -8.1,
+          "net_sharpe": -1.379,
+          "max_drawdown_pct": -11.22,
+          "expectancy_bps": -93.87
+        }
       },
       "10D": {
         "roc_auc": 0.4218,
         "directional_accuracy_pct": 52.19,
         "brier_score": 0.2695,
-        "rank_ic": -0.1598
+        "rank_ic": -0.1598,
+        "execution": {
+          "executed_trades": 29,
+          "hold_sessions": 10,
+          "gross_return_pct": -9.99,
+          "cost_drag_pct": 2.03,
+          "net_return_pct": -12.02,
+          "net_sharpe": -2.354,
+          "max_drawdown_pct": -11.98,
+          "expectancy_bps": -218.01
+        }
       }
     },
     "B_quant_plus_company_news": {
@@ -87,13 +127,33 @@
         "roc_auc": 0.4466,
         "directional_accuracy_pct": 50.45,
         "brier_score": 0.2642,
-        "rank_ic": -0.0693
+        "rank_ic": -0.0693,
+        "execution": {
+          "executed_trades": 44,
+          "hold_sessions": 5,
+          "gross_return_pct": -4.89,
+          "cost_drag_pct": 3.22,
+          "net_return_pct": -8.1,
+          "net_sharpe": -1.379,
+          "max_drawdown_pct": -11.22,
+          "expectancy_bps": -93.87
+        }
       },
       "10D": {
         "roc_auc": 0.4218,
         "directional_accuracy_pct": 52.19,
         "brier_score": 0.2695,
-        "rank_ic": -0.1598
+        "rank_ic": -0.1598,
+        "execution": {
+          "executed_trades": 29,
+          "hold_sessions": 10,
+          "gross_return_pct": -9.99,
+          "cost_drag_pct": 2.03,
+          "net_return_pct": -12.02,
+          "net_sharpe": -2.354,
+          "max_drawdown_pct": -11.98,
+          "expectancy_bps": -218.01
+        }
       }
     },
     "C_quant_plus_company_promoter": {
@@ -115,13 +175,33 @@
         "roc_auc": 0.4456,
         "directional_accuracy_pct": 50.45,
         "brier_score": 0.2641,
-        "rank_ic": -0.0714
+        "rank_ic": -0.0714,
+        "execution": {
+          "executed_trades": 43,
+          "hold_sessions": 5,
+          "gross_return_pct": -5.71,
+          "cost_drag_pct": 3.11,
+          "net_return_pct": -8.82,
+          "net_sharpe": -1.531,
+          "max_drawdown_pct": -11.92,
+          "expectancy_bps": -105.3
+        }
       },
       "10D": {
         "roc_auc": 0.4272,
         "directional_accuracy_pct": 52.19,
         "brier_score": 0.2689,
-        "rank_ic": -0.1517
+        "rank_ic": -0.1517,
+        "execution": {
+          "executed_trades": 29,
+          "hold_sessions": 10,
+          "gross_return_pct": -9.99,
+          "cost_drag_pct": 2.03,
+          "net_return_pct": -12.02,
+          "net_sharpe": -2.354,
+          "max_drawdown_pct": -11.98,
+          "expectancy_bps": -218.01
+        }
       }
     },
     "D_quant_plus_ind_competitor": {
@@ -143,13 +223,33 @@
         "roc_auc": 0.4456,
         "directional_accuracy_pct": 50.45,
         "brier_score": 0.2641,
-        "rank_ic": -0.0714
+        "rank_ic": -0.0714,
+        "execution": {
+          "executed_trades": 43,
+          "hold_sessions": 5,
+          "gross_return_pct": -5.71,
+          "cost_drag_pct": 3.11,
+          "net_return_pct": -8.82,
+          "net_sharpe": -1.531,
+          "max_drawdown_pct": -11.92,
+          "expectancy_bps": -105.3
+        }
       },
       "10D": {
         "roc_auc": 0.4272,
         "directional_accuracy_pct": 52.19,
         "brier_score": 0.2689,
-        "rank_ic": -0.1517
+        "rank_ic": -0.1517,
+        "execution": {
+          "executed_trades": 29,
+          "hold_sessions": 10,
+          "gross_return_pct": -9.99,
+          "cost_drag_pct": 2.03,
+          "net_return_pct": -12.02,
+          "net_sharpe": -2.354,
+          "max_drawdown_pct": -11.98,
+          "expectancy_bps": -218.01
+        }
       }
     },
     "E_quant_plus_all_news_cross": {
@@ -171,13 +271,33 @@
         "roc_auc": 0.4502,
         "directional_accuracy_pct": 49.22,
         "brier_score": 0.2645,
-        "rank_ic": -0.0678
+        "rank_ic": -0.0678,
+        "execution": {
+          "executed_trades": 43,
+          "hold_sessions": 5,
+          "gross_return_pct": -10.38,
+          "cost_drag_pct": 2.96,
+          "net_return_pct": -13.34,
+          "net_sharpe": -2.34,
+          "max_drawdown_pct": -13.34,
+          "expectancy_bps": -164.23
+        }
       },
       "10D": {
         "roc_auc": 0.4315,
         "directional_accuracy_pct": 52.1,
         "brier_score": 0.2687,
-        "rank_ic": -0.1442
+        "rank_ic": -0.1442,
+        "execution": {
+          "executed_trades": 29,
+          "hold_sessions": 10,
+          "gross_return_pct": -9.99,
+          "cost_drag_pct": 2.03,
+          "net_return_pct": -12.02,
+          "net_sharpe": -2.354,
+          "max_drawdown_pct": -11.98,
+          "expectancy_bps": -218.01
+        }
       }
     }
   }

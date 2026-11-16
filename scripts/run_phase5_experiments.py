@@ -18,6 +18,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from sklearn.metrics import brier_score_loss, roc_auc_score
 
@@ -34,6 +35,7 @@ from backend.news_intel.features import (
 )
 from backend.news_intel.pipeline import run_phase5_intelligence_pipeline
 from backend.news_intel.relationships import PILOT_UNIVERSE_5
+from backend.prediction.cost_model import compute_row_cost_series
 
 
 def _load_237_features() -> list[str]:
@@ -48,7 +50,7 @@ def _load_237_features() -> list[str]:
 
 
 def _horizon_oos_metrics(oos_df: pd.DataFrame, target_ret_col: str) -> dict[str, float]:
-    """Compute directional accuracy, ROC AUC, Brier, and Rank IC for a specific horizon."""
+    """Compute classification & ranking metrics separately from execution returns."""
     if oos_df.empty or target_ret_col not in oos_df.columns:
         raise ValueError(f"Missing required target column {target_ret_col!r} in OOS predictions.")
 
@@ -74,6 +76,86 @@ def _horizon_oos_metrics(oos_df: pd.DataFrame, target_ret_col: str) -> dict[str,
         "directional_accuracy_pct": round(acc, 2),
         "brier_score": round(brier, 4),
         "rank_ic": round(ic, 4),
+    }
+
+
+def _evaluate_multi_day_horizon_execution(
+    oos_df: pd.DataFrame,
+    target_ret_col: str,
+    hold_sessions: int,
+    prob_entry: float = 0.535,
+    max_position_weight: float = 0.20,
+) -> dict[str, float | int]:
+    """Execution-aware evaluation for 5D/10D with non-overlapping holding periods and Indian CNC costs."""
+    if oos_df.empty or target_ret_col not in oos_df.columns:
+        raise ValueError(f"Missing required target column {target_ret_col!r} for execution evaluation.")
+
+    df = oos_df.dropna(subset=[target_ret_col, "prob_next_day_up"]).sort_values(["observation_date", "symbol"]).copy()
+    if len(df) < 20:
+        raise ValueError(f"Insufficient OOS rows ({len(df)}) for {target_ret_col!r} execution evaluation.")
+
+    df["roundtrip_cost_pct"] = compute_row_cost_series(df, mode="delivery").values
+    dates = sorted(df["observation_date"].astype(str).unique().tolist())
+    date_to_idx = {d: i for i, d in enumerate(dates)}
+
+    blocked_until_idx: dict[str, int] = {}
+    period_gross: list[float] = []
+    period_net: list[float] = []
+    period_dates: dict[str, list[float]] = {d: [] for d in dates}
+
+    for _, row in df.iterrows():
+        sym = str(row["symbol"]).upper()
+        obs = str(row["observation_date"])
+        d_idx = date_to_idx[obs]
+        if d_idx < blocked_until_idx.get(sym, -1):
+            continue  # Non-overlapping position rule per symbol
+        vix = float(row.get("ms_india_vix_level", 15.0) or 15.0)
+        if vix >= 21.0:
+            continue
+        prob = float(row["prob_next_day_up"])
+        if prob < prob_entry:
+            continue
+
+        gross_r = float(row[target_ret_col])
+        cost_r = float(row["roundtrip_cost_pct"])
+        net_r = gross_r - cost_r
+        period_gross.append(gross_r)
+        period_net.append(net_r)
+        period_dates[obs].append(net_r * max_position_weight)
+        blocked_until_idx[sym] = d_idx + hold_sessions
+
+    n_trades = len(period_net)
+    if n_trades == 0:
+        return {
+            "executed_trades": 0,
+            "hold_sessions": hold_sessions,
+            "gross_return_pct": 0.0,
+            "cost_drag_pct": 0.0,
+            "net_return_pct": 0.0,
+            "net_sharpe": 0.0,
+            "max_drawdown_pct": 0.0,
+            "expectancy_bps": 0.0,
+        }
+
+    port_rets = np.array([sum(period_dates[d]) for d in dates], dtype=float)
+    gross_cum = float((np.prod(1.0 + (np.array(period_gross) * max_position_weight) / 100.0) - 1.0) * 100.0)
+    net_cum = float((np.prod(1.0 + port_rets / 100.0) - 1.0) * 100.0)
+    eq_curve = np.cumprod(1.0 + port_rets / 100.0)
+    peak = np.maximum.accumulate(eq_curve)
+    max_dd = float(((eq_curve / np.maximum(peak, 1e-9)) - 1.0).min() * 100.0)
+    std_r = float(np.std(port_rets, ddof=1)) if len(port_rets) > 1 else 0.0
+    sharpe = float((np.mean(port_rets) / std_r) * np.sqrt(252.0)) if std_r > 1e-9 else 0.0
+    expectancy_bps = float(np.mean(period_net) * 100.0)
+
+    return {
+        "executed_trades": n_trades,
+        "hold_sessions": hold_sessions,
+        "gross_return_pct": round(gross_cum, 2),
+        "cost_drag_pct": round(max(0.0, gross_cum - net_cum), 2),
+        "net_return_pct": round(net_cum, 2),
+        "net_sharpe": round(sharpe, 3),
+        "max_drawdown_pct": round(max_dd, 2),
+        "expectancy_bps": round(expectancy_bps, 2),
     }
 
 
@@ -178,6 +260,7 @@ def run_all_experiments(force: bool = True) -> dict[str, object]:
         )
         ml_oos_5d = oos_all_5d[oos_all_5d["model_name"] == "ml_ensemble"]
         m5d = _horizon_oos_metrics(ml_oos_5d, "target_5d_ret")
+        m5d["execution"] = _evaluate_multi_day_horizon_execution(ml_oos_5d, "target_5d_ret", hold_sessions=5)
 
         # 3. Genuine 10D horizon (trained directly on target_10d_ret > 0, 10-session purge + 1-session embargo)
         df_10d = df_pilot.copy()
@@ -195,9 +278,16 @@ def run_all_experiments(force: bool = True) -> dict[str, object]:
         )
         ml_oos_10d = oos_all_10d[oos_all_10d["model_name"] == "ml_ensemble"]
         m10d = _horizon_oos_metrics(ml_oos_10d, "target_10d_ret")
+        m10d["execution"] = _evaluate_multi_day_horizon_execution(ml_oos_10d, "target_10d_ret", hold_sessions=10)
 
         if not naive_benchmark and "naive_momentum" in summary_1d.models:
             nm = summary_1d.models["naive_momentum"]
+            nm_oos_5d = oos_all_5d[oos_all_5d["model_name"] == "naive_momentum"]
+            nm_oos_10d = oos_all_10d[oos_all_10d["model_name"] == "naive_momentum"]
+            nm_5d = _horizon_oos_metrics(nm_oos_5d, "target_5d_ret")
+            nm_5d["execution"] = _evaluate_multi_day_horizon_execution(nm_oos_5d, "target_5d_ret", hold_sessions=5)
+            nm_10d = _horizon_oos_metrics(nm_oos_10d, "target_10d_ret")
+            nm_10d["execution"] = _evaluate_multi_day_horizon_execution(nm_oos_10d, "target_10d_ret", hold_sessions=10)
             naive_benchmark = {
                 "1D": {
                     "roc_auc": nm.roc_auc,
@@ -210,8 +300,8 @@ def run_all_experiments(force: bool = True) -> dict[str, object]:
                     "profit_factor": nm.profit_factor_net,
                     "expectancy_bps": nm.expectancy_per_trade_bps,
                 },
-                "5D": _horizon_oos_metrics(oos_all_5d[oos_all_5d["model_name"] == "naive_momentum"], "target_5d_ret"),
-                "10D": _horizon_oos_metrics(oos_all_10d[oos_all_10d["model_name"] == "naive_momentum"], "target_10d_ret"),
+                "5D": nm_5d,
+                "10D": nm_10d,
             }
 
         results[exp_name] = {

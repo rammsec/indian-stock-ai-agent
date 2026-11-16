@@ -135,17 +135,53 @@ def collect_promoter_management_intel(
         for _, r in sub.iterrows():
             side = str(r.get("side", "BUY")).upper()
             deal_type = str(r.get("deal_type", "BULK")).upper()
-            client = str(r.get("client_name", "Institutional Investor"))
+            client = str(r.get("client_name", "")).strip() or "UNKNOWN_ENTITY"
             c_low = client.lower()
             is_inst = any(tok in c_low for tok in inst_exclusions)
-            is_verified_promoter = (not is_inst) and (
-                "promoter" in c_low or "insider" in c_low or any(h in c_low for h in promoter_hints)
+            has_explicit_tag = any(
+                tok in c_low or tok in str(r.get("category", "")).lower()
+                for tok in ("promoter", "insider", "sast", "regulation 29", "regulation 7")
             )
+            matched_hints = [h for h in promoter_hints if h in c_low]
+
+            evidence: list[str] = []
+            if is_inst:
+                verification_status = "NOT_APPLICABLE"
+                prom_conf = 0.90
+                is_verified_promoter = False
+                cat = "company_news"
+                rel_label = "Institutional Bulk/Block Deal"
+                prefix = "Institutional"
+                evidence.append("Matched institutional investor exclusion token in NSE bulk/block client name.")
+            elif has_explicit_tag:
+                verification_status = "CONFIRMED"
+                prom_conf = 0.92
+                is_verified_promoter = True
+                cat = "promoter_management"
+                rel_label = promoter_group
+                prefix = "Confirmed Promoter"
+                evidence.append("Explicit promoter/insider/SAST disclosure tag present in NSE record.")
+            elif matched_hints:
+                verification_status = "INFERRED"
+                prom_conf = 0.65
+                is_verified_promoter = False
+                cat = "promoter_management"
+                rel_label = f"{promoter_group} (Inferred Match)"
+                prefix = "Inferred Promoter-Group Match"
+                evidence.append(
+                    f"Hardcoded promoter-group name match ({', '.join(matched_hints)}) without independent SAST/promoter filing tag."
+                )
+            else:
+                verification_status = "UNKNOWN"
+                prom_conf = 0.35
+                is_verified_promoter = False
+                cat = "company_news"
+                rel_label = "Unverified Deal Counterparty (UNKNOWN)"
+                prefix = "Unverified Entity"
+                evidence.append("Neither institutional exclusion nor promoter/SAST verification matched; classified as UNKNOWN.")
+
             val_cr = float(r.get("value_cr", 0.0) or 0.0)
             deal_dt = str(r.get("deal_date", ""))
-            cat = "promoter_management" if is_verified_promoter else "company_news"
-            rel_label = promoter_group if is_verified_promoter else "Institutional Bulk/Block Deal"
-            prefix = "Verified Promoter" if is_verified_promoter else "Institutional"
             items.append(
                 RawNewsItem(
                     symbol=sym,
@@ -161,6 +197,9 @@ def collect_promoter_management_intel(
                         "side": side,
                         "value_cr": val_cr,
                         "is_verified_promoter": is_verified_promoter,
+                        "promoter_verification_status": verification_status,
+                        "promoter_classification_confidence": prom_conf,
+                        "classification_evidence": evidence,
                     },
                 )
             )

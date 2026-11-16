@@ -34,7 +34,7 @@ sys.path.insert(0, str(ROOT_DIR))
 from backend.backtesting.walk_forward import run_walk_forward_backtest
 from backend.features.selector import get_candidate_feature_columns
 from backend.prediction.cost_model import estimate_indian_roundtrip_cost
-from backend.prediction.ensemble_model import build_latest_prediction_records
+from backend.prediction.ensemble_model import BharatAlphaQuantEnsemble, build_latest_prediction_records
 from backend.storage.duckdb_store import DuckDBStore
 
 DOCS_DATA_DIR = ROOT_DIR / "docs" / "data"
@@ -141,6 +141,32 @@ def run_phase3_pipeline() -> dict[str, Any]:
         market_regime_label=market_regime_label,
         quality_map=quality_map,
     )
+
+    # Train genuine 5D and 10D ensembles so live multi-horizon predictions never reuse 1D prob or scaled 5D return
+    for horizon_tag, target_col, purge_n in (("5D", "target_5d_ret", 5), ("10D", "target_10d_ret", 10)):
+        if target_col in feature_df.columns and int(feature_df[target_col].notna().sum()) >= 120:
+            df_h = feature_df.copy()
+            df_h["target_next_day_ret"] = pd.to_numeric(df_h[target_col], errors="coerce")
+            df_h["target_next_day_up"] = (df_h["target_next_day_ret"] > 0).astype(float)
+            ens_h = BharatAlphaQuantEnsemble(top_k_features=40, purge_sessions=purge_n, random_state=42)
+            ens_h.fit(df_h, candidate_features)
+            pred_h = ens_h.predict_df(latest_rows_per_sym, candidate_features)
+            h_by_sym = {
+                str(latest_rows_per_sym.iloc[i]["symbol"]).upper(): pred_h.iloc[i].to_dict()
+                for i in range(len(latest_rows_per_sym))
+            }
+            for rec in latest_records:
+                row_h = h_by_sym.get(rec.symbol)
+                if row_h is not None:
+                    p_h = round(float(row_h["prob_next_day_up"]), 4)
+                    r_h = round(float(row_h["expected_next_day_return_pct"]), 4)
+                    if horizon_tag == "5D":
+                        rec.prob_5d_up = p_h
+                        rec.expected_5d_return_pct = r_h
+                        rec.net_expected_5d_return_pct = round(r_h - rec.roundtrip_delivery_cost_pct, 4)
+                    else:
+                        rec.prob_10d_up = p_h
+                        rec.expected_10d_return_pct = r_h
 
     # Attach exact last_close, atr_14_pct, and NaiveMomentumBaseline 5D benchmark
     from backend.prediction.baselines import NaiveMomentumBaseline

@@ -79,7 +79,15 @@ def run_phase5_intelligence_pipeline(
 
     quant_by_sym, regime_label, quant_updated_at = _load_latest_quant_map(st.predictions_dir)
     if not quant_by_sym:
-        warnings.append("latest_predictions.json not found or empty; using neutral 0.50 quant prior.")
+        warnings.append("latest_predictions.json not found or empty; quantitative horizon models marked UNAVAILABLE.")
+        data_freshness = "Unavailable"
+    else:
+        try:
+            q_dt = datetime.fromisoformat(quant_updated_at.replace("Z", "+00:00"))
+            age_hrs = max(0.0, (now_ist - q_dt.astimezone(IST_TZ)).total_seconds() / 3600.0)
+            data_freshness = "Current" if age_hrs <= 36.0 else f"Stale ({age_hrs:.0f}h old)"
+        except Exception:
+            data_freshness = "Current"
 
     stocks_out: dict[str, StockIntelligenceItem] = {}
     for sym in [s.upper() for s in symbols]:
@@ -88,7 +96,7 @@ def run_phase5_intelligence_pipeline(
         c_impacts = cross_by_sym.get(sym, [])
         n_feats = compute_pit_news_features(evts, as_of_ts=now_ist, cross_impacts=c_impacts)
         q_pred = quant_by_sym.get(sym)
-        trade_eligible = bool(q_pred.get("recommended_action") != "NO TRADE") if q_pred else True
+        trade_eligible = bool(q_pred.get("recommended_action") != "NO TRADE") if q_pred else False
 
         outlooks = build_multi_horizon_outlooks(
             symbol=sym,
@@ -97,6 +105,7 @@ def run_phase5_intelligence_pipeline(
             cross_impacts=c_impacts,
             regime_label=regime_label,
             trade_eligible=trade_eligible,
+            data_freshness=data_freshness,
         )
 
         prom_notes = [e.event_description for e in evts if e.event_category == "promoter_management"][:4]
@@ -109,14 +118,17 @@ def run_phase5_intelligence_pipeline(
         q_summary = (
             {
                 "prob_next_day_up": q_pred.get("prob_next_day_up"),
+                "prob_5d_up": q_pred.get("prob_5d_up"),
+                "prob_10d_up": q_pred.get("prob_10d_up"),
                 "expected_next_day_return_pct": q_pred.get("expected_next_day_return_pct"),
                 "expected_5d_return_pct": q_pred.get("expected_5d_return_pct"),
+                "expected_10d_return_pct": q_pred.get("expected_10d_return_pct"),
                 "recommended_action": q_pred.get("recommended_action"),
                 "confidence_score": q_pred.get("confidence_score"),
                 "market_regime": regime_label,
             }
             if q_pred
-            else {"prob_next_day_up": 0.50, "recommended_action": "HOLD / WATCH", "market_regime": regime_label}
+            else {"recommended_action": "UNAVAILABLE", "market_regime": regime_label}
         )
 
         stocks_out[sym] = StockIntelligenceItem(

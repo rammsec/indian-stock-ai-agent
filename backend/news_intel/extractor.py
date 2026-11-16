@@ -391,6 +391,14 @@ def _deterministic_extract(
     if resolved_cat == "competitor" and resolved_entity:
         related_companies.append(resolved_entity)
 
+    meta = raw.metadata if isinstance(raw.metadata, dict) else {}
+    prom_status = str(meta.get("promoter_verification_status") or "NOT_APPLICABLE")
+    if prom_status not in {"CONFIRMED", "INFERRED", "UNKNOWN", "NOT_APPLICABLE"}:
+        prom_status = "NOT_APPLICABLE"
+    prom_evidence = [str(x) for x in meta.get("classification_evidence", [])] if isinstance(meta.get("classification_evidence"), list) else []
+    prom_conf = meta.get("promoter_classification_confidence")
+    prom_conf_val = float(prom_conf) if prom_conf is not None else None
+
     return StructuredNewsEvent(
         event_id=event_id,
         company_name=raw.company_name,
@@ -417,6 +425,9 @@ def _deterministic_extract(
         extraction_method="deterministic",
         facts_summary=facts_summary,
         interpretation_summary=interp,
+        promoter_verification_status=prom_status,  # type: ignore[arg-type]
+        classification_evidence=prom_evidence,
+        promoter_classification_confidence=prom_conf_val,
     )
 
 

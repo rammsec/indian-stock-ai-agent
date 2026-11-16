@@ -4456,6 +4456,19 @@ function renderPhase5Intelligence(data) {
   const monKpi = document.getElementById("p5-monitoring-kpis");
   const mon = data.monitoring || {};
   if (monKpi) {
+    const hm = mon.horizon_metrics || {};
+    const hmBadges = ["1D", "5D", "10D"]
+      .filter((h) => hm[h])
+      .map((h) => {
+        const m = hm[h];
+        const accTxt = m.directional_accuracy_pct != null ? fmtPct(m.directional_accuracy_pct, 1) : "Pending";
+        const aucTxt = m.roc_auc != null ? fmtNum(m.roc_auc, 3) : "—";
+        const icTxt = m.rank_ic != null ? fmtNum(m.rank_ic, 3) : "—";
+        const covTxt = m.prediction_coverage_pct != null ? fmtPct(m.prediction_coverage_pct, 0) : "—";
+        const benchTxt = m.model_vs_benchmark_accuracy_diff_pct != null ? `${m.model_vs_benchmark_accuracy_diff_pct >= 0 ? "+" : ""}${m.model_vs_benchmark_accuracy_diff_pct}%` : "—";
+        return `<span class="badge-neutral mono" style="font-size: 0.7rem;"><strong>${h}</strong>: ${m.status || "INSUFFICIENT_DATA"} • Cov ${covTxt} • Acc ${accTxt} • AUC ${aucTxt} • IC ${icTxt} • vsBench ${benchTxt} • ${m.data_freshness || "—"}</span>`;
+      })
+      .join(" ");
     monKpi.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">Logged Predictions</span>
@@ -4473,6 +4486,7 @@ function renderPhase5Intelligence(data) {
         <span class="kpi-label">Recent Brier / Drift</span>
         <span class="kpi-value">${mon.brier_score_recent != null ? fmtNum(mon.brier_score_recent, 4) : "—"} (${mon.drift_status || "INSUFFICIENT_DATA"})</span>
       </div>
+      ${hmBadges ? `<div style="grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem;">${hmBadges}</div>` : ""}
     `;
   }
 
@@ -4486,15 +4500,24 @@ function renderPhase5Intelligence(data) {
           .filter((h) => outlooks[h])
           .map((h) => {
             const o = outlooks[h];
-            const decCls = o.decision === "BUY" ? "text-bull" : o.decision === "NO TRADE" ? "text-bear" : "text-hold";
+            const isGen = Boolean(o.is_model_generated);
+            const decCls = o.decision === "BUY" ? "text-bull" : (o.decision === "NO TRADE" || o.decision === "UNAVAILABLE") ? "text-bear" : "text-hold";
+            const qProbTxt = o.quant_prob_positive != null ? fmtPct(o.quant_prob_positive * 100, 1) : "Unavailable";
+            const retTxt = (o.expected_gross_return_pct != null && o.expected_net_return_pct != null)
+              ? `${fmtPct(o.expected_gross_return_pct, 2, true)} / ${fmtPct(o.expected_net_return_pct, 2, true)}`
+              : "Unavailable";
+            const decTxt = o.prob_positive != null ? `${o.decision} (${fmtPct(o.prob_positive * 100, 1)})` : o.decision;
+            const srcTag = isGen ? `<span class="text-bull">Model</span>` : `<span class="text-bear">Unavailable</span>`;
+            const metaTxt = `${o.model_prediction_date || s.observation_date || "—"} • ${o.data_freshness || "—"}`;
             return `
-              <tr>
-                <td><strong>${h}</strong></td>
-                <td>${o.quant_signal}</td>
+              <tr title="${o.status_reason || ""}">
+                <td><strong>${h}</strong><div style="font-size:0.65rem;">${srcTag}</div></td>
+                <td>${qProbTxt}<div style="font-size:0.65rem;color:var(--text-muted);">${metaTxt}</div></td>
                 <td>${o.news_signal}</td>
                 <td>${o.cross_stock_signal}</td>
-                <td class="${decCls}" style="font-weight: 700;">${o.decision} (${fmtPct(o.prob_positive * 100, 1)})</td>
-                <td class="${o.expected_net_return_pct >= 0 ? "text-bull" : "text-bear"}">${fmtPct(o.expected_net_return_pct, 2, true)}</td>
+                <td>${isGen ? fmtPct(o.confidence, 0) : "—"}</td>
+                <td class="${decCls}" style="font-weight: 700;">${decTxt}</td>
+                <td class="${(o.expected_net_return_pct ?? 0) >= 0 ? "text-bull" : "text-bear"}">${retTxt}</td>
               </tr>
             `;
           })
@@ -4513,8 +4536,8 @@ function renderPhase5Intelligence(data) {
               <span class="badge-neutral mono">${s.quant_score_summary?.recommended_action || "WATCH"}</span>
             </div>
             <div class="table-wrap" style="margin-bottom: 0.55rem;">
-              <table class="fin-table mono" style="font-size: 0.73rem;">
-                <thead><tr><th>Hor</th><th>Quant</th><th>News</th><th>Cross</th><th>Decision</th><th>Net E[R]</th></tr></thead>
+              <table class="fin-table mono" style="font-size: 0.71rem;">
+                <thead><tr><th>Hor</th><th>Quant P(Up) / Date</th><th>News</th><th>Cross</th><th>Conf</th><th>Decision</th><th>Gross / Net E[R]</th></tr></thead>
                 <tbody>${hRows}</tbody>
               </table>
             </div>

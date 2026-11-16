@@ -452,11 +452,14 @@ class QuantitativePredictionRecord(BaseModel):
     model_version: str = "3.0.0"
     market_regime: str = "Sideways"
     prob_next_day_up: float
+    prob_5d_up: float | None = None
+    prob_10d_up: float | None = None
     prob_lgbm_up: float | None = None
     prob_xgb_up: float | None = None
     prob_linear_up: float | None = None
     expected_next_day_return_pct: float
     expected_5d_return_pct: float
+    expected_10d_return_pct: float | None = None
     downside_risk_mae_pct: float
     expected_upside_mfe_pct: float
     reward_to_risk_ratio: float
@@ -650,6 +653,9 @@ class StructuredNewsEvent(BaseModel):
     extraction_method: Literal["deterministic", "gemini"] = "deterministic"
     facts_summary: str = ""
     interpretation_summary: str = ""
+    promoter_verification_status: Literal["CONFIRMED", "INFERRED", "UNKNOWN", "NOT_APPLICABLE"] = "NOT_APPLICABLE"
+    classification_evidence: list[str] = Field(default_factory=list)
+    promoter_classification_confidence: float | None = None
 
 
 class CrossStockImpactItem(BaseModel):
@@ -674,19 +680,24 @@ class CrossStockImpactItem(BaseModel):
 
 
 class MultiHorizonSignalSummary(BaseModel):
-    """Separated & combined prediction signal per horizon (1D, 5D, 10D) (Phase 5 — Section 6)."""
+    """Separated & combined prediction signal per horizon (1D, 5D, 10D) (Phase 5.2)."""
 
     horizon: Literal["1D", "5D", "10D"]
-    prob_positive: float
-    expected_gross_return_pct: float
-    expected_net_return_pct: float
+    prob_positive: float | None = None
+    quant_prob_positive: float | None = None
+    expected_gross_return_pct: float | None = None
+    expected_net_return_pct: float | None = None
     quant_signal: str
     news_signal: str
     cross_stock_signal: str
     combined_signal: str
     confidence: float
     uncertainty: float
-    decision: Literal["BUY", "HOLD", "WATCH", "NO TRADE"]
+    decision: Literal["BUY", "HOLD", "WATCH", "NO TRADE", "UNAVAILABLE"]
+    model_prediction_date: str | None = None
+    data_freshness: str = "Unknown"
+    is_model_generated: bool = False
+    status_reason: str = ""
 
 
 class StockIntelligenceItem(BaseModel):
@@ -712,8 +723,23 @@ class StockIntelligenceItem(BaseModel):
     )
 
 
+class HorizonMonitoringMetrics(BaseModel):
+    """Horizon-specific live monitoring metrics (Phase 5.2)."""
+
+    horizon: Literal["1D", "5D", "10D"]
+    evaluated_outcomes_count: int = 0
+    directional_accuracy_pct: float | None = None
+    roc_auc: float | None = None
+    brier_score: float | None = None
+    rank_ic: float | None = None
+    prediction_coverage_pct: float | None = None
+    data_freshness: str = "Unknown"
+    model_vs_benchmark_accuracy_diff_pct: float | None = None
+    status: Literal["OK", "WARNING", "INSUFFICIENT_DATA"] = "INSUFFICIENT_DATA"
+
+
 class MonitoringSnapshot(BaseModel):
-    """Accuracy, drift & data quality monitoring snapshot (Phase 5 — Section 11)."""
+    """Accuracy, drift & data quality monitoring snapshot (Phase 5.2)."""
 
     evaluated_at: str
     total_logged_predictions: int = 0
@@ -721,6 +747,7 @@ class MonitoringSnapshot(BaseModel):
     rolling_directional_accuracy_pct: float | None = None
     brier_score_recent: float | None = None
     drift_status: Literal["OK", "WARNING", "INSUFFICIENT_DATA"] = "INSUFFICIENT_DATA"
+    horizon_metrics: dict[str, HorizonMonitoringMetrics] = Field(default_factory=dict)
     data_quality_warnings: list[str] = Field(default_factory=list)
     failure_alerts: list[str] = Field(default_factory=list)
 

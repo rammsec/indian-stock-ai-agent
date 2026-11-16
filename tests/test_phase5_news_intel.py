@@ -163,9 +163,13 @@ def test_multi_horizon_combiner_and_high_vol_block() -> None:
     feats["news_company_sentiment_5d"] = 0.65
     feats["news_cross_stock_net_impact"] = 0.5
     q_pred = {
+        "observation_date": "2026-04-10",
         "prob_next_day_up": 0.58,
+        "prob_5d_up": 0.57,
+        "prob_10d_up": 0.56,
         "expected_next_day_return_pct": 0.55,
         "expected_5d_return_pct": 1.65,
+        "expected_10d_return_pct": 2.40,
         "confidence_score": 72.0,
         "roundtrip_delivery_cost_pct": 0.22,
     }
@@ -357,7 +361,8 @@ def test_nse_bulk_block_institutional_vs_verified_promoter_separation() -> None:
 
     assert len(tcs_items) == 1
     assert tcs_items[0].event_category == "promoter_management"
-    assert tcs_items[0].metadata["is_verified_promoter"] is True
+    assert tcs_items[0].metadata["promoter_verification_status"] == "INFERRED"
+    assert tcs_items[0].metadata["is_verified_promoter"] is False
 
 
 def test_sentiment_word_boundaries_conflicts_and_contrastive_clauses() -> None:
@@ -399,4 +404,145 @@ def test_news_collection_failure_produces_neutral_signals() -> None:
         assert out[h].news_signal == "NEUTRAL"
         assert out[h].cross_stock_signal == "NEUTRAL"
         assert out[h].decision != "BUY"
+
+
+def test_1d_probability_never_reused_as_5d_or_10d() -> None:
+    feats = compute_pit_news_features([], as_of_ts="2026-04-10T15:30:00+05:30")
+    q_pred = {
+        "observation_date": "2026-04-10",
+        "prob_next_day_up": 0.62,
+        "prob_5d_up": 0.51,
+        "prob_10d_up": 0.44,
+        "expected_next_day_return_pct": 0.80,
+        "expected_5d_return_pct": 0.30,
+        "expected_10d_return_pct": -0.60,
+        "confidence_score": 70.0,
+        "roundtrip_delivery_cost_pct": 0.22,
+    }
+    out = build_multi_horizon_outlooks("RELIANCE", q_pred, feats, [], regime_label="Weak Bull", trade_eligible=True)
+    assert out["1D"].quant_prob_positive == 0.62
+    assert out["5D"].quant_prob_positive == 0.51
+    assert out["10D"].quant_prob_positive == 0.44
+    assert out["1D"].prob_positive != out["5D"].prob_positive
+    assert out["5D"].prob_positive != out["10D"].prob_positive
+
+
+def test_missing_horizon_models_never_generate_buy_and_preserve_news_signals() -> None:
+    evt = StructuredNewsEvent(
+        event_id="e_pos_only",
+        company_name="Tata Consultancy Services Ltd",
+        ticker="TCS",
+        event_category="company_news",
+        event_description="TCS wins mega cloud deal",
+        original_source="Mint",
+        publication_timestamp="2026-04-10T10:00:00+05:30",
+        effective_trading_date="2026-04-10",
+        sentiment="positive",
+        impact_magnitude="high",
+        classification_confidence=0.9,
+        novelty_score=0.95,
+        source_credibility=0.9,
+    )
+    feats = compute_pit_news_features([evt], as_of_ts="2026-04-10T15:30:00+05:30")
+    # Only 1D is provided; 5D and 10D are missing!
+    q_pred = {
+        "observation_date": "2026-04-10",
+        "prob_next_day_up": 0.60,
+        "expected_next_day_return_pct": 0.70,
+        "confidence_score": 75.0,
+        "roundtrip_delivery_cost_pct": 0.22,
+    }
+    out = build_multi_horizon_outlooks("TCS", q_pred, feats, [], regime_label="Weak Bull", trade_eligible=True)
+    assert out["1D"].is_model_generated is True
+    assert out["1D"].decision == "BUY"
+
+    for h in ("5D", "10D"):
+        assert out[h].is_model_generated is False
+        assert out[h].decision == "UNAVAILABLE"
+        assert out[h].prob_positive is None
+        assert out[h].quant_prob_positive is None
+        assert out[h].expected_gross_return_pct is None
+        assert out[h].expected_net_return_pct is None
+        assert out[h].news_signal == "BULLISH"  # Independent news signal preserved
+
+
+def test_10d_return_not_derived_from_scaled_5d_return() -> None:
+    feats = compute_pit_news_features([], as_of_ts="2026-04-10T15:30:00+05:30")
+    q_pred = {
+        "observation_date": "2026-04-10",
+        "prob_next_day_up": 0.55,
+        "prob_5d_up": 0.56,
+        "prob_10d_up": 0.48,
+        "expected_next_day_return_pct": 0.40,
+        "expected_5d_return_pct": 2.00,
+        "expected_10d_return_pct": -0.50,  # Independent 10D return, NOT 2.00 * 1.55 = 3.10
+        "confidence_score": 68.0,
+        "roundtrip_delivery_cost_pct": 0.22,
+    }
+    out = build_multi_horizon_outlooks("ITC", q_pred, feats, [], regime_label="Sideways", trade_eligible=True)
+    assert out["5D"].expected_gross_return_pct == 2.00
+    assert out["10D"].expected_gross_return_pct == -0.50
+    assert abs(out["10D"].expected_gross_return_pct - 2.00 * 1.55) > 1.0
+
+
+def test_api_and_dashboard_horizon_field_mapping() -> None:
+    # Ensure cached phase5_intelligence.json reflects Phase 5.2 schema
+    from backend.news_intel.pipeline import run_phase5_intelligence_pipeline
+    run_phase5_intelligence_pipeline(use_network=False, persist=True)
+
+    client = TestClient(app)
+    resp = client.get("/api/stock-intelligence?refresh=false")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert "horizon_metrics" in body["monitoring"]
+    for sym, sdata in body["stocks"].items():
+        for h in ("1D", "5D", "10D"):
+            ho = sdata["horizon_outlooks"][h]
+            for req_key in (
+                "horizon",
+                "prob_positive",
+                "quant_prob_positive",
+                "expected_gross_return_pct",
+                "expected_net_return_pct",
+                "news_signal",
+                "cross_stock_signal",
+                "confidence",
+                "data_freshness",
+                "is_model_generated",
+                "model_prediction_date",
+            ):
+                assert req_key in ho, f"Missing {req_key} in {sym} {h}"
+
+    app_js = (Path(__file__).resolve().parent.parent / "frontend" / "app.js").read_text(encoding="utf-8")
+    for js_field in ("quant_prob_positive", "expected_gross_return_pct", "is_model_generated", "data_freshness", "model_prediction_date", "horizon_metrics"):
+        assert js_field in app_js
+
+
+def test_promoter_verification_confirmed_inferred_and_unknown() -> None:
+    import pandas as pd
+    from backend.news_intel.collector import collect_promoter_management_intel
+
+    deals_df = pd.DataFrame(
+        [
+            {"symbol": "TCS", "deal_date": "2026-04-10", "deal_type": "BLOCK", "side": "BUY", "client_name": "Promoter Group SAST Disclosure", "value_cr": 150.0},
+            {"symbol": "RELIANCE", "deal_date": "2026-04-10", "deal_type": "BULK", "side": "BUY", "client_name": "Ambani Family Holdings Pvt Ltd", "value_cr": 85.0},
+            {"symbol": "ITC", "deal_date": "2026-04-10", "deal_type": "BULK", "side": "SELL", "client_name": "Ramesh Kumar Patel", "value_cr": 12.0},
+        ]
+    )
+    tcs = collect_promoter_management_intel("TCS", use_network=False, bulk_deals_df=deals_df)
+    rel = collect_promoter_management_intel("RELIANCE", use_network=False, bulk_deals_df=deals_df)
+    itc = collect_promoter_management_intel("ITC", use_network=False, bulk_deals_df=deals_df)
+
+    assert tcs[0].metadata["promoter_verification_status"] == "CONFIRMED"
+    assert tcs[0].metadata["is_verified_promoter"] is True
+    assert len(tcs[0].metadata["classification_evidence"]) >= 1
+
+    assert rel[0].metadata["promoter_verification_status"] == "INFERRED"
+    assert rel[0].metadata["is_verified_promoter"] is False
+    assert "Verified Promoter" not in rel[0].title
+
+    assert itc[0].metadata["promoter_verification_status"] == "UNKNOWN"
+    assert itc[0].metadata["is_verified_promoter"] is False
+    assert itc[0].event_category == "company_news"
+
 
