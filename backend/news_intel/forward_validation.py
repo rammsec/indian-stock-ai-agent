@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -31,6 +32,26 @@ DEFAULT_CNC_ROUNDTRIP_COST_PCT = 0.347
 STARTING_CAPITAL_INR = 1_000_000.0
 MAX_POSITION_PCT = 0.10
 MAX_EXPOSURE_PCT = 0.80
+
+
+def _nan_to_none(rec: dict[str, Any]) -> dict[str, Any]:
+    """Parquet round-trips nulls as NaN/NaT; restore None so Optional model fields validate."""
+    out: dict[str, Any] = {}
+    for k, v in rec.items():
+        if isinstance(v, (list, tuple, dict, np.ndarray)):
+            out[k] = v
+        else:
+            try:
+                out[k] = None if pd.isna(v) else v
+            except (TypeError, ValueError):
+                out[k] = v
+    return out
+
+
+def resolve_prediction_run_id() -> str | None:
+    """Workflow run identity: GITHUB_RUN_ID (constant across re-run attempts of the same run), else None."""
+    rid = os.environ.get("GITHUB_RUN_ID", "").strip()
+    return rid or None
 
 
 def make_prediction_id(
@@ -872,29 +893,43 @@ def run_paper_research_portfolio(
         strategies[horizon] = summary
         all_trades.extend(evts)
 
-    # Independent Benchmark 1: Naive Momentum (portfolio simulation with same capital/exposure/cost rules)
-    def _mom_signal(s: dict[str, Any]) -> str:
-        p = s.get("benchmark_prob_1d_up")
-        if p is None or (isinstance(p, float) and np.isnan(p)):
-            p = s.get("benchmark_prob_up")
-        if p is None or (isinstance(p, float) and np.isnan(p)):
-            return "UNAVAILABLE"
-        return "BUY" if float(p) >= 0.535 else "HOLD"
+    # Independent Benchmark 1: Naive Momentum, horizon-matched (same capital/exposure/cost rules and hold period)
+    def _mom_signal_factory(col_primary: str, col_fallback: str | None):
+        def _sig(s: dict[str, Any]) -> str:
+            p = s.get(col_primary)
+            if (p is None or (isinstance(p, float) and np.isnan(p))) and col_fallback:
+                p = s.get(col_fallback)
+            if p is None or (isinstance(p, float) and np.isnan(p)):
+                return "UNAVAILABLE"
+            return "BUY" if float(p) >= 0.535 else "HOLD"
 
-    mom_summary, _ = _simulate_strategy_timeline(
-        horizon="1D",
-        hold_n=1,
-        snaps_df=snapshots_df,
-        sym_map=sym_map,
-        signal_getter=_mom_signal,
-        is_benchmark=True,
-    )
-    mom_bench = {
-        "net_return_pct": mom_summary.net_return_pct if mom_summary.entries_executed > 0 else None,
-        "max_drawdown_pct": mom_summary.max_drawdown_pct if mom_summary.entries_executed > 0 else None,
-        "ending_capital_inr": mom_summary.ending_capital_inr if mom_summary.entries_executed > 0 else None,
-        "status": "ACTIVE" if mom_summary.entries_executed > 0 else "INSUFFICIENT_DATA",
-    }
+        return _sig
+
+    mom_by_h: dict[str, dict[str, float | str | None]] = {}
+    for h, n, col, fb in (
+        ("1D", 1, "benchmark_prob_1d_up", "benchmark_prob_up"),
+        ("5D", 5, "benchmark_prob_5d_up", None),
+        ("10D", 10, "benchmark_prob_10d_up", None),
+    ):
+        if col not in snapshots_df.columns and (fb is None or fb not in snapshots_df.columns):
+            m_sum = None
+        else:
+            m_sum, _ = _simulate_strategy_timeline(
+                horizon=h,
+                hold_n=n,
+                snaps_df=snapshots_df,
+                sym_map=sym_map,
+                signal_getter=_mom_signal_factory(col, fb),
+                is_benchmark=True,
+            )
+        ok = m_sum is not None and m_sum.entries_executed > 0
+        mom_by_h[h] = {
+            "net_return_pct": m_sum.net_return_pct if ok else None,
+            "max_drawdown_pct": m_sum.max_drawdown_pct if ok else None,
+            "ending_capital_inr": m_sum.ending_capital_inr if ok else None,
+            "status": "ACTIVE" if ok else "INSUFFICIENT_DATA",
+        }
+    mom_bench = mom_by_h["1D"]
 
     # Independent Benchmark 2: Nifty 50 Buy-and-Hold (80% max exposure comparable, daily equity curve)
     all_dates = sorted(snapshots_df["observation_date"].astype(str).unique().tolist())
@@ -931,6 +966,9 @@ def run_paper_research_portfolio(
         strategies=strategies,
         benchmarks={
             "naive_momentum": mom_bench,
+            "naive_momentum_1d": mom_by_h["1D"],
+            "naive_momentum_5d": mom_by_h["5D"],
+            "naive_momentum_10d": mom_by_h["10D"],
             "nifty_50_buy_hold": nifty_bench,
             "cash_no_trade": {
                 "net_return_pct": 0.0,
@@ -1063,8 +1101,8 @@ def build_forward_validation_payload(
     if persist and paper_report.recent_trades:
         st.upsert_paper_trades(paper_report.recent_trades)
 
-    recent_snaps = [ForwardPredictionSnapshot(**r) for r in snaps_df.tail(25).to_dict(orient="records")] if not snaps_df.empty else []
-    recent_outs = [ForwardOutcomeRecord(**r) for r in outs_df.tail(50).to_dict(orient="records")] if not outs_df.empty else []
+    recent_snaps = [ForwardPredictionSnapshot(**_nan_to_none(r)) for r in snaps_df.tail(25).to_dict(orient="records")] if not snaps_df.empty else []
+    recent_outs = [ForwardOutcomeRecord(**_nan_to_none(r)) for r in outs_df.tail(50).to_dict(orient="records")] if not outs_df.empty else []
 
     matured_total = int((outs_df["status"] == "MATURED").sum()) if not outs_df.empty else 0
     pending_total = int((outs_df["status"] == "PENDING").sum()) if not outs_df.empty else 0

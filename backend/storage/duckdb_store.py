@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -133,6 +134,40 @@ def ensure_storage_directories() -> dict[str, Path]:
     return dirs
 
 
+
+class ParquetReadError(RuntimeError):
+    """Raised when an existing Parquet file cannot be read. The file is left untouched."""
+
+
+def read_existing_parquet(path: Path) -> pd.DataFrame:
+    """Read an existing Parquet file or raise ParquetReadError (never returns partial/empty data)."""
+    try:
+        return pd.read_parquet(path)
+    except Exception as exc:
+        raise ParquetReadError(
+            f"Existing Parquet file {path} is unreadable ({type(exc).__name__}: {exc}). "
+            "The original file was NOT modified and no new records were written. "
+            "Inspect it, then run DuckDBStore.quarantine_corrupt_parquet(path) to move it aside "
+            "(preserved as *.corrupt.<timestamp>) before re-running, or restore from git history."
+        ) from exc
+
+
+def atomic_write_parquet_table(table: pa.Table, target: Path, compression: str = "zstd") -> None:
+    """Write to a temp file, verify it is readable with matching row count, then os.replace."""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = target.with_name(f".{target.name}.{uuid.uuid4().hex}.tmp")
+    try:
+        pq.write_table(table, tmp_path, compression=compression)
+        check = pq.read_table(tmp_path)
+        if check.num_rows != table.num_rows:
+            raise RuntimeError(f"Temp Parquet verification failed for {target}: row count mismatch")
+        os.replace(tmp_path, target)
+    except Exception:
+        if tmp_path.exists():
+            tmp_path.unlink()
+        raise
+
+
 class DuckDBStore:
     """Analytical Parquet + DuckDB manager for Indian equity market data."""
 
@@ -187,27 +222,32 @@ class DuckDBStore:
             return 0
         df_new = pd.DataFrame(new_rows)
         if parquet_path.exists():
-            try:
-                df_existing = pd.read_parquet(parquet_path)
-                df_combined = pd.concat([df_existing, df_new], ignore_index=True)
-            except Exception:
-                df_combined = df_new
+            df_existing = read_existing_parquet(parquet_path)
+            df_combined = pd.concat([df_existing, df_new], ignore_index=True)
         else:
             df_combined = df_new
 
         df_combined = df_combined.drop_duplicates(subset=dedup_cols, keep=keep)
         df_combined = df_combined.sort_values(sort_cols).reset_index(drop=True)
 
-        parquet_path.parent.mkdir(parents=True, exist_ok=True)
-        tmp_path = parquet_path.with_name(f".{parquet_path.name}.{uuid.uuid4().hex}.tmp")
-        try:
-            df_combined.to_parquet(tmp_path, index=False, compression="zstd")
-            os.replace(tmp_path, parquet_path)
-        except Exception:
-            if tmp_path.exists():
-                tmp_path.unlink()
-            raise
+        atomic_write_parquet_table(pa.Table.from_pandas(df_combined, preserve_index=False), parquet_path)
         return len(df_combined)
+
+    @staticmethod
+    def quarantine_corrupt_parquet(parquet_path: Path) -> Path:
+        """Recovery: move an unreadable Parquet file aside (never deleted) so a fresh store can be started."""
+        parquet_path = Path(parquet_path)
+        if not parquet_path.exists():
+            raise FileNotFoundError(parquet_path)
+        try:
+            pd.read_parquet(parquet_path)
+        except Exception:
+            pass
+        else:
+            raise ValueError(f"{parquet_path} is readable; refusing to quarantine a healthy file.")
+        backup = parquet_path.with_name(f"{parquet_path.name}.corrupt.{int(time.time())}")
+        os.replace(parquet_path, backup)
+        return backup
 
     def upsert_equity_bars(self, bars: list[EquityDailyBar]) -> int:
         """Upsert daily equity OHLCV + delivery bars into `equities_daily.parquet`."""
@@ -277,11 +317,8 @@ class DuckDBStore:
         if df.empty:
             return 0
         if self.features_parquet.exists():
-            try:
-                df_existing = pd.read_parquet(self.features_parquet)
-                df_combined = pd.concat([df_existing, df], ignore_index=True)
-            except Exception:
-                df_combined = df.copy()
+            df_existing = read_existing_parquet(self.features_parquet)
+            df_combined = pd.concat([df_existing, df], ignore_index=True)
         else:
             df_combined = df.copy()
 
@@ -458,17 +495,14 @@ class DuckDBStore:
         df_new = pd.DataFrame(rows) if rows else pd.DataFrame()
 
         if self.events_parquet.exists():
-            try:
-                df_existing = pd.read_parquet(self.events_parquet)
-                for col in ("related_companies", "related_sectors", "classification_evidence"):
-                    if col in df_existing.columns:
-                        df_existing[col] = df_existing[col].apply(normalize_string_list)
-                if not df_new.empty:
-                    df_combined = pd.concat([df_existing, df_new], ignore_index=True)
-                else:
-                    df_combined = df_existing
-            except Exception:
-                df_combined = df_new
+            df_existing = read_existing_parquet(self.events_parquet)
+            for col in ("related_companies", "related_sectors", "classification_evidence"):
+                if col in df_existing.columns:
+                    df_existing[col] = df_existing[col].apply(normalize_string_list)
+            if not df_new.empty:
+                df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+            else:
+                df_combined = df_existing
         else:
             df_combined = df_new
 
@@ -512,15 +546,7 @@ class DuckDBStore:
         table = pa.Table.from_pandas(df_combined, schema=STRUCTURED_EVENTS_SCHEMA, preserve_index=False)
 
         # Atomic write
-        self.predictions_dir.mkdir(parents=True, exist_ok=True)
-        tmp_path = self.events_parquet.with_name(f".{self.events_parquet.name}.{uuid.uuid4().hex}.tmp")
-        try:
-            pq.write_table(table, tmp_path, compression="zstd")
-            os.replace(tmp_path, self.events_parquet)
-        except Exception:
-            if tmp_path.exists():
-                tmp_path.unlink()
-            raise
+        atomic_write_parquet_table(table, self.events_parquet)
 
         return len(df_combined)
 
