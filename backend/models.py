@@ -800,6 +800,10 @@ class ForwardPredictionSnapshot(BaseModel):
     observation_date: str
     model_version: str = "5.3.0-pilot"
     feature_set_version: str = "237+17"
+    prediction_run_id: str | None = None
+    nse_session: str | None = None
+    is_duplicate_run: bool = False
+    canonical_prediction_id: str | None = None
     prob_1d_up: float | None = None
     expected_1d_return_pct: float | None = None
     prob_5d_up: float | None = None
@@ -823,6 +827,15 @@ class ForwardPredictionSnapshot(BaseModel):
     benchmark_prob_10d_up: float | None = None
     benchmark_expected_10d_return_pct: float | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("is_duplicate_run", mode="before")
+    @classmethod
+    def _coerce_bool_default(cls, v: Any) -> bool:
+        if v is None:
+            return False
+        if isinstance(v, float) and v != v:  # NaN
+            return False
+        return bool(v)
 
     @field_validator("model_availability", "metadata", mode="before")
     @classmethod
@@ -991,6 +1004,8 @@ class ForwardValidationPayload(BaseModel):
     quarantined_news_events: int = 0
     last_news_collection_at: str | None = None
     total_immutable_snapshots: int = 0
+    canonical_snapshots_count: int = 0
+    duplicate_snapshots_count: int = 0
     matured_outcomes_total: int = 0
     pending_outcomes_total: int = 0
     horizon_evaluations: dict[str, ForwardHorizonEvaluation] = Field(default_factory=dict)

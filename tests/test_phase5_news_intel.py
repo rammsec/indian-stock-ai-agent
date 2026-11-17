@@ -485,10 +485,19 @@ def test_10d_return_not_derived_from_scaled_5d_return() -> None:
     assert abs(out["10D"].expected_gross_return_pct - 2.00 * 1.55) > 1.0
 
 
-def test_api_and_dashboard_horizon_field_mapping() -> None:
-    # Ensure cached phase5_intelligence.json reflects Phase 5.2 schema
+def test_api_and_dashboard_horizon_field_mapping(tmp_path, monkeypatch) -> None:
+    # Ensure cached phase5_intelligence.json reflects Phase 5.2 schema without mutating live data/predictions/
     from backend.news_intel.pipeline import run_phase5_intelligence_pipeline
-    run_phase5_intelligence_pipeline(use_network=False, persist=True)
+    from backend.storage.duckdb_store import DuckDBStore
+
+    store = DuckDBStore(
+        processed_dir=tmp_path / "processed",
+        features_dir=tmp_path / "features",
+        predictions_dir=tmp_path / "predictions",
+        backtests_dir=tmp_path / "backtests",
+        db_path=tmp_path / "test.duckdb",
+    )
+    run_phase5_intelligence_pipeline(use_network=False, persist=True, store=store)
 
     client = TestClient(app)
     resp = client.get("/api/stock-intelligence?refresh=false")

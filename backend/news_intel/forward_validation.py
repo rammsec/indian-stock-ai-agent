@@ -1,4 +1,15 @@
-"""Phase 5.3.1 Forward Validation, Immutable Snapshots, Matured Outcomes & Look-Ahead-Free Paper Portfolio."""
+"""Phase 5.4 Forward Validation, Immutable Snapshots, Matured Outcomes & Look-Ahead-Free Paper Portfolio.
+
+Prediction Identity Model:
+- **Prediction**: An immutable forecast snapshot `(symbol, observation_date, nse_session, 1D/5D/10D forecasts,
+  model_version, feature_set_version, prediction_run_id)` persisted before outcomes are known.
+- **Prediction Retry**: Re-execution of the same logical run (`GITHUB_RUN_ID` in CI, or same
+  `(symbol, observation_date, nse_session)` locally). Retries are idempotent (`keep="first"` on `prediction_id`).
+- **New Prediction Run**: A genuinely new run (different `GITHUB_RUN_ID` or different `nse_session`, e.g.
+  `PRE_MARKET` vs `POST_MARKET`). Receives a distinct `prediction_id` without overwriting prior runs.
+- **Matured Outcome**: A realized market outcome attached strictly after entry (`t+1` open) and exit (`t+H` close)
+  NSE trading sessions have valid market prices. Once `MATURED` or `INVALID`, an outcome is immutable.
+"""
 
 from __future__ import annotations
 
@@ -24,7 +35,7 @@ from ..models import (
     PaperTradeRecord,
     Phase5IntelligencePayload,
 )
-from ..storage.duckdb_store import DuckDBStore
+from ..storage.duckdb_store import DuckDBStore, atomic_write_parquet_table, read_existing_parquet
 from .relationships import PILOT_UNIVERSE_5
 
 MIN_FORWARD_SAMPLES = 10
@@ -54,24 +65,49 @@ def resolve_prediction_run_id() -> str | None:
     return rid or None
 
 
+def resolve_nse_session(ts: datetime | str | None = None) -> str:
+    """Classify an IST timestamp into PRE_MARKET (<09:15), INTRADAY (09:15-15:30), or POST_MARKET (>15:30)."""
+    if ts is None:
+        dt_ist = datetime.now(IST_TZ)
+    elif isinstance(ts, datetime):
+        dt_ist = ts.astimezone(IST_TZ) if ts.tzinfo else ts.replace(tzinfo=IST_TZ)
+    else:
+        try:
+            parsed = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+            dt_ist = parsed.astimezone(IST_TZ) if parsed.tzinfo else parsed.replace(tzinfo=IST_TZ)
+        except Exception:
+            dt_ist = datetime.now(IST_TZ)
+
+    mins = dt_ist.hour * 60 + dt_ist.minute
+    if mins < 9 * 60 + 15:
+        return "PRE_MARKET"
+    if mins <= 15 * 60 + 30:
+        return "INTRADAY"
+    return "POST_MARKET"
+
+
 def make_prediction_id(
     symbol: str,
     observation_date: str,
     prediction_timestamp: str | None = None,
     run_id: str | None = None,
+    nse_session: str | None = None,
 ) -> str:
     """Generate a stable, unique prediction ID separating identity from observation date.
 
-    - Incorporates symbol, observation date, and run_id or prediction timestamp.
-    - Repeated execution of the same workflow run produces identical ID (idempotent).
-    - Different runs on the same date produce distinct IDs without colliding.
-    - Fully backward-compatible with legacy fwd_{obs_date}_{symbol} snapshots.
+    - CI runs with `run_id` (`GITHUB_RUN_ID`): `fwd_{SYM}_{OBS}_{RUN_ID}` (idempotent across retries).
+    - Local/manual runs with `nse_session` and no `run_id`: `fwd_{SYM}_{OBS}_{SESSION}` (idempotent per session).
+    - Explicit timestamp-only callers: `fwd_{SYM}_{OBS}_{TS}` (backward compatible).
+    - Legacy fallback: `fwd_{SYM}_{OBS}`.
     """
     sym = symbol.upper().strip()
     obs = str(observation_date).strip()
     if run_id:
         clean_run = "".join(c for c in str(run_id) if c.isalnum() or c in ("-", "_"))
         return f"fwd_{sym}_{obs}_{clean_run}"
+    if nse_session:
+        clean_sess = "".join(c for c in str(nse_session).upper() if c.isalnum() or c == "_")
+        return f"fwd_{sym}_{obs}_{clean_sess}"
     if prediction_timestamp:
         clean_ts = "".join(c for c in str(prediction_timestamp)[:19] if c.isalnum())
         return f"fwd_{sym}_{obs}_{clean_ts}"
@@ -85,8 +121,10 @@ def record_forward_prediction_snapshots(
     model_version: str = "5.3.0-pilot",
     feature_set_version: str = "237+17",
     prediction_run_id: str | None = None,
+    nse_session: str | None = None,
 ) -> list[ForwardPredictionSnapshot]:
     """Persist immutable daily prediction snapshots before outcomes are known."""
+    resolved_session = nse_session or resolve_nse_session(payload.latest_prediction_at)
     snapshots: list[ForwardPredictionSnapshot] = []
     for sym, s_item in payload.stocks.items():
         q_pred = quant_by_sym.get(sym.upper()) or {}
@@ -96,6 +134,7 @@ def record_forward_prediction_snapshots(
             observation_date=obs_date,
             prediction_timestamp=payload.latest_prediction_at,
             run_id=prediction_run_id,
+            nse_session=nse_session if (nse_session is not None and prediction_run_id is None) else None,
         )
         h1 = s_item.horizon_outlooks.get("1D")
         h5 = s_item.horizon_outlooks.get("5D")
@@ -115,6 +154,10 @@ def record_forward_prediction_snapshots(
             observation_date=obs_date,
             model_version=model_version,
             feature_set_version=feature_set_version,
+            prediction_run_id=prediction_run_id or f"local_{obs_date}_{resolved_session}",
+            nse_session=resolved_session,
+            is_duplicate_run=False,
+            canonical_prediction_id=pred_id,
             prob_1d_up=h1.prob_positive if h1 and h1.is_model_generated else None,
             expected_1d_return_pct=h1.expected_net_return_pct if h1 and h1.is_model_generated else None,
             prob_5d_up=h5.prob_positive if h5 and h5.is_model_generated else None,
@@ -156,6 +199,57 @@ def record_forward_prediction_snapshots(
     return snapshots
 
 
+def deduplicate_forward_predictions(store: DuckDBStore) -> dict[str, int]:
+    """Non-destructive migration: preserve all historical snapshots and mark duplicate runs per (symbol, observation_date, session)."""
+    import pyarrow as pa
+
+    if not store.forward_predictions_parquet.exists():
+        return {"total": 0, "canonical": 0, "duplicates": 0}
+
+    df = read_existing_parquet(store.forward_predictions_parquet)
+    if df.empty:
+        return {"total": 0, "canonical": 0, "duplicates": 0}
+
+    if "nse_session" not in df.columns:
+        df["nse_session"] = df["prediction_timestamp"].apply(resolve_nse_session)
+    else:
+        mask_missing_sess = df["nse_session"].isna() | (df["nse_session"].astype(str).str.strip() == "")
+        df.loc[mask_missing_sess, "nse_session"] = df.loc[mask_missing_sess, "prediction_timestamp"].apply(resolve_nse_session)
+
+    if "prediction_run_id" not in df.columns:
+        df["prediction_run_id"] = None
+    if "is_duplicate_run" not in df.columns:
+        df["is_duplicate_run"] = False
+    if "canonical_prediction_id" not in df.columns:
+        df["canonical_prediction_id"] = df["prediction_id"]
+
+    df = df.sort_values(["observation_date", "symbol", "prediction_timestamp", "prediction_id"]).reset_index(drop=True)
+
+    # Group by (symbol, observation_date, nse_session) so pre-market and post-market remain separate canonical runs,
+    # while repeated retries/manual runs within the same session on the same observation_date are marked as duplicates.
+    canonical_map: dict[tuple[str, str, str], str] = {}
+    is_dup_list: list[bool] = []
+    canon_id_list: list[str] = []
+
+    for _, row in df.iterrows():
+        key = (str(row["symbol"]).upper(), str(row["observation_date"]), str(row["nse_session"]))
+        pid = str(row["prediction_id"])
+        if key not in canonical_map:
+            canonical_map[key] = pid
+            is_dup_list.append(False)
+            canon_id_list.append(pid)
+        else:
+            is_dup_list.append(True)
+            canon_id_list.append(canonical_map[key])
+
+    df["is_duplicate_run"] = is_dup_list
+    df["canonical_prediction_id"] = canon_id_list
+
+    atomic_write_parquet_table(pa.Table.from_pandas(df, preserve_index=False), store.forward_predictions_parquet)
+    dup_count = int(sum(is_dup_list))
+    return {"total": len(df), "canonical": len(df) - dup_count, "duplicates": dup_count}
+
+
 def _compute_ca_adj_factor(grp: pd.DataFrame, entry_idx: int, exit_idx: int) -> tuple[float, bool]:
     """Compute corporate-action adjustment factor from adj_close ratios between entry and exit."""
     if "adj_close" not in grp.columns:
@@ -180,9 +274,26 @@ def _compute_ca_adj_factor(grp: pd.DataFrame, entry_idx: int, exit_idx: int) -> 
     return 1.0, False
 
 
+def _compute_nifty_window_return(
+    n50_map: dict[str, tuple[float | None, float | None]],
+    entry_dt: str,
+    exit_dt: str,
+) -> float | None:
+    """Compute Nifty 50 return over the exact [entry_dt, exit_dt] window without look-ahead."""
+    if not n50_map or entry_dt not in n50_map or exit_dt not in n50_map:
+        return None
+    e_open, e_close = n50_map[entry_dt]
+    _, x_close = n50_map[exit_dt]
+    entry_px = e_open if (e_open is not None and e_open > 0) else e_close
+    if entry_px is None or entry_px <= 0 or x_close is None or x_close <= 0:
+        return None
+    return round(((x_close / entry_px) - 1.0) * 100.0, 4)
+
+
 def evaluate_forward_outcomes(
     store: DuckDBStore,
     equities_df: pd.DataFrame | None = None,
+    indices_df: pd.DataFrame | None = None,
 ) -> list[ForwardOutcomeRecord]:
     """Attach realized 1D, 5D, and 10D outcomes strictly after each NSE trading-session horizon matures.
 
@@ -190,6 +301,7 @@ def evaluate_forward_outcomes(
     - 1D: Entry at next eligible NSE session's open (t+1), exit at that same session's close (t+1).
     - 5D: Entry at next eligible NSE session's open (t+1), exit at close of 5th NSE session (t+5).
     - 10D: Entry at next eligible NSE session's open (t+1), exit at close of 10th NSE session (t+10).
+    - Once MATURED, INVALID, or UNAVAILABLE, an outcome is immutable and never re-evaluated.
     - Missing or non-positive execution/exit prices are marked INVALID (never fabricated).
     """
     if not store.forward_predictions_parquet.exists():
@@ -205,6 +317,16 @@ def evaluate_forward_outcomes(
     if equities_df.empty:
         return []
 
+    # Load existing finalized outcomes so already-MATURED / INVALID / UNAVAILABLE records are never re-evaluated
+    finalized_keys: set[tuple[str, str]] = set()
+    if store.forward_outcomes_parquet.exists():
+        existing_outs = pd.read_parquet(store.forward_outcomes_parquet)
+        if not existing_outs.empty:
+            fin_df = existing_outs[existing_outs["status"].isin(["MATURED", "INVALID", "UNAVAILABLE"])]
+            finalized_keys = {
+                (str(r["prediction_id"]), str(r["horizon"])) for _, r in fin_df.iterrows()
+            }
+
     cols = [c for c in ("symbol", "observation_date", "open", "close", "adj_close") if c in equities_df.columns]
     eq = equities_df[cols].copy()
     eq["symbol"] = eq["symbol"].astype(str).str.upper()
@@ -215,6 +337,18 @@ def evaluate_forward_outcomes(
         str(sym): grp.reset_index(drop=True) for sym, grp in eq.groupby("symbol", sort=False)
     }
 
+    if indices_df is None and store.indices_parquet.exists():
+        indices_df = pd.read_parquet(store.indices_parquet)
+    n50_map: dict[str, tuple[float | None, float | None]] = {}
+    if indices_df is not None and not indices_df.empty and "index_code" in indices_df.columns:
+        n50 = indices_df[indices_df["index_code"].astype(str).str.upper() == "NIFTY 50"].copy()
+        for _, r in n50.iterrows():
+            dt_s = str(r["observation_date"])
+            op = float(r["open"]) if "open" in n50.columns and pd.notna(r.get("open")) else None
+            cl = float(r["close"]) if "close" in n50.columns and pd.notna(r.get("close")) else None
+            n50_map[dt_s] = (op, cl)
+
+    global_max_dt = str(eq["observation_date"].max()) if not eq.empty else ""
     now_iso = datetime.now(IST_TZ).isoformat()
     outcomes: list[ForwardOutcomeRecord] = []
 
@@ -228,14 +362,60 @@ def evaluate_forward_outcomes(
         cost_pct = float(meta.get("roundtrip_delivery_cost_pct") or DEFAULT_CNC_ROUNDTRIP_COST_PCT)
 
         grp = sym_map.get(sym)
-        base_idx = None
-        if grp is not None:
-            matches = grp.index[grp["observation_date"] == obs_dt].tolist()
-            if matches:
-                base_idx = int(matches[0])
+        entry_idx: int | None = None
+        if grp is not None and not grp.empty:
+            # Next eligible NSE session strictly after observation_date (no look-ahead bias)
+            after_mask = grp["observation_date"] > obs_dt
+            if after_mask.any():
+                entry_idx = int(grp.index[after_mask][0])
 
         for horizon, hold_n in (("1D", 1), ("5D", 5), ("10D", 10)):
-            if base_idx is None or grp is None or base_idx + hold_n >= len(grp):
+            if (pred_id, horizon) in finalized_keys:
+                continue
+
+            if grp is None or grp.empty:
+                outcomes.append(
+                    ForwardOutcomeRecord(
+                        prediction_id=pred_id,
+                        symbol=sym,
+                        observation_date=obs_dt,
+                        horizon=horizon,  # type: ignore[arg-type]
+                        status="UNAVAILABLE",
+                        status_reason=f"No market price history available for {sym}.",
+                        evaluated_at=now_iso,
+                    )
+                )
+                continue
+
+            if entry_idx is None:
+                # If global market data has moved past obs_dt but this symbol has no bars after obs_dt
+                if global_max_dt and global_max_dt > obs_dt and str(grp["observation_date"].max()) <= obs_dt:
+                    outcomes.append(
+                        ForwardOutcomeRecord(
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            observation_date=obs_dt,
+                            horizon=horizon,  # type: ignore[arg-type]
+                            status="UNAVAILABLE",
+                            status_reason=f"Market advanced to {global_max_dt} with no subsequent session bar for {sym}.",
+                            evaluated_at=now_iso,
+                        )
+                    )
+                else:
+                    outcomes.append(
+                        ForwardOutcomeRecord(
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            observation_date=obs_dt,
+                            horizon=horizon,  # type: ignore[arg-type]
+                            status="PENDING",
+                            status_reason="Awaiting next eligible NSE trading session.",
+                        )
+                    )
+                continue
+
+            exit_idx = entry_idx + (hold_n - 1)
+            if exit_idx >= len(grp):
                 outcomes.append(
                     ForwardOutcomeRecord(
                         prediction_id=pred_id,
@@ -248,10 +428,23 @@ def evaluate_forward_outcomes(
                 )
                 continue
 
-            entry_idx = base_idx + 1
-            exit_idx = base_idx + hold_n
             entry_dt = str(grp.loc[entry_idx, "observation_date"])
             exit_dt = str(grp.loc[exit_idx, "observation_date"])
+            if entry_dt <= obs_dt or exit_dt < entry_dt:
+                outcomes.append(
+                    ForwardOutcomeRecord(
+                        prediction_id=pred_id,
+                        symbol=sym,
+                        observation_date=obs_dt,
+                        horizon=horizon,  # type: ignore[arg-type]
+                        status="INVALID",
+                        status_reason=f"Invalid chronological window ({obs_dt} -> {entry_dt} -> {exit_dt}).",
+                        entry_date=entry_dt,
+                        exit_date=exit_dt,
+                        evaluated_at=now_iso,
+                    )
+                )
+                continue
 
             entry_open = grp.loc[entry_idx, "open"] if "open" in grp.columns else np.nan
             exit_close = grp.loc[exit_idx, "close"] if "close" in grp.columns else np.nan
@@ -277,6 +470,7 @@ def evaluate_forward_outcomes(
 
             gross_ret = ((exit_px * adj_factor) / entry_px - 1.0) * 100.0
             net_ret = gross_ret - cost_pct
+            bench_ret = _compute_nifty_window_return(n50_map, entry_dt, exit_dt)
             outcomes.append(
                 ForwardOutcomeRecord(
                     prediction_id=pred_id,
@@ -292,7 +486,7 @@ def evaluate_forward_outcomes(
                     gross_return_pct=round(float(gross_ret), 4),
                     transaction_cost_pct=round(float(cost_pct), 4),
                     net_return_pct=round(float(net_ret), 4),
-                    benchmark_return_pct=None,
+                    benchmark_return_pct=bench_ret,
                     corporate_action_adjusted=ca_adjusted,
                     evaluated_at=now_iso,
                 )
@@ -1065,7 +1259,29 @@ def build_forward_validation_payload(
 
     snaps_df = pd.read_parquet(st.forward_predictions_parquet) if st.forward_predictions_parquet.exists() else pd.DataFrame()
     outs_df = pd.read_parquet(st.forward_outcomes_parquet) if st.forward_outcomes_parquet.exists() else pd.DataFrame()
-    provenance = compute_news_provenance(st, snaps_df)
+
+    if not snaps_df.empty and "is_duplicate_run" in snaps_df.columns:
+        dup_mask = snaps_df["is_duplicate_run"].fillna(False).astype(bool)
+        canonical_snaps_df = snaps_df[~dup_mask].copy()
+        duplicate_cnt = int(dup_mask.sum())
+    else:
+        canonical_snaps_df = snaps_df.copy()
+        duplicate_cnt = 0
+
+    canonical_ids = set(canonical_snaps_df["prediction_id"].astype(str)) if not canonical_snaps_df.empty else set()
+    canonical_outs_df = (
+        outs_df[outs_df["prediction_id"].astype(str).isin(canonical_ids)].copy()
+        if (not outs_df.empty and canonical_ids)
+        else pd.DataFrame(columns=outs_df.columns) if not outs_df.empty else pd.DataFrame()
+    )
+
+    provenance = compute_news_provenance(st, canonical_snaps_df)
+
+    if duplicate_cnt > 0:
+        dq_warnings.append(
+            f"Preserved {duplicate_cnt} historical retry/duplicate snapshots in storage; "
+            f"aggregate metrics and paper portfolio evaluate {len(canonical_snaps_df)} canonical snapshots."
+        )
 
     if not provenance.is_genuinely_forward_collected and provenance.valid_events > 0:
         dq_warnings.append(provenance.provenance_note)
@@ -1087,7 +1303,7 @@ def build_forward_validation_payload(
 
     horizon_evals: dict[str, ForwardHorizonEvaluation] = {}
     for h in ("1D", "5D", "10D"):
-        he = compute_forward_horizon_metrics(snaps_df, outs_df, h)
+        he = compute_forward_horizon_metrics(canonical_snaps_df, canonical_outs_df, h)
         horizon_evals[h] = he
         if he.status == "WARNING":
             alerts.append(f"Forward {h} model accuracy/calibration warning (Acc={he.directional_accuracy_pct}%, Brier={he.brier_score}).")
@@ -1097,15 +1313,15 @@ def build_forward_validation_payload(
     if indices_df is None and st.indices_parquet.exists():
         indices_df = pd.read_parquet(st.indices_parquet)
 
-    paper_report = run_paper_research_portfolio(snaps_df, outs_df, indices_df=indices_df, equities_df=equities_df)
+    paper_report = run_paper_research_portfolio(canonical_snaps_df, canonical_outs_df, indices_df=indices_df, equities_df=equities_df)
     if persist and paper_report.recent_trades:
         st.upsert_paper_trades(paper_report.recent_trades)
 
-    recent_snaps = [ForwardPredictionSnapshot(**_nan_to_none(r)) for r in snaps_df.tail(25).to_dict(orient="records")] if not snaps_df.empty else []
-    recent_outs = [ForwardOutcomeRecord(**_nan_to_none(r)) for r in outs_df.tail(50).to_dict(orient="records")] if not outs_df.empty else []
+    recent_snaps = [ForwardPredictionSnapshot(**_nan_to_none(r)) for r in canonical_snaps_df.tail(25).to_dict(orient="records")] if not canonical_snaps_df.empty else []
+    recent_outs = [ForwardOutcomeRecord(**_nan_to_none(r)) for r in canonical_outs_df.tail(50).to_dict(orient="records")] if not canonical_outs_df.empty else []
 
-    matured_total = int((outs_df["status"] == "MATURED").sum()) if not outs_df.empty else 0
-    pending_total = int((outs_df["status"] == "PENDING").sum()) if not outs_df.empty else 0
+    matured_total = int((canonical_outs_df["status"] == "MATURED").sum()) if not canonical_outs_df.empty else 0
+    pending_total = int((canonical_outs_df["status"] == "PENDING").sum()) if not canonical_outs_df.empty else 0
 
     payload = ForwardValidationPayload(
         generated_at=now_ist.isoformat(),
@@ -1115,6 +1331,8 @@ def build_forward_validation_payload(
         quarantined_news_events=provenance.quarantined_events,
         last_news_collection_at=last_news_at,
         total_immutable_snapshots=len(snaps_df),
+        canonical_snapshots_count=len(canonical_snaps_df),
+        duplicate_snapshots_count=duplicate_cnt,
         matured_outcomes_total=matured_total,
         pending_outcomes_total=pending_total,
         horizon_evaluations=horizon_evals,

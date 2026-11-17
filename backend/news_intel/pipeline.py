@@ -190,6 +190,7 @@ def run_phase5_intelligence_pipeline(
             build_forward_validation_payload,
             evaluate_forward_outcomes,
             record_forward_prediction_snapshots,
+            resolve_nse_session,
             resolve_prediction_run_id,
         )
 
@@ -203,7 +204,7 @@ def run_phase5_intelligence_pipeline(
         out_json.write_text(payload.model_dump_json(indent=2), encoding="utf-8")
 
         record_forward_prediction_snapshots(
-            st, payload, quant_by_sym, prediction_run_id=resolve_prediction_run_id()
+            st, payload, quant_by_sym, prediction_run_id=resolve_prediction_run_id(), nse_session=resolve_nse_session(now_ist)
         )
         evaluate_forward_outcomes(st)
         build_forward_validation_payload(store=st, persist=True)

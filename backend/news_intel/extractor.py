@@ -44,9 +44,22 @@ _COMPANY_ALIASES: dict[str, tuple[str, ...]] = {
     "RELIANCE": ("reliance", "ril", "jio", "reliance industries", "reliance retail"),
     "TCS": ("tcs", "tata consultancy"),
     "TATAELXSI": ("tata elxsi", "tataelxsi"),
-    "ITC": ("itc", "itc ltd", "itc hotels"),
+    "ITC": ("itc ltd", "itc limited", "itc hotels", "itc"),
     "BIRLACABLE": ("birla cable", "birlacable"),
 }
+
+_FALSE_POSITIVE_ENTITY_PATTERNS: dict[str, tuple[str, ...]] = {
+    "ITC": (r"\bitc\s+holdings\b", r"\bmidwest\s+transmission\b"),
+    "RELIANCE": (r"\breliance\s+steel\b", r"\breliance\s+worldwide\b"),
+}
+
+_GENERIC_PRICE_HEADLINE_PATTERNS: tuple[str, ...] = (
+    r"\bshare\s+price\s+(?:today|live)\b",
+    r"\bstock\s+price\s+(?:today|live|nse|bse)\b",
+    r"\bstock\s+price,\s+news,\s+quote\b",
+    r"\blive\s+nse/bse\b",
+    r"\bothers\s+to\s+post\s+(?:q[1-4]|earnings)\b",
+)
 
 _REGULATORY_PATTERNS = (
     r"\bsebi\b", r"\brbi\b", r"\btrai\b", r"\bdot\b", r"\bcci\b", r"\bnclt\b",
@@ -217,6 +230,17 @@ def _matches_any(text_low: str, patterns: tuple[str, ...]) -> bool:
     return any(re.search(p, text_low) for p in patterns)
 
 
+def _has_third_party_exec_attribution(h_low: str, target_aliases: tuple[str, ...]) -> bool:
+    """Return True if an executive/promoter title (CEO/CFO/Chairman/MD) is immediately preceded by a non-target entity."""
+    matches = re.findall(r"\b([a-z0-9&]+)\s+(?:ceo|cfo|chairman|managing director)\b", h_low)
+    if not matches:
+        return False
+    alias_words = {w for a in target_aliases for w in a.split()} | {
+        "new", "former", "ex", "interim", "group", "its", "the", "a", "company", "joint", "deputy", "vice",
+    }
+    return any(m not in alias_words for m in matches)
+
+
 def resolve_category_and_entity(raw: RawNewsItem) -> tuple[str, str | None, str | None]:
     """Resolve true event_category & entity, preventing cross-category contamination.
 
@@ -225,6 +249,15 @@ def resolve_category_and_entity(raw: RawNewsItem) -> tuple[str, str | None, str 
     sym = raw.symbol.upper()
     h_low = raw.title.lower()
     rel = RELATIONSHIP_MAP.get(sym, {})
+
+    # 0. Reject generic stock-price / quote-page headlines & multi-company earnings roundups
+    if _matches_any(h_low, _GENERIC_PRICE_HEADLINE_PATTERNS):
+        return raw.event_category, raw.related_competitor_or_industry, "generic_price_headline"
+
+    # 0b. Reject known false-positive entity namesakes (e.g. "ITC Holdings" for ITC Ltd)
+    fp_pats = _FALSE_POSITIVE_ENTITY_PATTERNS.get(sym, ())
+    if fp_pats and _matches_any(h_low, fp_pats):
+        return raw.event_category, raw.related_competitor_or_industry, "irrelevant_entity_contamination"
 
     target_aliases = _COMPANY_ALIASES.get(sym, (sym.lower(),))
     mentions_target = any(re.search(rf"\b{re.escape(a)}\b", h_low) for a in target_aliases)
@@ -252,9 +285,13 @@ def resolve_category_and_entity(raw: RawNewsItem) -> tuple[str, str | None, str 
     if matched_competitor and not mentions_target:
         return "competitor", matched_competitor, None
 
-    # 3. Promoter & management developments (requires target or explicit promoter/board context)
-    if _matches_any(h_low, _PROMOTER_PATTERNS) and (mentions_target or raw.event_category == "promoter_management"):
-        return "promoter_management", raw.related_competitor_or_industry, None
+    # 3. Promoter & management developments:
+    # Must mention target company AND must not attribute the executive title to a third-party company (e.g. "Britannia CEO").
+    if _matches_any(h_low, _PROMOTER_PATTERNS):
+        if mentions_target and not _has_third_party_exec_attribution(h_low, target_aliases):
+            return "promoter_management", raw.related_competitor_or_industry, None
+        if raw.event_category == "promoter_management" and not mentions_target:
+            return raw.event_category, raw.related_competitor_or_industry, "unverified_promoter_association"
 
     # 4. Global macro (without target or competitor)
     if _matches_any(h_low, _GLOBAL_MACRO_PATTERNS) and not mentions_target and not matched_competitor:
@@ -268,7 +305,7 @@ def resolve_category_and_entity(raw: RawNewsItem) -> tuple[str, str | None, str 
     if mentions_target:
         return "company_news", rel.get("sector", raw.related_competitor_or_industry), None
 
-    if raw.event_category == "company_news":
+    if raw.event_category in ("company_news", "promoter_management"):
         return raw.event_category, raw.related_competitor_or_industry, "irrelevant_entity_contamination"
 
     return raw.event_category, raw.related_competitor_or_industry, None
