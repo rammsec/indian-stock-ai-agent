@@ -188,6 +188,7 @@ def run_phase5_intelligence_pipeline(
     if persist:
         from .forward_validation import (
             build_forward_validation_payload,
+            deduplicate_forward_predictions,
             evaluate_forward_outcomes,
             record_forward_prediction_snapshots,
             resolve_nse_session,
@@ -206,6 +207,7 @@ def run_phase5_intelligence_pipeline(
         record_forward_prediction_snapshots(
             st, payload, quant_by_sym, prediction_run_id=resolve_prediction_run_id(), nse_session=resolve_nse_session(now_ist)
         )
+        deduplicate_forward_predictions(st)
         evaluate_forward_outcomes(st)
         build_forward_validation_payload(store=st, persist=True)
 
