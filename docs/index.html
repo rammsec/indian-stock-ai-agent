@@ -87,6 +87,34 @@ html, body {
   flex-wrap: wrap;
 }
 
+.phase-freeze-banner {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0.45rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.phase-freeze-pill {
+  background: var(--signal-hold-bg);
+  color: var(--signal-hold);
+  border: 1px solid hsla(38, 94%, 56%, 0.35);
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.phase-freeze-text {
+  line-height: 1.4;
+}
+
 .brand-group {
   display: flex;
   align-items: center;
@@ -1125,6 +1153,14 @@ span.rr-pos { color: var(--signal-bull); } span.rr-neg { color: var(--signal-bea
       </button>
     </div>
   </header>
+
+  <!-- Global Model Freeze & Prospective Collection Notice (visible across all pages) -->
+  <div class="phase-freeze-banner" role="note" aria-label="Research Phase Notice">
+    <span class="phase-freeze-pill">MODEL FREEZE &amp; AUDIT PHASE</span>
+    <span class="phase-freeze-text">
+      Model development is frozen during prospective forward data collection &amp; audit (17 Nov – 8 Dec 2026 review). No live trading; outputs are for research validation only.
+    </span>
+  </div>
 
   <!-- Top Company Selector Bar + Direct "+ Add Stock (Up to 10)" Feature -->
   <section id="company-selector-bar" class="company-selector-bar" aria-label="My Watchlist Company Selector">
