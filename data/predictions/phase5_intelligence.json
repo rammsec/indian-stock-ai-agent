@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-17T10:01:44.107855+05:30",
+  "generated_at": "2026-11-17T11:06:10.886965+05:30",
   "model_version": "5.0.0-pilot",
-  "last_news_collection_at": "2026-11-17T10:01:44.116517+05:30",
+  "last_news_collection_at": "2026-11-17T11:06:10.894729+05:30",
   "last_quant_update_at": "2026-11-16T13:34:55.585602+00:00",
-  "latest_prediction_at": "2026-11-17T10:01:44.107855+05:30",
+  "latest_prediction_at": "2026-11-17T11:06:10.886965+05:30",
   "pilot_universe": [
     "RELIANCE",
     "TCS",
@@ -570,7 +570,7 @@
   },
   "consolidated_feed": [],
   "monitoring": {
-    "evaluated_at": "2026-11-17T10:01:44.117948+05:30",
+    "evaluated_at": "2026-11-17T11:06:10.897073+05:30",
     "total_logged_predictions": 60,
     "evaluated_outcomes_count": 0,
     "rolling_directional_accuracy_pct": null,

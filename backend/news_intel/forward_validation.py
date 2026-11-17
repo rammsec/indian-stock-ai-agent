@@ -33,19 +33,49 @@ MAX_POSITION_PCT = 0.10
 MAX_EXPOSURE_PCT = 0.80
 
 
+def make_prediction_id(
+    symbol: str,
+    observation_date: str,
+    prediction_timestamp: str | None = None,
+    run_id: str | None = None,
+) -> str:
+    """Generate a stable, unique prediction ID separating identity from observation date.
+
+    - Incorporates symbol, observation date, and run_id or prediction timestamp.
+    - Repeated execution of the same workflow run produces identical ID (idempotent).
+    - Different runs on the same date produce distinct IDs without colliding.
+    - Fully backward-compatible with legacy fwd_{obs_date}_{symbol} snapshots.
+    """
+    sym = symbol.upper().strip()
+    obs = str(observation_date).strip()
+    if run_id:
+        clean_run = "".join(c for c in str(run_id) if c.isalnum() or c in ("-", "_"))
+        return f"fwd_{sym}_{obs}_{clean_run}"
+    if prediction_timestamp:
+        clean_ts = "".join(c for c in str(prediction_timestamp)[:19] if c.isalnum())
+        return f"fwd_{sym}_{obs}_{clean_ts}"
+    return f"fwd_{sym}_{obs}"
+
+
 def record_forward_prediction_snapshots(
     store: DuckDBStore,
     payload: Phase5IntelligencePayload,
     quant_by_sym: dict[str, dict[str, Any]],
     model_version: str = "5.3.0-pilot",
     feature_set_version: str = "237+17",
+    prediction_run_id: str | None = None,
 ) -> list[ForwardPredictionSnapshot]:
     """Persist immutable daily prediction snapshots before outcomes are known."""
     snapshots: list[ForwardPredictionSnapshot] = []
     for sym, s_item in payload.stocks.items():
         q_pred = quant_by_sym.get(sym.upper()) or {}
         obs_date = str(q_pred.get("observation_date") or s_item.observation_date)
-        pred_id = f"fwd_{obs_date}_{sym.upper()}"
+        pred_id = make_prediction_id(
+            symbol=sym,
+            observation_date=obs_date,
+            prediction_timestamp=payload.latest_prediction_at,
+            run_id=prediction_run_id,
+        )
         h1 = s_item.horizon_outlooks.get("1D")
         h5 = s_item.horizon_outlooks.get("5D")
         h10 = s_item.horizon_outlooks.get("10D")
@@ -430,7 +460,209 @@ def _simulate_strategy_timeline(
     pending_entries_by_date: dict[str, list[dict[str, Any]]] = {}
 
     for sess_dt in all_sessions:
-        # 1. Settle any open positions whose scheduled exit_date <= sess_dt
+        # Phase 1: Market Open (09:15 IST) - Execute pending entries scheduled for sess_dt
+        inv_curr = sum(p["capital"] for p in open_positions.values())
+        unrl_curr = sum(p.get("unrealized_pnl", 0.0) for p in open_positions.values())
+        eq_curr = cash + inv_curr + unrl_curr
+
+        for sig in pending_entries_by_date.get(sess_dt, []):
+            sym = str(sig["symbol"]).upper()
+            pred_id = str(sig["prediction_id"])
+            obs_dt = str(sig["observation_date"])
+            rec = signal_getter(sig)
+
+            inv_curr = sum(p["capital"] for p in open_positions.values())
+            unrl_curr = sum(p.get("unrealized_pnl", 0.0) for p in open_positions.values())
+            eq_curr = cash + inv_curr + unrl_curr
+
+            if rec == "UNAVAILABLE":
+                rejected_cnt += 1
+                if not is_benchmark:
+                    events.append(
+                        PaperTradeRecord(
+                            strategy_horizon=horizon,  # type: ignore[arg-type]
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            signal_date=obs_dt,
+                            event_date=sess_dt,
+                            action="SIGNAL_REJECTED",
+                            reason="REJECTED_UNAVAILABLE_MODEL",
+                            cash_after_inr=round(cash, 2),
+                            invested_after_inr=round(inv_curr, 2),
+                            equity_after_inr=round(eq_curr, 2),
+                        )
+                    )
+                continue
+
+            if rec != "BUY":
+                rejected_cnt += 1
+                if not is_benchmark:
+                    events.append(
+                        PaperTradeRecord(
+                            strategy_horizon=horizon,  # type: ignore[arg-type]
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            signal_date=obs_dt,
+                            event_date=sess_dt,
+                            action="SIGNAL_REJECTED",
+                            reason=f"REJECTED_NON_BUY_SIGNAL_{rec}",
+                            cash_after_inr=round(cash, 2),
+                            invested_after_inr=round(inv_curr, 2),
+                            equity_after_inr=round(eq_curr, 2),
+                        )
+                    )
+                continue
+
+            if sym in open_positions:
+                rejected_cnt += 1
+                if not is_benchmark:
+                    events.append(
+                        PaperTradeRecord(
+                            strategy_horizon=horizon,  # type: ignore[arg-type]
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            signal_date=obs_dt,
+                            event_date=sess_dt,
+                            action="SIGNAL_REJECTED",
+                            reason="REJECTED_OVERLAPPING_POSITION",
+                            cash_after_inr=round(cash, 2),
+                            invested_after_inr=round(inv_curr, 2),
+                            equity_after_inr=round(eq_curr, 2),
+                        )
+                    )
+                continue
+
+            headroom = max(0.0, eq_curr * MAX_EXPOSURE_PCT - inv_curr)
+            if cash < 1000.0:
+                rejected_cnt += 1
+                if not is_benchmark:
+                    events.append(
+                        PaperTradeRecord(
+                            strategy_horizon=horizon,  # type: ignore[arg-type]
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            signal_date=obs_dt,
+                            event_date=sess_dt,
+                            action="SIGNAL_REJECTED",
+                            reason="REJECTED_INSUFFICIENT_CASH",
+                            cash_after_inr=round(cash, 2),
+                            invested_after_inr=round(inv_curr, 2),
+                            equity_after_inr=round(eq_curr, 2),
+                        )
+                    )
+                continue
+
+            if headroom < 1000.0:
+                rejected_cnt += 1
+                if not is_benchmark:
+                    events.append(
+                        PaperTradeRecord(
+                            strategy_horizon=horizon,  # type: ignore[arg-type]
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            signal_date=obs_dt,
+                            event_date=sess_dt,
+                            action="SIGNAL_REJECTED",
+                            reason="REJECTED_MAX_EXPOSURE_80PCT",
+                            cash_after_inr=round(cash, 2),
+                            invested_after_inr=round(inv_curr, 2),
+                            equity_after_inr=round(eq_curr, 2),
+                        )
+                    )
+                continue
+
+            alloc_inr = min(eq_curr * MAX_POSITION_PCT, headroom, cash)
+            if alloc_inr < 1000.0:
+                rejected_cnt += 1
+                if not is_benchmark:
+                    events.append(
+                        PaperTradeRecord(
+                            strategy_horizon=horizon,  # type: ignore[arg-type]
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            signal_date=obs_dt,
+                            event_date=sess_dt,
+                            action="SIGNAL_REJECTED",
+                            reason="REJECTED_MIN_LOT_CAPITAL",
+                            cash_after_inr=round(cash, 2),
+                            invested_after_inr=round(inv_curr, 2),
+                            equity_after_inr=round(eq_curr, 2),
+                        )
+                    )
+                continue
+
+            grp = sym_map.get(sym)
+            entry_idx = sig["_entry_idx"]
+            entry_open = grp.loc[entry_idx, "open"] if grp is not None and "open" in grp.columns else np.nan
+            if pd.isna(entry_open) or float(entry_open) <= 0:
+                rejected_cnt += 1
+                if not is_benchmark:
+                    events.append(
+                        PaperTradeRecord(
+                            strategy_horizon=horizon,  # type: ignore[arg-type]
+                            prediction_id=pred_id,
+                            symbol=sym,
+                            signal_date=obs_dt,
+                            event_date=sess_dt,
+                            action="SIGNAL_REJECTED",
+                            reason="REJECTED_INVALID_ENTRY_PRICE",
+                            cash_after_inr=round(cash, 2),
+                            invested_after_inr=round(inv_curr, 2),
+                            equity_after_inr=round(eq_curr, 2),
+                        )
+                    )
+                continue
+
+            entry_px = float(entry_open)
+            meta_raw = sig.get("metadata")
+            meta = json.loads(meta_raw) if isinstance(meta_raw, str) and meta_raw.startswith("{") else (meta_raw or {})
+            cost_pct = float(meta.get("roundtrip_delivery_cost_pct") or DEFAULT_CNC_ROUNDTRIP_COST_PCT)
+            exit_idx = sig["_base_idx"] + hold_n
+            exit_dt = str(grp.loc[exit_idx, "observation_date"]) if grp is not None and exit_idx < len(grp) else None
+
+            cash -= alloc_inr
+            entries_executed += 1
+            weight_pct = alloc_inr / max(eq_curr, 1.0) * 100.0
+            open_positions[sym] = {
+                "prediction_id": pred_id,
+                "symbol": sym,
+                "signal_date": obs_dt,
+                "entry_date": sess_dt,
+                "entry_idx": entry_idx,
+                "entry_price": entry_px,
+                "exit_idx": exit_idx,
+                "exit_date": exit_dt,
+                "capital": alloc_inr,
+                "weight_pct": weight_pct,
+                "cost_pct": cost_pct,
+                "unrealized_pnl": 0.0,
+            }
+
+            new_inv = sum(p["capital"] for p in open_positions.values())
+            peak_exposure_pct = max(peak_exposure_pct, (new_inv / max(eq_curr, 1.0)) * 100.0)
+
+            if not is_benchmark:
+                events.append(
+                    PaperTradeRecord(
+                        strategy_horizon=horizon,  # type: ignore[arg-type]
+                        prediction_id=pred_id,
+                        symbol=sym,
+                        signal_date=obs_dt,
+                        event_date=sess_dt,
+                        action="ENTRY_EXECUTED",
+                        reason="BUY_SIGNAL_EXECUTED_AT_NEXT_OPEN",
+                        entry_date=sess_dt,
+                        exit_date=exit_dt,
+                        entry_price=round(entry_px, 4),
+                        allocated_capital_inr=round(alloc_inr, 2),
+                        position_weight_pct=round(weight_pct, 2),
+                        cash_after_inr=round(cash, 2),
+                        invested_after_inr=round(new_inv, 2),
+                        equity_after_inr=round(eq_curr, 2),
+                    )
+                )
+
+        # Phase 2: Market Close (15:30 IST) - Settle any open positions whose scheduled exit_date <= sess_dt
         for sym in list(open_positions.keys()):
             pos = open_positions[sym]
             if pos["exit_date"] is not None and sess_dt >= pos["exit_date"]:
@@ -470,7 +702,7 @@ def _simulate_strategy_timeline(
                                     signal_date=pos["signal_date"],
                                     event_date=pos["exit_date"],
                                     action="POSITION_EXITED",
-                                    reason="SCHEDULED_HORIZON_EXIT",
+                                    reason=f"SCHEDULED_{horizon}_CLOSE_EXIT" if horizon == "1D" else "SCHEDULED_HORIZON_EXIT",
                                     entry_date=pos["entry_date"],
                                     exit_date=pos["exit_date"],
                                     entry_price=round(pos["entry_price"], 4),
@@ -489,219 +721,7 @@ def _simulate_strategy_timeline(
                                 )
                             )
 
-        # 2. Execute scheduled entries at today's open (t+1 open for yesterday's signals)
-        for sig in pending_entries_by_date.get(sess_dt, []):
-            sym = str(sig["symbol"]).upper()
-            pred_id = str(sig["prediction_id"])
-            obs_dt = str(sig["observation_date"])
-            rec = signal_getter(sig)
-
-            inv_now = sum(p["capital"] for p in open_positions.values())
-            unrl_now = sum(p.get("unrealized_pnl", 0.0) for p in open_positions.values())
-            eq_now = cash + inv_now + unrl_now
-
-            if rec == "UNAVAILABLE":
-                rejected_cnt += 1
-                if not is_benchmark:
-                    events.append(
-                        PaperTradeRecord(
-                            strategy_horizon=horizon,  # type: ignore[arg-type]
-                            prediction_id=pred_id,
-                            symbol=sym,
-                            signal_date=obs_dt,
-                            event_date=sess_dt,
-                            action="SIGNAL_REJECTED",
-                            reason="REJECTED_UNAVAILABLE_MODEL",
-                            cash_after_inr=round(cash, 2),
-                            invested_after_inr=round(inv_now, 2),
-                            equity_after_inr=round(eq_now, 2),
-                        )
-                    )
-                continue
-
-            if rec != "BUY":
-                rejected_cnt += 1
-                if not is_benchmark:
-                    events.append(
-                        PaperTradeRecord(
-                            strategy_horizon=horizon,  # type: ignore[arg-type]
-                            prediction_id=pred_id,
-                            symbol=sym,
-                            signal_date=obs_dt,
-                            event_date=sess_dt,
-                            action="SIGNAL_REJECTED",
-                            reason=f"REJECTED_NON_BUY_SIGNAL_{rec}",
-                            cash_after_inr=round(cash, 2),
-                            invested_after_inr=round(inv_now, 2),
-                            equity_after_inr=round(eq_now, 2),
-                        )
-                    )
-                continue
-
-            if sym in open_positions:
-                rejected_cnt += 1
-                if not is_benchmark:
-                    events.append(
-                        PaperTradeRecord(
-                            strategy_horizon=horizon,  # type: ignore[arg-type]
-                            prediction_id=pred_id,
-                            symbol=sym,
-                            signal_date=obs_dt,
-                            event_date=sess_dt,
-                            action="SIGNAL_REJECTED",
-                            reason="REJECTED_OVERLAPPING_POSITION",
-                            cash_after_inr=round(cash, 2),
-                            invested_after_inr=round(inv_now, 2),
-                            equity_after_inr=round(eq_now, 2),
-                        )
-                    )
-                continue
-
-            alloc_inr = min(eq_now * MAX_POSITION_PCT, max(0.0, eq_now * MAX_EXPOSURE_PCT - inv_now), cash)
-            if alloc_inr < 1000.0 or (inv_now + alloc_inr) / max(eq_now, 1.0) > MAX_EXPOSURE_PCT + 1e-6:
-                rejected_cnt += 1
-                if not is_benchmark:
-                    events.append(
-                        PaperTradeRecord(
-                            strategy_horizon=horizon,  # type: ignore[arg-type]
-                            prediction_id=pred_id,
-                            symbol=sym,
-                            signal_date=obs_dt,
-                            event_date=sess_dt,
-                            action="SIGNAL_REJECTED",
-                            reason="REJECTED_MAX_EXPOSURE_80PCT",
-                            cash_after_inr=round(cash, 2),
-                            invested_after_inr=round(inv_now, 2),
-                            equity_after_inr=round(eq_now, 2),
-                        )
-                    )
-                continue
-
-            grp = sym_map.get(sym)
-            entry_idx = sig["_entry_idx"]
-            entry_open = grp.loc[entry_idx, "open"] if grp is not None and "open" in grp.columns else np.nan
-            if pd.isna(entry_open) or float(entry_open) <= 0:
-                rejected_cnt += 1
-                if not is_benchmark:
-                    events.append(
-                        PaperTradeRecord(
-                            strategy_horizon=horizon,  # type: ignore[arg-type]
-                            prediction_id=pred_id,
-                            symbol=sym,
-                            signal_date=obs_dt,
-                            event_date=sess_dt,
-                            action="SIGNAL_REJECTED",
-                            reason="REJECTED_INVALID_ENTRY_PRICE",
-                            cash_after_inr=round(cash, 2),
-                            invested_after_inr=round(inv_now, 2),
-                            equity_after_inr=round(eq_now, 2),
-                        )
-                    )
-                continue
-
-            entry_px = float(entry_open)
-            meta_raw = sig.get("metadata")
-            meta = json.loads(meta_raw) if isinstance(meta_raw, str) and meta_raw.startswith("{") else (meta_raw or {})
-            cost_pct = float(meta.get("roundtrip_delivery_cost_pct") or DEFAULT_CNC_ROUNDTRIP_COST_PCT)
-            exit_idx = sig["_base_idx"] + hold_n
-            exit_dt = str(grp.loc[exit_idx, "observation_date"]) if grp is not None and exit_idx < len(grp) else None
-
-            cash -= alloc_inr
-            entries_executed += 1
-            weight_pct = alloc_inr / max(eq_now, 1.0) * 100.0
-            open_positions[sym] = {
-                "prediction_id": pred_id,
-                "symbol": sym,
-                "signal_date": obs_dt,
-                "entry_date": sess_dt,
-                "entry_idx": entry_idx,
-                "entry_price": entry_px,
-                "exit_idx": exit_idx,
-                "exit_date": exit_dt,
-                "capital": alloc_inr,
-                "weight_pct": weight_pct,
-                "cost_pct": cost_pct,
-                "unrealized_pnl": 0.0,
-            }
-
-            new_inv = sum(p["capital"] for p in open_positions.values())
-            peak_exposure_pct = max(peak_exposure_pct, (new_inv / max(eq_now, 1.0)) * 100.0)
-
-            if not is_benchmark:
-                events.append(
-                    PaperTradeRecord(
-                        strategy_horizon=horizon,  # type: ignore[arg-type]
-                        prediction_id=pred_id,
-                        symbol=sym,
-                        signal_date=obs_dt,
-                        event_date=sess_dt,
-                        action="ENTRY_EXECUTED",
-                        reason="BUY_SIGNAL_EXECUTED_AT_NEXT_OPEN",
-                        entry_date=sess_dt,
-                        exit_date=exit_dt,
-                        entry_price=round(entry_px, 4),
-                        allocated_capital_inr=round(alloc_inr, 2),
-                        position_weight_pct=round(weight_pct, 2),
-                        cash_after_inr=round(cash, 2),
-                        invested_after_inr=round(new_inv, 2),
-                        equity_after_inr=round(eq_now, 2),
-                    )
-                )
-
-            # Same-session exit for 1D if close[t+1] is already available
-            if exit_dt is not None and exit_dt == sess_dt and grp is not None and exit_idx < len(grp):
-                exit_px_raw = grp.loc[exit_idx, "close"]
-                if pd.notna(exit_px_raw) and float(exit_px_raw) > 0:
-                    adj_factor, _ = _compute_ca_adj_factor(grp, entry_idx, exit_idx)
-                    g_ret = ((float(exit_px_raw) * adj_factor) / entry_px - 1.0) * 100.0
-                    n_ret = g_ret - cost_pct
-                    g_pnl = alloc_inr * (g_ret / 100.0)
-                    c_inr = alloc_inr * (cost_pct / 100.0)
-                    n_pnl = alloc_inr * (n_ret / 100.0)
-
-                    cash += alloc_inr + n_pnl
-                    realized_pnl += n_pnl
-                    gross_pnl_total += g_pnl
-                    cost_total += c_inr
-                    matured_cnt += 1
-                    if n_pnl > 0:
-                        win_cnt += 1
-                    del open_positions[sym]
-
-                    inv_after = sum(p["capital"] for p in open_positions.values())
-                    eq_after = cash + inv_after + sum(p.get("unrealized_pnl", 0.0) for p in open_positions.values())
-                    peak_equity = max(peak_equity, eq_after)
-                    max_dd = min(max_dd, ((eq_after / max(peak_equity, 1.0)) - 1.0) * 100.0)
-
-                    if not is_benchmark:
-                        events.append(
-                            PaperTradeRecord(
-                                strategy_horizon=horizon,  # type: ignore[arg-type]
-                                prediction_id=pred_id,
-                                symbol=sym,
-                                signal_date=obs_dt,
-                                event_date=sess_dt,
-                                action="POSITION_EXITED",
-                                reason="SCHEDULED_1D_CLOSE_EXIT",
-                                entry_date=sess_dt,
-                                exit_date=sess_dt,
-                                entry_price=round(entry_px, 4),
-                                exit_price=round(float(exit_px_raw), 4),
-                                allocated_capital_inr=round(alloc_inr, 2),
-                                position_weight_pct=round(weight_pct, 2),
-                                gross_return_pct=round(g_ret, 4),
-                                transaction_cost_inr=round(c_inr, 2),
-                                net_return_pct=round(n_ret, 4),
-                                net_pnl_inr=round(n_pnl, 2),
-                                realized_pnl_inr=round(n_pnl, 2),
-                                cash_after_inr=round(cash, 2),
-                                invested_after_inr=round(inv_after, 2),
-                                equity_after_inr=round(eq_after, 2),
-                                holding_sessions=1,
-                            )
-                        )
-
-        # 3. Mark remaining open positions to market at sess_dt close
+        # Phase 3: Mark remaining open positions to market at sess_dt close
         for sym, pos in open_positions.items():
             grp = sym_map.get(sym)
             if grp is not None:
@@ -714,6 +734,7 @@ def _simulate_strategy_timeline(
                         unrl_ret = ((float(c_px) * adj_f) / pos["entry_price"] - 1.0) * 100.0
                         pos["unrealized_pnl"] = pos["capital"] * (unrl_ret / 100.0)
 
+        # Phase 4: EOD Accounting
         inv_eod = sum(p["capital"] for p in open_positions.values())
         unrl_eod = sum(p.get("unrealized_pnl", 0.0) for p in open_positions.values())
         eq_eod = cash + inv_eod + unrl_eod
@@ -721,7 +742,7 @@ def _simulate_strategy_timeline(
         max_dd = min(max_dd, ((eq_eod / max(peak_equity, 1.0)) - 1.0) * 100.0)
         peak_exposure_pct = max(peak_exposure_pct, (inv_eod / max(eq_eod, 1.0)) * 100.0)
 
-        # 4. Record SIGNAL_RECEIVED on sess_dt and schedule next eligible NSE open (t+1)
+        # Phase 5: Post-Close - Record SIGNAL_RECEIVED and schedule next NSE open (t+1)
         for sig in signals_by_obs.get(sess_dt, []):
             signals_received += 1
             sym = str(sig["symbol"]).upper()
@@ -822,9 +843,9 @@ def run_paper_research_portfolio(
         return PaperPortfolioReport(
             strategies=strategies,
             benchmarks={
-                "naive_momentum": {"net_return_pct": None, "max_drawdown_pct": None, "status": "UNAVAILABLE"},
-                "nifty_50_buy_hold": {"net_return_pct": None, "max_drawdown_pct": None, "status": "UNAVAILABLE"},
-                "cash_no_trade": {"net_return_pct": 0.0, "max_drawdown_pct": 0.0, "status": "ACTIVE"},
+                "naive_momentum": {"net_return_pct": None, "max_drawdown_pct": None, "ending_capital_inr": None, "status": "UNAVAILABLE"},
+                "nifty_50_buy_hold": {"net_return_pct": None, "max_drawdown_pct": None, "ending_capital_inr": None, "status": "UNAVAILABLE"},
+                "cash_no_trade": {"net_return_pct": 0.0, "max_drawdown_pct": 0.0, "ending_capital_inr": STARTING_CAPITAL_INR, "status": "ACTIVE"},
             },
             recent_trades=[],
         )

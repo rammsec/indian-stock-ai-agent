@@ -13,12 +13,18 @@ DuckDB SQL views for zero-cost analytical queries.
 
 from __future__ import annotations
 
+import json
+import os
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
 import duckdb
+import numpy as np
 import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 from ..config import (
     BACKTESTS_DATA_DIR,
@@ -35,6 +41,79 @@ from ..models import (
     IndexDailyBar,
     MarketRegimeSnapshot,
 )
+
+
+def normalize_string_list(val: Any) -> list[str]:
+    """Normalize mixed nested values (None, list, ndarray, dict, JSON str, scalar) into a clean list of strings."""
+    if val is None:
+        return []
+    if isinstance(val, (float, np.floating)) and np.isnan(val):
+        return []
+    if isinstance(val, (list, tuple, set, np.ndarray)):
+        items = val.tolist() if isinstance(val, np.ndarray) else list(val)
+        out: list[str] = []
+        for x in items:
+            if x is None:
+                continue
+            if isinstance(x, (float, np.floating)) and np.isnan(x):
+                continue
+            if isinstance(x, dict):
+                if x:
+                    out.append(json.dumps(x, sort_keys=True))
+            else:
+                s = str(x).strip()
+                if s and s.lower() != "none" and s != "nan":
+                    out.append(s)
+        return out
+    if isinstance(val, dict):
+        return [json.dumps(val, sort_keys=True)] if val else []
+    if isinstance(val, str):
+        s = val.strip()
+        if not s:
+            return []
+        if (s.startswith("[") and s.endswith("]")) or (s.startswith("{") and s.endswith("}")):
+            try:
+                parsed = json.loads(s)
+                return normalize_string_list(parsed)
+            except Exception:
+                return [s]
+        return [s]
+    s_val = str(val).strip()
+    return [s_val] if s_val and s_val.lower() != "none" and s_val != "nan" else []
+
+
+STRUCTURED_EVENTS_SCHEMA = pa.schema([
+    ("event_id", pa.string()),
+    ("company_name", pa.string()),
+    ("ticker", pa.string()),
+    ("related_competitor_or_industry", pa.string()),
+    ("event_category", pa.string()),
+    ("event_description", pa.string()),
+    ("original_source", pa.string()),
+    ("source_url", pa.string()),
+    ("publication_timestamp", pa.string()),
+    ("event_timestamp", pa.string()),
+    ("effective_trading_date", pa.string()),
+    ("sentiment", pa.string()),
+    ("impact_magnitude", pa.string()),
+    ("classification_confidence", pa.float64()),
+    ("expected_impact_duration", pa.string()),
+    ("relevant_horizon", pa.string()),
+    ("novelty_score", pa.float64()),
+    ("source_credibility", pa.float64()),
+    ("related_companies", pa.list_(pa.string())),
+    ("related_sectors", pa.list_(pa.string())),
+    ("is_duplicate_report", pa.bool_()),
+    ("canonical_event_id", pa.string()),
+    ("extraction_method", pa.string()),
+    ("facts_summary", pa.string()),
+    ("interpretation_summary", pa.string()),
+    ("promoter_verification_status", pa.string()),
+    ("classification_evidence", pa.list_(pa.string())),
+    ("promoter_classification_confidence", pa.float64()),
+    ("collection_timestamp", pa.string()),
+    ("validation_status", pa.string()),
+])
 
 
 def ensure_storage_directories() -> dict[str, Path]:
@@ -118,7 +197,16 @@ class DuckDBStore:
 
         df_combined = df_combined.drop_duplicates(subset=dedup_cols, keep=keep)
         df_combined = df_combined.sort_values(sort_cols).reset_index(drop=True)
-        df_combined.to_parquet(parquet_path, index=False, compression="zstd")
+
+        parquet_path.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = parquet_path.with_name(f".{parquet_path.name}.{uuid.uuid4().hex}.tmp")
+        try:
+            df_combined.to_parquet(tmp_path, index=False, compression="zstd")
+            os.replace(tmp_path, parquet_path)
+        except Exception:
+            if tmp_path.exists():
+                tmp_path.unlink()
+            raise
         return len(df_combined)
 
     def upsert_equity_bars(self, bars: list[EquityDailyBar]) -> int:
@@ -199,7 +287,15 @@ class DuckDBStore:
 
         df_combined = df_combined.drop_duplicates(subset=["symbol", "observation_date"], keep="last")
         df_combined = df_combined.sort_values(["symbol", "observation_date"]).reset_index(drop=True)
-        df_combined.to_parquet(self.features_parquet, index=False, compression="zstd")
+        self.features_parquet.parent.mkdir(parents=True, exist_ok=True)
+        tmp_path = self.features_parquet.with_name(f".{self.features_parquet.name}.{uuid.uuid4().hex}.tmp")
+        try:
+            df_combined.to_parquet(tmp_path, index=False, compression="zstd")
+            os.replace(tmp_path, self.features_parquet)
+        except Exception:
+            if tmp_path.exists():
+                tmp_path.unlink()
+            raise
         return len(df_combined)
 
     def upsert_predictions(self, records: list[Any]) -> int:
@@ -288,7 +384,15 @@ class DuckDBStore:
                 updated_count += 1
 
         if updated_count > 0:
-            pred_df.to_parquet(self.predictions_parquet, index=False, compression="zstd")
+            self.predictions_dir.mkdir(parents=True, exist_ok=True)
+            tmp_path = self.predictions_parquet.with_name(f".{self.predictions_parquet.name}.{uuid.uuid4().hex}.tmp")
+            try:
+                pred_df.to_parquet(tmp_path, index=False, compression="zstd")
+                os.replace(tmp_path, self.predictions_parquet)
+            except Exception:
+                if tmp_path.exists():
+                    tmp_path.unlink()
+                raise
         return updated_count
 
     def upsert_backtest_predictions(self, df: pd.DataFrame) -> int:
@@ -299,7 +403,15 @@ class DuckDBStore:
         if "prob_bin" in out.columns:
             out = out.drop(columns=["prob_bin"])
         out = out.sort_values(["model_name", "symbol", "observation_date"]).reset_index(drop=True)
-        out.to_parquet(self.backtest_predictions_parquet, index=False, compression="zstd")
+        self.backtests_dir.mkdir(parents=True, exist_ok=True)
+        tmp_path = self.backtest_predictions_parquet.with_name(f".{self.backtest_predictions_parquet.name}.{uuid.uuid4().hex}.tmp")
+        try:
+            out.to_parquet(tmp_path, index=False, compression="zstd")
+            os.replace(tmp_path, self.backtest_predictions_parquet)
+        except Exception:
+            if tmp_path.exists():
+                tmp_path.unlink()
+            raise
         return len(out)
 
     def upsert_corporate_intelligence(self, summaries: list[Any]) -> int:
@@ -331,23 +443,86 @@ class DuckDBStore:
         )
 
     def upsert_structured_events(self, events: list[Any]) -> int:
-        """Append immutable structured news events into `structured_events.parquet`."""
-        import json
+        """Append immutable structured news events into `structured_events.parquet` using atomic write."""
+        if not events and not self.events_parquet.exists():
+            return 0
 
         rows: list[dict[str, Any]] = []
         for e in events:
             d = e.model_dump() if hasattr(e, "model_dump") else dict(e)
-            d["related_companies"] = json.dumps(d.get("related_companies", []))
-            d["related_sectors"] = json.dumps(d.get("related_sectors", []))
-            d["classification_evidence"] = json.dumps(d.get("classification_evidence", []))
+            d["related_companies"] = normalize_string_list(d.get("related_companies", []))
+            d["related_sectors"] = normalize_string_list(d.get("related_sectors", []))
+            d["classification_evidence"] = normalize_string_list(d.get("classification_evidence", []))
             rows.append(d)
-        return self._upsert_parquet(
-            self.events_parquet,
-            rows,
-            dedup_cols=["event_id", "ticker"],
-            sort_cols=["publication_timestamp", "ticker", "event_id"],
-            keep="first",
-        )
+
+        df_new = pd.DataFrame(rows) if rows else pd.DataFrame()
+
+        if self.events_parquet.exists():
+            try:
+                df_existing = pd.read_parquet(self.events_parquet)
+                for col in ("related_companies", "related_sectors", "classification_evidence"):
+                    if col in df_existing.columns:
+                        df_existing[col] = df_existing[col].apply(normalize_string_list)
+                if not df_new.empty:
+                    df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+                else:
+                    df_combined = df_existing
+            except Exception:
+                df_combined = df_new
+        else:
+            df_combined = df_new
+
+        if df_combined.empty:
+            return 0
+
+        # Fill missing schema columns for legacy compatibility
+        for f in STRUCTURED_EVENTS_SCHEMA:
+            col_name = f.name
+            if col_name not in df_combined.columns:
+                if pa.types.is_list(f.type):
+                    df_combined[col_name] = [[] for _ in range(len(df_combined))]
+                elif pa.types.is_boolean(f.type):
+                    df_combined[col_name] = False
+                elif pa.types.is_floating(f.type):
+                    df_combined[col_name] = None
+                else:
+                    df_combined[col_name] = None
+
+        # Re-ensure list columns are clean lists of strings
+        for col in ("related_companies", "related_sectors", "classification_evidence"):
+            df_combined[col] = df_combined[col].apply(normalize_string_list)
+
+        # Ensure float columns are proper floats/None
+        if "promoter_classification_confidence" in df_combined.columns:
+            df_combined["promoter_classification_confidence"] = pd.to_numeric(
+                df_combined["promoter_classification_confidence"], errors="coerce"
+            )
+        if "classification_confidence" in df_combined.columns:
+            df_combined["classification_confidence"] = pd.to_numeric(
+                df_combined["classification_confidence"], errors="coerce"
+            ).fillna(0.5)
+
+        # Deduplicate and sort
+        dedup_cols = ["event_id", "ticker"]
+        sort_cols = ["publication_timestamp", "ticker", "event_id"]
+        df_combined = df_combined.drop_duplicates(subset=dedup_cols, keep="first")
+        df_combined = df_combined.sort_values(sort_cols).reset_index(drop=True)
+
+        # Convert to Arrow Table with explicit schema
+        table = pa.Table.from_pandas(df_combined, schema=STRUCTURED_EVENTS_SCHEMA, preserve_index=False)
+
+        # Atomic write
+        self.predictions_dir.mkdir(parents=True, exist_ok=True)
+        tmp_path = self.events_parquet.with_name(f".{self.events_parquet.name}.{uuid.uuid4().hex}.tmp")
+        try:
+            pq.write_table(table, tmp_path, compression="zstd")
+            os.replace(tmp_path, self.events_parquet)
+        except Exception:
+            if tmp_path.exists():
+                tmp_path.unlink()
+            raise
+
+        return len(df_combined)
 
     def upsert_quarantined_events(self, records: list[Any]) -> int:
         """Append quarantined news records into `quarantined_events.parquet`."""
