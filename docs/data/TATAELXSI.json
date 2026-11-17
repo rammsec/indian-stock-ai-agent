@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-16 04:08:52 IST",
+  "fetched_at": "2026-11-18 02:59:12 IST",
   "overview": {
     "symbol": "TATAELXSI",
     "name": "Tata Elxsi Ltd",
@@ -9,13 +9,13 @@
     "sector": "Information Technology",
     "industry": "Computers - Software & Consulting",
     "about": "Tata Elxsi is amongst the world\u2019s leading providers of design and technology services across industries including Automotive, Media, Communications and Healthcare. Tata Elxsi provides integrated services from research and strategy, to electronics and mechanical design, software development, validation and deployment, and is supported by a network of design studios, global development centers and offices worldwide. [1]",
-    "market_cap_cr": 23772.0,
-    "current_price": 3815.0,
+    "market_cap_cr": 23120.0,
+    "current_price": 3711.0,
     "high_52w": 5950.0,
     "low_52w": 2996.0,
-    "stock_pe": 233.0,
+    "stock_pe": 227.0,
     "book_value": 45.5,
-    "dividend_yield_pct": 1.98,
+    "dividend_yield_pct": 2.02,
     "roce_pct": 60.0,
     "roe_pct": 39.3,
     "face_value": 10.0,
@@ -28,7 +28,7 @@
       "Company has been maintaining a healthy dividend payout of 48.5%"
     ],
     "cons": [
-      "Stock is trading at 84.3 times its book value"
+      "Stock is trading at 81.6 times its book value"
     ]
   },
   "last_5_annual_reports": [
@@ -214,7 +214,7 @@
     "net_cash_position_cr": 133.0,
     "debt_to_equity": 0.0,
     "cash_to_debt_ratio": 99.0,
-    "cash_pct_of_mcap": 0.56,
+    "cash_pct_of_mcap": 0.58,
     "latest_ocf_cr": 102.0,
     "latest_fcf_cr": 73.0,
     "cumulative_5y_ocf_cr": 555.0,
@@ -864,65 +864,45 @@
     ]
   },
   "technicals": {
-    "current_price": 3835.0,
-    "prev_close": 3862.0,
-    "day_change_pct": -0.7,
-    "day_high": 3895.0,
-    "day_low": 3819.3,
+    "current_price": 3710.7,
+    "prev_close": 3750.0,
+    "day_change_pct": -1.05,
+    "day_high": 3770.0,
+    "day_low": 3695.1,
     "high_52w": 5950.0,
     "low_52w": 2996.0,
-    "return_5d_pct": -0.52,
-    "return_1m_pct": 5.85,
-    "return_6m_pct": -4.73,
-    "return_1y_pct": -27.68,
-    "rsi_14": 59.78,
-    "macd_line": 101.93,
-    "macd_signal": 108.35,
-    "macd_hist": -6.42,
-    "ema_20": 3757.57,
-    "dma_50": 3644.43,
-    "dma_200": 4060.39,
-    "bb_upper": 3938.26,
-    "bb_middle": 3809.47,
-    "bb_lower": 3680.68,
-    "atr_14": 105.31,
-    "atr_pct": 2.75,
-    "volume_latest": 146055.0,
-    "volume_20d_avg": 325918.25,
-    "volume_Surge_ratio": 0.45,
-    "annualized_volatility_pct": 36.67,
-    "pivot_point": 3849.77,
-    "support_1": 3804.54,
-    "support_2": 3774.07,
-    "resistance_1": 3880.24,
-    "resistance_2": 3925.47,
+    "return_5d_pct": -4.61,
+    "return_1m_pct": -3.62,
+    "return_6m_pct": -10.68,
+    "return_1y_pct": -29.68,
+    "rsi_14": 49.76,
+    "macd_line": 74.48,
+    "macd_signal": 98.46,
+    "macd_hist": -23.97,
+    "ema_20": 3752.45,
+    "dma_50": 3651.0,
+    "dma_200": 4053.85,
+    "bb_upper": 3936.95,
+    "bb_middle": 3800.5,
+    "bb_lower": 3664.05,
+    "atr_14": 106.43,
+    "atr_pct": 2.87,
+    "volume_latest": 115191.0,
+    "volume_20d_avg": 246062.05,
+    "volume_Surge_ratio": 0.47,
+    "annualized_volatility_pct": 37.95,
+    "pivot_point": 3725.27,
+    "support_1": 3680.54,
+    "support_2": 3650.37,
+    "resistance_1": 3755.44,
+    "resistance_2": 3800.17,
     "trend_regime": "RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA)",
     "technical_signals": [
       "Short-term momentum recovering above 50-DMA toward 200-DMA overhead resistance",
-      "RSI(14) at 59.78 \u2014 Healthy bullish momentum zone without overextension",
-      "MACD below signal line (Histogram -6.42)"
+      "RSI(14) at 49.76 \u2014 Neutral momentum band",
+      "MACD below signal line (Histogram -23.97)"
     ],
     "price_series": [
-      {
-        "date": "2026-07-08",
-        "close": 3623.6,
-        "open": 3707.0,
-        "high": 3707.0,
-        "low": 3612.9,
-        "dma50": 4092.19,
-        "dma200": 4751.44,
-        "volume": 239795.0
-      },
-      {
-        "date": "2026-07-09",
-        "close": 3621.4,
-        "open": 3629.4,
-        "high": 3642.0,
-        "low": 3588.7,
-        "dma50": 4073.73,
-        "dma200": 4740.2,
-        "volume": 180111.0
-      },
       {
         "date": "2026-07-10",
         "close": 3690.3,
@@ -940,7 +920,7 @@
         "high": 3840.0,
         "low": 3672.8,
         "dma50": 4049.48,
-        "dma200": 4720.74,
+        "dma200": 4720.73,
         "volume": 751754.0
       },
       {
@@ -960,7 +940,7 @@
         "high": 3549.8,
         "low": 3469.7,
         "dma50": 4015.46,
-        "dma200": 4698.71,
+        "dma200": 4698.7,
         "volume": 1921465.0
       },
       {
@@ -970,7 +950,7 @@
         "high": 3594.0,
         "low": 3510.3,
         "dma50": 3996.73,
-        "dma200": 4687.16,
+        "dma200": 4687.15,
         "volume": 662375.0
       },
       {
@@ -980,7 +960,7 @@
         "high": 3579.5,
         "low": 3481.1,
         "dma50": 3977.37,
-        "dma200": 4675.38,
+        "dma200": 4675.37,
         "volume": 475506.0
       },
       {
@@ -990,7 +970,7 @@
         "high": 3565.8,
         "low": 3486.0,
         "dma50": 3960.09,
-        "dma200": 4664.05,
+        "dma200": 4664.04,
         "volume": 355034.0
       },
       {
@@ -1010,7 +990,7 @@
         "high": 3456.9,
         "low": 3400.0,
         "dma50": 3919.6,
-        "dma200": 4639.69,
+        "dma200": 4639.68,
         "volume": 418891.0
       },
       {
@@ -1040,7 +1020,7 @@
         "high": 3583.0,
         "low": 3520.7,
         "dma50": 3871.65,
-        "dma200": 4605.83,
+        "dma200": 4605.82,
         "volume": 554899.0
       },
       {
@@ -1050,7 +1030,7 @@
         "high": 3629.9,
         "low": 3560.6,
         "dma50": 3860.28,
-        "dma200": 4595.64,
+        "dma200": 4595.63,
         "volume": 716475.0
       },
       {
@@ -1080,7 +1060,7 @@
         "high": 3686.9,
         "low": 3566.5,
         "dma50": 3838.56,
-        "dma200": 4568.23,
+        "dma200": 4568.22,
         "volume": 299962.0
       },
       {
@@ -1150,7 +1130,7 @@
         "high": 3837.6,
         "low": 3775.1,
         "dma50": 3820.72,
-        "dma200": 4513.88,
+        "dma200": 4513.87,
         "volume": 152413.0
       },
       {
@@ -1160,7 +1140,7 @@
         "high": 3799.9,
         "low": 3685.0,
         "dma50": 3816.46,
-        "dma200": 4505.9,
+        "dma200": 4505.89,
         "volume": 208401.0
       },
       {
@@ -1170,7 +1150,7 @@
         "high": 3781.2,
         "low": 3702.0,
         "dma50": 3814.95,
-        "dma200": 4498.66,
+        "dma200": 4498.65,
         "volume": 158980.0
       },
       {
@@ -1250,7 +1230,7 @@
         "high": 3701.3,
         "low": 3612.2,
         "dma50": 3781.47,
-        "dma200": 4436.84,
+        "dma200": 4436.83,
         "volume": 177724.0
       },
       {
@@ -1260,7 +1240,7 @@
         "high": 3694.7,
         "low": 3628.0,
         "dma50": 3776.31,
-        "dma200": 4429.01,
+        "dma200": 4429.0,
         "volume": 119299.0
       },
       {
@@ -1270,7 +1250,7 @@
         "high": 3664.6,
         "low": 3622.6,
         "dma50": 3770.7,
-        "dma200": 4421.09,
+        "dma200": 4421.08,
         "volume": 98470.0
       },
       {
@@ -1300,7 +1280,7 @@
         "high": 3671.9,
         "low": 3567.1,
         "dma50": 3755.16,
-        "dma200": 4397.82,
+        "dma200": 4397.81,
         "volume": 187840.0
       },
       {
@@ -1310,7 +1290,7 @@
         "high": 3627.1,
         "low": 3535.0,
         "dma50": 3749.42,
-        "dma200": 4389.97,
+        "dma200": 4389.96,
         "volume": 192123.0
       },
       {
@@ -1320,7 +1300,7 @@
         "high": 3637.1,
         "low": 3580.0,
         "dma50": 3742.78,
-        "dma200": 4381.91,
+        "dma200": 4381.9,
         "volume": 92177.0
       },
       {
@@ -1340,7 +1320,7 @@
         "high": 3547.9,
         "low": 3475.0,
         "dma50": 3726.18,
-        "dma200": 4364.99,
+        "dma200": 4364.98,
         "volume": 176570.0
       },
       {
@@ -1360,7 +1340,7 @@
         "high": 3459.9,
         "low": 3380.0,
         "dma50": 3703.9,
-        "dma200": 4346.62,
+        "dma200": 4346.61,
         "volume": 257426.0
       },
       {
@@ -1370,7 +1350,7 @@
         "high": 3456.9,
         "low": 3370.0,
         "dma50": 3692.33,
-        "dma200": 4337.29,
+        "dma200": 4337.28,
         "volume": 226743.0
       },
       {
@@ -1390,7 +1370,7 @@
         "high": 3532.1,
         "low": 3418.1,
         "dma50": 3670.78,
-        "dma200": 4318.96,
+        "dma200": 4318.95,
         "volume": 472747.0
       },
       {
@@ -1450,7 +1430,7 @@
         "high": 3253.0,
         "low": 3210.0,
         "dma50": 3588.64,
-        "dma200": 4258.98,
+        "dma200": 4258.97,
         "volume": 174920.0
       },
       {
@@ -1510,7 +1490,7 @@
         "high": 3164.4,
         "low": 3046.2,
         "dma50": 3496.47,
-        "dma200": 4194.9,
+        "dma200": 4194.89,
         "volume": 365707.0
       },
       {
@@ -1550,7 +1530,7 @@
         "high": 3141.4,
         "low": 2996.0,
         "dma50": 3433.02,
-        "dma200": 4150.74,
+        "dma200": 4150.73,
         "volume": 270686.0
       },
       {
@@ -1570,7 +1550,7 @@
         "high": 3290.0,
         "low": 3139.8,
         "dma50": 3414.7,
-        "dma200": 4131.79,
+        "dma200": 4131.78,
         "volume": 865771.0
       },
       {
@@ -1660,7 +1640,7 @@
         "high": 3740.0,
         "low": 3646.4,
         "dma50": 3510.15,
-        "dma200": 4096.79,
+        "dma200": 4096.78,
         "volume": 243358.0
       },
       {
@@ -1680,7 +1660,7 @@
         "high": 3774.0,
         "low": 3642.9,
         "dma50": 3527.79,
-        "dma200": 4089.71,
+        "dma200": 4089.7,
         "volume": 260567.0
       },
       {
@@ -1750,7 +1730,7 @@
         "high": 3967.9,
         "low": 3838.1,
         "dma50": 3595.69,
-        "dma200": 4070.4,
+        "dma200": 4070.39,
         "volume": 372581.0
       },
       {
@@ -1770,7 +1750,7 @@
         "high": 3906.9,
         "low": 3794.0,
         "dma50": 3617.75,
-        "dma200": 4066.68,
+        "dma200": 4066.67,
         "volume": 201149.0
       },
       {
@@ -1800,8 +1780,28 @@
         "high": 3895.0,
         "low": 3819.3,
         "dma50": 3644.43,
-        "dma200": 4060.39,
+        "dma200": 4060.38,
         "volume": 146055.0
+      },
+      {
+        "date": "2026-11-16",
+        "close": 3750.0,
+        "open": 3836.9,
+        "high": 3872.1,
+        "low": 3717.1,
+        "dma50": 3648.57,
+        "dma200": 4057.3,
+        "volume": 167435.0
+      },
+      {
+        "date": "2026-11-17",
+        "close": 3710.7,
+        "open": 3758.0,
+        "high": 3770.0,
+        "low": 3695.1,
+        "dma50": 3651.0,
+        "dma200": 4053.85,
+        "volume": 115191.0
       }
     ]
   },
@@ -1904,47 +1904,47 @@
       "agent_name": "Next-Day Technical & Catalyst Agent",
       "persona_inspiration": "Stanley Druckenmiller / Price-Action & Timing Desk",
       "signal": "NEUTRAL",
-      "score": 60.0,
-      "confidence": 72,
+      "score": 50.0,
+      "confidence": 65,
       "weight_pct": 20,
-      "headline": "RSI(14) 59.8 | 50-DMA \u20b93,644.4 | 200-DMA \u20b94,060.4 | ATR \u20b9105.3",
+      "headline": "RSI(14) 49.8 | 50-DMA \u20b93,651.0 | 200-DMA \u20b94,053.8 | ATR \u20b9106.4",
       "key_metrics": {
-        "RSI (14)": "59.8",
-        "MACD Histogram": "-6.42",
-        "50-DMA / 200-DMA": "\u20b93,644.4 / \u20b94,060.4",
-        "ATR (14) Daily Range": "\u20b9105.31 (2.75%)",
-        "Volume vs 20D Avg": "0.45x",
-        "Pivot S1 / R1": "\u20b93,804.5 / \u20b93,880.2"
+        "RSI (14)": "49.8",
+        "MACD Histogram": "-23.97",
+        "50-DMA / 200-DMA": "\u20b93,651.0 / \u20b94,053.8",
+        "ATR (14) Daily Range": "\u20b9106.43 (2.87%)",
+        "Volume vs 20D Avg": "0.47x",
+        "Pivot S1 / R1": "\u20b93,680.5 / \u20b93,755.4"
       },
       "reasoning": [
         "Short-term momentum recovering above 50-DMA toward 200-DMA overhead resistance",
-        "RSI(14) at 59.78 \u2014 Healthy bullish momentum zone without overextension",
-        "MACD below signal line (Histogram -6.42)"
+        "RSI(14) at 49.76 \u2014 Neutral momentum band",
+        "MACD below signal line (Histogram -23.97)"
       ]
     }
   ],
   "next_day_guidance": {
     "action": "BUY",
-    "conviction_score": 71.7,
+    "conviction_score": 69.7,
     "fundamental_score": 74.6,
-    "technical_score": 60.0,
-    "current_price": 3835.0,
-    "entry_zone_low": 3792.88,
-    "entry_zone_high": 3845.53,
-    "target_1_next_day": 3961.37,
-    "target_2_swing": 4071.95,
-    "stop_loss": 3734.96,
+    "technical_score": 50.0,
+    "current_price": 3710.7,
+    "entry_zone_low": 3668.13,
+    "entry_zone_high": 3721.34,
+    "target_1_next_day": 3838.42,
+    "target_2_swing": 3950.17,
+    "stop_loss": 3609.59,
     "risk_reward_ratio": 1.26,
-    "expected_next_day_range_low": 3729.69,
-    "expected_next_day_range_high": 3940.31,
+    "expected_next_day_range_low": 3604.27,
+    "expected_next_day_range_high": 3817.13,
     "position_size_suggestion_pct": 5.0,
-    "executive_summary": "Tata Elxsi Ltd (TATAELXSI) earns a composite conviction score of 71.7/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b9133 Cr in cash & investments, 39.3% ROE, 2.85% R&D intensity, and 61.9% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b93,792.88\u2013\u20b93,845.53 zone targeting \u20b93,961.37 (T1) and \u20b94,071.95 (T2) with a strict ATR-calibrated stop-loss at \u20b93,734.96 (Risk:Reward 1:1.26).",
+    "executive_summary": "Tata Elxsi Ltd (TATAELXSI) earns a composite conviction score of 69.7/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b9133 Cr in cash & investments, 39.3% ROE, 2.85% R&D intensity, and 61.9% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b93,668.13\u2013\u20b93,721.34 zone targeting \u20b93,838.42 (T1) and \u20b93,950.17 (T2) with a strict ATR-calibrated stop-loss at \u20b93,609.59 (Risk:Reward 1:1.26).",
     "rationale_points": [
       "5-Report Fundamental Score: 74.6/100 (5Y Profit CAGR: 32.6%, Piotroski: 8/9).",
       "Balance Sheet & Cash in Hand: \u20b9133 Cr liquid cash/investments vs \u20b90 Cr total borrowings (D/E 0.00x).",
       "Stockholder Conviction: Promoters hold 43.89%, FIIs 8.00%, DIIs 9.98% (Total Institutional: 17.98%).",
       "R&D & Innovation Moat: \u20b924 Cr annual R&D (2.85% of sales; 5Y cumulative \u20b991 Cr).",
-      "Next-Day Technical Trigger (60.0/100): RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA); RSI(14) at 59.8 with ATR(14) daily range of \u20b9105.31."
+      "Next-Day Technical Trigger (50.0/100): RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA); RSI(14) at 49.8 with ATR(14) daily range of \u20b9106.43."
     ],
     "key_catalysts": [
       "Company is almost debt free.",
@@ -1953,8 +1953,8 @@
       "R&D & CapEx Pipeline: AVENUE autonomous vehicle & SDV software stack, TETHER connected vehicle platform, iCX media AI & medical device regulatory IP"
     ],
     "key_risks": [
-      "Stock is trading at 84.3 times its book value",
-      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b93,734.96"
+      "Stock is trading at 81.6 times its book value",
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b93,609.59"
     ],
     "llm_synthesized": false,
     "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
@@ -1988,14 +1988,6 @@
     ],
     "promoter_statements_and_articles": [
       {
-        "speaker_or_source": "BW People",
-        "published": "Sun, 25 Oct 2026 07:00",
-        "headline": "Tata Elxsi Reviews Workforce Structure To Improve Productivity And Control Costs - BW People",
-        "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNbFBrRWhpZUVsOFJmOWNqY1B4eTl6aG1acm9idE56SjRJVXFHbVJrLV9UM1ZiNmhkWEVUNTE5clI0MmZ5aGozZzVHdnlsYURaVEsxOWZsTTJWX0I5cWtYMjdITEFpelIybXhVOXlmZjcxa0JkRHBvdGg1YzlJc1kySHdHVDBuNlMyOTdWVVVZdlgySDlHcnFfQjF6SEM4V3Z1cV9qNm1RSVg3OFVmU0hRbkc2TGw0aTNkVjJR?oc=5",
-        "share_price_impact": "BEARISH",
-        "why_it_affects_share_value": "Regulatory headwind or input-cost inflation weighs on near-term operating margins."
-      },
-      {
         "speaker_or_source": "Electronics For You BUSINESS",
         "published": "Thu, 22 Oct 2026 07:00",
         "headline": "Tata Elxsi Delivers Strong Revenue Growth in Second Quarter - Electronics For You BUSINESS",
@@ -2012,14 +2004,6 @@
         "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
       },
       {
-        "speaker_or_source": "Upstox",
-        "published": "Fri, 13 Nov 2026 08:00",
-        "headline": "Tata Elxsi Share Price - Live NSE: TATAELXSI Stock Price & Chart - Upstox",
-        "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBHajZHTVhxYlMwc2xwUkJsalBoeDktWG5Pc3huX2xvaHBGVkpwT041Ry1Uel9xdnFlclVSXzA4ZEhQc1M5bmxUZEIydlE2Q3ZsQ3ZLMXhyT3g4X0FnRjY5ZWxSSzNLX2hK?oc=5",
-        "share_price_impact": "NEUTRAL",
-        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for Tata Elxsi Ltd."
-      },
-      {
         "speaker_or_source": "MarketsMojo",
         "published": "Fri, 06 Nov 2026 10:54",
         "headline": "Tata Elxsi Ltd. Valuation Shifts Signal Growing Price Premium Amid Mixed Returns - MarketsMojo",
@@ -2033,23 +2017,23 @@
         "symbol": "KPITTECH",
         "name": "KPIT Technologies Ltd",
         "segment": "Pure-Play Automotive Embedded Software & SDV",
-        "current_price": 545.35,
-        "day_change_pct": -1.2,
-        "return_1m_pct": -1.74,
+        "current_price": 536.3,
+        "day_change_pct": -2.84,
+        "return_1m_pct": -0.12,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "KPIT Technologies (NSEI:KPITTECH) Stock Forecast & Analyst Predictions - Simply Wall St",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQR0IybldWaVdNVGpNek5pYUhqOG5Cc2t4ZzVoSndieTdseEFHekh1TllWUzZqTXdXQjIwOWJRSXEta3liWFpOOHh2MU16a1EzZWo3S0lnR0Z5UWsyNjdjblpDTzFUR0g5a3RyV2JvREx2M0ZWcDFfRWRlTmlva0MxUU1WT0s1a0FyaTc5cnNn?oc=5",
-        "read_across_signal": "NEUTRAL",
+        "latest_statement_or_news": "KPIT Technologies Limited Just Missed Earnings - But Analysts Have Updated Their Models - Simply Wall St",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxOZDNPNFpUOVEtdzNWZ0FzNVZQb0hEdk1Yd1p1QzlHVVQ3RFpUVzlCVUhlbGNyU3RsUENYcThleWlUd3B6LXVvOVBURzY1TXNyQ2ZyYkhPdVc4ZzJiV2Q3ZnZGZGVTOUgxaDdCQ2pfR2tjcjI5V2FLQ29tdklxYTlpYllVS3ZFWll1by1wMzNFeER1cktnX0xiZEhsc0xSSUxCSVhKOFVHUlVmTlpyRDE5TE52R3AyY09idHU1N1RsMFlZRFJoUWw0Y0hvVnFRS1V6NGNCRkltUXRlMDDSAeABQVVfeXFMTTBZYm9Rby1KcnNDd1o0VFBnT2lRVWNvTXJrUjV6ZWFXYTg4T1BobWpNMnAtTF9RS0RLbHhMTjlxR0sxYkZKNnpya2tlSjlrVFdQOW50NUNnbHZnZXgyQnVtLUl4RENJUUxqYzlrekEzM3Q5Ymg1NF9pQ0htVmR0UGRUd20zTFZZVlpTM2ltRHFFUDJUdzM1U1RndWp6eWJxMmJDS2dVU2FlUVdPZzRrQ1loQ3FWblBDclNDeHp6Z25zZ01mbFNUS084WmptNGZjM3BzM3VmeUdaXzFTNHZQQlA?oc=5",
+        "read_across_signal": "COMPETITIVE THREAT",
         "impact_on_share_value": "KPIT's European/US OEM deal pipeline & CC growth guidance is the #1 read-across catalyst for Tata Elxsi."
       },
       {
         "symbol": "LTTS",
         "name": "L&T Technology Services Ltd",
         "segment": "Multi-Vertical Engineering R&D (Mobility, MedTech, Hi-Tech)",
-        "current_price": 4264.8,
-        "day_change_pct": 0.41,
-        "return_1m_pct": 15.38,
+        "current_price": 4226.0,
+        "day_change_pct": -0.5,
+        "return_1m_pct": 17.6,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "L&T Technology Services Reports 12.1% YoY Revenue Growth and 66.8% Net Profit Growth in Q2FY27 - LTTS",
@@ -2061,13 +2045,13 @@
         "symbol": "PERSISTENT",
         "name": "Persistent Systems Ltd",
         "segment": "Digital Product Engineering & AI Platforms",
-        "current_price": 6028.0,
-        "day_change_pct": 0.42,
-        "return_1m_pct": 5.0,
+        "current_price": 5978.5,
+        "day_change_pct": -0.41,
+        "return_1m_pct": 5.07,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Persistent Systems Share Price - Upstox",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5OQXZRQUQ2OUhWQnJnQldBZjZMNkN2TEZFazJEWmUwNDQxVlhjRkRPV1dWZkNJU1MwRWRCZTZ0NWRub01TQ05DOGJESXZjRmVxWi1BdzE2Zkxud0FtNmVtY1RSMGZOdVU1WEpoOGJn?oc=5",
+        "latest_statement_or_news": "PERSISTENT Stock Price and Chart \u2014 NSE:PERSISTENT - TradingView",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE01VG4tR1ZHRnF6bF9CZzh6bHlySkh2MFd6bGJKUVhycUhNQkh2R2syeXEzOG9tLVpSTmNrcUEtOUVWZm45QUE1ZTB1VXFYSEc0LUI0akZJc3NQTDE5SHh0cg?oc=5",
         "read_across_signal": "POSITIVE READ-ACROSS",
         "impact_on_share_value": "Benchmark for high-multiple mid-cap product engineering valuation and US enterprise R&D spend."
       },
@@ -2075,9 +2059,9 @@
         "symbol": "HCLTECH",
         "name": "HCLTech ER&D Division",
         "segment": "Semiconductor, Telecom & Auto Engineering Services",
-        "current_price": 1386.3,
-        "day_change_pct": 0.6,
-        "return_1m_pct": 0.46,
+        "current_price": 1384.6,
+        "day_change_pct": 0.48,
+        "return_1m_pct": 0.34,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "HCLTech NSE:HCLTECH Semiconductor PLM PTC Windchill Deal - Kalkine India",
@@ -2089,13 +2073,6 @@
   },
   "news": [
     {
-      "title": "Tata Elxsi Share Price - Live NSE: TATAELXSI Stock Price & Chart - Upstox",
-      "source": "Upstox",
-      "published": "Fri, 13 Nov 2026 08:00:00",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBHajZHTVhxYlMwc2xwUkJsalBoeDktWG5Pc3huX2xvaHBGVkpwT041Ry1Uel9xdnFlclVSXzA4ZEhQc1M5bmxUZEIydlE2Q3ZsQ3ZLMXhyT3g4X0FnRjY5ZWxSSzNLX2hK?oc=5",
-      "sentiment": "NEUTRAL"
-    },
-    {
       "title": "Amicro Technology IPO Debut: 3 Indian Robotics Stocks to Watch - Univest",
       "source": "Univest",
       "published": "Thu, 12 Nov 2026 10:46:00",
@@ -2105,7 +2082,7 @@
   ],
   "data_quality": {
     "symbol": "TATAELXSI",
-    "evaluated_at": "2026-11-16 09:37:49 IST",
+    "evaluated_at": "2026-11-18 02:58:56 IST",
     "quality_score": 97.9,
     "trade_eligible": true,
     "has_minimum_price_history": true,
@@ -2115,203 +2092,207 @@
     "critical_failures": []
   },
   "market_regime": {
-    "observation_date": "2026-11-16",
+    "observation_date": "2026-11-17",
     "regime": "Weak Bull",
-    "nifty_50_close": 25267.85,
-    "nifty_50_day_change_pct": 0.49,
-    "nifty_50_return_20d_pct": 9.87,
-    "nifty_50_dma_50": 23356.03,
-    "nifty_50_dma_200": 23992.31,
-    "india_vix_close": 15.73,
-    "india_vix_change_pct": 1.48,
-    "advance_count": 939,
-    "decline_count": 1777,
-    "unchanged_count": 28,
-    "advance_decline_ratio": 0.528,
+    "nifty_50_close": 25387.4,
+    "nifty_50_day_change_pct": 0.38,
+    "nifty_50_return_20d_pct": 9.68,
+    "nifty_50_dma_50": 23385.96,
+    "nifty_50_dma_200": 23992.91,
+    "india_vix_close": 15.52,
+    "india_vix_change_pct": -1.02,
+    "advance_count": 1318,
+    "decline_count": 1404,
+    "unchanged_count": 38,
+    "advance_decline_ratio": 0.939,
     "pct_above_50dma": 86.7,
-    "pct_above_200dma": 73.3,
+    "pct_above_200dma": 80.0,
     "allow_aggressive_longs": true,
     "regime_rationale": [
-      "Structural uptrend intact above 200-DMA (23,992.3), though short-term momentum is moderate (20D: +9.87%).",
-      "NSE Market Breadth: 939 Advances vs 1777 Declines (A/D Ratio 0.53).",
-      "Universe Breadth: 86.7% above 50-DMA, 73.3% above 200-DMA."
+      "Structural uptrend intact above 200-DMA (23,992.9), though short-term momentum is moderate (20D: +9.68%).",
+      "NSE Market Breadth: 1318 Advances vs 1404 Declines (A/D Ratio 0.94).",
+      "Universe Breadth: 86.7% above 50-DMA, 80.0% above 200-DMA."
     ],
     "sector_performances": [
       {
         "index_code": "NIFTY_BANK",
         "index_name": "Nifty Bank",
-        "close": 61383.4,
-        "day_change_pct": 0.57,
-        "return_20d_pct": 9.99,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_IT",
-        "index_name": "Nifty IT",
-        "close": 32111.05,
-        "day_change_pct": 0.56,
-        "return_20d_pct": 4.53,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_PHARMA",
-        "index_name": "Nifty Pharma",
-        "close": 28681.7,
-        "day_change_pct": 0.51,
-        "return_20d_pct": 11.09,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_FMCG",
-        "index_name": "Nifty FMCG",
-        "close": 46987.5,
-        "day_change_pct": 0.33,
-        "return_20d_pct": 4.9,
-        "pe_ratio": null
+        "close": 62273.25,
+        "day_change_pct": 1.13,
+        "return_20d_pct": 11.51,
+        "pe_ratio": 13.76
       },
       {
         "index_code": "NIFTY_AUTO",
         "index_name": "Nifty Auto",
-        "close": 27851.85,
-        "day_change_pct": -0.28,
-        "return_20d_pct": 8.9,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_ENERGY",
-        "index_name": "Nifty Energy",
-        "close": 37152.2,
-        "day_change_pct": -0.66,
-        "return_20d_pct": 2.59,
-        "pe_ratio": null
+        "close": 27769.15,
+        "day_change_pct": 0.72,
+        "return_20d_pct": 7.76,
+        "pe_ratio": 30.32
       },
       {
         "index_code": "NIFTY_METAL",
         "index_name": "Nifty Metal",
-        "close": 12540.5,
-        "day_change_pct": -0.85,
-        "return_20d_pct": 4.34,
-        "pe_ratio": null
+        "close": 12530.3,
+        "day_change_pct": 0.58,
+        "return_20d_pct": 3.27,
+        "pe_ratio": 14.82
+      },
+      {
+        "index_code": "NIFTY_PHARMA",
+        "index_name": "Nifty Pharma",
+        "close": 28157.1,
+        "day_change_pct": 0.21,
+        "return_20d_pct": 9.21,
+        "pe_ratio": 45.29
+      },
+      {
+        "index_code": "NIFTY_FMCG",
+        "index_name": "Nifty FMCG",
+        "close": 47611.6,
+        "day_change_pct": -0.2,
+        "return_20d_pct": 6.71,
+        "pe_ratio": 33.4
+      },
+      {
+        "index_code": "NIFTY_ENERGY",
+        "index_name": "Nifty Energy",
+        "close": 37176.7,
+        "day_change_pct": -0.27,
+        "return_20d_pct": 2.72,
+        "pe_ratio": 13.31
+      },
+      {
+        "index_code": "NIFTY_IT",
+        "index_name": "Nifty IT",
+        "close": 31654.1,
+        "day_change_pct": -0.9,
+        "return_20d_pct": -0.85,
+        "pe_ratio": 19.24
       }
     ]
   },
   "quantitative_prediction": {
-    "prediction_id": "TATAELXSI_2026-11-16_ml_ensemble_3.2.0_20261116T133455Z",
+    "prediction_id": "TATAELXSI_2026-11-17_ml_ensemble_3.2.0_20261117T213007Z",
     "symbol": "TATAELXSI",
-    "observation_date": "2026-11-16",
-    "generated_at": "2026-11-16T13:34:55.675544+00:00",
+    "observation_date": "2026-11-17",
+    "generated_at": "2026-11-17T21:30:07.801484+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.2.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.5116,
-    "prob_5d_up": 0.4421,
-    "prob_10d_up": 0.4521,
-    "prob_lgbm_up": 0.4693,
-    "prob_xgb_up": 0.47189998626708984,
-    "prob_linear_up": 0.501,
-    "expected_next_day_return_pct": 0.0618,
-    "expected_5d_return_pct": -0.4691,
-    "expected_10d_return_pct": -0.6057,
-    "downside_risk_mae_pct": -1.1341,
-    "expected_upside_mfe_pct": 1.1033,
-    "reward_to_risk_ratio": 0.973,
-    "model_agreement_score": 0.7645,
-    "confidence_score": 64.5,
-    "roundtrip_delivery_cost_pct": 0.3698,
-    "roundtrip_intraday_cost_pct": 0.2186,
-    "net_expected_1d_return_pct": -0.1568,
-    "net_expected_5d_return_pct": -0.8389,
-    "recommended_action": "NO TRADE",
-    "abstention_reason": "Expected move (1D +0.06%, 5D +0.13%) does not clear Indian round-trip transaction costs (0.22% intraday / 0.37% delivery).",
+    "prob_next_day_up": 0.4902,
+    "prob_5d_up": 0.4596,
+    "prob_10d_up": 0.4508,
+    "prob_lgbm_up": 0.4651,
+    "prob_xgb_up": 0.4652999937534332,
+    "prob_linear_up": 0.4879,
+    "expected_next_day_return_pct": -0.0799,
+    "expected_5d_return_pct": -0.3939,
+    "expected_10d_return_pct": -0.5636,
+    "downside_risk_mae_pct": -1.1851,
+    "expected_upside_mfe_pct": 1.1397,
+    "reward_to_risk_ratio": 0.962,
+    "model_agreement_score": 0.9831,
+    "confidence_score": 69.05,
+    "roundtrip_delivery_cost_pct": 0.3725,
+    "roundtrip_intraday_cost_pct": 0.2213,
+    "net_expected_1d_return_pct": -0.3012,
+    "net_expected_5d_return_pct": -0.7664,
+    "recommended_action": "HOLD / WATCH",
+    "abstention_reason": null,
     "top_bullish_drivers": [
-      {
-        "feature": "ms_nifty_ret_5d_pct",
-        "family": "3. Market & Sector Strength",
-        "value": 0.9488,
-        "contribution": 0.04181,
-        "direction": "BULLISH"
-      },
       {
         "feature": "vd_vol_trend_5_20",
         "family": "2. Volume & Delivery",
-        "value": 0.4266,
-        "contribution": 0.03409,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "ms_india_vix_zscore_20d",
-        "family": "3. Market & Sector Strength",
-        "value": -0.2632,
-        "contribution": 0.00646,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "inst_dii_chg_4q",
-        "family": "4. Institutional & Promoter Activity",
-        "value": -0.39,
-        "contribution": 0.00549,
+        "value": 0.5588,
+        "contribution": 0.03065,
         "direction": "BULLISH"
       },
       {
         "feature": "inst_dii_chg_1q",
         "family": "4. Institutional & Promoter Activity",
         "value": -1.05,
-        "contribution": 0.00413,
+        "contribution": 0.0085,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "inst_dii_chg_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": -0.39,
+        "contribution": 0.00653,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "inst_net_flow_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": -4.92,
+        "contribution": 0.00511,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "inst_retail_dilution_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": 4.96,
+        "contribution": 0.00489,
         "direction": "BULLISH"
       }
     ],
     "top_bearish_drivers": [
       {
-        "feature": "vd_rel_vol_100d",
-        "family": "2. Volume & Delivery",
-        "value": 0.0613,
-        "contribution": -0.04344,
+        "feature": "ms_corr_nifty_20d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.2896,
+        "contribution": -0.03976,
         "direction": "BEARISH"
       },
       {
-        "feature": "ms_corr_nifty_20d",
+        "feature": "ms_corr_nifty_60d",
         "family": "3. Market & Sector Strength",
-        "value": 0.2914,
-        "contribution": -0.03653,
+        "value": 0.308,
+        "contribution": -0.01426,
         "direction": "BEARISH"
       },
       {
         "feature": "fq_asset_turnover",
         "family": "6. Financial Quality",
         "value": 1.8219,
-        "contribution": -0.01353,
+        "contribution": -0.01085,
         "direction": "BEARISH"
       },
       {
-        "feature": "pm_dist_high_252d_pct",
-        "family": "1. Price & Technical Momentum",
-        "value": -35.7983,
-        "contribution": -0.00562,
+        "feature": "ms_nifty_ret_1d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": 0.3808,
+        "contribution": -0.00803,
         "direction": "BEARISH"
       },
       {
-        "feature": "pm_ret_180d_pct",
-        "family": "1. Price & Technical Momentum",
-        "value": -21.0662,
-        "contribution": -0.00543,
+        "feature": "inst_named_holders_count",
+        "family": "4. Institutional & Promoter Activity",
+        "value": 14.0,
+        "contribution": -0.0055,
         "direction": "BEARISH"
       }
     ],
-    "target_session_date": "2026-11-17",
-    "last_close": 3820.0,
-    "atr_14_pct": 2.826,
-    "momentum_prob_up": 0.4841,
-    "momentum_5d_return_pct": 0.6046,
+    "target_session_date": "2026-11-18",
+    "last_close": 3710.7,
+    "atr_14_pct": 2.988,
+    "momentum_prob_up": 0.455,
+    "momentum_5d_return_pct": -1.3494,
+    "momentum_prob_5d_up": 0.4406,
+    "momentum_prob_10d_up": 0.4405,
+    "momentum_1d_return_pct": -0.3057,
+    "momentum_10d_return_pct": -1.7279,
     "feature_snapshot": {
-      "ms_corr_nifty_20d": 0.29142,
+      "ne_is_earnings_window": 0.0,
+      "ms_corr_nifty_20d": 0.2896,
       "fq_asset_turnover": 1.82189,
       "inst_dii_chg_4q": -0.39,
-      "fq_debt_to_equity": 0.0,
-      "ms_india_vix_zscore_20d": -0.26324,
-      "inst_named_holders_count": 14.0,
       "eg_qtr_np_qoq_pct": 7.14,
-      "pm_ret_180d_pct": -21.06623,
-      "fq_interest_coverage": 178.0,
+      "fq_debt_to_equity": 0.0,
+      "inst_named_holders_count": 14.0,
+      "ms_india_vix_zscore_20d": -0.62253,
+      "pm_ret_180d_pct": -23.63243,
       "fq_roce_pct": 62.89753
     },
     "outcome_evaluated_at": null,
@@ -2320,7 +2301,7 @@
   },
   "corporate_intelligence": {
     "symbol": "TATAELXSI",
-    "evaluated_at": "2026-11-16T06:08:12.078704+00:00",
+    "evaluated_at": "2026-11-17T21:30:19.188927+00:00",
     "promoter_holding_pct": 43.89,
     "promoter_chg_1q": -0.01,
     "promoter_chg_4q": -0.01,
@@ -2333,12 +2314,12 @@
     "dii_chg_4q": -0.39,
     "net_institutional_flow_4q": -4.92,
     "is_fno_eligible": true,
-    "latest_delivery_pct": 26.6,
-    "delivery_vs_20d_avg": -1.91,
+    "latest_delivery_pct": 36.32,
+    "delivery_vs_20d_avg": 3.12,
     "fno_positioning_heuristic": "Balanced F&O / Cash Activity",
     "net_bulk_block_value_cr": 0.0,
     "bulk_block_deals_count": 0,
-    "institutional_conviction_score": 27.0,
+    "institutional_conviction_score": 32.0,
     "smart_money_verdict": "DISTRIBUTION",
     "bulk_block_deals": [],
     "recent_corporate_actions": [
@@ -2361,7 +2342,6 @@
     ],
     "key_signals": [
       "FII + DII net ownership decreased by -4.92% over last 4 quarters.",
-      "Low NSE cash delivery at 26.6% (intraday speculative dominance).",
       "Recent Corporate Action: Cash Dividend of \u20b975.00/share (Ex-Date: 2026-06-10)."
     ]
   }

@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-16 04:08:53 IST",
+  "fetched_at": "2026-11-18 02:59:14 IST",
   "overview": {
     "symbol": "ITC",
     "name": "ITC Ltd",
@@ -9,13 +9,13 @@
     "sector": "Fast Moving Consumer Goods",
     "industry": "Diversified FMCG",
     "about": "Established in 1910, ITC is the largest cigarette manufacturer and seller in the country. ITC operates in four business segments at present \u2014 FMCG Cigarettes, FMCG Others, Paperboards, Paper and Packaging, and Agri Business. [1]",
-    "market_cap_cr": 358538.0,
-    "current_price": 286.0,
-    "high_52w": 412.0,
+    "market_cap_cr": 367561.0,
+    "current_price": 293.0,
+    "high_52w": 411.0,
     "low_52w": 253.0,
-    "stock_pe": 19.0,
+    "stock_pe": 19.5,
     "book_value": 57.0,
-    "dividend_yield_pct": 5.07,
+    "dividend_yield_pct": 4.94,
     "roce_pct": 38.9,
     "roe_pct": 29.3,
     "face_value": 1.0,
@@ -24,7 +24,7 @@
     "piotroski_score": 6,
     "pros": [
       "Company is almost debt free.",
-      "Stock is providing a good dividend yield of 5.09%.",
+      "Stock is providing a good dividend yield of 4.94%.",
       "Company has a good return on equity (ROE) track record: 3 Years ROE 35.2%",
       "Company has been maintaining a healthy dividend payout of 74.5%"
     ],
@@ -215,7 +215,7 @@
     "net_cash_position_cr": 33657.0,
     "debt_to_equity": 0.01,
     "cash_to_debt_ratio": 69.55,
-    "cash_pct_of_mcap": 9.52,
+    "cash_pct_of_mcap": 9.29,
     "latest_ocf_cr": 0.0,
     "latest_fcf_cr": 0.0,
     "cumulative_5y_ocf_cr": 374.0,
@@ -893,65 +893,45 @@
     ]
   },
   "technicals": {
-    "current_price": 285.0,
-    "prev_close": 284.05,
-    "day_change_pct": 0.33,
-    "day_high": 285.3,
-    "day_low": 282.1,
-    "high_52w": 412.0,
+    "current_price": 293.3,
+    "prev_close": 295.1,
+    "day_change_pct": -0.61,
+    "day_high": 296.95,
+    "day_low": 292.3,
+    "high_52w": 411.0,
     "low_52w": 253.0,
-    "return_5d_pct": 0.65,
-    "return_1m_pct": 8.99,
-    "return_6m_pct": -7.23,
-    "return_1y_pct": -29.99,
-    "rsi_14": 66.13,
-    "macd_line": 5.58,
-    "macd_signal": 3.72,
-    "macd_hist": 1.86,
-    "ema_20": 274.19,
-    "dma_50": 270.72,
-    "dma_200": 296.48,
-    "bb_upper": 291.56,
-    "bb_middle": 270.62,
-    "bb_lower": 249.67,
-    "atr_14": 6.02,
-    "atr_pct": 2.11,
-    "volume_latest": 9032987.0,
-    "volume_20d_avg": 20249794.75,
-    "volume_Surge_ratio": 0.45,
-    "annualized_volatility_pct": 30.65,
-    "pivot_point": 284.13,
-    "support_1": 282.96,
-    "support_2": 280.93,
-    "resistance_1": 286.16,
-    "resistance_2": 287.33,
+    "return_5d_pct": 5.2,
+    "return_1m_pct": 11.31,
+    "return_6m_pct": -5.43,
+    "return_1y_pct": -27.73,
+    "rsi_14": 70.29,
+    "macd_line": 7.05,
+    "macd_signal": 4.83,
+    "macd_hist": 2.22,
+    "ema_20": 277.81,
+    "dma_50": 272.52,
+    "dma_200": 296.43,
+    "bb_upper": 298.29,
+    "bb_middle": 273.82,
+    "bb_lower": 249.35,
+    "atr_14": 6.34,
+    "atr_pct": 2.16,
+    "volume_latest": 16688704.0,
+    "volume_20d_avg": 22335184.2,
+    "volume_Surge_ratio": 0.75,
+    "annualized_volatility_pct": 27.77,
+    "pivot_point": 294.18,
+    "support_1": 291.41,
+    "support_2": 289.53,
+    "resistance_1": 296.06,
+    "resistance_2": 298.83,
     "trend_regime": "RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA)",
     "technical_signals": [
       "Short-term momentum recovering above 50-DMA toward 200-DMA overhead resistance",
-      "RSI(14) at 66.13 \u2014 Healthy bullish momentum zone without overextension",
-      "MACD Bullish Crossover active (Histogram +1.86)"
+      "RSI(14) at 70.29 \u2014 Overbought zone, watch for profit-booking near R1",
+      "MACD Bullish Crossover active (Histogram +2.22)"
     ],
     "price_series": [
-      {
-        "date": "2026-07-08",
-        "close": 280.65,
-        "open": 286.9,
-        "high": 287.85,
-        "low": 280.0,
-        "dma50": 294.03,
-        "dma200": 333.84,
-        "volume": 22800601.0
-      },
-      {
-        "date": "2026-07-09",
-        "close": 282.05,
-        "open": 281.25,
-        "high": 284.4,
-        "low": 281.0,
-        "dma50": 293.56,
-        "dma200": 333.32,
-        "volume": 13730856.0
-      },
       {
         "date": "2026-07-10",
         "close": 281.75,
@@ -1079,7 +1059,7 @@
         "high": 287.95,
         "low": 282.3,
         "dma50": 288.6,
-        "dma200": 326.96,
+        "dma200": 326.95,
         "volume": 15528885.0
       },
       {
@@ -1831,6 +1811,26 @@
         "dma50": 270.72,
         "dma200": 296.48,
         "volume": 9032987.0
+      },
+      {
+        "date": "2026-11-16",
+        "close": 295.1,
+        "open": 285.0,
+        "high": 296.15,
+        "low": 283.85,
+        "dma50": 271.68,
+        "dma200": 296.46,
+        "volume": 51135086.0
+      },
+      {
+        "date": "2026-11-17",
+        "close": 293.3,
+        "open": 295.15,
+        "high": 296.95,
+        "low": 292.3,
+        "dma50": 272.52,
+        "dma200": 296.43,
+        "volume": 16688704.0
       }
     ]
   },
@@ -1878,7 +1878,7 @@
       "reasoning": [
         "Net Cash Fortress: Total Cash & Investments (\u20b934,148 Cr) exceed Total Debt (\u20b9491 Cr) by \u20b933,657 Cr.",
         "Generated \u20b9374 Cr in cumulative 5-year Operating Cash Flow (latest FY OCF \u20b90 Cr).",
-        "Cash & investments represent 9.5% of total Market Cap, offering downside protection."
+        "Cash & investments represent 9.3% of total Market Cap, offering downside protection."
       ]
     },
     {
@@ -1933,58 +1933,58 @@
       "agent_name": "Next-Day Technical & Catalyst Agent",
       "persona_inspiration": "Stanley Druckenmiller / Price-Action & Timing Desk",
       "signal": "BULLISH",
-      "score": 79.0,
-      "confidence": 85,
+      "score": 69.0,
+      "confidence": 78,
       "weight_pct": 20,
-      "headline": "RSI(14) 66.1 | 50-DMA \u20b9270.7 | 200-DMA \u20b9296.5 | ATR \u20b96.0",
+      "headline": "RSI(14) 70.3 | 50-DMA \u20b9272.5 | 200-DMA \u20b9296.4 | ATR \u20b96.3",
       "key_metrics": {
-        "RSI (14)": "66.1",
-        "MACD Histogram": "+1.86",
-        "50-DMA / 200-DMA": "\u20b9270.7 / \u20b9296.5",
-        "ATR (14) Daily Range": "\u20b96.02 (2.11%)",
-        "Volume vs 20D Avg": "0.45x",
-        "Pivot S1 / R1": "\u20b9283.0 / \u20b9286.2"
+        "RSI (14)": "70.3",
+        "MACD Histogram": "+2.22",
+        "50-DMA / 200-DMA": "\u20b9272.5 / \u20b9296.4",
+        "ATR (14) Daily Range": "\u20b96.34 (2.16%)",
+        "Volume vs 20D Avg": "0.75x",
+        "Pivot S1 / R1": "\u20b9291.4 / \u20b9296.1"
       },
       "reasoning": [
         "Short-term momentum recovering above 50-DMA toward 200-DMA overhead resistance",
-        "RSI(14) at 66.13 \u2014 Healthy bullish momentum zone without overextension",
-        "MACD Bullish Crossover active (Histogram +1.86)",
-        "News Catalyst: 1 positive vs 0 negative recent Indian market headlines."
+        "RSI(14) at 70.29 \u2014 Overbought zone, watch for profit-booking near R1",
+        "MACD Bullish Crossover active (Histogram +2.22)",
+        "News Catalyst: 3 positive vs 0 negative recent Indian market headlines."
       ]
     }
   ],
   "next_day_guidance": {
-    "action": "STRONG BUY",
-    "conviction_score": 72.5,
+    "action": "BUY",
+    "conviction_score": 70.5,
     "fundamental_score": 70.8,
-    "technical_score": 79.0,
-    "current_price": 285.0,
-    "entry_zone_low": 283.5,
-    "entry_zone_high": 285.9,
-    "target_1_next_day": 293.13,
-    "target_2_swing": 300.65,
-    "stop_loss": 279.58,
-    "risk_reward_ratio": 1.5,
-    "expected_next_day_range_low": 278.98,
-    "expected_next_day_range_high": 291.02,
-    "position_size_suggestion_pct": 8.0,
-    "executive_summary": "ITC Ltd (ITC) earns a composite conviction score of 72.5/100 (STRONG BUY) for the next NSE trading session. Fundamentally backed by \u20b934,148 Cr in cash & investments, 29.3% ROE, 0.38% R&D intensity, and 83.0% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9283.50\u2013\u20b9285.90 zone targeting \u20b9293.13 (T1) and \u20b9300.65 (T2) with a strict ATR-calibrated stop-loss at \u20b9279.58 (Risk:Reward 1:1.5).",
+    "technical_score": 69.0,
+    "current_price": 293.3,
+    "entry_zone_low": 290.76,
+    "entry_zone_high": 293.93,
+    "target_1_next_day": 300.91,
+    "target_2_swing": 307.56,
+    "stop_loss": 287.28,
+    "risk_reward_ratio": 1.26,
+    "expected_next_day_range_low": 286.96,
+    "expected_next_day_range_high": 299.64,
+    "position_size_suggestion_pct": 5.0,
+    "executive_summary": "ITC Ltd (ITC) earns a composite conviction score of 70.5/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b934,148 Cr in cash & investments, 29.3% ROE, 0.38% R&D intensity, and 83.0% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9290.76\u2013\u20b9293.93 zone targeting \u20b9300.91 (T1) and \u20b9307.56 (T2) with a strict ATR-calibrated stop-loss at \u20b9287.28 (Risk:Reward 1:1.26).",
     "rationale_points": [
       "5-Report Fundamental Score: 70.8/100 (5Y Profit CAGR: 7.9%, Piotroski: 6/9).",
       "Balance Sheet & Cash in Hand: \u20b934,148 Cr liquid cash/investments vs \u20b9491 Cr total borrowings (D/E 0.01x).",
       "Stockholder Conviction: Promoters hold 0.00%, FIIs 33.22%, DIIs 49.81% (Total Institutional: 83.03%).",
       "R&D & Innovation Moat: \u20b9300 Cr annual R&D (0.38% of sales; 5Y cumulative \u20b91,232 Cr).",
-      "Next-Day Technical Trigger (79.0/100): RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA); RSI(14) at 66.1 with ATR(14) daily range of \u20b96.02."
+      "Next-Day Technical Trigger (69.0/100): RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA); RSI(14) at 70.3 with ATR(14) daily range of \u20b96.34."
     ],
     "key_catalysts": [
       "Company is almost debt free.",
-      "Stock is providing a good dividend yield of 5.09%.",
+      "Stock is providing a good dividend yield of 4.94%.",
       "Company has a good return on equity (ROE) track record: 3 Years ROE 35.2%",
       "R&D & CapEx Pipeline: ITC Life Sciences & Technology Centre (LSTC Bengaluru \u2014 350+ scientists, 900+ patent filings in agro-forestry, nutrition & sustainable packaging)"
     ],
     "key_risks": [
       "The company has delivered a poor sales growth of 9.87% over past five years.",
-      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9279.58"
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9287.28"
     ],
     "llm_synthesized": false,
     "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
@@ -2033,22 +2033,6 @@
         "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxOaUNJVjJxd2pqSHhsRDdYZ0RoWEVydWdLQUJZcnNTQ2lpZUxFaHVLZTEtXzRucTd2RllWWjJ1SWxFd2VkVTdQRVpYU1VJeGZPZmlUTWNTY2V1NmtrMmZCajlRWXd6UHJSUUlrOElMRGgyX0NRU1JKQlNxRkU5Q3VZUkdGZjluVGF2WDN0YlUxY3NyQmU0RXhOQm82LUxBekhMSUZyS3FuRm4yOWhpV3IwdG02aGc3T0dacTc5TGpIQjVKaUgxeUpoNUxSRngtZ9IB0wFBVV95cUxQSFktOXBmWEZmelUxUkVBejB1d2llTGZTSHhTTzVtZVRZZ1J6cEhIRjR0Q2Uxd2JJX2dRZ1J2SjBFUnJpczFORkdvWmhpaTE3Q2UyVDludkR4UXF0TEJPLTFoNWJnQ3lQa2tycDVNWWZZWTVSV1BlSWgtNmVSOWVfZklHMmF2U1JBVkYzUmJjOHBJeV9UUEVWVjl0cUhfalZWRTZ3bm1GSnprODVqV0lSVWJtaHo5N3hMTzVBTmJ5WUNNZEV4QlJjX0t1VDJSNEdBTVdn?oc=5",
         "share_price_impact": "NEUTRAL",
         "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for ITC Ltd."
-      },
-      {
-        "speaker_or_source": "ET Now",
-        "published": "Sat, 14 Nov 2026 03:01",
-        "headline": "ITC Share Price Today Live NSE/BSE - Stock Price, News and Chart Updates 15 November 2026 - ET Now",
-        "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBXSXpXOTllQnBuTmN3Ql83dXJNZGhZd2Fvak1pRHlBZlZiZ1B0U3FFV2hrcW5nY3F5MkJoU0RaTmJkRXJza3N1Y2lQUzJSQk04YnExamVGdERXUGJHM09QcjlKSjY1NWdzUGRVblBfWUt0bFhvRzVkd1BVQQ?oc=5",
-        "share_price_impact": "NEUTRAL",
-        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for ITC Ltd."
-      },
-      {
-        "speaker_or_source": "Simply Wall St",
-        "published": "Wed, 11 Nov 2026 08:00",
-        "headline": "ITC (NSEI:ITC) Stock Forecast & Analyst Predictions - Simply Wall St",
-        "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPbzJaSnFTSS02WEktb3Btcjd2Z1ZBZjlhbkc5aThqQVBFV0RGay0wYTdVOFpORWtmSXpSMG5oel9vZk1qck00T0RSTnJURS12Qm5SalYxR0VTRk1ERjhQQzRqVDBKak9nbVBaUlN5N3J1VE1vVDFpbDBkazk5a3FNM2lUbW92Zw?oc=5",
-        "share_price_impact": "NEUTRAL",
-        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for ITC Ltd."
       }
     ],
     "competitors": [
@@ -2056,13 +2040,13 @@
         "symbol": "HINDUNILVR",
         "name": "Hindustan Unilever Ltd (HUL)",
         "segment": "FMCG Personal Care & Packaged Foods",
-        "current_price": 1984.9,
-        "day_change_pct": -0.4,
-        "return_1m_pct": 5.8,
+        "current_price": 2000.3,
+        "day_change_pct": 0.37,
+        "return_1m_pct": 8.96,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Hindustan Unilever Share Price - Live NSE: HINDUNILVR Stock Price & Chart - Upstox",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE00bURGcnlweERKTnRINldLZmR6b09TWm9SMDUzTkdvUlh3VDVoVGEtdkdFb1JYc2NtWEc1aExJUXJWZmZNc3NCVVhDNHJBNUxLdmVsMTJwZ1NLZWtZR3ZSd0Nhd2h6ZEk2UnJnMXFn?oc=5",
+        "latest_statement_or_news": "HINDUNILVR Share Price Today - Hindustan Unilever on NSE/BSE - scanx.trade",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE04dVFxdDhwZlY4ejgxamtBbTFJRWpQVk83RGl2UG1iaFdwSjVIRlNDNllqUnhvTzZnY1Y4dlU1ZlhaTVJ5cHd1NTB2bHJNamRuMnplSU5yOXBTaWZ5OXRN?oc=5",
         "read_across_signal": "POSITIVE READ-ACROSS",
         "impact_on_share_value": "HUL's rural vs urban volume growth & input cost commentary sets the tone for ITC's FMCG business."
       },
@@ -2070,27 +2054,27 @@
         "symbol": "NESTLEIND",
         "name": "Nestle India Ltd",
         "segment": "Packaged Foods, Instant Noodles (Maggi vs YiPPee!) & Dairy",
-        "current_price": 1270.5,
-        "day_change_pct": 0.58,
-        "return_1m_pct": 0.4,
+        "current_price": 1297.0,
+        "day_change_pct": 2.68,
+        "return_1m_pct": 4.37,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "Weekly Recap: Q2FY27 revenue & margin rise and domestic growth, ad spend - TradingView",
         "latest_news_url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOSjgtNndVdVJkYlJibWd0bHVhUll0Unc3UVZscGhQckc0cGJDRFZyWmNMN3dPS3hna3RNZW9NN1luSUljVWpPS0luVkU0ckNJMjFPb1VOUDYzaVQzMVVvWkxKSjZnRkRTdDV0aEVvYXBlQnIwdjI2b05vVjV1VU5EYzVzSklRbTlkaWhDSW1ybjlwZDZzWHFwLV9iWVozQUlUR1pDcm85WS0zdC1kTGxwMEVpQjNTWk1XOGFSOTA3bkNSblZnOXlSazFn?oc=5",
-        "read_across_signal": "NEUTRAL",
+        "read_across_signal": "POSITIVE READ-ACROSS",
         "impact_on_share_value": "Wheat, edible oil, and packaging inflation + urban food pricing power read-across."
       },
       {
         "symbol": "VBL",
         "name": "Varun Beverages Ltd",
         "segment": "Beverages & Snacks Distribution",
-        "current_price": 431.55,
-        "day_change_pct": -0.29,
-        "return_1m_pct": 0.36,
+        "current_price": 437.0,
+        "day_change_pct": 0.97,
+        "return_1m_pct": 4.04,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Varun Beverages Ltd. Estimates \u2013 NSE:VBL - TradingView",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9IMkNxTlRXVGppQXJqczVBX2ExVWZSVG5ZN2JEeWRmcC1lZENLLUV5cnh6VHc1OFRwVzlNRGVEVGdyYlNMV2tRTW9WblQ4WF8yMlIxS2dSci1OcFpRdVhiT29UYzU4NWdiMjQ4eTQxN1hQdWs?oc=5",
+        "latest_statement_or_news": "Varun Beverages Ltd Share/Stock Price Live Today | The HinduBusinessLine - BusinessLine",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5vRU9MNW5WRW8zbkdGVG10WlJpOURtd1U3eGxkS1FtcW5INDNKQzl0c2ZRTjNPLVhKTmZTdk9mTEtCaXJkV0pPQk9lUDdOOEhDaS1TdkgyazZTcHN4QndlQnp2SV9HWnk0Q3V2aUdXZnFsQQ?oc=5",
         "read_across_signal": "NEUTRAL",
         "impact_on_share_value": "Out-of-home consumption & summer beverage/snack volume momentum across Indian retail."
       },
@@ -2098,13 +2082,13 @@
         "symbol": "TRENT",
         "name": "Indian Consumption Benchmark",
         "segment": "Domestic Consumption & Retail Allocation",
-        "current_price": 3181.9,
-        "day_change_pct": 0.53,
-        "return_1m_pct": 7.54,
+        "current_price": 3203.7,
+        "day_change_pct": 1.22,
+        "return_1m_pct": 10.79,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Markets snap 3-day rally; Sensex drops 318 points, Nifty slips below 25,150 - Deccan Herald",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPWHFJYTcxcjR6QWJZaElhVDFNMldHcV9lSFlkVWprbmZNR0t1TXBBVnQ5RW96R3g0bjdBLVQ1QkNTYWNGVjB1bjZJZ0dmSllLT0UyRE8zamg3TUZ5b01wTDhFNks2cjYwQTd6SWF3d0hpcmo1U3E3d0RVT1hTb3JjaG9ZUy1YRGt3UnY2Vy1lSGJIU1h0em9iMXJDZmVOUmpCSWZndGJlQ0VreGVvS1RJbzFZdG5LTDBDXzc0dVdNU05ucWRCN2NRWlZwZ3IxeV92bGc?oc=5",
+        "latest_statement_or_news": "Indian Consumption Benchmark trading active in Domestic Consumption & Retail Allocation.",
+        "latest_news_url": "https://www.screener.in/company/TRENT/",
         "read_across_signal": "POSITIVE READ-ACROSS",
         "impact_on_share_value": "Institutional rotation between defensive staple compounders (ITC) and high-beta discretionary."
       }
@@ -2114,36 +2098,29 @@
     {
       "title": "ITC Share Price - Upstox",
       "source": "Upstox",
-      "published": "Fri, 13 Nov 2026 08:00:00",
+      "published": "Tue, 17 Nov 2026 06:14:20",
       "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5IMkRMcVVlTDVzbjFob3JsSlJPSWdHbFpvZjJyLTlwQnY4ejlneWdlUk01d1VMbnE2ejBSeWNvcXZuMnZWbklIeVM4UU5hcmMwendocGU1UmE1UQ?oc=5",
       "sentiment": "NEUTRAL"
     },
     {
-      "title": "ITC (ITC) Share Price Today (NSE), Market News - TechGraph",
-      "source": "TechGraph",
-      "published": "Fri, 13 Nov 2026 08:00:00",
-      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1pREZ2bW1vU3VDQU9pay1XWW1xSzJxRTVFeFBoOERaQW1IMWFqRUJhTzZfcVhDQVNMYjJud0ZMVWJXVjZURkZQQndTRHJtYXkzSmxXYjlBN1VWWlk?oc=5",
-      "sentiment": "NEUTRAL"
-    },
-    {
-      "title": "Stocks to watch: Bajaj Finance, GRSE, LIC, Meesho, ITC, Tata Investment - Business Standard",
+      "title": "ITC Share Price: ITC stock reclaims 200-DMA after a year; is it a rebound or fresh uptrend? - Business Standard",
       "source": "Business Standard",
-      "published": "Thu, 12 Nov 2026 02:44:47",
-      "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxPYzVrQXZQQmcyY2Vvdk1yakVvMWJxRDBnemFtU2ZxWE1UY3Z0TTdTdkUyLW0ydmE3ZTFNM1RpWWJrOGtRcWh4VmhPMUZyZGlMUk82ODZSTUFvcHFlUzJOM3IydmVaNUYzVFlTcnc4aEtXLVItdXdBWDlLYUw5ZDlrNUc1SzhYeGh4ZURCWkF2ZEYtSjY5cGtPSTNCRXJleVI4TVl4NktKSWo3U3Rob3JRQU16VTE2UHNVWXVvdkxidFZLaDZneTNCYWFlZ27SAdIBQVVfeXFMTzUyeEYtNmxSZkJDZGVsSTV0Um9zRG5rVkNHQ1c1UHltYVdrdlllMGtSaTBNbWhrcUNPakc5NkpEMV9vSXEyYVBnUnQwZGxRQV9wN182SzFlRUw0c2ZvQUR2QWg4WTFueGFyUWFMSGliVnBXOFV5WHVaN1d0RVdGV0N5eTEyNExQUV9NZlkxRWNybVh2dTF5TFpZeEtVSHdzLUY0dzNXQnl6c0lxSUdSX3JpRzd0RW83QnNxdjZ4LThDSUdYUkl3d3l2LVdocWFGYmtB?oc=5",
+      "published": "Tue, 17 Nov 2026 05:39:35",
+      "url": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxPSWZWaEMyaHhWZG1DNDRKd2FPaHdiX3FfdGpPLUNBWk1tbjRkY3pfdDIybFI5WWcxbmRvUFh6VEp6Y29PRV9aZE9abG1CRGdEREJUS3Z1V3ZpRnJCSXZhUU5XdDhjNjhNNHNRUnZYemVyWTU1N01fcElLaVRhbU5RbVdpQTdybGY4VzF3d05lUUpZMVppWmk5YTN2SmRrWUdzaTNjb0MtR0tSR05HSE9zUm90MVZvR0FsUmZ0TnBxZU1UY0hGSEtwZC10VG1wTmVBeW9LU01NQnViQmpmb205VnYxaWpDcGhENlhMcUNrVzR4d05fbE5HYkp3?oc=5",
       "sentiment": "NEUTRAL"
     },
     {
-      "title": "ITC Hotels Ltd. Share Price Today - ITC Hotels Ltd. Stock Price Live NSE/BSE - CNBC TV18",
-      "source": "CNBC TV18",
-      "published": "Fri, 13 Nov 2026 10:00:00",
-      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE5YRjF6Skt0dmhHbFFmclJ6SDlBQjlSYUNQdlQyUzFLSW9GYXJUckpnWVYtV3BPb2I5T2l0alotdVNzaS1xRURTU25qOVRUQzJoSlREV0E2Yy1Md2ppcXM2alZuRWlnMnYwbzNnQkJaWDUtdWVBTUQwd282NE0?oc=5",
-      "sentiment": "NEUTRAL"
+      "title": "ITC shares jump 4% to 5-month high as FMCG index tops sectoral gainers; know reason behind today\u2019s... - Moneycontrol.com",
+      "source": "Moneycontrol.com",
+      "published": "Mon, 16 Nov 2026 11:51:01",
+      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxQMVFrTHRCMUZraGpFbXZaYXNqdUZMLWoySmF5dHhwdmhzTE5qYU9PcnNJZG1IRW1lS0dmdWtIbFgyc3pxcnRvRmM5Mllzb2VDQnZYNnUtUkdXdTRFLXhtWGd5dGNXR1o0clJkbS1SYy0xZDNUUDR5X2UyUThDblNMQVZuS2NLNDNqZXNEalRmbmd6ODZGSERrRXNmVmdncUFfbTMxWEJlXzhHbFk4NjctcGVjWURkR21nby15dFVHLW50LW5JbWxPNG11Rk12WW1uZkNLWldxazZNdWxSOFYyY2NSUHE5YUY5aEI0TjEwNGpmVnlLeHdQbVRJa9IBgAJBVV95cUxOY1V1VEdCbHQ5eUUzd3ZETFlhclZWVzhMRWxiaUdTNk5CMElrR0lGazRlMlNoR05ITGtzRHdxRjhFVXhNaDlSeF92clVPZkRUcC0tV0ZSZEI0MTQ2WjZPQXpWVmxOcWJMRDZiSlduejBfYmFCaVVGSkpzQjAwUThRbk9PNGxXakxOd3gyR3VDQTE1OGVNQnRDRDRYcUlJSkotTVFJNi1XVFE5M1NZMXYzNlg2akhqSE1BQjgxMWY5VERNZkVKOFFmcWxKdjQ3aHJXMVpVN2NUTVEwd1pWNjFXMVlGQ18xTm5xSzcwLVJQcjNySHpLbWtVRldCUTFYZEF6?oc=5",
+      "sentiment": "POSITIVE"
     },
     {
-      "title": "ITC HOTELS LIMITED Share Price - Live NSE: ITCHOTELS Stock Price & Chart - Upstox",
-      "source": "Upstox",
-      "published": "Fri, 13 Nov 2026 08:00:00",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE54ekEtS1BNTlF3VnN1bUg0YVpoTUVxdXc2THdfb19HMkw1czNrRDFaVHZpU2NraGVpYXlMZGJGamhhcTJsTjNLazJHMzltX3lxdlRySWVJM29Ob0Z1cmJpNHRfcDFfTzJj?oc=5",
+      "title": "India stocks higher at close of trade; Nifty 50 up 0.58% - Investing.com",
+      "source": "Investing.com",
+      "published": "Mon, 16 Nov 2026 10:34:42",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPSUVfU0RvaTc4VTk3MjZ0VmtLdTI4RmpiTXZuZ2JCTTMtaWIxRmhraFFDSkJBNTl1a1VMZEF6ZTlBNkpPYWpYM0xJb0ZvUVk5T3AwdXhoUDYxVGF1MTNVVWY4WjU5a1YxN3RBRzhNWGNNbFJRQ0dVbEwxOHhibF90OUtMWjYwTUYtcG9qeFNBelUxaEFXLW5VQmlaWlAwRkhlX2tORHVEYmk5UlpFTDB3?oc=5",
       "sentiment": "NEUTRAL"
     },
     {
@@ -2154,23 +2131,30 @@
       "sentiment": "NEUTRAL"
     },
     {
+      "title": "Top Gainers & Losers Today, 16 November 2026 at 3:30 PM IST: Max Healthcare Institute Ltd Leads Gainers - HDFC Sky",
+      "source": "HDFC Sky",
+      "published": "Mon, 16 Nov 2026 10:38:55",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPamxQcnVTTXhVdHZseTdNQUFoa1o2YUp6Nmc2UXdsZEVkUUdrY19PUFh4YmlzeDFDeG5rNUlGNEFXTFBnYndRYjZNallRVkVTakMyX3A5cEI3bUFoNUxPVThUc3dnRFVjNmJmU2Y1SlBPSFdYMmFrVmFjOFN3MlNjb3FQNA?oc=5",
+      "sentiment": "POSITIVE"
+    },
+    {
+      "title": "ITC shares rise 2% amid reports of cigarette price hikes; here is what we know so far - Upstox",
+      "source": "Upstox",
+      "published": "Thu, 12 Nov 2026 03:35:32",
+      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxON29XQnJGeU9tTzVwZ0hmblIwVmZtMDJzNnpEd1A0WDc2cUlJVHhkY1M1a2tOSWxPM3ZYOVAwcXpQeDZxVWJ0ZzVBOFZRRV96VUVyTjFtSjZpX2J3RGo3Skl1RnBrMnRQcXRKT1ZJVmh4S0NzbmN4LTBwc3N3MUlNaDk3UTgxeEtobzNNLWJkNUNHMFdZeE95YnhHVTdCUkxOeHhpeUgzTXY1NVVLbDlIZWtfNjFJWHptSHI2SUJiams0QmVqZGFjM3RZODNzZDk1anJBM2VETy13X3Rw?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
       "title": "ITC Share Price Gains on Gold Flake Hike: Brokerage Views - Univest",
       "source": "Univest",
       "published": "Thu, 12 Nov 2026 05:43:00",
       "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOX0Y4eTZKQmd3QjJEVnFFNE5idlVyemJXMnhQSXlZWmZwbEFHM3IzQlV2WVhlbjI3LTY1cU1GX2V4b1d5U0tDS2d5eW9xcm41Ty1YWTZMOXhEcUhYN01oWnpTTTNtbUtnUXF1Zk5vX2tTTXlDS2xCQ0tRY0FDOU91X1lyN1E?oc=5",
       "sentiment": "POSITIVE"
-    },
-    {
-      "title": "Stocks to Watch Today: Bajaj Finance, Tata Power, Mishra Dhatu Nigam, Aurobindo Pharma, ITC, Aditya... - Moneycontrol.com",
-      "source": "Moneycontrol.com",
-      "published": "Wed, 11 Nov 2026 20:21:02",
-      "url": "https://news.google.com/rss/articles/CBMiqwJBVV95cUxPcDlWT2psaEdqTE1qUkViLWN2cnNLemlNb3cxUEFWTEtrblJqNUYtZ2MwR3lrcWZSTW8yOWV6QmU3VFdDWVYtcDA5c1BTRnFTZFNvSjRPQzZsbzZiamc3M1lUSnJrQU9iR1JTVS1YZUNURmRTTy0wOWV2RGRxbnB6T0lTemZLOC1mb29MZnZzWEt6cS1QSW1BSFIwWnFMbGRVQmxZbi14WjRXbGhKM0RuVGdocXlxN1MtdS1EaFJwcEVSYUNUWFRYLWFpNzR1WWtZNmpwSUE0N3NWMWFuWlQyYnVuTHlHeEo5YzhOcUVTZGRGd1NwM0wxby1ZZ1liaWFXSUxMR3QtbHpsTG5zLVJ3cjhGMHR1R0lQVmJhZzdEUkhKRENQTnJ0Ml9GONIBsAJBVV95cUxPa2EtaVdWZzc1QnNGUTlaRUxqNW5ESm4wVm5rWm9FQXlOczZHWlNMemhnNi02VHY3VDBqT0VFY3VzaVhaSzdTRHdYdU1VaW1XOUZjTjZGLWdTbG1vSWhlMTU5cFlsMVVTWWhuMXZhTjdzWktWM09JdmtIcWZoZnBEdDdsaTVjdHo4WnBKLS0xUEJzcU9NVXg2YnduRkFvQXlpWUZXWnhxeDlJSDhQTmpTQVJhSWhRRmlrOE55RVhpWnJmTEgxVzdxMW1FQXJicU11eURDbkQ1eUt0T2FleGpfcXdCeXc5SHNGZTJnSTgwMDlBX3Z3OGYzSEZIRy0zN1htckNqcXpMbnEzWmIxdldodDBFeHBrbVk5WXk5b21WZFFoaktwOWpxS19tbnJaWTYw?oc=5",
-      "sentiment": "NEUTRAL"
     }
   ],
   "data_quality": {
     "symbol": "ITC",
-    "evaluated_at": "2026-11-16 09:37:49 IST",
+    "evaluated_at": "2026-11-18 02:59:00 IST",
     "quality_score": 89.6,
     "trade_eligible": true,
     "has_minimum_price_history": true,
@@ -2180,203 +2164,207 @@
     "critical_failures": []
   },
   "market_regime": {
-    "observation_date": "2026-11-16",
+    "observation_date": "2026-11-17",
     "regime": "Weak Bull",
-    "nifty_50_close": 25267.85,
-    "nifty_50_day_change_pct": 0.49,
-    "nifty_50_return_20d_pct": 9.87,
-    "nifty_50_dma_50": 23356.03,
-    "nifty_50_dma_200": 23992.31,
-    "india_vix_close": 15.73,
-    "india_vix_change_pct": 1.48,
-    "advance_count": 939,
-    "decline_count": 1777,
-    "unchanged_count": 28,
-    "advance_decline_ratio": 0.528,
+    "nifty_50_close": 25387.4,
+    "nifty_50_day_change_pct": 0.38,
+    "nifty_50_return_20d_pct": 9.68,
+    "nifty_50_dma_50": 23385.96,
+    "nifty_50_dma_200": 23992.91,
+    "india_vix_close": 15.52,
+    "india_vix_change_pct": -1.02,
+    "advance_count": 1318,
+    "decline_count": 1404,
+    "unchanged_count": 38,
+    "advance_decline_ratio": 0.939,
     "pct_above_50dma": 86.7,
-    "pct_above_200dma": 73.3,
+    "pct_above_200dma": 80.0,
     "allow_aggressive_longs": true,
     "regime_rationale": [
-      "Structural uptrend intact above 200-DMA (23,992.3), though short-term momentum is moderate (20D: +9.87%).",
-      "NSE Market Breadth: 939 Advances vs 1777 Declines (A/D Ratio 0.53).",
-      "Universe Breadth: 86.7% above 50-DMA, 73.3% above 200-DMA."
+      "Structural uptrend intact above 200-DMA (23,992.9), though short-term momentum is moderate (20D: +9.68%).",
+      "NSE Market Breadth: 1318 Advances vs 1404 Declines (A/D Ratio 0.94).",
+      "Universe Breadth: 86.7% above 50-DMA, 80.0% above 200-DMA."
     ],
     "sector_performances": [
       {
         "index_code": "NIFTY_BANK",
         "index_name": "Nifty Bank",
-        "close": 61383.4,
-        "day_change_pct": 0.57,
-        "return_20d_pct": 9.99,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_IT",
-        "index_name": "Nifty IT",
-        "close": 32111.05,
-        "day_change_pct": 0.56,
-        "return_20d_pct": 4.53,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_PHARMA",
-        "index_name": "Nifty Pharma",
-        "close": 28681.7,
-        "day_change_pct": 0.51,
-        "return_20d_pct": 11.09,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_FMCG",
-        "index_name": "Nifty FMCG",
-        "close": 46987.5,
-        "day_change_pct": 0.33,
-        "return_20d_pct": 4.9,
-        "pe_ratio": null
+        "close": 62273.25,
+        "day_change_pct": 1.13,
+        "return_20d_pct": 11.51,
+        "pe_ratio": 13.76
       },
       {
         "index_code": "NIFTY_AUTO",
         "index_name": "Nifty Auto",
-        "close": 27851.85,
-        "day_change_pct": -0.28,
-        "return_20d_pct": 8.9,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_ENERGY",
-        "index_name": "Nifty Energy",
-        "close": 37152.2,
-        "day_change_pct": -0.66,
-        "return_20d_pct": 2.59,
-        "pe_ratio": null
+        "close": 27769.15,
+        "day_change_pct": 0.72,
+        "return_20d_pct": 7.76,
+        "pe_ratio": 30.32
       },
       {
         "index_code": "NIFTY_METAL",
         "index_name": "Nifty Metal",
-        "close": 12540.5,
-        "day_change_pct": -0.85,
-        "return_20d_pct": 4.34,
-        "pe_ratio": null
+        "close": 12530.3,
+        "day_change_pct": 0.58,
+        "return_20d_pct": 3.27,
+        "pe_ratio": 14.82
+      },
+      {
+        "index_code": "NIFTY_PHARMA",
+        "index_name": "Nifty Pharma",
+        "close": 28157.1,
+        "day_change_pct": 0.21,
+        "return_20d_pct": 9.21,
+        "pe_ratio": 45.29
+      },
+      {
+        "index_code": "NIFTY_FMCG",
+        "index_name": "Nifty FMCG",
+        "close": 47611.6,
+        "day_change_pct": -0.2,
+        "return_20d_pct": 6.71,
+        "pe_ratio": 33.4
+      },
+      {
+        "index_code": "NIFTY_ENERGY",
+        "index_name": "Nifty Energy",
+        "close": 37176.7,
+        "day_change_pct": -0.27,
+        "return_20d_pct": 2.72,
+        "pe_ratio": 13.31
+      },
+      {
+        "index_code": "NIFTY_IT",
+        "index_name": "Nifty IT",
+        "close": 31654.1,
+        "day_change_pct": -0.9,
+        "return_20d_pct": -0.85,
+        "pe_ratio": 19.24
       }
     ]
   },
   "quantitative_prediction": {
-    "prediction_id": "ITC_2026-11-16_ml_ensemble_3.2.0_20261116T133455Z",
+    "prediction_id": "ITC_2026-11-17_ml_ensemble_3.2.0_20261117T213007Z",
     "symbol": "ITC",
-    "observation_date": "2026-11-16",
-    "generated_at": "2026-11-16T13:34:55.675544+00:00",
+    "observation_date": "2026-11-17",
+    "generated_at": "2026-11-17T21:30:07.801484+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.2.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.508,
-    "prob_5d_up": 0.4384,
-    "prob_10d_up": 0.4305,
-    "prob_lgbm_up": 0.4731,
-    "prob_xgb_up": 0.4618000090122223,
-    "prob_linear_up": 0.5047,
-    "expected_next_day_return_pct": 0.0366,
-    "expected_5d_return_pct": -0.3933,
-    "expected_10d_return_pct": -0.5934,
-    "downside_risk_mae_pct": -0.9248,
-    "expected_upside_mfe_pct": 0.9684,
-    "reward_to_risk_ratio": 1.047,
-    "model_agreement_score": 0.7644,
-    "confidence_score": 63.97,
-    "roundtrip_delivery_cost_pct": 0.3553,
-    "roundtrip_intraday_cost_pct": 0.2041,
-    "net_expected_1d_return_pct": -0.1676,
-    "net_expected_5d_return_pct": -0.7486,
-    "recommended_action": "NO TRADE",
-    "abstention_reason": "Expected move (1D +0.04%, 5D +0.22%) does not clear Indian round-trip transaction costs (0.20% intraday / 0.36% delivery).",
+    "prob_next_day_up": 0.498,
+    "prob_5d_up": 0.4342,
+    "prob_10d_up": 0.4122,
+    "prob_lgbm_up": 0.4558,
+    "prob_xgb_up": 0.4526999890804291,
+    "prob_linear_up": 0.4643,
+    "expected_next_day_return_pct": 0.021,
+    "expected_5d_return_pct": -0.5056,
+    "expected_10d_return_pct": -0.6434,
+    "downside_risk_mae_pct": -0.9599,
+    "expected_upside_mfe_pct": 1.03,
+    "reward_to_risk_ratio": 1.073,
+    "model_agreement_score": 0.714,
+    "confidence_score": 61.99,
+    "roundtrip_delivery_cost_pct": 0.3569,
+    "roundtrip_intraday_cost_pct": 0.2057,
+    "net_expected_1d_return_pct": -0.1847,
+    "net_expected_5d_return_pct": -0.8625,
+    "recommended_action": "HOLD / WATCH",
+    "abstention_reason": null,
     "top_bullish_drivers": [
       {
-        "feature": "ms_nifty_ret_5d_pct",
-        "family": "3. Market & Sector Strength",
-        "value": 0.9488,
-        "contribution": 0.04152,
+        "feature": "pm_atr_ratio_7_21",
+        "family": "1. Price & Technical Momentum",
+        "value": 1.0759,
+        "contribution": 0.01903,
         "direction": "BULLISH"
       },
       {
-        "feature": "vd_vol_trend_5_20",
-        "family": "2. Volume & Delivery",
-        "value": 0.755,
-        "contribution": 0.03409,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "ms_india_vix_zscore_20d",
-        "family": "3. Market & Sector Strength",
-        "value": -0.2632,
-        "contribution": 0.00795,
+        "feature": "inst_net_flow_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": -1.77,
+        "contribution": 0.00511,
         "direction": "BULLISH"
       },
       {
         "feature": "inst_retail_dilution_4q",
         "family": "4. Institutional & Promoter Activity",
         "value": 1.77,
-        "contribution": 0.0045,
+        "contribution": 0.00489,
         "direction": "BULLISH"
       },
       {
-        "feature": "ms_sector_ret_60d_pct",
+        "feature": "ms_corr_nifty_60d",
         "family": "3. Market & Sector Strength",
-        "value": -1.5655,
-        "contribution": 0.00338,
+        "value": 0.5371,
+        "contribution": 0.00341,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "ms_india_vix_zscore_20d",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6225,
+        "contribution": 0.00289,
         "direction": "BULLISH"
       }
     ],
     "top_bearish_drivers": [
       {
-        "feature": "vd_rel_vol_100d",
-        "family": "2. Volume & Delivery",
-        "value": 0.1162,
-        "contribution": -0.03915,
+        "feature": "ms_corr_nifty_20d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.4595,
+        "contribution": -0.03865,
         "direction": "BEARISH"
       },
       {
-        "feature": "ms_corr_nifty_20d",
-        "family": "3. Market & Sector Strength",
-        "value": 0.5091,
-        "contribution": -0.02818,
+        "feature": "vd_vol_trend_5_20",
+        "family": "2. Volume & Delivery",
+        "value": 1.0855,
+        "contribution": -0.02038,
         "direction": "BEARISH"
       },
       {
         "feature": "fq_asset_turnover",
         "family": "6. Financial Quality",
         "value": 0.8423,
-        "contribution": -0.00896,
-        "direction": "BEARISH"
-      },
-      {
-        "feature": "eg_qtr_np_qoq_pct",
-        "family": "7. Earnings & Management Guidance",
-        "value": -6.21,
-        "contribution": -0.00773,
+        "contribution": -0.01623,
         "direction": "BEARISH"
       },
       {
         "feature": "inst_dii_chg_4q",
         "family": "4. Institutional & Promoter Activity",
         "value": 2.4,
-        "contribution": -0.00761,
+        "contribution": -0.00788,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "eg_qtr_np_qoq_pct",
+        "family": "7. Earnings & Management Guidance",
+        "value": -6.21,
+        "contribution": -0.00734,
         "direction": "BEARISH"
       }
     ],
-    "target_session_date": "2026-11-17",
-    "last_close": 287.15,
-    "atr_14_pct": 2.143,
-    "momentum_prob_up": 0.5006,
-    "momentum_5d_return_pct": 2.1078,
+    "target_session_date": "2026-11-18",
+    "last_close": 293.3,
+    "atr_14_pct": 2.259,
+    "momentum_prob_up": 0.5294,
+    "momentum_5d_return_pct": 3.1121,
+    "momentum_prob_5d_up": 0.5466,
+    "momentum_prob_10d_up": 0.5551,
+    "momentum_1d_return_pct": 0.4527,
+    "momentum_10d_return_pct": 4.4783,
     "feature_snapshot": {
-      "ms_corr_nifty_20d": 0.50914,
+      "ne_is_earnings_window": 1.0,
+      "ms_corr_nifty_20d": 0.45948,
       "fq_asset_turnover": 0.84227,
       "inst_dii_chg_4q": 2.4,
-      "fq_debt_to_equity": 0.03309,
-      "ms_india_vix_zscore_20d": -0.26324,
-      "inst_named_holders_count": 14.0,
       "eg_qtr_np_qoq_pct": -6.21,
-      "pm_ret_180d_pct": -11.91718,
-      "fq_interest_coverage": 321.24706,
+      "fq_debt_to_equity": 0.03309,
+      "inst_named_holders_count": 14.0,
+      "ms_india_vix_zscore_20d": -0.62253,
+      "pm_ret_180d_pct": -10.30581,
       "fq_roce_pct": 36.45369
     },
     "outcome_evaluated_at": null,
@@ -2385,7 +2373,7 @@
   },
   "corporate_intelligence": {
     "symbol": "ITC",
-    "evaluated_at": "2026-11-16T06:08:12.013998+00:00",
+    "evaluated_at": "2026-11-17T21:30:15.841590+00:00",
     "promoter_holding_pct": 0.0,
     "promoter_chg_1q": 0.0,
     "promoter_chg_4q": 0.0,
@@ -2398,9 +2386,9 @@
     "dii_chg_4q": 2.4,
     "net_institutional_flow_4q": -1.77,
     "is_fno_eligible": true,
-    "latest_delivery_pct": 46.12,
-    "delivery_vs_20d_avg": -0.64,
-    "fno_positioning_heuristic": "Balanced F&O / Cash Activity",
+    "latest_delivery_pct": 50.69,
+    "delivery_vs_20d_avg": 5.08,
+    "fno_positioning_heuristic": "Long Unwinding / Profit Booking Heuristic",
     "net_bulk_block_value_cr": 0.0,
     "bulk_block_deals_count": 0,
     "institutional_conviction_score": 42.0,

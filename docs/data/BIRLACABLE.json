@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-16 04:08:53 IST",
+  "fetched_at": "2026-11-18 02:59:16 IST",
   "overview": {
     "symbol": "BIRLACABLE",
     "name": "Birla Cable Ltd",
@@ -9,18 +9,18 @@
     "sector": "Telecommunication",
     "industry": "Telecom -  Equipment & Accessories",
     "about": "Incorporated in 1992, Birla Cable Ltd manufactures and sells telecommunications cables, other types of wires & cables, etc. [1]",
-    "market_cap_cr": 934.0,
-    "current_price": 311.0,
+    "market_cap_cr": 883.0,
+    "current_price": 294.0,
     "high_52w": 419.0,
     "low_52w": 104.0,
-    "stock_pe": 11.2,
+    "stock_pe": 10.6,
     "book_value": 133.0,
-    "dividend_yield_pct": 0.39,
+    "dividend_yield_pct": 0.42,
     "roce_pct": 8.96,
     "roe_pct": 6.26,
     "face_value": 10.0,
-    "revenue_cagr_5y_pct": 7.05,
-    "profit_cagr_5y_pct": 25.93,
+    "revenue_cagr_5y_pct": 9.57,
+    "profit_cagr_5y_pct": -6.24,
     "piotroski_score": 6,
     "pros": [
       "Company is expected to give good quarter",
@@ -31,6 +31,23 @@
     ]
   },
   "last_5_annual_reports": [
+    {
+      "period": "Mar 2022\n            \n            (S)",
+      "revenue_cr": 535.0,
+      "expenses_cr": 492.0,
+      "operating_profit_cr": 43.0,
+      "opm_pct": 8.0,
+      "other_income_cr": 3.0,
+      "interest_cr": 6.0,
+      "depreciation_cr": 11.0,
+      "profit_before_tax_cr": 29.0,
+      "tax_pct": 26.0,
+      "net_profit_cr": 22.0,
+      "eps_inr": 7.25,
+      "dividend_payout_pct": 21.0,
+      "revenue_growth_pct": 62.61,
+      "net_profit_growth_pct": 175.0
+    },
     {
       "period": "Mar 2023",
       "revenue_cr": 792.0,
@@ -45,8 +62,8 @@
       "net_profit_cr": 33.0,
       "eps_inr": 10.98,
       "dividend_payout_pct": 23.0,
-      "revenue_growth_pct": null,
-      "net_profit_growth_pct": null
+      "revenue_growth_pct": 48.04,
+      "net_profit_growth_pct": 50.0
     },
     {
       "period": "Mar 2024",
@@ -98,23 +115,6 @@
       "dividend_payout_pct": 22.0,
       "revenue_growth_pct": 16.47,
       "net_profit_growth_pct": 240.0
-    },
-    {
-      "period": "TTM",
-      "revenue_cr": 1040.0,
-      "expenses_cr": 908.0,
-      "operating_profit_cr": 132.0,
-      "opm_pct": 13.0,
-      "other_income_cr": 4.0,
-      "interest_cr": 10.0,
-      "depreciation_cr": 14.0,
-      "profit_before_tax_cr": 111.0,
-      "tax_pct": null,
-      "net_profit_cr": 83.0,
-      "eps_inr": 27.77,
-      "dividend_payout_pct": null,
-      "revenue_growth_pct": 34.89,
-      "net_profit_growth_pct": 388.24
     }
   ],
   "last_5_quarterly_reports": [
@@ -213,12 +213,16 @@
     "net_cash_position_cr": 15.0,
     "debt_to_equity": 0.27,
     "cash_to_debt_ratio": 1.14,
-    "cash_pct_of_mcap": 12.96,
+    "cash_pct_of_mcap": 13.7,
     "latest_ocf_cr": 0.0,
     "latest_fcf_cr": 0.0,
     "cumulative_5y_ocf_cr": 375.0,
     "cumulative_5y_fcf_cr": 283.0,
     "roce_5y_series": [
+      {
+        "period": "Mar 2022\n            \n            (S)",
+        "roce_pct": 14.0
+      },
       {
         "period": "Mar 2024",
         "roce_pct": 10.0
@@ -666,15 +670,24 @@
     ]
   },
   "rd_and_innovation": {
-    "latest_rd_spend_cr": 6.76,
+    "latest_rd_spend_cr": 5.01,
     "latest_rd_pct_of_sales": 0.65,
-    "cumulative_5y_rd_cr": 25.68,
+    "cumulative_5y_rd_cr": 22.4,
     "intangible_assets_cr": 0.0,
     "cwip_cr": 0.0,
-    "rd_cagr_5y_pct": 7.04,
+    "rd_cagr_5y_pct": 9.54,
     "innovation_focus": "High-fiber-count ribbon optical fiber cables, bend-insensitive FTTH micro-cables, flame-retardant specialty telecom & structured LAN cables at Rewa R&D facility",
     "rd_data_source": "Annual Report Form B (R&D & Technology Absorption with NKT/Ericsson heritage)",
     "history_5y": [
+      {
+        "period": "Mar 2022\n            \n            (S)",
+        "revenue_cr": 535.0,
+        "rd_spend_cr": 3.48,
+        "rd_pct_of_sales": 0.65,
+        "intangible_assets_cr": 0.0,
+        "cwip_cr": 2.0,
+        "employee_cost_pct": null
+      },
       {
         "period": "Mar 2023",
         "revenue_cr": 792.0,
@@ -710,15 +723,6 @@
         "intangible_assets_cr": 0.0,
         "cwip_cr": 0.0,
         "employee_cost_pct": 5.0
-      },
-      {
-        "period": "TTM",
-        "revenue_cr": 1040.0,
-        "rd_spend_cr": 6.76,
-        "rd_pct_of_sales": 0.65,
-        "intangible_assets_cr": 0.0,
-        "cwip_cr": 0.0,
-        "employee_cost_pct": 4.0
       }
     ],
     "annual_reports_5y": [
@@ -750,55 +754,45 @@
     ]
   },
   "technicals": {
-    "current_price": 322.0,
-    "prev_close": 325.25,
-    "day_change_pct": -1.0,
-    "day_high": 322.0,
-    "day_low": 310.1,
+    "current_price": 294.3,
+    "prev_close": 309.0,
+    "day_change_pct": -4.76,
+    "day_high": 308.9,
+    "day_low": 293.55,
     "high_52w": 419.0,
     "low_52w": 104.0,
-    "return_5d_pct": -11.36,
-    "return_1m_pct": -10.64,
-    "return_6m_pct": 99.33,
-    "return_1y_pct": 111.23,
-    "rsi_14": 45.87,
-    "macd_line": -3.84,
-    "macd_signal": -4.31,
-    "macd_hist": 0.47,
-    "ema_20": 333.03,
-    "dma_50": 329.49,
-    "dma_200": 254.14,
-    "bb_upper": 362.27,
-    "bb_middle": 322.59,
-    "bb_lower": 282.91,
-    "atr_14": 19.15,
-    "atr_pct": 5.95,
-    "volume_latest": 3561.0,
-    "volume_20d_avg": 379149.1,
-    "volume_Surge_ratio": 0.01,
-    "annualized_volatility_pct": 65.39,
-    "pivot_point": 318.03,
-    "support_1": 314.06,
-    "support_2": 306.13,
-    "resistance_1": 325.96,
-    "resistance_2": 329.93,
+    "return_5d_pct": -14.72,
+    "return_1m_pct": -14.98,
+    "return_6m_pct": 91.76,
+    "return_1y_pct": 99.39,
+    "rsi_14": 39.02,
+    "macd_line": -7.25,
+    "macd_signal": -5.06,
+    "macd_hist": -2.19,
+    "ema_20": 328.22,
+    "dma_50": 327.62,
+    "dma_200": 254.41,
+    "bb_upper": 362.05,
+    "bb_middle": 320.22,
+    "bb_lower": 278.38,
+    "atr_14": 18.95,
+    "atr_pct": 6.44,
+    "volume_latest": 391167.0,
+    "volume_20d_avg": 391893.65,
+    "volume_Surge_ratio": 1.0,
+    "annualized_volatility_pct": 67.74,
+    "pivot_point": 298.92,
+    "support_1": 288.94,
+    "support_2": 283.57,
+    "resistance_1": 304.29,
+    "resistance_2": 314.27,
     "trend_regime": "PULLBACK IN STRUCTURAL UPTREND (Above 200-DMA, testing 50-DMA)",
     "technical_signals": [
       "Structural support intact above 200-DMA; short-term consolidation below 50-DMA",
-      "RSI(14) at 45.87 \u2014 Neutral momentum band",
-      "MACD Bullish Crossover active (Histogram +0.47)"
+      "RSI(14) at 39.02 \u2014 Neutral momentum band",
+      "MACD below signal line (Histogram -2.19)"
     ],
     "price_series": [
-      {
-        "date": "2026-07-09",
-        "close": 186.76,
-        "open": 176.87,
-        "high": 185.58,
-        "low": 176.87,
-        "dma50": 186.98,
-        "dma200": 165.12,
-        "volume": 30209.0
-      },
       {
         "date": "2026-07-10",
         "close": 189.4,
@@ -1681,13 +1675,23 @@
       },
       {
         "date": "2026-11-16",
-        "close": 322.0,
+        "close": 309.0,
         "open": 322.0,
         "high": 322.0,
-        "low": 310.1,
-        "dma50": 329.49,
-        "dma200": 254.14,
-        "volume": 3561.0
+        "low": 309.0,
+        "dma50": 328.98,
+        "dma200": 254.01,
+        "volume": 202635.0
+      },
+      {
+        "date": "2026-11-17",
+        "close": 294.3,
+        "open": 300.25,
+        "high": 308.9,
+        "low": 293.55,
+        "dma50": 327.62,
+        "dma200": 254.41,
+        "volume": 391167.0
       }
     ]
   },
@@ -1696,22 +1700,22 @@
       "agent_id": "five_reports_agent",
       "agent_name": "5-Report Earnings & Performance Agent",
       "persona_inspiration": "Peter Lynch / Fundamental Growth Analyst",
-      "signal": "BULLISH",
-      "score": 78.0,
-      "confidence": 84,
+      "signal": "NEUTRAL",
+      "score": 52.0,
+      "confidence": 66,
       "weight_pct": 25,
-      "headline": "5Y Profit CAGR 25.93% | Latest FY Net Profit \u20b983 Cr | ROE 6.3%",
+      "headline": "5Y Profit CAGR -6.24% | Latest FY Net Profit \u20b917 Cr | ROE 6.3%",
       "key_metrics": {
-        "5Y Revenue CAGR": "7.0%",
-        "5Y Profit CAGR": "25.9%",
+        "5Y Revenue CAGR": "9.6%",
+        "5Y Profit CAGR": "-6.2%",
         "Latest Qtr Net Profit": "\u20b938 Cr",
-        "Latest OPM %": "13.0%",
+        "Latest OPM %": "6.0%",
         "ROE / ROCE": "6.3% / 9.0%",
         "Piotroski F-Score": "6/9"
       },
       "reasoning": [
-        "Steady 5-report annual revenue growth at 7.0% CAGR.",
-        "Superior bottom-line expansion: Net Profit grew at 25.9% 5Y CAGR.",
+        "Steady 5-report annual revenue growth at 9.6% CAGR.",
+        "5-year earnings drag: Net profit CAGR is negative (-6.2%).",
         "Latest quarter (Sep 2026) net profit jumped +22.6% sequentially.",
         "Positive sequential profit momentum in 4 of the last 5 quarters.",
         "Sub-par capital returns (ROE 6.3%, ROCE 9.0%)."
@@ -1737,7 +1741,7 @@
       "reasoning": [
         "Net Cash Fortress: Total Cash & Investments (\u20b9121 Cr) exceed Total Debt (\u20b9106 Cr) by \u20b915 Cr.",
         "Generated \u20b9375 Cr in cumulative 5-year Operating Cash Flow (latest FY OCF \u20b90 Cr).",
-        "Cash & investments represent 13.0% of total Market Cap, offering downside protection."
+        "Cash & investments represent 13.7% of total Market Cap, offering downside protection."
       ]
     },
     {
@@ -1767,21 +1771,22 @@
       "agent_id": "rd_innovation_agent",
       "agent_name": "R&D Intensity & Innovation Moat Agent",
       "persona_inspiration": "Charlie Munger / Philip Fisher Moat Analyst",
-      "signal": "NEUTRAL",
-      "score": 58.0,
-      "confidence": 68,
+      "signal": "BULLISH",
+      "score": 66.0,
+      "confidence": 73,
       "weight_pct": 15,
-      "headline": "Latest R&D: \u20b97 Cr (0.65% of Sales) | 5Y R&D: \u20b926 Cr",
+      "headline": "Latest R&D: \u20b95 Cr (0.65% of Sales) | 5Y R&D: \u20b922 Cr",
       "key_metrics": {
-        "Latest FY R&D Spend": "\u20b97 Cr",
+        "Latest FY R&D Spend": "\u20b95 Cr",
         "R&D % of Revenue": "0.65%",
-        "5Y Cumulative R&D": "\u20b926 Cr",
-        "5Y R&D CAGR": "7.0%",
+        "5Y Cumulative R&D": "\u20b922 Cr",
+        "5Y R&D CAGR": "9.5%",
         "Intangible Assets": "\u20b90 Cr",
         "CapEx WIP (CWIP)": "\u20b90 Cr"
       },
       "reasoning": [
-        "Latest annual R&D investment of \u20b97 Cr (0.65% of revenue); 5-year cumulative R&D of \u20b926 Cr.",
+        "Latest annual R&D investment of \u20b95 Cr (0.65% of revenue); 5-year cumulative R&D of \u20b922 Cr.",
+        "R&D budget compounding at 9.5% CAGR over the last 5 reports.",
         "Strategic R&D Focus: High-fiber-count ribbon optical fiber cables, bend-insensitive FTTH micro-cables, flame-retardant specialty telecom & structured LAN cables at Rewa R&D facility."
       ]
     },
@@ -1789,48 +1794,48 @@
       "agent_id": "technical_catalyst_agent",
       "agent_name": "Next-Day Technical & Catalyst Agent",
       "persona_inspiration": "Stanley Druckenmiller / Price-Action & Timing Desk",
-      "signal": "BULLISH",
-      "score": 62.0,
-      "confidence": 73,
+      "signal": "NEUTRAL",
+      "score": 43.0,
+      "confidence": 69,
       "weight_pct": 20,
-      "headline": "RSI(14) 45.9 | 50-DMA \u20b9329.5 | 200-DMA \u20b9254.1 | ATR \u20b919.1",
+      "headline": "RSI(14) 39.0 | 50-DMA \u20b9327.6 | 200-DMA \u20b9254.4 | ATR \u20b918.9",
       "key_metrics": {
-        "RSI (14)": "45.9",
-        "MACD Histogram": "+0.47",
-        "50-DMA / 200-DMA": "\u20b9329.5 / \u20b9254.1",
-        "ATR (14) Daily Range": "\u20b919.15 (5.95%)",
-        "Volume vs 20D Avg": "0.01x",
-        "Pivot S1 / R1": "\u20b9314.1 / \u20b9326.0"
+        "RSI (14)": "39.0",
+        "MACD Histogram": "-2.19",
+        "50-DMA / 200-DMA": "\u20b9327.6 / \u20b9254.4",
+        "ATR (14) Daily Range": "\u20b918.95 (6.44%)",
+        "Volume vs 20D Avg": "1.00x",
+        "Pivot S1 / R1": "\u20b9288.9 / \u20b9304.3"
       },
       "reasoning": [
         "Structural support intact above 200-DMA; short-term consolidation below 50-DMA",
-        "RSI(14) at 45.87 \u2014 Neutral momentum band",
-        "MACD Bullish Crossover active (Histogram +0.47)"
+        "RSI(14) at 39.02 \u2014 Neutral momentum band",
+        "MACD below signal line (Histogram -2.19)"
       ]
     }
   ],
   "next_day_guidance": {
     "action": "BUY",
-    "conviction_score": 71.8,
-    "fundamental_score": 74.2,
-    "technical_score": 62.0,
-    "current_price": 322.0,
-    "entry_zone_low": 314.34,
-    "entry_zone_high": 323.92,
-    "target_1_next_day": 344.98,
-    "target_2_swing": 365.09,
-    "stop_loss": 303.81,
+    "conviction_score": 62.7,
+    "fundamental_score": 67.6,
+    "technical_score": 43.0,
+    "current_price": 294.3,
+    "entry_zone_low": 286.72,
+    "entry_zone_high": 296.19,
+    "target_1_next_day": 317.04,
+    "target_2_swing": 336.94,
+    "stop_loss": 276.3,
     "risk_reward_ratio": 1.26,
-    "expected_next_day_range_low": 302.85,
-    "expected_next_day_range_high": 341.15,
+    "expected_next_day_range_low": 275.35,
+    "expected_next_day_range_high": 313.25,
     "position_size_suggestion_pct": 5.0,
-    "executive_summary": "Birla Cable Ltd (BIRLACABLE) earns a composite conviction score of 71.8/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b9121 Cr in cash & investments, 6.3% ROE, 0.65% R&D intensity, and 67.3% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9314.34\u2013\u20b9323.92 zone targeting \u20b9344.98 (T1) and \u20b9365.09 (T2) with a strict ATR-calibrated stop-loss at \u20b9303.81 (Risk:Reward 1:1.26).",
+    "executive_summary": "Birla Cable Ltd (BIRLACABLE) earns a composite conviction score of 62.7/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b9121 Cr in cash & investments, 6.3% ROE, 0.65% R&D intensity, and 67.3% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b9286.72\u2013\u20b9296.19 zone targeting \u20b9317.04 (T1) and \u20b9336.94 (T2) with a strict ATR-calibrated stop-loss at \u20b9276.30 (Risk:Reward 1:1.26).",
     "rationale_points": [
-      "5-Report Fundamental Score: 74.2/100 (5Y Profit CAGR: 25.9%, Piotroski: 6/9).",
+      "5-Report Fundamental Score: 67.6/100 (5Y Profit CAGR: -6.2%, Piotroski: 6/9).",
       "Balance Sheet & Cash in Hand: \u20b9121 Cr liquid cash/investments vs \u20b9106 Cr total borrowings (D/E 0.27x).",
       "Stockholder Conviction: Promoters hold 66.35%, FIIs 0.87%, DIIs 0.06% (Total Institutional: 0.93%).",
-      "R&D & Innovation Moat: \u20b97 Cr annual R&D (0.65% of sales; 5Y cumulative \u20b926 Cr).",
-      "Next-Day Technical Trigger (62.0/100): PULLBACK IN STRUCTURAL UPTREND (Above 200-DMA, testing 50-DMA); RSI(14) at 45.9 with ATR(14) daily range of \u20b919.15."
+      "R&D & Innovation Moat: \u20b95 Cr annual R&D (0.65% of sales; 5Y cumulative \u20b922 Cr).",
+      "Next-Day Technical Trigger (43.0/100): PULLBACK IN STRUCTURAL UPTREND (Above 200-DMA, testing 50-DMA); RSI(14) at 39.0 with ATR(14) daily range of \u20b918.95."
     ],
     "key_catalysts": [
       "Company is expected to give good quarter",
@@ -1840,7 +1845,7 @@
     ],
     "key_risks": [
       "Company has a low return on equity of 4.98% over last 3 years.",
-      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9303.81"
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b9276.30"
     ],
     "llm_synthesized": false,
     "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
@@ -1890,20 +1895,20 @@
         "why_it_affects_share_value": "Direct order-book / deal-pipeline expansion increases forward 4-quarter revenue visibility and earnings multiples."
       },
       {
-        "speaker_or_source": "Upstox",
-        "published": "Thu, 05 Nov 2026 08:00",
-        "headline": "Sterlite Tech, HFCL, Vindhya Telelinks and Birla Cable plunge as global AI stocks rout deepens; What lies ahead for optical fibre companies? - Upstox",
-        "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOaVE0d3p5VlVDNVJnX0E2VzB5Y0JuM2tWbEpIbWo5N2ZmQXV3b1NvaXhteEZYcV9JdVVZZDNoWWRKNnkyOHFMRmJMVHRScm1KcnR0emZreV9DTG5QT0Z2UmlzdDVQZGlZNVlSSkJscVdOZ0ZYTTVyUlBVb21tb2RlZVJzVnRGa2xvaHBZTkVReTJUZ1VReHlxT0VXUmtpRUw0ckthaTY5aV9yVmV3aUNnbmdObkNWZ0JLZmZRYjVQbUpkaWlDc0lHQzljdlZFTGVSNUtNb3B3ZFRLTEp4?oc=5",
-        "share_price_impact": "BULLISH",
-        "why_it_affects_share_value": "Strategic R&D, product launch, or capacity expansion strengthens long-term competitive moat."
-      },
-      {
         "speaker_or_source": "Kalkine India",
         "published": "Thu, 05 Nov 2026 10:32",
         "headline": "Vindhya Telelinks (NSE:VINDHYATEL) Q2 FY27 Results: Net Profit Up 82% - Kalkine India",
         "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxOSlNDV0NqMGdQc1lud2dKcEVEMmVLSlhfOFUzUk91Z0lCbGZOVUZKeGlCMGNOMnRqUHVxamV1YW5SUnNvZF92MDcybDktN2dqeDZBalFBaWE0eG9rdTFvV3YxN0JYX1BNU1R3bE9TZUhxRmJ0NHlvUXJ2b3RQdG84NzJtRU1JV1RiZWFxWGtNRFlBeEIwUnpHT3Q2cjRwWW90OFFMYldFLUJWZDRnZGt5OGtNWjhGc01EcVItVEpHUW1GUG82QkdaaEZmWDFIdFBiTlpLc1UzM1UzaGxqUU5hREFMTQ?oc=5",
         "share_price_impact": "BULLISH",
         "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
+      },
+      {
+        "speaker_or_source": "Multibagg AI",
+        "published": "Wed, 04 Nov 2026 20:16",
+        "headline": "Vindhya Telelinks Q2 FY27 Profit Rises 34% as Sales Fall 12% - Multibagg AI",
+        "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxNcWJfTVVoZDZJSGNGcjdBcFBUZC1ya0o4TEJkUThMak1ZdkVYSy1tQjZiRmtLRGhESkFsV2o5RHNLWExOQW1pRmhia2gyYTZxQlhKZ2NaVmxkaUlneFQ3bktpbTRscXFqZmI2azFrSDJwYVRhLThSS0IyVTVGczRzVklIczM3dlI4dHJiTzFFTXRySTBGWDBUT3Noa3M2UjJ4LVkyTWpqNms?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Direct order-book / deal-pipeline expansion increases forward 4-quarter revenue visibility and earnings multiples."
       }
     ],
     "competitors": [
@@ -1911,13 +1916,13 @@
         "symbol": "HFCL",
         "name": "HFCL Ltd",
         "segment": "Optical Fiber Cables (OFC) & Telecom Turnkey EPC",
-        "current_price": 200.0,
-        "day_change_pct": -2.66,
-        "return_1m_pct": -21.88,
+        "current_price": 195.2,
+        "day_change_pct": -5.0,
+        "return_1m_pct": -27.38,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "HFCL Share Price - Upstox",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9EelYzcTZFMzBFeDFpX25XMjczRHd3SW90bEdtbG5WNWNJMVVpMTdsR3p4UHRUYk91R19ZOUFaQXVpME5obG9mVGdVZWs4bHczS2wwNl9tcFhDSllXSjczOA?oc=5",
+        "latest_statement_or_news": "HFCL Q2 Results: Stock in 5% upper circuit after multi-fold jump in topline, operating profit - CNBC TV18 - LinkedIn",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOdGkyMFFvQWJSOTRDc202T05RQVVxRS1KYkU3NkgwUDAzVDNDU2d0a20ybUszU2ZSbjhIcTB5RTBiS1dpMW1zMExfVTBmV2tUOTc3NHNMYXBmY182OURYV2JEZFlsZ1VnOWxfMm1oU0hpaGt3YmpXX0NXQUZGWGVDVy1HSkVqcnRGUHdyRnBiNHZLXzNxYkZoWWNWbi1OQTF3Z2kxSy1DR0d2OEVGMGhIUGdjOWppQQ?oc=5",
         "read_across_signal": "COMPETITIVE THREAT",
         "impact_on_share_value": "HFCL's BharatNet Phase-III order wins, global OFC realization prices & anti-dumping duty updates directly move Birla Cable."
       },
@@ -1927,11 +1932,11 @@
         "segment": "Optical Fiber Preform, OFC & US/EU Export Markets",
         "current_price": 675.25,
         "day_change_pct": -4.99,
-        "return_1m_pct": -22.02,
+        "return_1m_pct": -23.89,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Sterlite Technologies Ltd Share/Stock Price Live Today | The HinduBusinessLine - BusinessLine",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE82MTd4b3REYnlqWHRJallZaHhrOW5naENTeExiYmJnXzlCall2MlVrZzZXb1N4cXZpLTY2a04ySVhCVngtX2VQeGlXYzNISGtEdHRmelRDbmVlQzJxcFM0UFZYWlVxWFM1cGlPSF9HQVBRLVZHbmszREln?oc=5",
+        "latest_statement_or_news": "Sterlite Technologies Limited (STLTECH.NS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9zdjhwUGNaSVlYWGlzYlJicmZ5TTZFbDdndl9oOGdKNDZlQ0RpWGJvZ3BVdnI1OVdpUXd4NnNpMjdFM0lIMlU0UkVHcU9kM3BST29teVRIN0t6UQ?oc=5",
         "read_across_signal": "COMPETITIVE THREAT",
         "impact_on_share_value": "STL's commentary on global optical fiber inventory destocking and per-fkm fiber pricing is the primary margin indicator for Birla Cable."
       },
@@ -1939,27 +1944,27 @@
         "symbol": "FINCABLES",
         "name": "Finolex Cables Ltd",
         "segment": "Communication Cables, Optic Fiber & Electrical Wires",
-        "current_price": 1256.6,
-        "day_change_pct": -1.06,
-        "return_1m_pct": -8.12,
+        "current_price": 1254.9,
+        "day_change_pct": -1.19,
+        "return_1m_pct": -2.15,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Finolex Cables (NSEI:FINCABLES) Stock Forecast & Analyst Predictions - Simply Wall St",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxONEQ1dDVvTGZmbmRZVUxhQUpxSzNKZEVmTEJJOTlCdDBTSllpNUpSSHEzOGRXOVltMWltMWpjZ3p2T0JfTko1cC16SldydHNYWHYtQjc4dlljdzlSOHQ5cjlzUFRSUDdQaUZ6WlNMd1NSMmlwdHNhNkVkWXBpeEVsV2FSWllSU3U3SzlsU1g0ZkVYUQ?oc=5",
-        "read_across_signal": "COMPETITIVE THREAT",
+        "latest_statement_or_news": "FINCABLES Share Price Today - Finolex Cables on NSE/BSE - scanx.trade",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5lWksyNldCOENhTmQzOEpIWWtYaGUyRXp4X2VpTjI2MldaSFl4b3BObXFWQ3FjV2NqWjZlMXltTDlpamc0RkduV09naW8wMnNOT0tjVUdMVGt5UQ?oc=5",
+        "read_across_signal": "NEUTRAL",
         "impact_on_share_value": "Copper rod & polymer insulation raw material pass-through and domestic telecom cable demand."
       },
       {
         "symbol": "POLYCAB",
         "name": "Polycab India Ltd",
         "segment": "Cables, Wires & BharatNet EPC Participation",
-        "current_price": 7884.0,
-        "day_change_pct": -0.25,
-        "return_1m_pct": -4.08,
+        "current_price": 7955.5,
+        "day_change_pct": 0.65,
+        "return_1m_pct": -0.87,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Polycab India Ltd. Share Price Today - Polycab India Ltd. Stock Price Live NSE/BSE - CNBC TV18",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE52cEE4QTQ5TkVnUktSSkxjRGpLb25Ed3dhNVE3NVNrNjhfX1ZGRzZXeHplZzFuZkozTEZwemduOHpEQ09YY2RXZDVGRnRJdlpaT3NDRlVNUEJyQ1ZSM3pzRXN0WmdxTHNqQjVjZjZvSE5QNG1XU0FHaVJ4Y1hYVlk?oc=5",
+        "latest_statement_or_news": "Polycab India shares rise 2% as NCLAT sets aside insolvency proceedings - Moneycontrol.com",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNeWNkMGtRVkpTaXZoUUdrUHdmRERGMVhLZElSTHE1R0FyQmxJY1l2M1JnTWpyT3RVQXozRHVZTmNPVW96WkdKSzFXaVMzRnMwMDhkREN5b3hfalJsUGxaX1VaTnJpWFNTUThLb2RmN1V3Smw0aUpVVkhkcjBvd0FYak40b2kwanl1QUQtT0w0RDBVcFpTV1VmMTRnZWRDaExueDdzV1c3YlFESmRDUE5TRkl0V21id1FUaHJjVVlGWjM4V0tsZExObEE1VldjZUXSAdQBQVVfeXFMUFlwUVUyWmo2U0oySU1nbnQ2dmZONmlBYm1fQUJRZXZVN3FIVE91a2tzRG5PTkF3V1dQczlzVlhFUktzQVpkRGpsWm1TMXUtQ0h0aU5uX19KZ2hERGxiV2pKYm1pa05kNk42b3h4Z0xHX2tJWGhhYVFSdElBai13MVQ5VkdXR0tJRl8xbkE3SnRPcGdjUERoNUFXRzA4RTRzeUJVMk9lWFczSVpoZXFYNEszbkpuaGgyRWtVLXZrazlacTB5U0JBaUxOMWxuVmNRc1BwbEU?oc=5",
         "read_across_signal": "NEUTRAL",
         "impact_on_share_value": "Sector valuation multiple leader and indicator of domestic infrastructure cable demand."
       }
@@ -1976,8 +1981,8 @@
   ],
   "data_quality": {
     "symbol": "BIRLACABLE",
-    "evaluated_at": "2026-11-16 09:37:49 IST",
-    "quality_score": 81.2,
+    "evaluated_at": "2026-11-18 02:59:04 IST",
+    "quality_score": 89.6,
     "trade_eligible": true,
     "has_minimum_price_history": true,
     "price_bars_count": 248,
@@ -1986,204 +1991,208 @@
     "critical_failures": []
   },
   "market_regime": {
-    "observation_date": "2026-11-16",
+    "observation_date": "2026-11-17",
     "regime": "Weak Bull",
-    "nifty_50_close": 25267.85,
-    "nifty_50_day_change_pct": 0.49,
-    "nifty_50_return_20d_pct": 9.87,
-    "nifty_50_dma_50": 23356.03,
-    "nifty_50_dma_200": 23992.31,
-    "india_vix_close": 15.73,
-    "india_vix_change_pct": 1.48,
-    "advance_count": 939,
-    "decline_count": 1777,
-    "unchanged_count": 28,
-    "advance_decline_ratio": 0.528,
+    "nifty_50_close": 25387.4,
+    "nifty_50_day_change_pct": 0.38,
+    "nifty_50_return_20d_pct": 9.68,
+    "nifty_50_dma_50": 23385.96,
+    "nifty_50_dma_200": 23992.91,
+    "india_vix_close": 15.52,
+    "india_vix_change_pct": -1.02,
+    "advance_count": 1318,
+    "decline_count": 1404,
+    "unchanged_count": 38,
+    "advance_decline_ratio": 0.939,
     "pct_above_50dma": 86.7,
-    "pct_above_200dma": 73.3,
+    "pct_above_200dma": 80.0,
     "allow_aggressive_longs": true,
     "regime_rationale": [
-      "Structural uptrend intact above 200-DMA (23,992.3), though short-term momentum is moderate (20D: +9.87%).",
-      "NSE Market Breadth: 939 Advances vs 1777 Declines (A/D Ratio 0.53).",
-      "Universe Breadth: 86.7% above 50-DMA, 73.3% above 200-DMA."
+      "Structural uptrend intact above 200-DMA (23,992.9), though short-term momentum is moderate (20D: +9.68%).",
+      "NSE Market Breadth: 1318 Advances vs 1404 Declines (A/D Ratio 0.94).",
+      "Universe Breadth: 86.7% above 50-DMA, 80.0% above 200-DMA."
     ],
     "sector_performances": [
       {
         "index_code": "NIFTY_BANK",
         "index_name": "Nifty Bank",
-        "close": 61383.4,
-        "day_change_pct": 0.57,
-        "return_20d_pct": 9.99,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_IT",
-        "index_name": "Nifty IT",
-        "close": 32111.05,
-        "day_change_pct": 0.56,
-        "return_20d_pct": 4.53,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_PHARMA",
-        "index_name": "Nifty Pharma",
-        "close": 28681.7,
-        "day_change_pct": 0.51,
-        "return_20d_pct": 11.09,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_FMCG",
-        "index_name": "Nifty FMCG",
-        "close": 46987.5,
-        "day_change_pct": 0.33,
-        "return_20d_pct": 4.9,
-        "pe_ratio": null
+        "close": 62273.25,
+        "day_change_pct": 1.13,
+        "return_20d_pct": 11.51,
+        "pe_ratio": 13.76
       },
       {
         "index_code": "NIFTY_AUTO",
         "index_name": "Nifty Auto",
-        "close": 27851.85,
-        "day_change_pct": -0.28,
-        "return_20d_pct": 8.9,
-        "pe_ratio": null
-      },
-      {
-        "index_code": "NIFTY_ENERGY",
-        "index_name": "Nifty Energy",
-        "close": 37152.2,
-        "day_change_pct": -0.66,
-        "return_20d_pct": 2.59,
-        "pe_ratio": null
+        "close": 27769.15,
+        "day_change_pct": 0.72,
+        "return_20d_pct": 7.76,
+        "pe_ratio": 30.32
       },
       {
         "index_code": "NIFTY_METAL",
         "index_name": "Nifty Metal",
-        "close": 12540.5,
-        "day_change_pct": -0.85,
-        "return_20d_pct": 4.34,
-        "pe_ratio": null
+        "close": 12530.3,
+        "day_change_pct": 0.58,
+        "return_20d_pct": 3.27,
+        "pe_ratio": 14.82
+      },
+      {
+        "index_code": "NIFTY_PHARMA",
+        "index_name": "Nifty Pharma",
+        "close": 28157.1,
+        "day_change_pct": 0.21,
+        "return_20d_pct": 9.21,
+        "pe_ratio": 45.29
+      },
+      {
+        "index_code": "NIFTY_FMCG",
+        "index_name": "Nifty FMCG",
+        "close": 47611.6,
+        "day_change_pct": -0.2,
+        "return_20d_pct": 6.71,
+        "pe_ratio": 33.4
+      },
+      {
+        "index_code": "NIFTY_ENERGY",
+        "index_name": "Nifty Energy",
+        "close": 37176.7,
+        "day_change_pct": -0.27,
+        "return_20d_pct": 2.72,
+        "pe_ratio": 13.31
+      },
+      {
+        "index_code": "NIFTY_IT",
+        "index_name": "Nifty IT",
+        "close": 31654.1,
+        "day_change_pct": -0.9,
+        "return_20d_pct": -0.85,
+        "pe_ratio": 19.24
       }
     ]
   },
   "quantitative_prediction": {
-    "prediction_id": "BIRLACABLE_2026-11-16_ml_ensemble_3.2.0_20261116T133455Z",
+    "prediction_id": "BIRLACABLE_2026-11-17_ml_ensemble_3.2.0_20261117T213007Z",
     "symbol": "BIRLACABLE",
-    "observation_date": "2026-11-16",
-    "generated_at": "2026-11-16T13:34:55.675544+00:00",
+    "observation_date": "2026-11-17",
+    "generated_at": "2026-11-17T21:30:07.801484+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.2.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.4806,
-    "prob_5d_up": 0.5272,
-    "prob_10d_up": 0.5542,
-    "prob_lgbm_up": 0.4844,
-    "prob_xgb_up": 0.4794999957084656,
-    "prob_linear_up": 0.4994,
-    "expected_next_day_return_pct": -0.2686,
-    "expected_5d_return_pct": 0.3328,
-    "expected_10d_return_pct": 0.4925,
-    "downside_risk_mae_pct": -1.4309,
-    "expected_upside_mfe_pct": 1.6882,
-    "reward_to_risk_ratio": 1.18,
-    "model_agreement_score": 0.9549,
-    "confidence_score": 68.45,
-    "roundtrip_delivery_cost_pct": 0.5154,
-    "roundtrip_intraday_cost_pct": 0.3643,
-    "net_expected_1d_return_pct": -0.6329,
-    "net_expected_5d_return_pct": -0.1826,
-    "recommended_action": "HOLD / WATCH",
+    "prob_next_day_up": 0.4337,
+    "prob_5d_up": 0.5307,
+    "prob_10d_up": 0.5058,
+    "prob_lgbm_up": 0.4719,
+    "prob_xgb_up": 0.4708000123500824,
+    "prob_linear_up": 0.28,
+    "expected_next_day_return_pct": -0.9597,
+    "expected_5d_return_pct": 0.2733,
+    "expected_10d_return_pct": -0.1187,
+    "downside_risk_mae_pct": -1.4932,
+    "expected_upside_mfe_pct": 1.6349,
+    "reward_to_risk_ratio": 1.095,
+    "model_agreement_score": 0.8768,
+    "confidence_score": 74.91,
+    "roundtrip_delivery_cost_pct": 0.5172,
+    "roundtrip_intraday_cost_pct": 0.366,
+    "net_expected_1d_return_pct": -1.3257,
+    "net_expected_5d_return_pct": -0.2439,
+    "recommended_action": "REDUCE / SELL",
     "abstention_reason": null,
     "top_bullish_drivers": [
       {
-        "feature": "ms_nifty_ret_5d_pct",
-        "family": "3. Market & Sector Strength",
-        "value": 0.9488,
-        "contribution": 0.04103,
+        "feature": "vd_vol_trend_5_20",
+        "family": "2. Volume & Delivery",
+        "value": 0.8357,
+        "contribution": 0.02595,
         "direction": "BULLISH"
       },
       {
-        "feature": "vd_vol_trend_5_20",
-        "family": "2. Volume & Delivery",
-        "value": 0.7766,
-        "contribution": 0.03538,
+        "feature": "pm_ret_20d_pct",
+        "family": "1. Price & Technical Momentum",
+        "value": -14.9791,
+        "contribution": 0.01548,
         "direction": "BULLISH"
       },
       {
         "feature": "pm_ret_180d_pct",
         "family": "1. Price & Technical Momentum",
-        "value": 119.7569,
-        "contribution": 0.01412,
+        "value": 111.3617,
+        "contribution": 0.00971,
         "direction": "BULLISH"
       },
       {
-        "feature": "fq_asset_turnover",
-        "family": "6. Financial Quality",
-        "value": null,
-        "contribution": 0.01008,
+        "feature": "inst_dii_chg_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": 0.05,
+        "contribution": 0.00653,
         "direction": "BULLISH"
       },
       {
-        "feature": "ms_india_vix_zscore_20d",
-        "family": "3. Market & Sector Strength",
-        "value": -0.2632,
-        "contribution": 0.00795,
+        "feature": "pm_atr_14_pct",
+        "family": "1. Price & Technical Momentum",
+        "value": 6.4972,
+        "contribution": 0.00401,
         "direction": "BULLISH"
       }
     ],
     "top_bearish_drivers": [
       {
-        "feature": "vd_rel_vol_100d",
-        "family": "2. Volume & Delivery",
-        "value": 0.2641,
-        "contribution": -0.04326,
-        "direction": "BEARISH"
-      },
-      {
         "feature": "ms_corr_nifty_20d",
         "family": "3. Market & Sector Strength",
-        "value": 0.3476,
-        "contribution": -0.0226,
+        "value": 0.3493,
+        "contribution": -0.02528,
         "direction": "BEARISH"
       },
       {
         "feature": "inst_retail_dilution_4q",
         "family": "4. Institutional & Promoter Activity",
         "value": -0.92,
-        "contribution": -0.01096,
+        "contribution": -0.01782,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_60d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.1448,
+        "contribution": -0.01426,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 1.6616,
+        "contribution": -0.01174,
         "direction": "BEARISH"
       },
       {
         "feature": "ms_nifty_ret_1d_pct",
         "family": "3. Market & Sector Strength",
-        "value": 0.4914,
-        "contribution": -0.00581,
-        "direction": "BEARISH"
-      },
-      {
-        "feature": "pm_dist_high_252d_pct",
-        "family": "1. Price & Technical Momentum",
-        "value": -25.7402,
-        "contribution": -0.00562,
+        "value": 0.3808,
+        "contribution": -0.01048,
         "direction": "BEARISH"
       }
     ],
-    "target_session_date": "2026-11-17",
-    "last_close": 311.0,
-    "atr_14_pct": 6.214,
-    "momentum_prob_up": 0.425,
-    "momentum_5d_return_pct": -4.318,
+    "target_session_date": "2026-11-18",
+    "last_close": 294.3,
+    "atr_14_pct": 6.497,
+    "momentum_prob_up": 0.4091,
+    "momentum_5d_return_pct": -5.0618,
+    "momentum_prob_5d_up": 0.3745,
+    "momentum_prob_10d_up": 0.3701,
+    "momentum_1d_return_pct": -0.8922,
+    "momentum_10d_return_pct": -6.7147,
     "feature_snapshot": {
-      "ms_corr_nifty_20d": 0.34757,
-      "fq_asset_turnover": null,
+      "ne_is_earnings_window": 1.0,
+      "ms_corr_nifty_20d": 0.34926,
+      "fq_asset_turnover": 1.66164,
       "inst_dii_chg_4q": 0.05,
-      "fq_debt_to_equity": null,
-      "ms_india_vix_zscore_20d": -0.26324,
-      "inst_named_holders_count": 9.0,
       "eg_qtr_np_qoq_pct": 22.58,
-      "pm_ret_180d_pct": 119.75692,
-      "fq_interest_coverage": 13.2,
-      "fq_roce_pct": null
+      "fq_debt_to_equity": 0.47331,
+      "inst_named_holders_count": 9.0,
+      "ms_india_vix_zscore_20d": -0.62253,
+      "pm_ret_180d_pct": 111.36168,
+      "fq_roce_pct": 11.35266
     },
     "outcome_evaluated_at": null,
     "realized_next_day_return_pct": null,
@@ -2191,7 +2200,7 @@
   },
   "corporate_intelligence": {
     "symbol": "BIRLACABLE",
-    "evaluated_at": "2026-11-16T06:08:11.955823+00:00",
+    "evaluated_at": "2026-11-17T21:30:14.152181+00:00",
     "promoter_holding_pct": 66.35,
     "promoter_chg_1q": 0.0,
     "promoter_chg_4q": 0.0,
@@ -2204,8 +2213,8 @@
     "dii_chg_4q": 0.05,
     "net_institutional_flow_4q": 0.91,
     "is_fno_eligible": false,
-    "latest_delivery_pct": 42.69,
-    "delivery_vs_20d_avg": -2.42,
+    "latest_delivery_pct": 47.24,
+    "delivery_vs_20d_avg": -1.54,
     "fno_positioning_heuristic": "Standard Cash Segment Trading",
     "net_bulk_block_value_cr": 0.0,
     "bulk_block_deals_count": 0,
