@@ -564,10 +564,12 @@ def main() -> None:
     css = (ROOT_DIR / "frontend" / "styles.css").read_text()
     html = (ROOT_DIR / "frontend" / "index.html").read_text()
     js = (ROOT_DIR / "frontend" / "app.js").read_text()
+    report_js = (ROOT_DIR / "frontend" / "report.js").read_text()
 
     out_html = html.replace(
         '<link rel="stylesheet" href="/static/styles.css" />', f"<style>\n{css}\n</style>"
     )
+    out_html = out_html.replace('<script src="/static/report.js"></script>', f"<script>\n{report_js}\n</script>")
     out_html = out_html.replace(
         '<script src="/static/app.js"></script>',
         f"<script>\n{CLIENT_SIDE_ENGINE_JS}\n{js}\n</script>",

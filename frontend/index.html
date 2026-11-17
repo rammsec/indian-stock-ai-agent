@@ -100,7 +100,19 @@
     <!-- ======================================================================
          PAGE 1: MY COMPANIES DEEP RESEARCH (All Expandable / Collapsible Sections)
          ====================================================================== -->
-    <div id="page-company" class="page-view active">
+    <div id="page-company" class="page-view active rr-view-quick">
+
+      <!-- Standardised Executive Research Report: Quick Summary (default) / Detailed Research / Technical Appendix -->
+      <div id="rr-root" class="rr-root" aria-label="Research report">
+        <div class="rr-toolbar" role="group" aria-label="Report view">
+          <button type="button" class="rr-view-btn active" data-rr-view="quick" aria-pressed="true">Quick Summary <span class="rr-sub-label">~1 min</span></button>
+          <button type="button" class="rr-view-btn" data-rr-view="detailed" aria-pressed="false">Detailed Research <span class="rr-sub-label">15 sections</span></button>
+          <button type="button" class="rr-view-btn" data-rr-view="technical" aria-pressed="false">Technical Appendix <span class="rr-sub-label">models &amp; validation</span></button>
+        </div>
+        <div id="rr-pane-quick" class="rr-pane active" data-rr-pane="quick"><p class="rr-muted">Loading research report&hellip;</p></div>
+        <div id="rr-pane-detailed" class="rr-pane" data-rr-pane="detailed"></div>
+        <div id="rr-pane-technical" class="rr-pane" data-rr-pane="technical"></div>
+      </div>
 
       <!-- SECTION 1: Executive Overview & Next-Day Buy/Sell Trade Guidance -->
       <section class="collapsible-section open" id="sec-overview">
@@ -1045,6 +1057,7 @@
     </div>
   </div>
 
+  <script src="/static/report.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>

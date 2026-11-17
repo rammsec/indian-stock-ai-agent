@@ -88,6 +88,7 @@ async function initApp() {
   updateLLMBadge();
   setupMainPageNavigation();
   setupCollapsibleSections();
+  if (typeof initReportViews === "function") initReportViews();
   setupWatchlistAndAddControls();
   initBeginnerHelpTooltips();
   renderWatchlistBar();
@@ -459,6 +460,7 @@ function renderBundle(b) {
   renderStockholdersSection(shp);
   renderRDSection(rd);
   renderPromotersAndCompetitorsSection(intel, ov.name);
+  if (typeof renderResearchReport === "function") renderResearchReport(b);
   requestAnimationFrame(() => renderAllCanvases(b));
 }
 
