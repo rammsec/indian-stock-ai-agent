@@ -848,6 +848,10 @@
           <div id="fv-warnings-banner" style="margin-bottom: 0.85rem; font-size: 0.78rem; color: var(--text-muted);"></div>
           <div id="fv-kpis" class="kpi-strip" style="margin-bottom: 1rem;"></div>
 
+          <div id="fv-disclaimer-banner" style="margin-bottom: 0.75rem; padding: 0.5rem 0.85rem; border-radius: 6px; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); font-size: 0.76rem; color: #fbbf24;">
+            <strong>Hypothetical Research Disclaimer:</strong> This virtual paper portfolio records simulated orders with zero broker integration. It does not place real-money trades. Not financial advice.
+          </div>
+
           <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Prospective Horizon Evaluation (1D, 5D, 10D — Min 10 Matured Outcomes)</h3>
           <div class="table-wrap" style="margin-bottom: 1.15rem;">
             <table class="fin-table mono" style="font-size: 0.74rem;">
@@ -873,22 +877,47 @@
           </div>
 
           <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Paper Research Portfolio (₹10,00,000 Virtual Capital • Max Pos 10% • Max Exposure 80% • No Leverage)</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" style="margin-bottom: 1.15rem;">
             <table class="fin-table mono" style="font-size: 0.74rem;">
               <thead>
                 <tr>
                   <th style="text-align: left;">Strategy / Benchmark</th>
                   <th>Status</th>
                   <th>Ending Capital (₹)</th>
+                  <th>Cash / Invested (₹)</th>
+                  <th>Realized / Unrealized (₹)</th>
                   <th>Net Return%</th>
                   <th>Max DD%</th>
                   <th>Peak Exposure%</th>
-                  <th>Executed / Rejected</th>
+                  <th>Signals (Rec / Exec / Open / Mat / Rej)</th>
                   <th>Win Rate%</th>
                 </tr>
               </thead>
               <tbody id="tbody-fv-paper">
-                <tr><td colspan="8" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading paper portfolio...</td></tr>
+                <tr><td colspan="10" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading paper portfolio...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Recent Paper Trade &amp; Audit Trail Events</h3>
+          <div class="table-wrap">
+            <table class="fin-table mono" style="font-size: 0.72rem;">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Event Date</th>
+                  <th>Horizon</th>
+                  <th>Symbol</th>
+                  <th>Action</th>
+                  <th>Reason</th>
+                  <th>Entry / Exit Price</th>
+                  <th>Allocated (₹)</th>
+                  <th>Net P&amp;L (₹)</th>
+                  <th>Cash After (₹)</th>
+                  <th>Equity After (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-fv-audit">
+                <tr><td colspan="10" style="text-align: center; padding: 1rem; color: var(--text-muted);">No paper portfolio events recorded yet.</td></tr>
               </tbody>
             </table>
           </div>

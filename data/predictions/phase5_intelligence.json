@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-16T19:26:49.644641+05:30",
+  "generated_at": "2026-11-17T10:01:44.107855+05:30",
   "model_version": "5.0.0-pilot",
-  "last_news_collection_at": "2026-11-16T19:26:49.651891+05:30",
+  "last_news_collection_at": "2026-11-17T10:01:44.116517+05:30",
   "last_quant_update_at": "2026-11-16T13:34:55.585602+00:00",
-  "latest_prediction_at": "2026-11-16T19:26:49.644641+05:30",
+  "latest_prediction_at": "2026-11-17T10:01:44.107855+05:30",
   "pilot_universe": [
     "RELIANCE",
     "TCS",
@@ -16,7 +16,7 @@
       "symbol": "RELIANCE",
       "company_name": "Reliance Industries Ltd",
       "sector": "Energy, Telecom & Retail",
-      "observation_date": "2026-11-16",
+      "observation_date": "2026-11-17",
       "quant_score_summary": {
         "prob_next_day_up": 0.5183,
         "prob_5d_up": 0.4266,
@@ -127,7 +127,7 @@
       "symbol": "TCS",
       "company_name": "Tata Consultancy Services Ltd",
       "sector": "IT Services & Consulting",
-      "observation_date": "2026-11-16",
+      "observation_date": "2026-11-17",
       "quant_score_summary": {
         "prob_next_day_up": 0.4939,
         "prob_5d_up": 0.4546,
@@ -238,7 +238,7 @@
       "symbol": "TATAELXSI",
       "company_name": "Tata Elxsi Ltd",
       "sector": "ER&D & Embedded AI/Auto Design",
-      "observation_date": "2026-11-16",
+      "observation_date": "2026-11-17",
       "quant_score_summary": {
         "prob_next_day_up": 0.5116,
         "prob_5d_up": 0.4421,
@@ -349,7 +349,7 @@
       "symbol": "ITC",
       "company_name": "ITC Ltd",
       "sector": "FMCG, Agri & Paperboards",
-      "observation_date": "2026-11-16",
+      "observation_date": "2026-11-17",
       "quant_score_summary": {
         "prob_next_day_up": 0.508,
         "prob_5d_up": 0.4384,
@@ -460,7 +460,7 @@
       "symbol": "BIRLACABLE",
       "company_name": "Birla Cable Ltd",
       "sector": "Optical Fiber & Telecom Cables",
-      "observation_date": "2026-11-16",
+      "observation_date": "2026-11-17",
       "quant_score_summary": {
         "prob_next_day_up": 0.4806,
         "prob_5d_up": 0.5272,
@@ -570,7 +570,7 @@
   },
   "consolidated_feed": [],
   "monitoring": {
-    "evaluated_at": "2026-11-16T19:26:49.653160+05:30",
+    "evaluated_at": "2026-11-17T10:01:44.117948+05:30",
     "total_logged_predictions": 60,
     "evaluated_outcomes_count": 0,
     "rolling_directional_accuracy_pct": null,

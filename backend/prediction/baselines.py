@@ -46,19 +46,27 @@ class NaiveMomentumBaseline:
         r20 = _col_series(test_df, "pm_ret_20d_pct", 0.0)
         atr = _col_series(test_df, "pm_atr_14_pct", 1.6)
 
-        # Momentum signal blended with 1D pullback
-        raw_score = 0.035 * r5 + 0.015 * r20 - 0.04 * r1
-        prob_up = (self.base_up_rate_ + np.tanh(raw_score) * 0.14).clip(0.32, 0.68)
+        # Horizon-specific momentum signals (strictly backward-looking)
+        raw_1d = 0.035 * r5 + 0.015 * r20 - 0.04 * r1
+        raw_5d = 0.045 * r5 + 0.025 * r20 - 0.015 * r1
+        raw_10d = 0.030 * r5 + 0.040 * r20
+        prob_up = (self.base_up_rate_ + np.tanh(raw_1d) * 0.14).clip(0.32, 0.68)
+        prob_5d = (self.base_up_rate_ + np.tanh(raw_5d) * 0.14).clip(0.32, 0.68)
+        prob_10d = (self.base_up_rate_ + np.tanh(raw_10d) * 0.14).clip(0.32, 0.68)
         exp_1d = (0.08 * r5 - 0.06 * r1).clip(-2.5, 2.5)
         exp_5d = (0.22 * r20 + 0.12 * r5).clip(-6.0, 6.0)
+        exp_10d = (0.35 * r20 + 0.10 * r5).clip(-9.0, 9.0)
         downside_mae = (-0.72 * atr).clip(-6.0, -0.35)
         upside_mfe = (0.75 * atr).clip(0.35, 6.0)
 
         return pd.DataFrame(
             {
                 "prob_next_day_up": prob_up.values,
+                "prob_5d_up": prob_5d.values,
+                "prob_10d_up": prob_10d.values,
                 "expected_next_day_return_pct": exp_1d.values,
                 "expected_5d_return_pct": exp_5d.values,
+                "expected_10d_return_pct": exp_10d.values,
                 "downside_risk_mae_pct": downside_mae.values,
                 "expected_upside_mfe_pct": upside_mfe.values,
                 "model_agreement_score": np.full(len(test_df), 0.60),

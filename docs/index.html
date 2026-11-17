@@ -1856,6 +1856,10 @@ html, body {
           <div id="fv-warnings-banner" style="margin-bottom: 0.85rem; font-size: 0.78rem; color: var(--text-muted);"></div>
           <div id="fv-kpis" class="kpi-strip" style="margin-bottom: 1rem;"></div>
 
+          <div id="fv-disclaimer-banner" style="margin-bottom: 0.75rem; padding: 0.5rem 0.85rem; border-radius: 6px; background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); font-size: 0.76rem; color: #fbbf24;">
+            <strong>Hypothetical Research Disclaimer:</strong> This virtual paper portfolio records simulated orders with zero broker integration. It does not place real-money trades. Not financial advice.
+          </div>
+
           <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Prospective Horizon Evaluation (1D, 5D, 10D — Min 10 Matured Outcomes)</h3>
           <div class="table-wrap" style="margin-bottom: 1.15rem;">
             <table class="fin-table mono" style="font-size: 0.74rem;">
@@ -1881,22 +1885,47 @@ html, body {
           </div>
 
           <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Paper Research Portfolio (₹10,00,000 Virtual Capital • Max Pos 10% • Max Exposure 80% • No Leverage)</h3>
-          <div class="table-wrap">
+          <div class="table-wrap" style="margin-bottom: 1.15rem;">
             <table class="fin-table mono" style="font-size: 0.74rem;">
               <thead>
                 <tr>
                   <th style="text-align: left;">Strategy / Benchmark</th>
                   <th>Status</th>
                   <th>Ending Capital (₹)</th>
+                  <th>Cash / Invested (₹)</th>
+                  <th>Realized / Unrealized (₹)</th>
                   <th>Net Return%</th>
                   <th>Max DD%</th>
                   <th>Peak Exposure%</th>
-                  <th>Executed / Rejected</th>
+                  <th>Signals (Rec / Exec / Open / Mat / Rej)</th>
                   <th>Win Rate%</th>
                 </tr>
               </thead>
               <tbody id="tbody-fv-paper">
-                <tr><td colspan="8" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading paper portfolio...</td></tr>
+                <tr><td colspan="10" style="text-align: center; padding: 1rem; color: var(--text-muted);">Loading paper portfolio...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Recent Paper Trade &amp; Audit Trail Events</h3>
+          <div class="table-wrap">
+            <table class="fin-table mono" style="font-size: 0.72rem;">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Event Date</th>
+                  <th>Horizon</th>
+                  <th>Symbol</th>
+                  <th>Action</th>
+                  <th>Reason</th>
+                  <th>Entry / Exit Price</th>
+                  <th>Allocated (₹)</th>
+                  <th>Net P&amp;L (₹)</th>
+                  <th>Cash After (₹)</th>
+                  <th>Equity After (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-fv-audit">
+                <tr><td colspan="10" style="text-align: center; padding: 1rem; color: var(--text-muted);">No paper portfolio events recorded yet.</td></tr>
               </tbody>
             </table>
           </div>
@@ -4768,32 +4797,84 @@ function renderForwardValidation(fv) {
       .filter((h) => pp.strategies && pp.strategies[h])
       .map((h) => {
         const s = pp.strategies[h];
+        const netRet = s.net_return_pct ?? null;
         return `
           <tr>
             <td style="text-align: left;"><strong>Paper ML ${h}</strong></td>
             <td>${s.status}</td>
             <td>₹${Number(s.ending_capital_inr || 1000000).toLocaleString("en-IN")}</td>
-            <td class="${(s.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(s.net_return_pct ?? 0, 2, true)}</td>
+            <td>₹${Number(s.cash_inr ?? 1000000).toLocaleString("en-IN")} / ₹${Number(s.invested_capital_inr ?? 0).toLocaleString("en-IN")}</td>
+            <td>₹${Number(s.realized_pnl_inr ?? 0).toLocaleString("en-IN")} / ₹${Number(s.unrealized_pnl_inr ?? 0).toLocaleString("en-IN")}</td>
+            <td class="${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}">${netRet !== null ? fmtPct(netRet, 2, true) : "—"}</td>
             <td class="text-bear">${fmtPct(s.max_drawdown_pct ?? 0, 2)}</td>
             <td>${fmtPct(s.peak_exposure_pct ?? 0, 1)}</td>
-            <td>${s.executed_trades ?? 0} / ${s.rejected_signals ?? 0}</td>
+            <td>${s.signals_received ?? 0} / ${s.entries_executed ?? 0} / ${s.open_positions_count ?? 0} / ${s.matured_positions_count ?? 0} / ${s.rejected_signals ?? 0}</td>
             <td>${s.win_rate_pct != null ? fmtPct(s.win_rate_pct, 1) : "—"}</td>
           </tr>
         `;
       });
     const bm = pp.benchmarks || {};
     for (const [bName, bVal] of Object.entries(bm)) {
+      const bRet = bVal.net_return_pct;
+      const bDD = bVal.max_drawdown_pct;
+      const bEnd = bVal.ending_capital_inr;
+      const retStr = bRet !== null && bRet !== undefined ? fmtPct(bRet, 2, true) : "—";
+      const retCls = bRet !== null && bRet !== undefined ? (bRet >= 0 ? "text-bull" : "text-bear") : "";
       rows.push(`
         <tr style="background: rgba(56, 189, 248, 0.06);">
           <td style="text-align: left;"><strong>Benchmark: ${bName}</strong></td>
           <td>${bVal.status || "ACTIVE"}</td>
+          <td>${bEnd !== null && bEnd !== undefined ? `₹${Number(bEnd).toLocaleString("en-IN")}` : "—"}</td>
           <td>—</td>
-          <td class="${(bVal.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(bVal.net_return_pct ?? 0, 2, true)}</td>
-          <td>—</td><td>—</td><td>—</td><td>—</td>
+          <td>—</td>
+          <td class="${retCls}">${retStr}</td>
+          <td>${bDD !== null && bDD !== undefined ? fmtPct(bDD, 2) : "—"}</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
         </tr>
       `);
     }
     pBody.innerHTML = rows.join("");
+
+    const aBody = document.getElementById("tbody-fv-audit");
+    const trades = pp.recent_trades || [];
+    if (aBody && trades.length) {
+      aBody.innerHTML = trades
+        .slice(-20)
+        .reverse()
+        .map((t) => {
+          const actCls =
+            t.action === "ENTRY_EXECUTED" || t.action === "POSITION_OPEN"
+              ? "text-bull"
+              : t.action === "POSITION_EXITED"
+              ? "text-hold"
+              : t.action === "SIGNAL_REJECTED"
+              ? "text-bear"
+              : "";
+          const pxStr =
+            t.entry_price != null && t.exit_price != null
+              ? `₹${fmtNum(t.entry_price, 1)} → ₹${fmtNum(t.exit_price, 1)}`
+              : t.entry_price != null
+              ? `₹${fmtNum(t.entry_price, 1)}`
+              : "—";
+          return `
+            <tr>
+              <td style="text-align: left;">${t.event_date || t.signal_date || "—"}</td>
+              <td>${t.strategy_horizon}</td>
+              <td><strong>${t.symbol}</strong></td>
+              <td class="${actCls}" style="font-weight: 700;">${t.action}</td>
+              <td style="font-size: 0.70rem; color: var(--text-muted);">${t.reason || "—"}</td>
+              <td>${pxStr}</td>
+              <td>${t.allocated_capital_inr ? `₹${Number(t.allocated_capital_inr).toLocaleString("en-IN")}` : "—"}</td>
+              <td class="${t.net_pnl_inr > 0 ? "text-bull" : t.net_pnl_inr < 0 ? "text-bear" : ""}">${t.net_pnl_inr ? `₹${fmtNum(t.net_pnl_inr, 2)}` : "—"}</td>
+              <td>${t.cash_after_inr != null ? `₹${Number(t.cash_after_inr).toLocaleString("en-IN")}` : "—"}</td>
+              <td>${t.equity_after_inr != null ? `₹${Number(t.equity_after_inr).toLocaleString("en-IN")}` : "—"}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
   }
 }
 

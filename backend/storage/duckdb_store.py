@@ -390,13 +390,13 @@ class DuckDBStore:
         )
 
     def upsert_paper_trades(self, trades: list[Any]) -> int:
-        """Persist paper research portfolio trade and rejection records."""
+        """Persist paper research portfolio trade, position, mark-to-market, and rejection records."""
         rows = [t.model_dump() if hasattr(t, "model_dump") else dict(t) for t in trades]
         return self._upsert_parquet(
             self.paper_trades_parquet,
             rows,
-            dedup_cols=["strategy_horizon", "prediction_id"],
-            sort_cols=["signal_date", "strategy_horizon", "symbol"],
+            dedup_cols=["strategy_horizon", "prediction_id", "action", "event_date"],
+            sort_cols=["signal_date", "strategy_horizon", "symbol", "action"],
             keep="last",
         )
 

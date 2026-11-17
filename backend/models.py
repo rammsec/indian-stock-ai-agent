@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any, Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class ReportPeriod(BaseModel):
@@ -485,6 +486,10 @@ class QuantitativePredictionRecord(BaseModel):
     atr_14_pct: float | None = None
     momentum_prob_up: float | None = None
     momentum_5d_return_pct: float | None = None
+    momentum_prob_5d_up: float | None = None
+    momentum_prob_10d_up: float | None = None
+    momentum_1d_return_pct: float | None = None
+    momentum_10d_return_pct: float | None = None
     feature_snapshot: dict[str, float | None] = Field(default_factory=dict)
     outcome_evaluated_at: str | None = None
     realized_next_day_return_pct: float | None = None
@@ -811,7 +816,25 @@ class ForwardPredictionSnapshot(BaseModel):
     model_availability: dict[str, bool] = Field(default_factory=dict)
     benchmark_prob_up: float | None = None
     benchmark_5d_return_pct: float | None = None
+    benchmark_prob_1d_up: float | None = None
+    benchmark_expected_1d_return_pct: float | None = None
+    benchmark_prob_5d_up: float | None = None
+    benchmark_expected_5d_return_pct: float | None = None
+    benchmark_prob_10d_up: float | None = None
+    benchmark_expected_10d_return_pct: float | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("model_availability", "metadata", mode="before")
+    @classmethod
+    def _parse_json_dict(cls, v: Any) -> Any:
+        if isinstance(v, str):
+            v_str = v.strip()
+            if v_str.startswith("{") and v_str.endswith("}"):
+                try:
+                    return json.loads(v_str)
+                except Exception:
+                    return {}
+        return v or {}
 
 
 class ForwardOutcomeRecord(BaseModel):
@@ -821,7 +844,8 @@ class ForwardOutcomeRecord(BaseModel):
     symbol: str
     observation_date: str
     horizon: Literal["1D", "5D", "10D"]
-    status: Literal["PENDING", "MATURED"] = "PENDING"
+    status: Literal["PENDING", "MATURED", "INVALID", "UNAVAILABLE"] = "PENDING"
+    status_reason: str | None = None
     entry_date: str | None = None
     entry_price: float | None = None
     exit_date: str | None = None
@@ -856,16 +880,30 @@ class ForwardHorizonEvaluation(BaseModel):
     profit_factor: float | None = None
     win_rate_pct: float | None = None
     vs_naive_momentum_net_diff_pct: float | None = None
+    benchmark_accuracy_pct: float | None = None
+    benchmark_roc_auc: float | None = None
+    benchmark_brier_score: float | None = None
+    benchmark_net_return_pct: float | None = None
 
 
 class PaperTradeRecord(BaseModel):
-    """Hypothetical paper portfolio trade/rejection audit record."""
+    """Hypothetical paper portfolio audit event record (Phase 5.3.1)."""
 
     strategy_horizon: Literal["1D", "5D", "10D"]
     prediction_id: str
     symbol: str
     signal_date: str
-    action: Literal["ENTRY_EXIT", "REJECTED"]
+    event_date: str | None = None
+    action: Literal[
+        "SIGNAL_RECEIVED",
+        "ENTRY_EXECUTED",
+        "POSITION_OPEN",
+        "POSITION_MARKED_TO_MARKET",
+        "POSITION_EXITED",
+        "SIGNAL_REJECTED",
+        "ENTRY_EXIT",
+        "REJECTED",
+    ]
     reason: str
     entry_date: str | None = None
     exit_date: str | None = None
@@ -877,6 +915,12 @@ class PaperTradeRecord(BaseModel):
     transaction_cost_inr: float = 0.0
     net_return_pct: float | None = None
     net_pnl_inr: float = 0.0
+    realized_pnl_inr: float = 0.0
+    unrealized_pnl_inr: float = 0.0
+    cash_after_inr: float | None = None
+    invested_after_inr: float | None = None
+    equity_after_inr: float | None = None
+    holding_sessions: int | None = None
 
 
 class PaperStrategySummary(BaseModel):
@@ -885,11 +929,19 @@ class PaperStrategySummary(BaseModel):
     horizon: Literal["1D", "5D", "10D"]
     starting_capital_inr: float = 1_000_000.0
     ending_capital_inr: float = 1_000_000.0
+    cash_inr: float = 1_000_000.0
+    invested_capital_inr: float = 0.0
+    realized_pnl_inr: float = 0.0
+    unrealized_pnl_inr: float = 0.0
     net_return_pct: float = 0.0
     gross_return_pct: float = 0.0
     total_cost_inr: float = 0.0
     max_drawdown_pct: float = 0.0
     peak_exposure_pct: float = 0.0
+    signals_received: int = 0
+    entries_executed: int = 0
+    open_positions_count: int = 0
+    matured_positions_count: int = 0
     executed_trades: int = 0
     rejected_signals: int = 0
     win_rate_pct: float | None = None
@@ -903,8 +955,28 @@ class PaperPortfolioReport(BaseModel):
     max_position_pct: float = 10.0
     max_total_exposure_pct: float = 80.0
     strategies: dict[str, PaperStrategySummary] = Field(default_factory=dict)
-    benchmarks: dict[str, dict[str, float | str]] = Field(default_factory=dict)
+    benchmarks: dict[str, dict[str, float | str | None]] = Field(default_factory=dict)
     recent_trades: list[PaperTradeRecord] = Field(default_factory=list)
+    disclaimer: str = (
+        "Hypothetical paper research portfolio only — not connected to any broker and does not place real-money orders."
+    )
+
+
+class NewsProvenanceSummary(BaseModel):
+    """Data-quality and provenance audit summary for stored news events (Phase 5.3.1)."""
+
+    total_events: int = 0
+    valid_events: int = 0
+    quarantined_events: int = 0
+    unique_source_urls: int = 0
+    duplicate_reports_count: int = 0
+    publication_date_min: str | None = None
+    publication_date_max: str | None = None
+    collection_date_min: str | None = None
+    collection_date_max: str | None = None
+    events_after_prediction_cutoff: int = 0
+    is_genuinely_forward_collected: bool = False
+    provenance_note: str = ""
 
 
 class ForwardValidationPayload(BaseModel):
@@ -923,6 +995,7 @@ class ForwardValidationPayload(BaseModel):
     pending_outcomes_total: int = 0
     horizon_evaluations: dict[str, ForwardHorizonEvaluation] = Field(default_factory=dict)
     paper_portfolio: PaperPortfolioReport
+    news_provenance: NewsProvenanceSummary | None = None
     recent_snapshots: list[ForwardPredictionSnapshot] = Field(default_factory=list)
     recent_outcomes: list[ForwardOutcomeRecord] = Field(default_factory=list)
     data_quality_warnings: list[str] = Field(default_factory=list)
@@ -931,6 +1004,7 @@ class ForwardValidationPayload(BaseModel):
         "Historical proxy experiments and historical backtests are strictly separated from genuine forward-only "
         "news observations and forward paper portfolio performance."
     )
+
 
 
 

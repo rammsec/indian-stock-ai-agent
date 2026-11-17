@@ -194,8 +194,13 @@ def run_phase3_pipeline() -> dict[str, Any]:
         rec.last_close = round(close_by_sym[rec.symbol], 2) if rec.symbol in close_by_sym else None
         rec.atr_14_pct = round(atr_by_sym[rec.symbol], 3) if rec.symbol in atr_by_sym else None
         if rec.symbol in mom_by_sym:
-            rec.momentum_prob_up = round(float(mom_by_sym[rec.symbol]["prob_next_day_up"]), 4)
-            rec.momentum_5d_return_pct = round(float(mom_by_sym[rec.symbol]["expected_5d_return_pct"]), 4)
+            m_row = mom_by_sym[rec.symbol]
+            rec.momentum_prob_up = round(float(m_row["prob_next_day_up"]), 4)
+            rec.momentum_1d_return_pct = round(float(m_row["expected_next_day_return_pct"]), 4)
+            rec.momentum_prob_5d_up = round(float(m_row["prob_5d_up"]), 4)
+            rec.momentum_5d_return_pct = round(float(m_row["expected_5d_return_pct"]), 4)
+            rec.momentum_prob_10d_up = round(float(m_row["prob_10d_up"]), 4)
+            rec.momentum_10d_return_pct = round(float(m_row["expected_10d_return_pct"]), 4)
 
     pred_log_cnt = store.upsert_predictions(latest_records)
     if ohlc_df is not None:

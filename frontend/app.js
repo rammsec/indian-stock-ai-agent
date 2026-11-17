@@ -2193,32 +2193,84 @@ function renderForwardValidation(fv) {
       .filter((h) => pp.strategies && pp.strategies[h])
       .map((h) => {
         const s = pp.strategies[h];
+        const netRet = s.net_return_pct ?? null;
         return `
           <tr>
             <td style="text-align: left;"><strong>Paper ML ${h}</strong></td>
             <td>${s.status}</td>
             <td>₹${Number(s.ending_capital_inr || 1000000).toLocaleString("en-IN")}</td>
-            <td class="${(s.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(s.net_return_pct ?? 0, 2, true)}</td>
+            <td>₹${Number(s.cash_inr ?? 1000000).toLocaleString("en-IN")} / ₹${Number(s.invested_capital_inr ?? 0).toLocaleString("en-IN")}</td>
+            <td>₹${Number(s.realized_pnl_inr ?? 0).toLocaleString("en-IN")} / ₹${Number(s.unrealized_pnl_inr ?? 0).toLocaleString("en-IN")}</td>
+            <td class="${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}">${netRet !== null ? fmtPct(netRet, 2, true) : "—"}</td>
             <td class="text-bear">${fmtPct(s.max_drawdown_pct ?? 0, 2)}</td>
             <td>${fmtPct(s.peak_exposure_pct ?? 0, 1)}</td>
-            <td>${s.executed_trades ?? 0} / ${s.rejected_signals ?? 0}</td>
+            <td>${s.signals_received ?? 0} / ${s.entries_executed ?? 0} / ${s.open_positions_count ?? 0} / ${s.matured_positions_count ?? 0} / ${s.rejected_signals ?? 0}</td>
             <td>${s.win_rate_pct != null ? fmtPct(s.win_rate_pct, 1) : "—"}</td>
           </tr>
         `;
       });
     const bm = pp.benchmarks || {};
     for (const [bName, bVal] of Object.entries(bm)) {
+      const bRet = bVal.net_return_pct;
+      const bDD = bVal.max_drawdown_pct;
+      const bEnd = bVal.ending_capital_inr;
+      const retStr = bRet !== null && bRet !== undefined ? fmtPct(bRet, 2, true) : "—";
+      const retCls = bRet !== null && bRet !== undefined ? (bRet >= 0 ? "text-bull" : "text-bear") : "";
       rows.push(`
         <tr style="background: rgba(56, 189, 248, 0.06);">
           <td style="text-align: left;"><strong>Benchmark: ${bName}</strong></td>
           <td>${bVal.status || "ACTIVE"}</td>
+          <td>${bEnd !== null && bEnd !== undefined ? `₹${Number(bEnd).toLocaleString("en-IN")}` : "—"}</td>
           <td>—</td>
-          <td class="${(bVal.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(bVal.net_return_pct ?? 0, 2, true)}</td>
-          <td>—</td><td>—</td><td>—</td><td>—</td>
+          <td>—</td>
+          <td class="${retCls}">${retStr}</td>
+          <td>${bDD !== null && bDD !== undefined ? fmtPct(bDD, 2) : "—"}</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
         </tr>
       `);
     }
     pBody.innerHTML = rows.join("");
+
+    const aBody = document.getElementById("tbody-fv-audit");
+    const trades = pp.recent_trades || [];
+    if (aBody && trades.length) {
+      aBody.innerHTML = trades
+        .slice(-20)
+        .reverse()
+        .map((t) => {
+          const actCls =
+            t.action === "ENTRY_EXECUTED" || t.action === "POSITION_OPEN"
+              ? "text-bull"
+              : t.action === "POSITION_EXITED"
+              ? "text-hold"
+              : t.action === "SIGNAL_REJECTED"
+              ? "text-bear"
+              : "";
+          const pxStr =
+            t.entry_price != null && t.exit_price != null
+              ? `₹${fmtNum(t.entry_price, 1)} → ₹${fmtNum(t.exit_price, 1)}`
+              : t.entry_price != null
+              ? `₹${fmtNum(t.entry_price, 1)}`
+              : "—";
+          return `
+            <tr>
+              <td style="text-align: left;">${t.event_date || t.signal_date || "—"}</td>
+              <td>${t.strategy_horizon}</td>
+              <td><strong>${t.symbol}</strong></td>
+              <td class="${actCls}" style="font-weight: 700;">${t.action}</td>
+              <td style="font-size: 0.70rem; color: var(--text-muted);">${t.reason || "—"}</td>
+              <td>${pxStr}</td>
+              <td>${t.allocated_capital_inr ? `₹${Number(t.allocated_capital_inr).toLocaleString("en-IN")}` : "—"}</td>
+              <td class="${t.net_pnl_inr > 0 ? "text-bull" : t.net_pnl_inr < 0 ? "text-bear" : ""}">${t.net_pnl_inr ? `₹${fmtNum(t.net_pnl_inr, 2)}` : "—"}</td>
+              <td>${t.cash_after_inr != null ? `₹${Number(t.cash_after_inr).toLocaleString("en-IN")}` : "—"}</td>
+              <td>${t.equity_after_inr != null ? `₹${Number(t.equity_after_inr).toLocaleString("en-IN")}` : "—"}</td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
   }
 }
 

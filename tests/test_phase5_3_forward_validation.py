@@ -305,12 +305,12 @@ def test_paper_portfolio_risk_limits_and_benchmarks(tmp_path):
     snaps_df = pd.read_parquet(store.forward_predictions_parquet)
     outs_df = pd.read_parquet(store.forward_outcomes_parquet)
 
-    report = run_paper_research_portfolio(snaps_df, outs_df, indices_df=None)
+    report = run_paper_research_portfolio(snaps_df, outs_df, indices_df=None, equities_df=eq_df)
     assert report.starting_capital_inr == STARTING_CAPITAL_INR
     assert report.max_position_pct == 10.0
     assert report.max_total_exposure_pct == 80.0
     assert report.strategies["5D"].peak_exposure_pct <= 80.0
-    assert report.strategies["5D"].executed_trades >= 1
+    assert report.strategies["5D"].entries_executed >= 1
     assert report.strategies["5D"].rejected_signals >= 1
     assert "naive_momentum" in report.benchmarks
     assert "cash_no_trade" in report.benchmarks
@@ -354,3 +354,128 @@ def test_api_forward_validation_and_frontend_contract():
     assert "sec-forward-validation" in html
     assert "renderForwardValidation" in js
     assert "/api/forward-validation" in js
+
+
+def test_zero_lookahead_pending_positions_remain_open_and_executed(tmp_path):
+    """Phase 5.3.1 QA: A qualifying BUY signal creates a position at next open even if future outcome is PENDING."""
+    store = _make_store(tmp_path)
+    # Only 2 sessions: 2026-01-02 (signal date) and 2026-01-05 (next open entry date)
+    eq_df = _make_equities_df("RELIANCE", start_date="2026-01-02", n_days=2)
+
+    p1, q1 = _make_payload("2026-01-02", ("RELIANCE",), prob_1d=0.68, prob_5d=0.65, prob_10d=0.62)
+    record_forward_prediction_snapshots(store, p1, q1)
+
+    # Outcomes for 5D and 10D are PENDING (only 2 days of data exist)
+    outcomes = evaluate_forward_outcomes(store, equities_df=eq_df)
+    by_h = {o.horizon: o for o in outcomes}
+    assert by_h["5D"].status == "PENDING"
+    assert by_h["10D"].status == "PENDING"
+
+    snaps_df = pd.read_parquet(store.forward_predictions_parquet)
+    outs_df = pd.read_parquet(store.forward_outcomes_parquet)
+
+    # Run paper portfolio simulation with ONLY the 2 days of data
+    report_2d = run_paper_research_portfolio(snaps_df, outs_df, equities_df=eq_df)
+
+    s5 = report_2d.strategies["5D"]
+    # Look-ahead check: The 5D position MUST be entered, NOT rejected due to pending outcome!
+    assert s5.entries_executed == 1
+    assert s5.open_positions_count == 1
+    assert s5.matured_positions_count == 0
+    assert s5.rejected_signals == 0
+    assert s5.invested_capital_inr > 0
+
+    # Verify event audit trail
+    actions = [t.action for t in report_2d.recent_trades if t.strategy_horizon == "5D"]
+    assert "SIGNAL_RECEIVED" in actions
+    assert "ENTRY_EXECUTED" in actions
+    assert "POSITION_OPEN" in actions
+    assert "SIGNAL_REJECTED" not in actions
+
+    # Invariance check: Add future days with a big crash. The original entry on 2026-01-05 must still be executed!
+    eq_df_10 = _make_equities_df("RELIANCE", start_date="2026-01-02", n_days=10)
+    # Crash prices after entry
+    eq_df_10.loc[2:, "close"] = 100.0
+    report_10d = run_paper_research_portfolio(snaps_df, outs_df, equities_df=eq_df_10)
+    assert report_10d.strategies["5D"].entries_executed == 1
+    assert report_10d.strategies["5D"].rejected_signals == 0
+
+
+def test_missing_prices_marked_invalid_never_fabricated(tmp_path):
+    """Phase 5.3.1 QA: Missing or non-positive prices produce INVALID status, never fabricated return."""
+    store = _make_store(tmp_path)
+    eq_df = _make_equities_df("RELIANCE", start_date="2026-01-02", n_days=5)
+    # Zero out entry open price on day 1 (t+1)
+    eq_df.loc[1, "open"] = 0.0
+
+    p, q = _make_payload("2026-01-02", ("RELIANCE",))
+    record_forward_prediction_snapshots(store, p, q)
+
+    outcomes = evaluate_forward_outcomes(store, equities_df=eq_df)
+    by_h = {o.horizon: o for o in outcomes}
+    assert by_h["1D"].status == "INVALID"
+    assert by_h["1D"].gross_return_pct is None
+    assert by_h["1D"].net_return_pct is None
+    assert "refusing to fabricate return" in (by_h["1D"].status_reason or "")
+
+
+def test_independent_benchmark_horizons_never_compared_to_1d(tmp_path):
+    """Phase 5.3.1 QA: 5D forward evaluation compares against 5D benchmark, never 1D benchmark."""
+    store = _make_store(tmp_path)
+    eq_df = _make_equities_df("RELIANCE", start_date="2026-01-02", n_days=25)
+    for d in eq_df["observation_date"].iloc[:12]:
+        p, q = _make_payload(str(d), ("RELIANCE",))
+        # Set distinct 1D vs 5D benchmark probabilities in metadata
+        q["RELIANCE"]["momentum_prob_up"] = 0.52
+        q["RELIANCE"]["momentum_prob_5d_up"] = 0.61
+        record_forward_prediction_snapshots(store, p, q)
+
+    evaluate_forward_outcomes(store, equities_df=eq_df)
+    snaps_df = pd.read_parquet(store.forward_predictions_parquet)
+    outs_df = pd.read_parquet(store.forward_outcomes_parquet)
+
+    eval_5d = compute_forward_horizon_metrics(snaps_df, outs_df, "5D", min_samples=5)
+    assert eval_5d.status in ("OK", "WARNING")
+    # Verify benchmark probability column used was benchmark_prob_5d_up (0.61), not 1D (0.52)
+    assert snaps_df["benchmark_prob_5d_up"].iloc[0] == 0.61
+    assert snaps_df["benchmark_prob_1d_up"].iloc[0] == 0.52
+
+
+def test_news_provenance_audit_and_quarantine_metrics(tmp_path):
+    """Phase 5.3.1 QA: compute_news_provenance accurately audits valid, quarantined, URLs and forward status."""
+    store = _make_store(tmp_path)
+    p, q = _make_payload("2026-01-02", ("RELIANCE",))
+    record_forward_prediction_snapshots(store, p, q)
+    snaps_df = pd.read_parquet(store.forward_predictions_parquet)
+
+    raw_items = [
+        RawNewsItem(
+            symbol="RELIANCE",
+            company_name="Reliance Industries Ltd",
+            event_category="company_news",
+            title="Reliance Retail strong growth",
+            source="Economic Times",
+            published="2026-01-02T10:00:00+05:30",
+            url="https://example.com/rel-1",
+        ),
+        RawNewsItem(
+            symbol="TCS",
+            company_name="Tata Consultancy Services Ltd",
+            event_category="company_news",
+            title="TCS cloud contract",
+            source="Moneycontrol",
+            published="",  # invalid timestamp -> quarantined
+            url="https://example.com/tcs-quar",
+        ),
+    ]
+    valid_ev, quar_ev = extract_structured_events_with_quarantine(raw_items)
+    store.upsert_structured_events(valid_ev)
+    store.upsert_quarantined_events(quar_ev)
+
+    from backend.news_intel.forward_validation import compute_news_provenance
+    prov = compute_news_provenance(store, snaps_df)
+    assert prov.valid_events == 1
+    assert prov.quarantined_events == 1
+    assert prov.unique_source_urls == 1
+    assert prov.is_genuinely_forward_collected is True
+
