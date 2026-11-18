@@ -1794,7 +1794,7 @@
   },
   "corporate_intelligence": {
     "symbol": "NTPC",
-    "evaluated_at": "2026-11-17T21:30:15.871484+00:00",
+    "evaluated_at": "2026-11-18T21:04:33.033312+00:00",
     "promoter_holding_pct": 51.1,
     "promoter_chg_1q": 0.0,
     "promoter_chg_4q": 0.0,
@@ -1821,83 +1821,83 @@
     ]
   },
   "market_regime": {
-    "observation_date": "2026-11-17",
+    "observation_date": "2026-11-18",
     "regime": "Weak Bull",
-    "nifty_50_close": 25387.4,
-    "nifty_50_day_change_pct": 0.38,
-    "nifty_50_return_20d_pct": 9.68,
-    "nifty_50_dma_50": 23385.96,
-    "nifty_50_dma_200": 23992.91,
-    "india_vix_close": 15.52,
-    "india_vix_change_pct": -1.02,
-    "advance_count": 1318,
-    "decline_count": 1404,
-    "unchanged_count": 38,
-    "advance_decline_ratio": 0.939,
-    "pct_above_50dma": 86.7,
-    "pct_above_200dma": 80.0,
+    "nifty_50_close": 25227.95,
+    "nifty_50_day_change_pct": -0.63,
+    "nifty_50_return_20d_pct": 10.22,
+    "nifty_50_dma_50": 23413.05,
+    "nifty_50_dma_200": 23993.81,
+    "india_vix_close": 15.57,
+    "india_vix_change_pct": 0.32,
+    "advance_count": 693,
+    "decline_count": 2035,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.341,
+    "pct_above_50dma": 80.0,
+    "pct_above_200dma": 73.3,
     "allow_aggressive_longs": true,
     "regime_rationale": [
-      "Structural uptrend intact above 200-DMA (23,992.9), though short-term momentum is moderate (20D: +9.68%).",
-      "NSE Market Breadth: 1318 Advances vs 1404 Declines (A/D Ratio 0.94).",
-      "Universe Breadth: 86.7% above 50-DMA, 80.0% above 200-DMA."
+      "Structural uptrend intact above 200-DMA (23,993.8), though short-term momentum is moderate (20D: +10.22%).",
+      "NSE Market Breadth: 693 Advances vs 2035 Declines (A/D Ratio 0.34).",
+      "Universe Breadth: 80.0% above 50-DMA, 73.3% above 200-DMA."
     ],
     "sector_performances": [
       {
-        "index_code": "NIFTY_BANK",
-        "index_name": "Nifty Bank",
-        "close": 62273.25,
-        "day_change_pct": 1.13,
-        "return_20d_pct": 11.51,
-        "pe_ratio": 13.76
-      },
-      {
-        "index_code": "NIFTY_AUTO",
-        "index_name": "Nifty Auto",
-        "close": 27769.15,
-        "day_change_pct": 0.72,
-        "return_20d_pct": 7.76,
-        "pe_ratio": 30.32
-      },
-      {
-        "index_code": "NIFTY_METAL",
-        "index_name": "Nifty Metal",
-        "close": 12530.3,
-        "day_change_pct": 0.58,
-        "return_20d_pct": 3.27,
-        "pe_ratio": 14.82
-      },
-      {
         "index_code": "NIFTY_PHARMA",
         "index_name": "Nifty Pharma",
-        "close": 28157.1,
-        "day_change_pct": 0.21,
-        "return_20d_pct": 9.21,
-        "pe_ratio": 45.29
+        "close": 28200.5,
+        "day_change_pct": 0.15,
+        "return_20d_pct": 10.09,
+        "pe_ratio": 45.36
       },
       {
         "index_code": "NIFTY_FMCG",
         "index_name": "Nifty FMCG",
-        "close": 47611.6,
-        "day_change_pct": -0.2,
-        "return_20d_pct": 6.71,
-        "pe_ratio": 33.4
+        "close": 47569.1,
+        "day_change_pct": -0.09,
+        "return_20d_pct": 8.17,
+        "pe_ratio": 33.37
+      },
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 62038.65,
+        "day_change_pct": -0.38,
+        "return_20d_pct": 11.81,
+        "pe_ratio": 13.71
       },
       {
         "index_code": "NIFTY_ENERGY",
         "index_name": "Nifty Energy",
-        "close": 37176.7,
-        "day_change_pct": -0.27,
-        "return_20d_pct": 2.72,
-        "pe_ratio": 13.31
+        "close": 36979.55,
+        "day_change_pct": -0.53,
+        "return_20d_pct": 2.79,
+        "pe_ratio": 13.24
       },
       {
         "index_code": "NIFTY_IT",
         "index_name": "Nifty IT",
-        "close": 31654.1,
-        "day_change_pct": -0.9,
-        "return_20d_pct": -0.85,
-        "pe_ratio": 19.24
+        "close": 31262.3,
+        "day_change_pct": -1.24,
+        "return_20d_pct": -0.81,
+        "pe_ratio": 19.0
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27394.95,
+        "day_change_pct": -1.35,
+        "return_20d_pct": 7.05,
+        "pe_ratio": 29.91
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12222.3,
+        "day_change_pct": -2.46,
+        "return_20d_pct": 1.29,
+        "pe_ratio": 14.46
       }
     ]
   }

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-18T17:32:47.787090+05:30",
+  "generated_at": "2026-11-19T02:34:37.348254+05:30",
   "model_version": "5.0.0-pilot",
-  "last_news_collection_at": "2026-11-18T17:33:01.538654+05:30",
-  "last_quant_update_at": "2026-11-17T21:30:07.721690+00:00",
-  "latest_prediction_at": "2026-11-18T17:32:47.787090+05:30",
+  "last_news_collection_at": "2026-11-19T02:34:53.604309+05:30",
+  "last_quant_update_at": "2026-11-18T21:04:26.529445+00:00",
+  "latest_prediction_at": "2026-11-19T02:34:37.348254+05:30",
   "pilot_universe": [
     "RELIANCE",
     "TCS",
@@ -16,23 +16,23 @@
       "symbol": "RELIANCE",
       "company_name": "Reliance Industries Ltd",
       "sector": "Energy, Telecom & Retail",
-      "observation_date": "2026-11-18",
+      "observation_date": "2026-11-19",
       "quant_score_summary": {
-        "prob_next_day_up": 0.5124,
-        "prob_5d_up": 0.441,
-        "prob_10d_up": 0.4293,
-        "expected_next_day_return_pct": 0.0301,
-        "expected_5d_return_pct": -0.4471,
-        "expected_10d_return_pct": -0.6229,
+        "prob_next_day_up": 0.5049,
+        "prob_5d_up": 0.4525,
+        "prob_10d_up": 0.4394,
+        "expected_next_day_return_pct": 0.0226,
+        "expected_5d_return_pct": -0.364,
+        "expected_10d_return_pct": -0.5525,
         "recommended_action": "HOLD / WATCH",
-        "confidence_score": 69.31,
+        "confidence_score": 67.71,
         "market_regime": "Weak Bull"
       },
       "news_sentiment_score": 0.0,
       "news_features": {
         "news_company_sentiment_1d": 0.0,
         "news_company_sentiment_5d": 0.0,
-        "news_company_sentiment_20d": 0.0034,
+        "news_company_sentiment_20d": 0.0032,
         "news_volume_1d": 0.0,
         "news_volume_5d": 1.0,
         "news_surprise_intensity": 0.0,
@@ -46,7 +46,7 @@
         "news_global_macro_risk_score": 0.0,
         "news_novelty_weighted_sentiment": -0.8051,
         "news_high_impact_event_count_5d": 1.0,
-        "news_cross_stock_net_impact": -0.4086
+        "news_cross_stock_net_impact": 0.4474
       },
       "promoter_intelligence": [
         "No recent promoter/insider filings flagged in live window."
@@ -54,7 +54,7 @@
       "industry_outlook": "Neutral",
       "competitor_developments": [
         "Airtel Q2 preview: Analysts see double-digit revenue growth; ARPU in focus - Business Standard",
-        "Bharti Airtel Q2FY27 results: Net profit beats estimates at ₹10,700 crore - scanx.trade",
+        "Bharti Airtel Q2 results: Net profit rises 31% to Rs 8,888 cr, misses estimates; ARPU rises to Rs 271 - Moneycontrol.com",
         "New chairman named at India's ONGC - Upstream Online",
         "Q2 results this week: LIC, ITC, ONGC, Airtel, Nykaa, NSE, Lenskart, SBI and more to declare earnings - Upstox"
       ],
@@ -100,7 +100,43 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.586291+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.653961+05:30",
+          "validation_status": "VALID"
+        },
+        {
+          "event_id": "373d54a27038c64e",
+          "company_name": "Reliance Industries Ltd",
+          "ticker": "RELIANCE",
+          "related_competitor_or_industry": "Energy, Telecom & Retail",
+          "event_category": "company_news",
+          "event_description": "RELIANCE Share Price — NSE:RELIANCE - TradingView",
+          "original_source": "TradingView",
+          "source_url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE00anNGRF9JdzljQVhoc3o1RDloUllFYW5oVUw2d1hTbkNjZjRLYTUwdkZaTkJXWUhWamRQb285S2JyZkhfQzIzUm5yWS1TQ09wZEl5b29JUE5scTdGMEE?oc=5",
+          "publication_timestamp": "2026-11-11T15:55:00+05:30",
+          "event_timestamp": "2026-11-11T15:55:00+05:30",
+          "effective_trading_date": "2026-11-12",
+          "sentiment": "neutral",
+          "impact_magnitude": "low",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
+          "novelty_score": 0.72,
+          "source_credibility": 0.68,
+          "related_companies": [
+            "RELIANCE"
+          ],
+          "related_sectors": [
+            "Energy, Telecom & Retail"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "373d54a27038c64e",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by TradingView (2026-11-12 session): RELIANCE Share Price — NSE:RELIANCE - TradingView",
+          "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.616029+05:30",
           "validation_status": "VALID"
         },
         {
@@ -137,7 +173,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.592345+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.660758+05:30",
           "validation_status": "VALID"
         },
         {
@@ -173,7 +209,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.590380+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.658454+05:30",
           "validation_status": "VALID"
         },
         {
@@ -209,7 +245,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.556029+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.620616+05:30",
           "validation_status": "VALID"
         },
         {
@@ -245,7 +281,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.609024+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.663669+05:30",
           "validation_status": "VALID"
         },
         {
@@ -281,44 +317,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.554335+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "ed53689e9c4ee8c0",
-          "company_name": "Reliance Industries Ltd",
-          "ticker": "RELIANCE",
-          "related_competitor_or_industry": "BHARTIARTL",
-          "event_category": "competitor",
-          "event_description": "Bharti Airtel Q2FY27 results: Net profit beats estimates at ₹10,700 crore - scanx.trade",
-          "original_source": "scanx.trade",
-          "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNUERvUTIyZks2cHcxdGNmNDVzWHNWRVExQk55MXZTVTU2aUJ4eDNEYjdIS3Vyc0VfTER3SkNaV1NkWG1EeXk0djZ6bHQzRnNwazRTRnNZd2IwNGh5bmZXdE11bHF2QWhhT2J4eWNYaVRFcDJfZGdMR3RodkF6cFRrMTN1RGxSUUJ4ZUVYWGpYazJBZkdrVUhORGpIbEIwS2E2Njl3OEx6VTNrWlJ4RVVmbXhnVzJfZUhKbmdnVWF3dUNFaUg1?oc=5",
-          "publication_timestamp": "2026-11-06T08:00:00+05:30",
-          "event_timestamp": "2026-11-06T08:00:00+05:30",
-          "effective_trading_date": "2026-11-06",
-          "sentiment": "positive",
-          "impact_magnitude": "high",
-          "classification_confidence": 0.9,
-          "expected_impact_duration": "5-10 trading sessions",
-          "relevant_horizon": "5D",
-          "novelty_score": 0.9,
-          "source_credibility": 0.68,
-          "related_companies": [
-            "RELIANCE",
-            "BHARTIARTL"
-          ],
-          "related_sectors": [
-            "BHARTIARTL"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "ed53689e9c4ee8c0",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by scanx.trade (2026-11-06 session): Bharti Airtel Q2FY27 results: Net profit beats estimates at ₹10,700 crore - scanx.trade",
-          "interpretation_summary": "Constructive competitor signal for RELIANCE (high magnitude).",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.575066+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.618271+05:30",
           "validation_status": "VALID"
         },
         {
@@ -354,7 +353,44 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.558017+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.622741+05:30",
+          "validation_status": "VALID"
+        },
+        {
+          "event_id": "5dc527bd0b6f0d42",
+          "company_name": "Reliance Industries Ltd",
+          "ticker": "RELIANCE",
+          "related_competitor_or_industry": "BHARTIARTL",
+          "event_category": "competitor",
+          "event_description": "Bharti Airtel Q2 results: Net profit rises 31% to Rs 8,888 cr, misses estimates; ARPU rises to Rs 271 - Moneycontrol.com",
+          "original_source": "Moneycontrol.com",
+          "source_url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxPQXIyZ2FEUlRYdVhrd1NOMDdIUHhlUEJEXzFpV1ZnVFZaNFlubE1TOGJvZVBiTTZVUS0xMHUzOUtfZjBTeDU4YWltT0oyTk11Z2F0WFZKczVob3U3WHYxUXhzOVJBYlRWd2htSW9xZC1nZHpwanZ5b1NzYjQyME1Xd2R5aklWMjRlelQyNHM2THZOek8wRTNJSnNCdXpEWDlrZ084TGk0TWtLSlYtQlh3V3ZNbjhpTlFhWVNBZFZycjhWbWUxRklnUy1MaHhnZjhQUlpTa0k1M1JVWmtOX0HSAeMBQVVfeXFMUGM1R1oxRzNLbHN3RVJnYXVWM09mal9VZ2xMLU1PWGtlYm5Ddk5OVXBWaTdfa0xOTTY0OUtvZHQ2RXo5eUVSOTRzYW5QMUlKb3ZLZ3pkTUlFUVl3bV8yZmJidmZ3VVM4ZmJlM0RtSi1SOU1sTVVVa2hJTmlNVW5LQnRGV0EtSHV5UXJGOWprTzZ5cDF1WXE1WW1wSU5Gd2JIR1NEbXpmcVhCXzZOanpOeW5TTVVFMW5HR1JIZmJEdVVqbjdjRmRjWl8ySjFaWXpueThpLXRYX0ZIeTcxbDhFSjI3Tmc?oc=5",
+          "publication_timestamp": "2026-11-05T08:00:00+05:30",
+          "event_timestamp": "2026-11-05T08:00:00+05:30",
+          "effective_trading_date": "2026-11-05",
+          "sentiment": "negative",
+          "impact_magnitude": "high",
+          "classification_confidence": 0.63,
+          "expected_impact_duration": "5-10 trading sessions",
+          "relevant_horizon": "5D",
+          "novelty_score": 0.9,
+          "source_credibility": 0.86,
+          "related_companies": [
+            "RELIANCE",
+            "BHARTIARTL"
+          ],
+          "related_sectors": [
+            "BHARTIARTL"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "5dc527bd0b6f0d42",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by Moneycontrol.com (2026-11-05 session): Bharti Airtel Q2 results: Net profit rises 31% to Rs 8,888 cr, misses estimates; ARPU rises to Rs 271 - Moneycontrol.com",
+          "interpretation_summary": "Adverse competitor risk for RELIANCE (high magnitude).",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.641797+05:30",
           "validation_status": "VALID"
         },
         {
@@ -391,7 +427,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.573334+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.639894+05:30",
           "validation_status": "VALID"
         },
         {
@@ -427,7 +463,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.584540+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.651973+05:30",
           "validation_status": "VALID"
         },
         {
@@ -463,43 +499,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.550431+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "1dd456c4aa90ca33",
-          "company_name": "Reliance Industries Ltd",
-          "ticker": "RELIANCE",
-          "related_competitor_or_industry": "Energy, Telecom & Retail",
-          "event_category": "company_news",
-          "event_description": "Reliance Industries Q2 Profit Beats Estimates by Nearly 20%; Shares Surge as Much as 6.2% in Early Trading - BigGo Finance",
-          "original_source": "BigGo Finance",
-          "source_url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9fWkhSR0UtOHJrZWpnUkxiRXdsbEZKTUpsMnB6Tnd3cTMtR3dTbFBjcGRDSHRWSmJHcjZmUmJvMDdKQ0s3UUVrNmJGOWptc0hRWEdXT0ZSckZnUHJlTjU4MW9ZcGY4UThyaWxjRlVncUw0ZV9LWnc?oc=5",
-          "publication_timestamp": "2026-11-01T07:00:00+05:30",
-          "event_timestamp": "2026-11-01T07:00:00+05:30",
-          "effective_trading_date": "2026-11-02",
-          "sentiment": "positive",
-          "impact_magnitude": "high",
-          "classification_confidence": 0.9,
-          "expected_impact_duration": "5-10 trading sessions",
-          "relevant_horizon": "5D",
-          "novelty_score": 0.9,
-          "source_credibility": 0.68,
-          "related_companies": [
-            "RELIANCE"
-          ],
-          "related_sectors": [
-            "Energy, Telecom & Retail"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "1dd456c4aa90ca33",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by BigGo Finance (2026-11-02 session): Reliance Industries Q2 Profit Beats Estimates by Nearly 20%; Shares Surge as Much as 6.2% in Early Trading - BigGo Finance",
-          "interpretation_summary": "Constructive company news signal for RELIANCE (high magnitude).",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.567670+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.614151+05:30",
           "validation_status": "VALID"
         }
       ],
@@ -517,14 +517,14 @@
         },
         {
           "affected_company": "RELIANCE",
-          "originating_event_id": "ed53689e9c4ee8c0",
+          "originating_event_id": "5dc527bd0b6f0d42",
           "originating_entity": "BHARTIARTL",
           "relationship_type": "competitor",
-          "expected_impact_direction": "neutral",
+          "expected_impact_direction": "positive",
           "impact_magnitude": "high",
-          "confidence": 0.765,
+          "confidence": 0.535,
           "expected_duration": "5-10 trading sessions",
-          "rationale": "Competitor update monitored with balanced immediate read-across."
+          "rationale": "Competitor operational disruption or regulatory setback creates market-share opportunity."
         },
         {
           "affected_company": "RELIANCE",
@@ -596,54 +596,54 @@
       "horizon_outlooks": {
         "1D": {
           "horizon": "1D",
-          "prob_positive": 0.5076,
-          "quant_prob_positive": 0.5124,
-          "expected_gross_return_pct": -0.005,
-          "expected_net_return_pct": -0.185,
-          "quant_signal": "BULLISH",
+          "prob_positive": 0.5027,
+          "quant_prob_positive": 0.5049,
+          "expected_gross_return_pct": 0.005,
+          "expected_net_return_pct": -0.175,
+          "quant_signal": "NEUTRAL",
           "news_signal": "BEARISH",
-          "cross_stock_signal": "BEARISH",
+          "cross_stock_signal": "BULLISH",
           "combined_signal": "NEUTRAL",
-          "confidence": 67.4,
-          "uncertainty": 32.6,
+          "confidence": 66.5,
+          "uncertainty": 33.5,
           "decision": "WATCH",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 1D quantitative model combined with independent news and cross-stock signals."
         },
         "5D": {
           "horizon": "5D",
-          "prob_positive": 0.4363,
-          "quant_prob_positive": 0.441,
-          "expected_gross_return_pct": -0.523,
-          "expected_net_return_pct": -0.877,
+          "prob_positive": 0.451,
+          "quant_prob_positive": 0.4525,
+          "expected_gross_return_pct": -0.39,
+          "expected_net_return_pct": -0.744,
           "quant_signal": "BEARISH",
           "news_signal": "BEARISH",
-          "cross_stock_signal": "BEARISH",
+          "cross_stock_signal": "BULLISH",
           "combined_signal": "BEARISH",
-          "confidence": 83.1,
-          "uncertainty": 16.9,
+          "confidence": 66.5,
+          "uncertainty": 33.5,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 5D quantitative model combined with independent news and cross-stock signals."
         },
         "10D": {
           "horizon": "10D",
-          "prob_positive": 0.4249,
-          "quant_prob_positive": 0.4293,
-          "expected_gross_return_pct": -0.694,
-          "expected_net_return_pct": -1.048,
+          "prob_positive": 0.4388,
+          "quant_prob_positive": 0.4394,
+          "expected_gross_return_pct": -0.564,
+          "expected_net_return_pct": -0.918,
           "quant_signal": "BEARISH",
           "news_signal": "BEARISH",
-          "cross_stock_signal": "BEARISH",
+          "cross_stock_signal": "BULLISH",
           "combined_signal": "BEARISH",
-          "confidence": 83.1,
-          "uncertainty": 16.9,
+          "confidence": 66.5,
+          "uncertainty": 33.5,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 10D quantitative model combined with independent news and cross-stock signals."
@@ -655,37 +655,37 @@
       "symbol": "TCS",
       "company_name": "Tata Consultancy Services Ltd",
       "sector": "IT Services & Consulting",
-      "observation_date": "2026-11-18",
+      "observation_date": "2026-11-19",
       "quant_score_summary": {
-        "prob_next_day_up": 0.4853,
-        "prob_5d_up": 0.4692,
-        "prob_10d_up": 0.4599,
-        "expected_next_day_return_pct": -0.0887,
-        "expected_5d_return_pct": -0.2932,
-        "expected_10d_return_pct": -0.5097,
+        "prob_next_day_up": 0.4618,
+        "prob_5d_up": 0.4779,
+        "prob_10d_up": 0.4694,
+        "expected_next_day_return_pct": -0.1679,
+        "expected_5d_return_pct": -0.2212,
+        "expected_10d_return_pct": -0.4595,
         "recommended_action": "NO TRADE",
-        "confidence_score": 69.69,
+        "confidence_score": 72.69,
         "market_regime": "Weak Bull"
       },
-      "news_sentiment_score": -0.0502,
+      "news_sentiment_score": 0.0,
       "news_features": {
         "news_company_sentiment_1d": 0.0,
-        "news_company_sentiment_5d": -0.0502,
-        "news_company_sentiment_20d": -0.0502,
-        "news_volume_1d": 6.0,
-        "news_volume_5d": 9.0,
-        "news_surprise_intensity": 3.3333,
+        "news_company_sentiment_5d": 0.0,
+        "news_company_sentiment_20d": 0.0,
+        "news_volume_1d": 5.0,
+        "news_volume_5d": 10.0,
+        "news_surprise_intensity": 2.5,
         "news_promoter_sentiment_5d": 0.0,
         "news_promoter_activity_flag": 1.0,
-        "news_industry_sentiment_5d": 0.0923,
+        "news_industry_sentiment_5d": 0.0856,
         "news_competitor_threat_score": 0.0,
         "news_competitor_positive_readacross": 0.0,
         "news_regulatory_risk_score": 0.0,
         "news_regulatory_positive_score": 0.0,
         "news_global_macro_risk_score": 0.0,
-        "news_novelty_weighted_sentiment": 0.0252,
+        "news_novelty_weighted_sentiment": 0.0465,
         "news_high_impact_event_count_5d": 0.0,
-        "news_cross_stock_net_impact": -0.315
+        "news_cross_stock_net_impact": 0.0
       },
       "promoter_intelligence": [
         "TCS in talks for Bosch India tech unit in 3,000-employee deal: report - PRESS Insider"
@@ -695,19 +695,55 @@
         "India's Infosys falls after revenue growth view cut flags AI, competitive pressures - Reuters",
         "Infosys Q2 results: IT major's ADR falls 6% after it lowers annual revenue growth guidance - Moneycontrol.com",
         "AI at inflection point, future belongs to those who reinvent: HCLTech CEO - Business Standard",
-        "Indian IT hiring in Q2: HCLTech adds 6,450 employees as Wipro loses 6,716 - People Matters - HR News"
+        "HCL Technologies to participate in three investor conferences in Nov 2026 - scanx.trade"
       ],
       "regulatory_developments": [
         "US government is proposing USCIS to bring a new rule that could mean thousands of employees on H-1B visa - The Times of India",
-        "US visa curbs not aimed at India, Rubio says, defends Trump's immigration reset - India Today",
-        "U.S. immigration restrictions may outlast Trump - The Hindu"
+        "Trump's green card curbs test Indian tech workers' American dream - BBC",
+        "US visa curbs not aimed at India, Rubio says, defends Trump's immigration reset - India Today"
       ],
       "global_exposure": [
-        "Indian rupee snaps rising streak on hawkish Fed, oil rise - Reuters",
-        "What’s happening this week in economics? - Deloitte",
+        "Cautious trading marks the Indian Rupee’s start to the week - www.tmgm.com",
+        "Rupee rises, volatility ebbs as equity inflows blunt global headwinds - Reuters",
         "Weekly market commentary - BlackRock"
       ],
       "events_timeline": [
+        {
+          "event_id": "e019e878ec485c74",
+          "company_name": "Tata Consultancy Services Ltd",
+          "ticker": "TCS",
+          "related_competitor_or_industry": "IT Services & Consulting",
+          "event_category": "industry_sector",
+          "event_description": "India IT spending to grow 10.6% in 2027 says Gartner - DQ",
+          "original_source": "DQ",
+          "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNdHNJaUttTnNuT0dHUkR1LUd4RGZSd3hfaG5GSjlBMk9vYnB0NGZDSE9vRkxyR1p3SU9FX2tVWGYtVFpMSFRNTm1uSkFlZXVFOGVUYzd6dE41LWdXU3cxSHFnOTBaU0NWdFcyRGs0TUlPSW5NcDVNRWhMYkxoYWRjcDBBNjgybGtmaEV6Z2p1aG1lQdIBkgFBVV95cUxNdHNJaUttTnNuT0dHUkR1LUd4RGZSd3hfaG5GSjlBMk9vYnB0NGZDSE9vRkxyR1p3SU9FX2tVWGYtVFpMSFRNTm1uSkFlZXVFOGVUYzd6dE41LWdXU3cxSHFnOTBaU0NWdFcyRGs0TUlPSW5NcDVNRWhMYkxoYWRjcDBBNjgybGtmaEV6Z2p1aG1lQQ?oc=5",
+          "publication_timestamp": "2026-11-18T12:56:00+05:30",
+          "event_timestamp": "2026-11-18T12:56:00+05:30",
+          "effective_trading_date": "2026-11-18",
+          "sentiment": "neutral",
+          "impact_magnitude": "low",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
+          "novelty_score": 0.72,
+          "source_credibility": 0.68,
+          "related_companies": [
+            "TCS"
+          ],
+          "related_sectors": [
+            "IT Services & Consulting"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "e019e878ec485c74",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by DQ (2026-11-18 session): India IT spending to grow 10.6% in 2027 says Gartner - DQ",
+          "interpretation_summary": "Informational industry sector update with balanced immediate directional skew.",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.683982+05:30",
+          "validation_status": "VALID"
+        },
         {
           "event_id": "4ed690601bbebad3",
           "company_name": "Tata Consultancy Services Ltd",
@@ -741,7 +777,79 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.619714+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.675875+05:30",
+          "validation_status": "VALID"
+        },
+        {
+          "event_id": "4a603560f2771b4c",
+          "company_name": "Tata Consultancy Services Ltd",
+          "ticker": "TCS",
+          "related_competitor_or_industry": "IT Services & Consulting",
+          "event_category": "company_news",
+          "event_description": "Tata Consultancy Services slides Wednesday, underperforms market - MarketWatch",
+          "original_source": "MarketWatch",
+          "source_url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQRUhjYVQ2dWRMcWhadzBBSnVyTzFobXNqN0laZkN5VGRINjBzODVaS1NJZFNCUmpEQnVGTGloTmFrZ2JDMERma3A2M3dMM0doZUhFdGp3aWpjRjgwWE9hX3VCTTZGdGFaZE5pSEUyTmNBU0VnYU9oOU9wUURhWDFMRTZIYkpSOHZtcGlPVkpmSGxnNmdmTEFLa0ppcm5BclZhb2hwQkVpTW5GLVZreVZ0Y1V2NUdZcmF2dFR0VVJfOXQ2b2F6T2M2N1pQU0tIamNjNXg2NnNmdmE?oc=5",
+          "publication_timestamp": "2026-11-18T10:33:00+05:30",
+          "event_timestamp": "2026-11-18T10:33:00+05:30",
+          "effective_trading_date": "2026-11-18",
+          "sentiment": "neutral",
+          "impact_magnitude": "low",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
+          "novelty_score": 0.72,
+          "source_credibility": 0.68,
+          "related_companies": [
+            "TCS"
+          ],
+          "related_sectors": [
+            "IT Services & Consulting"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "4a603560f2771b4c",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by MarketWatch (2026-11-18 session): Tata Consultancy Services slides Wednesday, underperforms market - MarketWatch",
+          "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.672031+05:30",
+          "validation_status": "VALID"
+        },
+        {
+          "event_id": "597152e10109e9b0",
+          "company_name": "Tata Consultancy Services Ltd",
+          "ticker": "TCS",
+          "related_competitor_or_industry": "IT Services & Consulting",
+          "event_category": "company_news",
+          "event_description": "TCS Share Price - Upstox",
+          "original_source": "Upstox",
+          "source_url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4xa3lkaFFielNzaEh0c3oxTzdzMzV1MDk5TzFMYnoweVkwWG02cVBRTHZSUmM2Q1JpYVpsN2l2VmZwMFpwUzI5cm5WOUFHSGE1c2ZsRjRTWWl3MmlNOGdQUmdkSlZLUUxqRUctcGVsdDA?oc=5",
+          "publication_timestamp": "2026-11-18T00:29:00+05:30",
+          "event_timestamp": "2026-11-18T00:29:00+05:30",
+          "effective_trading_date": "2026-11-18",
+          "sentiment": "neutral",
+          "impact_magnitude": "low",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
+          "novelty_score": 0.72,
+          "source_credibility": 0.68,
+          "related_companies": [
+            "TCS"
+          ],
+          "related_sectors": [
+            "IT Services & Consulting"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "597152e10109e9b0",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by Upstox (2026-11-18 session): TCS Share Price - Upstox",
+          "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.667826+05:30",
           "validation_status": "VALID"
         },
         {
@@ -777,79 +885,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.625790+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "597152e10109e9b0",
-          "company_name": "Tata Consultancy Services Ltd",
-          "ticker": "TCS",
-          "related_competitor_or_industry": "IT Services & Consulting",
-          "event_category": "company_news",
-          "event_description": "TCS Share Price - Upstox",
-          "original_source": "Upstox",
-          "source_url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4xa3lkaFFielNzaEh0c3oxTzdzMzV1MDk5TzFMYnoweVkwWG02cVBRTHZSUmM2Q1JpYVpsN2l2VmZwMFpwUzI5cm5WOUFHSGE1c2ZsRjRTWWl3MmlNOGdQUmdkSlZLUUxqRUctcGVsdDA?oc=5",
-          "publication_timestamp": "2026-11-17T17:18:00+05:30",
-          "event_timestamp": "2026-11-17T17:18:00+05:30",
-          "effective_trading_date": "2026-11-18",
-          "sentiment": "neutral",
-          "impact_magnitude": "low",
-          "classification_confidence": 0.54,
-          "expected_impact_duration": "1-2 trading sessions",
-          "relevant_horizon": "1D",
-          "novelty_score": 0.72,
-          "source_credibility": 0.68,
-          "related_companies": [
-            "TCS"
-          ],
-          "related_sectors": [
-            "IT Services & Consulting"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "597152e10109e9b0",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by Upstox (2026-11-18 session): TCS Share Price - Upstox",
-          "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.614427+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "4533dd98cf82b850",
-          "company_name": "Tata Consultancy Services Ltd",
-          "ticker": "TCS",
-          "related_competitor_or_industry": "IT Services & Consulting",
-          "event_category": "industry_sector",
-          "event_description": "India's IT spending to grow 10% to ₹16.9 trillion in 2027: Gartner - Business Standard",
-          "original_source": "Business Standard",
-          "source_url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQUW1ldDNNUHNRczR1STliOC1jNmtmbTZnNV9Sb2hERTZsbVZkaWdaSjVEVDRsQ09JdXpYWlBHaDRDZjRHbnBGaWJIWnhZcENEX3ZkZ0V3VnI2OWtHa3lJQVZMWFpWaGVyaDFzRnEwNW9Rd0pEczYzRFVsdk5wOWt1VWFXZFlSbnpkem5NSVJDMmJOWFllUm52X0FaNDVNOUk5Y1hrUlRjYy1LakRoV2ZmRVFiS05WTHIxRXNkaE1wLXZDMjhvMG05ZHNLa9IB0AFBVV95cUxQTUY1OXF4OFRZQjdPdTBuYjlMTHlUNjNnOV9yOTFQX1NwYUNxLVNoZzY0eVNiNVVzNC1yaExFeUdwQzAyX2RYZ210aWNBR0pHdkRFN01NeU5yUGZEcjFWdjN0akJMVE5iNzRyVVA2R2pIVmx1a1Zkb0h3a1BDOFNDS0ZoZ0QzVjk5azZXcTdSekhlbHpBb0hqT2syUUtyNDdFelVlX3d0a1ZUd3VmMnR2S0xkTC1nQTNZM0hkN3dSeG45TDVvNGpJRDV3T1lKSGVF?oc=5",
-          "publication_timestamp": "2026-11-17T14:02:00+05:30",
-          "event_timestamp": "2026-11-17T14:02:00+05:30",
-          "effective_trading_date": "2026-11-17",
-          "sentiment": "neutral",
-          "impact_magnitude": "low",
-          "classification_confidence": 0.54,
-          "expected_impact_duration": "1-2 trading sessions",
-          "relevant_horizon": "1D",
-          "novelty_score": 0.72,
-          "source_credibility": 0.86,
-          "related_companies": [
-            "TCS"
-          ],
-          "related_sectors": [
-            "IT Services & Consulting"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "4533dd98cf82b850",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by Business Standard (2026-11-17 session): India's IT spending to grow 10% to ₹16.9 trillion in 2027: Gartner - Business Standard",
-          "interpretation_summary": "Informational industry sector update with balanced immediate directional skew.",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.629620+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.682145+05:30",
           "validation_status": "VALID"
         },
         {
@@ -885,7 +921,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.623798+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.680177+05:30",
           "validation_status": "VALID"
         },
         {
@@ -921,56 +957,56 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.627491+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.686028+05:30",
           "validation_status": "VALID"
         },
         {
-          "event_id": "3017d515f1ea28f1",
+          "event_id": "872c39cba7b682c7",
           "company_name": "Tata Consultancy Services Ltd",
           "ticker": "TCS",
-          "related_competitor_or_industry": "IT Services & Consulting",
-          "event_category": "company_news",
-          "event_description": "Tata Consultancy Services falls Monday, outperforms competitors - MarketWatch",
-          "original_source": "MarketWatch",
-          "source_url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxQOUZZaUhIQk9Ea1ExYmRINXEzYU5XTGNUaWVPTmhvRFpwMWYzeFFZaklKZENwNXNMTEdjNEVabUZBQVJvMlQ4LXI1U3l1a2VrVU9nSFpVRjA0VE52RHE0dHpmZ0JzakRhZ3Z1NFlsS05XSEdnVS1jU2w4MkdxemY3ajNyOTJONUtCdzVXb2ZTb3ZaR19GcG1YdXZoTXF3QlZPNWxkZ3BwWVd0VVlqS1dXaHREUjYzMDRWOF9DOHo0WHJ3a08xdWV1eDJFNzBMNDlOLWRZMmRSQQ?oc=5",
-          "publication_timestamp": "2026-11-16T10:33:00+05:30",
-          "event_timestamp": "2026-11-16T10:33:00+05:30",
+          "related_competitor_or_industry": "Global Macro",
+          "event_category": "global_macro",
+          "event_description": "Rupee rises, volatility ebbs as equity inflows blunt global headwinds - Reuters",
+          "original_source": "Reuters",
+          "source_url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNUnZsV3JvbXpiRElEdnViZ25tOXl2YldqM1VUT3JfSFlYTVBNZGxVZGllZWtORUxWTThHNXhfRU5NUHU0Nm1lcUw3Q0JOOXpwRjlybGFVb3IwbUhpVm9DMGIxLUN4c1VYMGFXLVJPVE9WZDNVazUtZmc0bWYzSDlXekw5QWU1cnA2ZlRRYURYQlBPSFhWcHcwTXU3cDE2ajJ0X2llUzdqb2pxOGRoVXNV?oc=5",
+          "publication_timestamp": "2026-11-16T10:50:00+05:30",
+          "event_timestamp": "2026-11-16T10:50:00+05:30",
           "effective_trading_date": "2026-11-16",
-          "sentiment": "negative",
+          "sentiment": "neutral",
           "impact_magnitude": "low",
-          "classification_confidence": 0.7,
-          "expected_impact_duration": "1-2 trading sessions",
-          "relevant_horizon": "1D",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "5-15 trading sessions",
+          "relevant_horizon": "10D",
           "novelty_score": 0.72,
-          "source_credibility": 0.68,
+          "source_credibility": 0.86,
           "related_companies": [
             "TCS"
           ],
           "related_sectors": [
-            "IT Services & Consulting"
+            "Global Macro"
           ],
           "is_duplicate_report": false,
-          "canonical_event_id": "3017d515f1ea28f1",
+          "canonical_event_id": "872c39cba7b682c7",
           "extraction_method": "deterministic",
-          "facts_summary": "Reported by MarketWatch (2026-11-16 session): Tata Consultancy Services falls Monday, outperforms competitors - MarketWatch",
-          "interpretation_summary": "Adverse company news risk for TCS (low magnitude).",
+          "facts_summary": "Reported by Reuters (2026-11-16 session): Rupee rises, volatility ebbs as equity inflows blunt global headwinds - Reuters",
+          "interpretation_summary": "Informational global macro update with balanced immediate directional skew.",
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.616124+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.707820+05:30",
           "validation_status": "VALID"
         },
         {
-          "event_id": "5e513762d6bc9cca",
+          "event_id": "90346966c04e2364",
           "company_name": "Tata Consultancy Services Ltd",
           "ticker": "TCS",
           "related_competitor_or_industry": "IT Services & Consulting",
           "event_category": "company_news",
-          "event_description": "TCS, Infosys, TechM, LTM, Cyient, Mphasis, TechM shares: Targets amid soft Q3 hopes - Business Today",
-          "original_source": "Business Today",
-          "source_url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOdWhhdWVfX210MDduaFlGaTdzZ1FlSUZ3REEyVzBvb2hieXhlVmgzVUJtTDFZV2lXNWhXN2FLTTA1TGNmV2pUcktFeEowQWFDV3hDVGs0T3pCNUlQOWdoTzF0ZGY4Y3VFbU5tbG0xd3dNa1dqYzBZMENkMlcxV2xLNjBPVDN5ekZvRWpaV2tCNlloZ05TRFlObG5SVVV6c2Vndkx4UWNSSFpQemtpLUFnY01FUFRIZWNtWm4xNWxPaU9BTEJkRXd5WUJNWTdySTJ6aDBHWTh2TFJXWDZx0gHiAUFVX3lxTFBibThOVnRFcTBzMElySFA1MnZUUnpSNkxqQ2l3TmxIUUtoNFdvOW1nRWZ2bVE5U3MzLVVrSWt1X09Rb1BneVpXRXE1WmFhWm0wVlFtTTdmRnBHMTFaUlBVTnNuMFM5V1BvcmVFSzIwMi1ZSnh0dG5DZXVRcXdYYi1kNll6T2szSU5IaWE4ZHlIOF9tRjBaV3pnZEhuS1hEdVZRMzJuSU5STFZFTXdCeHBWQ3MtSUlZQVN3S3NwekN4ZlBpQW5CYURkVkZnM2V5UG1pY3UyY1NTRElVeWQwYU9sSFE?oc=5",
-          "publication_timestamp": "2026-11-16T10:04:00+05:30",
-          "event_timestamp": "2026-11-16T10:04:00+05:30",
+          "event_description": "Tata Consultancy Services (NSEI:TCS) Stock Forecast & Analyst Predictions - Simply Wall St",
+          "original_source": "Simply Wall St",
+          "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNWnV6ajlIQV9tZmRhblEwR0NvUkZ5emFFbnk4SlZDdzAwRVdtX1hmcDV6ZV9YaHZGMGhPSUxNaWpsR0RXYUZSaWhZLUlaMWVTb1dyWUdFS2ZrVFFnbkJaaUNOWVM1bmhvVkQ1YXRxSnpPdnpDaHJWWkZLUGlEdlI4ekZRaU93TTVIQU5pVlV4Uzh3dw?oc=5",
+          "publication_timestamp": "2026-11-16T08:00:00+05:30",
+          "event_timestamp": "2026-11-16T08:00:00+05:30",
           "effective_trading_date": "2026-11-16",
           "sentiment": "neutral",
           "impact_magnitude": "low",
@@ -986,14 +1022,14 @@
             "IT Services & Consulting"
           ],
           "is_duplicate_report": false,
-          "canonical_event_id": "5e513762d6bc9cca",
+          "canonical_event_id": "90346966c04e2364",
           "extraction_method": "deterministic",
-          "facts_summary": "Reported by Business Today (2026-11-16 session): TCS, Infosys, TechM, LTM, Cyient, Mphasis, TechM shares: Targets amid soft Q3 hopes - Business Today",
+          "facts_summary": "Reported by Simply Wall St (2026-11-16 session): Tata Consultancy Services (NSEI:TCS) Stock Forecast & Analyst Predictions - Simply Wall St",
           "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.618180+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.669942+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1029,7 +1065,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.649864+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.709645+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1065,79 +1101,44 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.640421+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.699321+05:30",
           "validation_status": "VALID"
         },
         {
-          "event_id": "0d5f0ff0db4f3820",
+          "event_id": "a9a6ca6e9d9da425",
           "company_name": "Tata Consultancy Services Ltd",
           "ticker": "TCS",
-          "related_competitor_or_industry": "Global Macro",
-          "event_category": "global_macro",
-          "event_description": "Indian rupee snaps rising streak on hawkish Fed, oil rise - Reuters",
-          "original_source": "Reuters",
-          "source_url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNZ2lRcFhDeEM4YTZPLVVWRHNYTnU2XzJhTFJMTUpjT2lyY0JwZ25WaGxCR01JTVpRZTJBVE5SZ0Y1LXdqSzJFRDBWVW15TnEwRE9idm9zeGVGZlpPVndfdGhoQlhmaHlkSFdDZmdXOGQ2N00xMVlKX3JFbkMtYzN5Y2VULUkzNkZmV1VtMnBCSU81eFRkRGFxUG9XRlVqcGNfelRrSHZQNXZQSExsbDhBaVdlcWlfWDhu?oc=5",
-          "publication_timestamp": "2026-11-13T03:18:00+05:30",
-          "event_timestamp": "2026-11-13T03:18:00+05:30",
-          "effective_trading_date": "2026-11-13",
+          "related_competitor_or_industry": "HCLTECH",
+          "event_category": "competitor",
+          "event_description": "HCL Technologies to participate in three investor conferences in Nov 2026 - scanx.trade",
+          "original_source": "scanx.trade",
+          "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQbERYOXBmbFp4MnZ5azgyUm9Gc044MlFkSEhNV2E2c1NoRUhpeTNwWVZpZ2thNHc5V0dEUm1ieVA0TzN1cERYeF9Fc2VYaWxOOEZmSnUzQ1dKU2kwa3QxQ1NmeGZlQjNoeG84NWlyMUcxTVN6MFRnUVpkZ2pfYUlwY3k0T2dtSUhtOWt4a01VS1BLM0pqZEhlSnh3eE5udUczbXJXbS03VzAtd1F1akx5ZlhXSFhHVnd5ellKWVF3?oc=5",
+          "publication_timestamp": "2026-11-04T08:00:00+05:30",
+          "event_timestamp": "2026-11-04T08:00:00+05:30",
+          "effective_trading_date": "2026-11-04",
           "sentiment": "neutral",
           "impact_magnitude": "low",
           "classification_confidence": 0.54,
-          "expected_impact_duration": "5-15 trading sessions",
-          "relevant_horizon": "10D",
-          "novelty_score": 0.72,
-          "source_credibility": 0.86,
-          "related_companies": [
-            "TCS"
-          ],
-          "related_sectors": [
-            "Global Macro"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "0d5f0ff0db4f3820",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by Reuters (2026-11-13 session): Indian rupee snaps rising streak on hawkish Fed, oil rise - Reuters",
-          "interpretation_summary": "Informational global macro update with balanced immediate directional skew.",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.646437+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "c09b2b5ebd894426",
-          "company_name": "Tata Consultancy Services Ltd",
-          "ticker": "TCS",
-          "related_competitor_or_industry": "Global Macro",
-          "event_category": "global_macro",
-          "event_description": "What’s happening this week in economics? - Deloitte",
-          "original_source": "Deloitte",
-          "source_url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNcV9VYnV0R0RPcWN0d2g1SHJIVlNmaVA1TV9nXzRKdVlFcWtSMjQ1T1B0djE4dDNRanZvSVFGX0ZBNUd6cnZkVnAtenFuMnFzdU9zYzg5cFdkTVRxU1F5YVVXVFhVWGdhd2RsTDBkNS1Xcm9ub1FnMFp5NnB3WVBYa3JJa1FVbG5IT0ZRRHphTUhtNThkenVJS1ZrdWNDdw?oc=5",
-          "publication_timestamp": "2026-11-10T08:00:00+05:30",
-          "event_timestamp": "2026-11-10T08:00:00+05:30",
-          "effective_trading_date": "2026-11-10",
-          "sentiment": "neutral",
-          "impact_magnitude": "low",
-          "classification_confidence": 0.54,
-          "expected_impact_duration": "5-15 trading sessions",
-          "relevant_horizon": "10D",
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
           "novelty_score": 0.72,
           "source_credibility": 0.68,
           "related_companies": [
-            "TCS"
+            "TCS",
+            "HCLTECH"
           ],
           "related_sectors": [
-            "Global Macro"
+            "HCLTECH"
           ],
           "is_duplicate_report": false,
-          "canonical_event_id": "c09b2b5ebd894426",
+          "canonical_event_id": "a9a6ca6e9d9da425",
           "extraction_method": "deterministic",
-          "facts_summary": "Reported by Deloitte (2026-11-10 session): What’s happening this week in economics? - Deloitte",
-          "interpretation_summary": "Informational global macro update with balanced immediate directional skew.",
+          "facts_summary": "Reported by scanx.trade (2026-11-04 session): HCL Technologies to participate in three investor conferences in Nov 2026 - scanx.trade",
+          "interpretation_summary": "Informational competitor update with balanced immediate directional skew.",
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.648069+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.693569+05:30",
           "validation_status": "VALID"
         }
       ],
@@ -1177,7 +1178,7 @@
         },
         {
           "affected_company": "TCS",
-          "originating_event_id": "4ca0a7dc75c16259",
+          "originating_event_id": "a9a6ca6e9d9da425",
           "originating_entity": "HCLTECH",
           "relationship_type": "competitor",
           "expected_impact_direction": "neutral",
@@ -1188,12 +1189,12 @@
         },
         {
           "affected_company": "TCS",
-          "originating_event_id": "b0490ab2b04c03fc",
-          "originating_entity": "INFY",
+          "originating_event_id": "4ca0a7dc75c16259",
+          "originating_entity": "HCLTECH",
           "relationship_type": "competitor",
           "expected_impact_direction": "neutral",
           "impact_magnitude": "low",
-          "confidence": 0.595,
+          "confidence": 0.459,
           "expected_duration": "1-2 trading sessions",
           "rationale": "Competitor update monitored with balanced immediate read-across."
         },
@@ -1210,6 +1211,17 @@
         },
         {
           "affected_company": "TCS",
+          "originating_event_id": "918787c21d24d471",
+          "originating_entity": "BBC",
+          "relationship_type": "regulatory_exposure",
+          "expected_impact_direction": "neutral",
+          "impact_magnitude": "low",
+          "confidence": 0.486,
+          "expected_duration": "5-15 trading sessions",
+          "rationale": "Regulatory / policy read-across: Trump's green card curbs test Indian tech workers' American dream - BBC"
+        },
+        {
+          "affected_company": "TCS",
           "originating_event_id": "2dd13bd1caca4a38",
           "originating_entity": "India Today",
           "relationship_type": "regulatory_exposure",
@@ -1218,70 +1230,59 @@
           "confidence": 0.486,
           "expected_duration": "5-15 trading sessions",
           "rationale": "Regulatory / policy read-across: US visa curbs not aimed at India, Rubio says, defends Trump's immigration reset - India Today"
-        },
-        {
-          "affected_company": "TCS",
-          "originating_event_id": "db1a9a4cf9f4ec72",
-          "originating_entity": "The Hindu",
-          "relationship_type": "regulatory_exposure",
-          "expected_impact_direction": "negative",
-          "impact_magnitude": "low",
-          "confidence": 0.63,
-          "expected_duration": "5-15 trading sessions",
-          "rationale": "Regulatory / policy read-across: U.S. immigration restrictions may outlast Trump - The Hindu"
         }
       ],
       "horizon_outlooks": {
         "1D": {
           "horizon": "1D",
-          "prob_positive": 0.4843,
-          "quant_prob_positive": 0.4853,
-          "expected_gross_return_pct": -0.095,
-          "expected_net_return_pct": -0.275,
+          "prob_positive": 0.4622,
+          "quant_prob_positive": 0.4618,
+          "expected_gross_return_pct": -0.165,
+          "expected_net_return_pct": -0.345,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
-          "cross_stock_signal": "BEARISH",
+          "cross_stock_signal": "NEUTRAL",
           "combined_signal": "BEARISH",
-          "confidence": 83.3,
-          "uncertainty": 16.7,
+          "confidence": 69.2,
+          "uncertainty": 30.8,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 1D quantitative model combined with independent news and cross-stock signals."
         },
         "5D": {
           "horizon": "5D",
-          "prob_positive": 0.468,
-          "quant_prob_positive": 0.4692,
-          "expected_gross_return_pct": -0.311,
-          "expected_net_return_pct": -0.675,
+          "prob_positive": 0.4782,
+          "quant_prob_positive": 0.4779,
+          "expected_gross_return_pct": -0.216,
+          "expected_net_return_pct": -0.579,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
-          "cross_stock_signal": "BEARISH",
+          "cross_stock_signal": "NEUTRAL",
           "combined_signal": "BEARISH",
-          "confidence": 83.3,
-          "uncertainty": 16.7,
+          "confidence": 69.2,
+          "uncertainty": 30.8,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 5D quantitative model combined with independent news and cross-stock signals."
         },
         "10D": {
           "horizon": "10D",
-          "prob_positive": 0.4585,
-          "quant_prob_positive": 0.4599,
-          "expected_gross_return_pct": -0.532,
-          "expected_net_return_pct": -0.896,
+          "prob_positive": 0.4697,
+          "quant_prob_positive": 0.4694,
+          "expected_gross_return_pct": -0.455,
+          "expected_net_return_pct": -0.818,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
-          "cross_stock_signal": "BEARISH",
+          "cross_stock_signal": "NEUTRAL",
           "combined_signal": "BEARISH",
-          "confidence": 83.3,
-          "uncertainty": 16.7,
+          "confidence": 69.2,
+          "uncertainty": 30.8,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 10D quantitative model combined with independent news and cross-stock signals."
@@ -1293,16 +1294,16 @@
       "symbol": "TATAELXSI",
       "company_name": "Tata Elxsi Ltd",
       "sector": "ER&D & Embedded AI/Auto Design",
-      "observation_date": "2026-11-18",
+      "observation_date": "2026-11-19",
       "quant_score_summary": {
-        "prob_next_day_up": 0.4902,
-        "prob_5d_up": 0.4596,
-        "prob_10d_up": 0.4508,
-        "expected_next_day_return_pct": -0.0799,
-        "expected_5d_return_pct": -0.3939,
-        "expected_10d_return_pct": -0.5636,
+        "prob_next_day_up": 0.4681,
+        "prob_5d_up": 0.4635,
+        "prob_10d_up": 0.4476,
+        "expected_next_day_return_pct": -0.1595,
+        "expected_5d_return_pct": -0.3404,
+        "expected_10d_return_pct": -0.5389,
         "recommended_action": "HOLD / WATCH",
-        "confidence_score": 69.05,
+        "confidence_score": 71.78,
         "market_regime": "Weak Bull"
       },
       "news_sentiment_score": 0.0,
@@ -1379,7 +1380,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.655727+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.715613+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1415,7 +1416,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.672771+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.732567+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1451,7 +1452,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.674415+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.734453+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1487,7 +1488,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.676327+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.736197+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1523,7 +1524,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.651714+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.711765+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1559,7 +1560,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.651714+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.711765+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1596,7 +1597,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.658575+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.718374+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1633,7 +1634,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.660175+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.720249+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1669,7 +1670,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.678035+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.738091+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1706,7 +1707,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.663527+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.723712+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1743,7 +1744,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.661977+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.721870+05:30",
           "validation_status": "VALID"
         },
         {
@@ -1780,7 +1781,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.665358+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.725325+05:30",
           "validation_status": "VALID"
         }
       ],
@@ -1877,54 +1878,54 @@
       "horizon_outlooks": {
         "1D": {
           "horizon": "1D",
-          "prob_positive": 0.4894,
-          "quant_prob_positive": 0.4902,
-          "expected_gross_return_pct": -0.086,
-          "expected_net_return_pct": -0.266,
+          "prob_positive": 0.4673,
+          "quant_prob_positive": 0.4681,
+          "expected_gross_return_pct": -0.165,
+          "expected_net_return_pct": -0.345,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
           "cross_stock_signal": "BEARISH",
-          "combined_signal": "NEUTRAL",
-          "confidence": 83.0,
-          "uncertainty": 17.0,
+          "combined_signal": "BEARISH",
+          "confidence": 84.5,
+          "uncertainty": 15.5,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 1D quantitative model combined with independent news and cross-stock signals."
         },
         "5D": {
           "horizon": "5D",
-          "prob_positive": 0.4586,
-          "quant_prob_positive": 0.4596,
-          "expected_gross_return_pct": -0.41,
-          "expected_net_return_pct": -0.782,
+          "prob_positive": 0.4625,
+          "quant_prob_positive": 0.4635,
+          "expected_gross_return_pct": -0.356,
+          "expected_net_return_pct": -0.728,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
           "cross_stock_signal": "BEARISH",
           "combined_signal": "BEARISH",
-          "confidence": 83.0,
-          "uncertainty": 17.0,
+          "confidence": 84.5,
+          "uncertainty": 15.5,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 5D quantitative model combined with independent news and cross-stock signals."
         },
         "10D": {
           "horizon": "10D",
-          "prob_positive": 0.4496,
-          "quant_prob_positive": 0.4508,
-          "expected_gross_return_pct": -0.583,
-          "expected_net_return_pct": -0.956,
+          "prob_positive": 0.4464,
+          "quant_prob_positive": 0.4476,
+          "expected_gross_return_pct": -0.558,
+          "expected_net_return_pct": -0.93,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
           "cross_stock_signal": "BEARISH",
           "combined_signal": "BEARISH",
-          "confidence": 83.0,
-          "uncertainty": 17.0,
+          "confidence": 84.5,
+          "uncertainty": 15.5,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 10D quantitative model combined with independent news and cross-stock signals."
@@ -1936,26 +1937,26 @@
       "symbol": "ITC",
       "company_name": "ITC Ltd",
       "sector": "FMCG, Agri & Paperboards",
-      "observation_date": "2026-11-18",
+      "observation_date": "2026-11-19",
       "quant_score_summary": {
-        "prob_next_day_up": 0.498,
-        "prob_5d_up": 0.4342,
-        "prob_10d_up": 0.4122,
-        "expected_next_day_return_pct": 0.021,
-        "expected_5d_return_pct": -0.5056,
-        "expected_10d_return_pct": -0.6434,
+        "prob_next_day_up": 0.4996,
+        "prob_5d_up": 0.4502,
+        "prob_10d_up": 0.4242,
+        "expected_next_day_return_pct": 0.0183,
+        "expected_5d_return_pct": -0.331,
+        "expected_10d_return_pct": -0.5453,
         "recommended_action": "HOLD / WATCH",
-        "confidence_score": 61.99,
+        "confidence_score": 61.94,
         "market_regime": "Weak Bull"
       },
-      "news_sentiment_score": 0.0673,
+      "news_sentiment_score": 0.0446,
       "news_features": {
         "news_company_sentiment_1d": 0.0,
-        "news_company_sentiment_5d": 0.0673,
-        "news_company_sentiment_20d": 0.0292,
-        "news_volume_1d": 3.0,
+        "news_company_sentiment_5d": 0.0446,
+        "news_company_sentiment_20d": 0.0137,
+        "news_volume_1d": 2.0,
         "news_volume_5d": 6.0,
-        "news_surprise_intensity": 2.5,
+        "news_surprise_intensity": 1.6667,
         "news_promoter_sentiment_5d": 0.0,
         "news_promoter_activity_flag": 0.0,
         "news_industry_sentiment_5d": 0.0,
@@ -1964,9 +1965,9 @@
         "news_regulatory_risk_score": 0.0,
         "news_regulatory_positive_score": 0.0,
         "news_global_macro_risk_score": 0.0,
-        "news_novelty_weighted_sentiment": 0.0898,
+        "news_novelty_weighted_sentiment": 0.0502,
         "news_high_impact_event_count_5d": 0.0,
-        "news_cross_stock_net_impact": 0.422
+        "news_cross_stock_net_impact": 0.107
       },
       "promoter_intelligence": [
         "No recent promoter/insider filings flagged in live window."
@@ -1974,15 +1975,15 @@
       "industry_outlook": "Neutral",
       "competitor_developments": [
         "Results for the quarter ended 30th September 2026 - Hindustan Unilever Limited",
-        "HUL vs Nestle India Q2 results: Who wins on profit, revenue and dividend? Which FMCG stock should you buy? - TradingView",
+        "HUL vs Nestle India shares compared: Which FMCG stock to buy post Q2 results: Who wins on profit, revenue and dividend? - TradingView",
         "Nestlé India Reports Strong Volume Growth In Q2 - ESM Magazine",
         "Godfrey Phillips Q2 Results: profit drops 37.7%, board declares ₹10 dividend - CNBC TV18"
       ],
       "regulatory_developments": [
         "India’s FMCG Sector Under Pressure Despite GST Rationalisation: HSBC Report - A2Z Taxcorp LLP",
+        "Indian Economic Policy Is Adrift Without Direction - IMPRI Impact and Policy Research Institute",
         "India's growth seen losing momentum after strong start to fiscal year: Poll - Business Standard",
-        "Draft GST return changes aim to cut tax notices, ease ITC claims for firms - Business Standard",
-        "Manufacturing PMI eases to 54.7 in October despite strong export demand - Business Standard"
+        "Draft GST return changes aim to cut tax notices, ease ITC claims for firms - Business Standard"
       ],
       "global_exposure": [
         "FMCG companies see demand revival; weak monsoon, rising costs cloud outlook - Forbes India",
@@ -1990,6 +1991,42 @@
         "India rate panel flags more hikes but wary of aggressive cycle, minutes show - Reuters"
       ],
       "events_timeline": [
+        {
+          "event_id": "4617f39f0f19f9ac",
+          "company_name": "ITC Ltd",
+          "ticker": "ITC",
+          "related_competitor_or_industry": "SEBI / RBI / Govt Policy",
+          "event_category": "regulatory_government",
+          "event_description": "Indian Economic Policy Is Adrift Without Direction - IMPRI Impact and Policy Research Institute",
+          "original_source": "IMPRI Impact and Policy Research Institute",
+          "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE02UkRjNEZYSUdHQjludm5CUjc5bzlBc0djdXpnVENJQUxiNjRVNDMwZXVFRlctU1ZrYWdkSHFwZFZKMmRhM0lEUHBDZUI0Uml0VFpJazR2S3VvNXpmLTF1dnExcjhncHdoT1JNQWt6QlVhMzlzSTFN?oc=5",
+          "publication_timestamp": "2026-11-18T15:43:00+05:30",
+          "event_timestamp": "2026-11-18T15:43:00+05:30",
+          "effective_trading_date": "2026-11-19",
+          "sentiment": "neutral",
+          "impact_magnitude": "low",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "5-15 trading sessions",
+          "relevant_horizon": "10D",
+          "novelty_score": 0.72,
+          "source_credibility": 0.68,
+          "related_companies": [
+            "ITC"
+          ],
+          "related_sectors": [
+            "SEBI / RBI / Govt Policy"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "4617f39f0f19f9ac",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by IMPRI Impact and Policy Research Institute (2026-11-19 session): Indian Economic Policy Is Adrift Without Direction - IMPRI Impact and Policy Research Institute",
+          "interpretation_summary": "Informational regulatory government update with balanced immediate directional skew.",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.779881+05:30",
+          "validation_status": "VALID"
+        },
         {
           "event_id": "8d7fc4a757fae713",
           "company_name": "ITC Ltd",
@@ -2023,43 +2060,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.692775+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "e53281785e6f6e44",
-          "company_name": "ITC Ltd",
-          "ticker": "ITC",
-          "related_competitor_or_industry": "FMCG, Agri & Paperboards",
-          "event_category": "company_news",
-          "event_description": "ITC Share Price - Upstox",
-          "original_source": "Upstox",
-          "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5IMkRMcVVlTDVzbjFob3JsSlJPSWdHbFpvZjJyLTlwQnY4ejlneWdlUk01d1VMbnE2ejBSeWNvcXZuMnZWbklIeVM4UU5hcmMwendocGU1UmE1UQ?oc=5",
-          "publication_timestamp": "2026-11-18T10:01:00+05:30",
-          "event_timestamp": "2026-11-18T10:01:00+05:30",
-          "effective_trading_date": "2026-11-18",
-          "sentiment": "neutral",
-          "impact_magnitude": "low",
-          "classification_confidence": 0.54,
-          "expected_impact_duration": "1-2 trading sessions",
-          "relevant_horizon": "1D",
-          "novelty_score": 0.72,
-          "source_credibility": 0.68,
-          "related_companies": [
-            "ITC"
-          ],
-          "related_sectors": [
-            "FMCG, Agri & Paperboards"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "e53281785e6f6e44",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by Upstox (2026-11-18 session): ITC Share Price - Upstox",
-          "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.687114+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.755105+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2095,7 +2096,43 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.739154+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.783992+05:30",
+          "validation_status": "VALID"
+        },
+        {
+          "event_id": "10de0be6f6efa596",
+          "company_name": "ITC Ltd",
+          "ticker": "ITC",
+          "related_competitor_or_industry": "FMCG, Agri & Paperboards",
+          "event_category": "company_news",
+          "event_description": "ITC Share Price - Upstox",
+          "original_source": "Upstox",
+          "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5IMkRMcVVlTDVzbjFob3JsSlJPSWdHbFpvZjJyLTlwQnY4ejlneWdlUk01d1VMbnE2ejBSeWNvcXZuMnZWbklIeVM4UU5hcmMwendocGU1UmE1UQ?oc=5",
+          "publication_timestamp": "2026-11-16T20:46:00+05:30",
+          "event_timestamp": "2026-11-16T20:46:00+05:30",
+          "effective_trading_date": "2026-11-17",
+          "sentiment": "neutral",
+          "impact_magnitude": "low",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
+          "novelty_score": 0.72,
+          "source_credibility": 0.68,
+          "related_companies": [
+            "ITC"
+          ],
+          "related_sectors": [
+            "FMCG, Agri & Paperboards"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "10de0be6f6efa596",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by Upstox (2026-11-17 session): ITC Share Price - Upstox",
+          "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.747444+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2131,43 +2168,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.690713+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "b0183de66c23c046",
-          "company_name": "ITC Ltd",
-          "ticker": "ITC",
-          "related_competitor_or_industry": "FMCG, Agri & Paperboards",
-          "event_category": "company_news",
-          "event_description": "Sensex jumps 719 points, Nifty climbs above 25,300 in early trade; ITC, Airtel, Asian Paints, Eternal, lead - Fortune India",
-          "original_source": "Fortune India",
-          "source_url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOUVFicENfM2MzeDYzZFlEZjVqeWR2Qlp5VU5XUGlmYXVUUlRGSFdPczBvemxxNHRLWUF1TUxoYjR0UmhKVkUzOEFQTC1fRTlfM0lCUWVIcTg2RlFwQTYxel9YZm5TN0xrRmRoZkt6RXRFc3pIdGlqY3ZsR1MzT0hKelJrTUl0ZmQ4Q0d3a0VuajVzZFZoOGpEUTlMSjRFRmJXM0NKcDBxZXZMYVowVnNUYkpNMHNoQ3VsY0ZjRE8yRU1HT3g0X2FyTHBnSjFhZVlmUmthNlllTWRLTHVO0gHqAUFVX3lxTE81cUdGUk9ON3NRVFA1VDZFWE9vTW5IeVNqeWo5MzBTV0d4NEd0cE1jcWo3RDJFakdqY2tQOWNaTW1NUlVqNEFSUnk4dE1NZG5NNGtCalpIR3hHbE1BenpqU24yUm9xUmdvQ3pRR1B1d25oMUl1c2pUVGdvUHM5a3FRSHVqUDMxNVd3c2p3aHFybVFPZ0FpYlF0RjdBZkxfQ2lSTFBsaGtlSGQ1YVo5RXl4dmJKRy1BZ0RVanFHeVNuaXBaRHRpWURMQXhKZkctNi1Pb1hkUE54LXpCQnpxWXJ4NkJwUzM3VlBxdw?oc=5",
-          "publication_timestamp": "2026-11-16T05:30:00+05:30",
-          "event_timestamp": "2026-11-16T05:30:00+05:30",
-          "effective_trading_date": "2026-11-16",
-          "sentiment": "positive",
-          "impact_magnitude": "low",
-          "classification_confidence": 0.7,
-          "expected_impact_duration": "1-2 trading sessions",
-          "relevant_horizon": "1D",
-          "novelty_score": 0.72,
-          "source_credibility": 0.68,
-          "related_companies": [
-            "ITC"
-          ],
-          "related_sectors": [
-            "FMCG, Agri & Paperboards"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "b0183de66c23c046",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by Fortune India (2026-11-16 session): Sensex jumps 719 points, Nifty climbs above 25,300 in early trade; ITC, Airtel, Asian Paints, Eternal, lead - Fortune India",
-          "interpretation_summary": "Constructive company news signal for ITC (low magnitude).",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.694460+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.751311+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2203,7 +2204,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.696424+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.757008+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2239,7 +2240,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.701896+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.762543+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2275,7 +2276,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.698319+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.758726+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2312,7 +2313,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.716119+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.777937+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2348,7 +2349,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.683712+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.743619+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2385,27 +2386,27 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.713741+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.775219+05:30",
           "validation_status": "VALID"
         },
         {
-          "event_id": "c0b5391a236c5c80",
+          "event_id": "fadb4c9b1c677a6f",
           "company_name": "ITC Ltd",
           "ticker": "ITC",
           "related_competitor_or_industry": "FMCG, Agri & Paperboards",
           "event_category": "company_news",
-          "event_description": "ITC shares gain modestly after Q2 results; analysts split on outlook - BusinessLine",
-          "original_source": "BusinessLine",
-          "source_url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNb3FGcDZiRFl1UHdLd0F3Sk5aczRLSXZ5blRXQUxrZ2NDODRDQU1sY2NIdndxcHVUalFIOG54anpvdHpXUWIyaTJtQXFxLXVEdEJLZVc0NU1yWFR0NnU4MTdKNU5mVy01VE9xVkh0ZTJuMWs2MkdYZXZGckFTMldBVk5fU2o0N01uamNqUFRzNlBqSFdlTjJIM21pWlBqZXowOHhlY2tjMDdVR0trWU9hOU52YlJRZnp0Vk5MUjhOMTBjbm5lZjFPOVduWWFvR09XX1VfZFlhNNIB3gFBVV95cUxQWHVVWDFUSXR6SVNmbzNMemVCTTY5ZGhmN2hWSFFwaXFxSk1PQTQ4MFYwTTVFU2poR1hpX1NkTGx2anJlRnpBT3dzbDZzQlZPZWdKbnhGV0hwR1F3RUVzQkRlQTZzY2xPai1HSmhudTcxNEVBc2VkaEtLa0RBVFVfcm5DSTh2blFtVlZWN3Nfczdmd2lKUFRtb2hscml4ck5qVzMtT2dKZVo1MWdLdHdXa2J4YV9VSkx4SWxHTjlmZnVBT0pyYW5Ub1U2akEtb3JGVmVKZklLcFJIX1ZQZVE?oc=5",
-          "publication_timestamp": "2026-11-03T08:00:00+05:30",
-          "event_timestamp": "2026-11-03T08:00:00+05:30",
-          "effective_trading_date": "2026-11-03",
+          "event_description": "ITC Share Price Rise 2%. Enters Top Nifty Performers Today - India Infoline",
+          "original_source": "India Infoline",
+          "source_url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPWnZvXzN1dmo3SVJmMjJnMTZRclpzREZ6SXNPbjdNODBEZWpUYnRiNTZGeUxwN2pDT1MxMzRBQkFGemFQbWZJcnI0UE1mZTJNUVRQcF9SQnV4UWJnZEwwSnRLSzZYSjEzdzFNcko2bklscXVSX0tyVXRqazM3OHhlQ2FNbkh2cW8xbVJWMW5sdnBjanh1LXFMNWViRUxPMTROanVlVTN3?oc=5",
+          "publication_timestamp": "2026-11-04T08:00:00+05:30",
+          "event_timestamp": "2026-11-04T08:00:00+05:30",
+          "effective_trading_date": "2026-11-04",
           "sentiment": "neutral",
-          "impact_magnitude": "high",
+          "impact_magnitude": "low",
           "classification_confidence": 0.54,
-          "expected_impact_duration": "5-10 trading sessions",
-          "relevant_horizon": "5D",
-          "novelty_score": 0.9,
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
+          "novelty_score": 0.72,
           "source_credibility": 0.68,
           "related_companies": [
             "ITC"
@@ -2414,14 +2415,14 @@
             "FMCG, Agri & Paperboards"
           ],
           "is_duplicate_report": false,
-          "canonical_event_id": "c0b5391a236c5c80",
+          "canonical_event_id": "fadb4c9b1c677a6f",
           "extraction_method": "deterministic",
-          "facts_summary": "Reported by BusinessLine (2026-11-03 session): ITC shares gain modestly after Q2 results; analysts split on outlook - BusinessLine",
+          "facts_summary": "Reported by India Infoline (2026-11-04 session): ITC Share Price Rise 2%. Enters Top Nifty Performers Today - India Infoline",
           "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.680219+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.753333+05:30",
           "validation_status": "VALID"
         }
       ],
@@ -2472,7 +2473,7 @@
         },
         {
           "affected_company": "ITC",
-          "originating_event_id": "8fb64efd8f8f4ac3",
+          "originating_event_id": "7ac3f863e065250e",
           "originating_entity": "NESTLEIND",
           "relationship_type": "competitor",
           "expected_impact_direction": "neutral",
@@ -2518,54 +2519,54 @@
       "horizon_outlooks": {
         "1D": {
           "horizon": "1D",
-          "prob_positive": 0.4999,
-          "quant_prob_positive": 0.498,
-          "expected_gross_return_pct": 0.035,
-          "expected_net_return_pct": -0.145,
+          "prob_positive": 0.5003,
+          "quant_prob_positive": 0.4996,
+          "expected_gross_return_pct": 0.024,
+          "expected_net_return_pct": -0.156,
           "quant_signal": "NEUTRAL",
           "news_signal": "NEUTRAL",
-          "cross_stock_signal": "BULLISH",
+          "cross_stock_signal": "NEUTRAL",
           "combined_signal": "NEUTRAL",
           "confidence": 63.3,
           "uncertainty": 36.7,
           "decision": "WATCH",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 1D quantitative model combined with independent news and cross-stock signals."
         },
         "5D": {
           "horizon": "5D",
-          "prob_positive": 0.4364,
-          "quant_prob_positive": 0.4342,
-          "expected_gross_return_pct": -0.472,
-          "expected_net_return_pct": -0.829,
+          "prob_positive": 0.451,
+          "quant_prob_positive": 0.4502,
+          "expected_gross_return_pct": -0.319,
+          "expected_net_return_pct": -0.676,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
-          "cross_stock_signal": "BULLISH",
+          "cross_stock_signal": "NEUTRAL",
           "combined_signal": "BEARISH",
           "confidence": 63.3,
           "uncertainty": 36.7,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 5D quantitative model combined with independent news and cross-stock signals."
         },
         "10D": {
           "horizon": "10D",
-          "prob_positive": 0.4146,
-          "quant_prob_positive": 0.4122,
-          "expected_gross_return_pct": -0.606,
-          "expected_net_return_pct": -0.963,
+          "prob_positive": 0.425,
+          "quant_prob_positive": 0.4242,
+          "expected_gross_return_pct": -0.533,
+          "expected_net_return_pct": -0.89,
           "quant_signal": "BEARISH",
           "news_signal": "NEUTRAL",
-          "cross_stock_signal": "BULLISH",
+          "cross_stock_signal": "NEUTRAL",
           "combined_signal": "BEARISH",
           "confidence": 63.3,
           "uncertainty": 36.7,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 10D quantitative model combined with independent news and cross-stock signals."
@@ -2577,23 +2578,23 @@
       "symbol": "BIRLACABLE",
       "company_name": "Birla Cable Ltd",
       "sector": "Optical Fiber & Telecom Cables",
-      "observation_date": "2026-11-18",
+      "observation_date": "2026-11-19",
       "quant_score_summary": {
-        "prob_next_day_up": 0.4337,
-        "prob_5d_up": 0.5307,
-        "prob_10d_up": 0.5058,
-        "expected_next_day_return_pct": -0.9597,
-        "expected_5d_return_pct": 0.2733,
-        "expected_10d_return_pct": -0.1187,
-        "recommended_action": "REDUCE / SELL",
-        "confidence_score": 74.91,
+        "prob_next_day_up": 0.4681,
+        "prob_5d_up": 0.4987,
+        "prob_10d_up": 0.5219,
+        "expected_next_day_return_pct": -0.4444,
+        "expected_5d_return_pct": -0.0572,
+        "expected_10d_return_pct": -0.0044,
+        "recommended_action": "HOLD / WATCH",
+        "confidence_score": 71.55,
         "market_regime": "Weak Bull"
       },
-      "news_sentiment_score": 0.1427,
+      "news_sentiment_score": 0.1324,
       "news_features": {
         "news_company_sentiment_1d": 0.0,
-        "news_company_sentiment_5d": 0.1427,
-        "news_company_sentiment_20d": 0.0357,
+        "news_company_sentiment_5d": 0.1324,
+        "news_company_sentiment_20d": 0.0331,
         "news_volume_1d": 0.0,
         "news_volume_5d": 1.0,
         "news_surprise_intensity": 0.0,
@@ -2614,10 +2615,10 @@
       ],
       "industry_outlook": "Neutral",
       "competitor_developments": [
+        "Price Band Hitters Today, 11 November 2026 at 3:30 PM IST: Sterlite Technologies Ltd Leads by Value - HDFC Sky",
         "HFCL Secures ₹834.36 Crore Export Orders For Optical Fiber Cables - Sahi",
-        "HFCL bags export orders worth ₹834 crore for optical fibre cables - Business Standard",
-        "HFCL Q2 FY27 Results: PAT Up 448%, Revenue Up 144%, ₹28,900 Cr Orders - Kalkine India",
-        "Sterlite Technologies eyes ₹20,000 crore revenue by FY29, product co-development strategy: Ankit Agarwal - ET Telecom"
+        "HFCL shares: Why this multibagger stock is among brokers' top Diwali picks; targets - Business Today",
+        "HFCL bags export orders worth ₹834 crore for optical fibre cables - Business Standard"
       ],
       "regulatory_developments": [
         "Government BharatNet / DoT / BSNL fiber tenders & PLI telecom incentives",
@@ -2660,7 +2661,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.757753+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.799233+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2696,7 +2697,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.760435+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.803252+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2733,7 +2734,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.771778+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.812604+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2770,7 +2771,44 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.767863+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.806863+05:30",
+          "validation_status": "VALID"
+        },
+        {
+          "event_id": "064977d17bd27eb2",
+          "company_name": "Birla Cable Ltd",
+          "ticker": "BIRLACABLE",
+          "related_competitor_or_industry": "STLTECH",
+          "event_category": "competitor",
+          "event_description": "Price Band Hitters Today, 11 November 2026 at 3:30 PM IST: Sterlite Technologies Ltd Leads by Value - HDFC Sky",
+          "original_source": "HDFC Sky",
+          "source_url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNZmRmam83NUpacWl0eFU5Z25TXzFTWGlpRmNEMzBRcTZvY1UzX0hLMFBvcDBfZ3RMemVtQXhSNEZ0b3ZNRnFVcFNHRjh6c3M4bmlJU21ncmdEcXFHT3NZMkJYM1RVRkhJbU9vNkNFY0RwVG83VEJicEUyY1Y0VTVLdkJucw?oc=5",
+          "publication_timestamp": "2026-11-11T10:35:00+05:30",
+          "event_timestamp": "2026-11-11T10:35:00+05:30",
+          "effective_trading_date": "2026-11-11",
+          "sentiment": "neutral",
+          "impact_magnitude": "low",
+          "classification_confidence": 0.54,
+          "expected_impact_duration": "1-2 trading sessions",
+          "relevant_horizon": "1D",
+          "novelty_score": 0.72,
+          "source_credibility": 0.68,
+          "related_companies": [
+            "BIRLACABLE",
+            "STLTECH"
+          ],
+          "related_sectors": [
+            "STLTECH"
+          ],
+          "is_duplicate_report": false,
+          "canonical_event_id": "064977d17bd27eb2",
+          "extraction_method": "deterministic",
+          "facts_summary": "Reported by HDFC Sky (2026-11-11 session): Price Band Hitters Today, 11 November 2026 at 3:30 PM IST: Sterlite Technologies Ltd Leads by Value - HDFC Sky",
+          "interpretation_summary": "Informational competitor update with balanced immediate directional skew.",
+          "promoter_verification_status": "NOT_APPLICABLE",
+          "classification_evidence": [],
+          "promoter_classification_confidence": null,
+          "collection_timestamp": "2026-11-19T02:34:53.801063+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2806,7 +2844,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.750103+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.791803+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2842,7 +2880,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.753848+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.795721+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2878,7 +2916,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.752037+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.793775+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2914,7 +2952,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.752037+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.793775+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2951,7 +2989,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.777221+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.816348+05:30",
           "validation_status": "VALID"
         },
         {
@@ -2987,7 +3025,7 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.769817+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.808939+05:30",
           "validation_status": "VALID"
         },
         {
@@ -3024,51 +3062,36 @@
           "promoter_verification_status": "NOT_APPLICABLE",
           "classification_evidence": [],
           "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.778905+05:30",
-          "validation_status": "VALID"
-        },
-        {
-          "event_id": "43b241352a0478aa",
-          "company_name": "Birla Cable Ltd",
-          "ticker": "BIRLACABLE",
-          "related_competitor_or_industry": "STLTECH",
-          "event_category": "competitor",
-          "event_description": "Sterlite Technologies eyes ₹20,000 crore revenue by FY29, product co-development strategy: Ankit Agarwal - ET Telecom",
-          "original_source": "ET Telecom",
-          "source_url": "https://news.google.com/rss/articles/CBMiigJBVV95cUxPRjVaai1NUmxsV09Tcm1uM0VUV3hURmZ3V0JwV1h6cHZzLWtSMmd3NGQtaWwzajJURjc2RUoxdHFXUXA2Z0psQjR1eVRKa2JLalhIT1FBLWpVZzVXZkN3U1JTRzNzWXhnTms3UXFLemQzWXJpOE5wMDZILV9sN1FSOG9rVGRwN092bWpjQmNkZmNKV0dJSU5nRlFLMEsxTWVEZzJtZm9yeTM4TTdkUXVPbzk3eXQwLTBRNVB6dkFtTG9hZHAwOUI1UjBPYWtFbk1rOW5WeFFZVmlhQ3pKakJRN293MlhzdnhSRnZVdTM2dnNvdnZJXzhFTGN2eEowVlh5TEdiSUsxLTZLUdIBjwJBVV95cUxObUduTVh2V2J3NHUyWHUtbkR0ekNmRi1YSjFKMXNqSmg5R2FjUHFBUEl4WWUzbi1GRXkwRG9XN05GZVBuaWM1S2NEN0h5azRUN2MzWWNiV3FwenVMSWlhTTJEbHhrTWhRUDF6Y2pFM1BZVFVka1VBaTRHRWZaOTdEeXRqY1pBRTFMbzN1eXhPQVdoYmw1M2ZMV3FmRnl5VElVMGpaRDdZTVoybFNmTGtMRktGOWpvSUJ1d0NUSEt2OTNPdklmc09yRGVwWWhKRW9HemhiNHpYLVhxbS1JdXdaajE2dDFzMXRWMEpaRnRVOURoQ0lLQ0xVY3hsSTJKcERuNE94dUtsRFN5dW5Hb21R?oc=5",
-          "publication_timestamp": "2026-10-28T07:00:00+05:30",
-          "event_timestamp": "2026-10-28T07:00:00+05:30",
-          "effective_trading_date": "2026-10-28",
-          "sentiment": "neutral",
-          "impact_magnitude": "low",
-          "classification_confidence": 0.54,
-          "expected_impact_duration": "1-2 trading sessions",
-          "relevant_horizon": "1D",
-          "novelty_score": 0.72,
-          "source_credibility": 0.68,
-          "related_companies": [
-            "BIRLACABLE",
-            "STLTECH"
-          ],
-          "related_sectors": [
-            "STLTECH"
-          ],
-          "is_duplicate_report": false,
-          "canonical_event_id": "43b241352a0478aa",
-          "extraction_method": "deterministic",
-          "facts_summary": "Reported by ET Telecom (2026-10-28 session): Sterlite Technologies eyes ₹20,000 crore revenue by FY29, product co-development strategy: Ankit Agarwal - ET Telecom",
-          "interpretation_summary": "Informational competitor update with balanced immediate directional skew.",
-          "promoter_verification_status": "NOT_APPLICABLE",
-          "classification_evidence": [],
-          "promoter_classification_confidence": null,
-          "collection_timestamp": "2026-11-18T17:33:01.775383+05:30",
+          "collection_timestamp": "2026-11-19T02:34:53.818139+05:30",
           "validation_status": "VALID"
         }
       ],
       "cross_stock_impacts": [
         {
           "affected_company": "BIRLACABLE",
+          "originating_event_id": "064977d17bd27eb2",
+          "originating_entity": "STLTECH",
+          "relationship_type": "competitor",
+          "expected_impact_direction": "neutral",
+          "impact_magnitude": "low",
+          "confidence": 0.459,
+          "expected_duration": "1-2 trading sessions",
+          "rationale": "Competitor update monitored with balanced immediate read-across."
+        },
+        {
+          "affected_company": "BIRLACABLE",
           "originating_event_id": "68723c6619115fa3",
+          "originating_entity": "HFCL",
+          "relationship_type": "competitor",
+          "expected_impact_direction": "neutral",
+          "impact_magnitude": "low",
+          "confidence": 0.459,
+          "expected_duration": "1-2 trading sessions",
+          "rationale": "Competitor update monitored with balanced immediate read-across."
+        },
+        {
+          "affected_company": "BIRLACABLE",
+          "originating_event_id": "1bdb35b4e525c9cf",
           "originating_entity": "HFCL",
           "relationship_type": "competitor",
           "expected_impact_direction": "neutral",
@@ -3086,17 +3109,6 @@
           "impact_magnitude": "low",
           "confidence": 0.595,
           "expected_duration": "1-2 trading sessions",
-          "rationale": "Competitor update monitored with balanced immediate read-across."
-        },
-        {
-          "affected_company": "BIRLACABLE",
-          "originating_event_id": "6e6e590a413b15da",
-          "originating_entity": "HFCL",
-          "relationship_type": "competitor",
-          "expected_impact_direction": "neutral",
-          "impact_magnitude": "high",
-          "confidence": 0.459,
-          "expected_duration": "5-10 trading sessions",
           "rationale": "Competitor update monitored with balanced immediate read-across."
         },
         {
@@ -3134,17 +3146,6 @@
         },
         {
           "affected_company": "BIRLACABLE",
-          "originating_event_id": "9d3ddf40b267cc40",
-          "originating_entity": "RELIANCE",
-          "relationship_type": "supplier_customer",
-          "expected_impact_direction": "neutral",
-          "impact_magnitude": "low",
-          "confidence": 0.405,
-          "expected_duration": "2-5 trading sessions",
-          "rationale": "RELIANCE supplier customer spillover to BIRLACABLE: Bell-ringing ceremony marks the stock market debut of Jio Platforms Limited - Facebook"
-        },
-        {
-          "affected_company": "BIRLACABLE",
           "originating_event_id": "1f0c175ba4660f07",
           "originating_entity": "RELIANCE",
           "relationship_type": "supplier_customer",
@@ -3158,54 +3159,54 @@
       "horizon_outlooks": {
         "1D": {
           "horizon": "1D",
-          "prob_positive": 0.4372,
-          "quant_prob_positive": 0.4337,
-          "expected_gross_return_pct": -0.935,
-          "expected_net_return_pct": -1.115,
+          "prob_positive": 0.4731,
+          "quant_prob_positive": 0.4681,
+          "expected_gross_return_pct": -0.409,
+          "expected_net_return_pct": -0.589,
           "quant_signal": "BEARISH",
           "news_signal": "BULLISH",
           "cross_stock_signal": "BULLISH",
-          "combined_signal": "BEARISH",
-          "confidence": 70.5,
-          "uncertainty": 29.5,
+          "combined_signal": "NEUTRAL",
+          "confidence": 68.6,
+          "uncertainty": 31.4,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 1D quantitative model combined with independent news and cross-stock signals."
         },
         "5D": {
           "horizon": "5D",
-          "prob_positive": 0.5345,
-          "quant_prob_positive": 0.5307,
-          "expected_gross_return_pct": 0.333,
-          "expected_net_return_pct": -0.184,
-          "quant_signal": "BULLISH",
+          "prob_positive": 0.5044,
+          "quant_prob_positive": 0.4987,
+          "expected_gross_return_pct": 0.032,
+          "expected_net_return_pct": -0.483,
+          "quant_signal": "NEUTRAL",
           "news_signal": "BULLISH",
           "cross_stock_signal": "BULLISH",
           "combined_signal": "BULLISH",
-          "confidence": 86.2,
-          "uncertainty": 13.8,
-          "decision": "WATCH",
-          "model_prediction_date": "2026-11-17",
+          "confidence": 68.6,
+          "uncertainty": 31.4,
+          "decision": "NO TRADE",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 5D quantitative model combined with independent news and cross-stock signals."
         },
         "10D": {
           "horizon": "10D",
-          "prob_positive": 0.5098,
-          "quant_prob_positive": 0.5058,
-          "expected_gross_return_pct": -0.055,
-          "expected_net_return_pct": -0.572,
-          "quant_signal": "NEUTRAL",
+          "prob_positive": 0.5283,
+          "quant_prob_positive": 0.5219,
+          "expected_gross_return_pct": 0.095,
+          "expected_net_return_pct": -0.42,
+          "quant_signal": "BULLISH",
           "news_signal": "BULLISH",
           "cross_stock_signal": "BULLISH",
           "combined_signal": "BULLISH",
-          "confidence": 86.2,
-          "uncertainty": 13.8,
+          "confidence": 84.4,
+          "uncertainty": 15.6,
           "decision": "NO TRADE",
-          "model_prediction_date": "2026-11-17",
+          "model_prediction_date": "2026-11-18",
           "data_freshness": "Current",
           "is_model_generated": true,
           "status_reason": "Genuine 10D quantitative model combined with independent news and cross-stock signals."
@@ -3215,6 +3216,78 @@
     }
   },
   "consolidated_feed": [
+    {
+      "event_id": "4617f39f0f19f9ac",
+      "company_name": "ITC Ltd",
+      "ticker": "ITC",
+      "related_competitor_or_industry": "SEBI / RBI / Govt Policy",
+      "event_category": "regulatory_government",
+      "event_description": "Indian Economic Policy Is Adrift Without Direction - IMPRI Impact and Policy Research Institute",
+      "original_source": "IMPRI Impact and Policy Research Institute",
+      "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE02UkRjNEZYSUdHQjludm5CUjc5bzlBc0djdXpnVENJQUxiNjRVNDMwZXVFRlctU1ZrYWdkSHFwZFZKMmRhM0lEUHBDZUI0Uml0VFpJazR2S3VvNXpmLTF1dnExcjhncHdoT1JNQWt6QlVhMzlzSTFN?oc=5",
+      "publication_timestamp": "2026-11-18T15:43:00+05:30",
+      "event_timestamp": "2026-11-18T15:43:00+05:30",
+      "effective_trading_date": "2026-11-19",
+      "sentiment": "neutral",
+      "impact_magnitude": "low",
+      "classification_confidence": 0.54,
+      "expected_impact_duration": "5-15 trading sessions",
+      "relevant_horizon": "10D",
+      "novelty_score": 0.72,
+      "source_credibility": 0.68,
+      "related_companies": [
+        "ITC"
+      ],
+      "related_sectors": [
+        "SEBI / RBI / Govt Policy"
+      ],
+      "is_duplicate_report": false,
+      "canonical_event_id": "4617f39f0f19f9ac",
+      "extraction_method": "deterministic",
+      "facts_summary": "Reported by IMPRI Impact and Policy Research Institute (2026-11-19 session): Indian Economic Policy Is Adrift Without Direction - IMPRI Impact and Policy Research Institute",
+      "interpretation_summary": "Informational regulatory government update with balanced immediate directional skew.",
+      "promoter_verification_status": "NOT_APPLICABLE",
+      "classification_evidence": [],
+      "promoter_classification_confidence": null,
+      "collection_timestamp": "2026-11-19T02:34:53.779881+05:30",
+      "validation_status": "VALID"
+    },
+    {
+      "event_id": "e019e878ec485c74",
+      "company_name": "Tata Consultancy Services Ltd",
+      "ticker": "TCS",
+      "related_competitor_or_industry": "IT Services & Consulting",
+      "event_category": "industry_sector",
+      "event_description": "India IT spending to grow 10.6% in 2027 says Gartner - DQ",
+      "original_source": "DQ",
+      "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNdHNJaUttTnNuT0dHUkR1LUd4RGZSd3hfaG5GSjlBMk9vYnB0NGZDSE9vRkxyR1p3SU9FX2tVWGYtVFpMSFRNTm1uSkFlZXVFOGVUYzd6dE41LWdXU3cxSHFnOTBaU0NWdFcyRGs0TUlPSW5NcDVNRWhMYkxoYWRjcDBBNjgybGtmaEV6Z2p1aG1lQdIBkgFBVV95cUxNdHNJaUttTnNuT0dHUkR1LUd4RGZSd3hfaG5GSjlBMk9vYnB0NGZDSE9vRkxyR1p3SU9FX2tVWGYtVFpMSFRNTm1uSkFlZXVFOGVUYzd6dE41LWdXU3cxSHFnOTBaU0NWdFcyRGs0TUlPSW5NcDVNRWhMYkxoYWRjcDBBNjgybGtmaEV6Z2p1aG1lQQ?oc=5",
+      "publication_timestamp": "2026-11-18T12:56:00+05:30",
+      "event_timestamp": "2026-11-18T12:56:00+05:30",
+      "effective_trading_date": "2026-11-18",
+      "sentiment": "neutral",
+      "impact_magnitude": "low",
+      "classification_confidence": 0.54,
+      "expected_impact_duration": "1-2 trading sessions",
+      "relevant_horizon": "1D",
+      "novelty_score": 0.72,
+      "source_credibility": 0.68,
+      "related_companies": [
+        "TCS"
+      ],
+      "related_sectors": [
+        "IT Services & Consulting"
+      ],
+      "is_duplicate_report": false,
+      "canonical_event_id": "e019e878ec485c74",
+      "extraction_method": "deterministic",
+      "facts_summary": "Reported by DQ (2026-11-18 session): India IT spending to grow 10.6% in 2027 says Gartner - DQ",
+      "interpretation_summary": "Informational industry sector update with balanced immediate directional skew.",
+      "promoter_verification_status": "NOT_APPLICABLE",
+      "classification_evidence": [],
+      "promoter_classification_confidence": null,
+      "collection_timestamp": "2026-11-19T02:34:53.683982+05:30",
+      "validation_status": "VALID"
+    },
     {
       "event_id": "4ed690601bbebad3",
       "company_name": "Tata Consultancy Services Ltd",
@@ -3248,7 +3321,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.619714+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.675875+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3284,20 +3357,20 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.692775+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.755105+05:30",
       "validation_status": "VALID"
     },
     {
-      "event_id": "e53281785e6f6e44",
-      "company_name": "ITC Ltd",
-      "ticker": "ITC",
-      "related_competitor_or_industry": "FMCG, Agri & Paperboards",
+      "event_id": "4a603560f2771b4c",
+      "company_name": "Tata Consultancy Services Ltd",
+      "ticker": "TCS",
+      "related_competitor_or_industry": "IT Services & Consulting",
       "event_category": "company_news",
-      "event_description": "ITC Share Price - Upstox",
-      "original_source": "Upstox",
-      "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5IMkRMcVVlTDVzbjFob3JsSlJPSWdHbFpvZjJyLTlwQnY4ejlneWdlUk01d1VMbnE2ejBSeWNvcXZuMnZWbklIeVM4UU5hcmMwendocGU1UmE1UQ?oc=5",
-      "publication_timestamp": "2026-11-18T10:01:00+05:30",
-      "event_timestamp": "2026-11-18T10:01:00+05:30",
+      "event_description": "Tata Consultancy Services slides Wednesday, underperforms market - MarketWatch",
+      "original_source": "MarketWatch",
+      "source_url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQRUhjYVQ2dWRMcWhadzBBSnVyTzFobXNqN0laZkN5VGRINjBzODVaS1NJZFNCUmpEQnVGTGloTmFrZ2JDMERma3A2M3dMM0doZUhFdGp3aWpjRjgwWE9hX3VCTTZGdGFaZE5pSEUyTmNBU0VnYU9oOU9wUURhWDFMRTZIYkpSOHZtcGlPVkpmSGxnNmdmTEFLa0ppcm5BclZhb2hwQkVpTW5GLVZreVZ0Y1V2NUdZcmF2dFR0VVJfOXQ2b2F6T2M2N1pQU0tIamNjNXg2NnNmdmE?oc=5",
+      "publication_timestamp": "2026-11-18T10:33:00+05:30",
+      "event_timestamp": "2026-11-18T10:33:00+05:30",
       "effective_trading_date": "2026-11-18",
       "sentiment": "neutral",
       "impact_magnitude": "low",
@@ -3307,20 +3380,56 @@
       "novelty_score": 0.72,
       "source_credibility": 0.68,
       "related_companies": [
-        "ITC"
+        "TCS"
       ],
       "related_sectors": [
-        "FMCG, Agri & Paperboards"
+        "IT Services & Consulting"
       ],
       "is_duplicate_report": false,
-      "canonical_event_id": "e53281785e6f6e44",
+      "canonical_event_id": "4a603560f2771b4c",
       "extraction_method": "deterministic",
-      "facts_summary": "Reported by Upstox (2026-11-18 session): ITC Share Price - Upstox",
+      "facts_summary": "Reported by MarketWatch (2026-11-18 session): Tata Consultancy Services slides Wednesday, underperforms market - MarketWatch",
       "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.687114+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.672031+05:30",
+      "validation_status": "VALID"
+    },
+    {
+      "event_id": "597152e10109e9b0",
+      "company_name": "Tata Consultancy Services Ltd",
+      "ticker": "TCS",
+      "related_competitor_or_industry": "IT Services & Consulting",
+      "event_category": "company_news",
+      "event_description": "TCS Share Price - Upstox",
+      "original_source": "Upstox",
+      "source_url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4xa3lkaFFielNzaEh0c3oxTzdzMzV1MDk5TzFMYnoweVkwWG02cVBRTHZSUmM2Q1JpYVpsN2l2VmZwMFpwUzI5cm5WOUFHSGE1c2ZsRjRTWWl3MmlNOGdQUmdkSlZLUUxqRUctcGVsdDA?oc=5",
+      "publication_timestamp": "2026-11-18T00:29:00+05:30",
+      "event_timestamp": "2026-11-18T00:29:00+05:30",
+      "effective_trading_date": "2026-11-18",
+      "sentiment": "neutral",
+      "impact_magnitude": "low",
+      "classification_confidence": 0.54,
+      "expected_impact_duration": "1-2 trading sessions",
+      "relevant_horizon": "1D",
+      "novelty_score": 0.72,
+      "source_credibility": 0.68,
+      "related_companies": [
+        "TCS"
+      ],
+      "related_sectors": [
+        "IT Services & Consulting"
+      ],
+      "is_duplicate_report": false,
+      "canonical_event_id": "597152e10109e9b0",
+      "extraction_method": "deterministic",
+      "facts_summary": "Reported by Upstox (2026-11-18 session): TCS Share Price - Upstox",
+      "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
+      "promoter_verification_status": "NOT_APPLICABLE",
+      "classification_evidence": [],
+      "promoter_classification_confidence": null,
+      "collection_timestamp": "2026-11-19T02:34:53.667826+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3356,79 +3465,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.625790+05:30",
-      "validation_status": "VALID"
-    },
-    {
-      "event_id": "597152e10109e9b0",
-      "company_name": "Tata Consultancy Services Ltd",
-      "ticker": "TCS",
-      "related_competitor_or_industry": "IT Services & Consulting",
-      "event_category": "company_news",
-      "event_description": "TCS Share Price - Upstox",
-      "original_source": "Upstox",
-      "source_url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4xa3lkaFFielNzaEh0c3oxTzdzMzV1MDk5TzFMYnoweVkwWG02cVBRTHZSUmM2Q1JpYVpsN2l2VmZwMFpwUzI5cm5WOUFHSGE1c2ZsRjRTWWl3MmlNOGdQUmdkSlZLUUxqRUctcGVsdDA?oc=5",
-      "publication_timestamp": "2026-11-17T17:18:00+05:30",
-      "event_timestamp": "2026-11-17T17:18:00+05:30",
-      "effective_trading_date": "2026-11-18",
-      "sentiment": "neutral",
-      "impact_magnitude": "low",
-      "classification_confidence": 0.54,
-      "expected_impact_duration": "1-2 trading sessions",
-      "relevant_horizon": "1D",
-      "novelty_score": 0.72,
-      "source_credibility": 0.68,
-      "related_companies": [
-        "TCS"
-      ],
-      "related_sectors": [
-        "IT Services & Consulting"
-      ],
-      "is_duplicate_report": false,
-      "canonical_event_id": "597152e10109e9b0",
-      "extraction_method": "deterministic",
-      "facts_summary": "Reported by Upstox (2026-11-18 session): TCS Share Price - Upstox",
-      "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
-      "promoter_verification_status": "NOT_APPLICABLE",
-      "classification_evidence": [],
-      "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.614427+05:30",
-      "validation_status": "VALID"
-    },
-    {
-      "event_id": "4533dd98cf82b850",
-      "company_name": "Tata Consultancy Services Ltd",
-      "ticker": "TCS",
-      "related_competitor_or_industry": "IT Services & Consulting",
-      "event_category": "industry_sector",
-      "event_description": "India's IT spending to grow 10% to ₹16.9 trillion in 2027: Gartner - Business Standard",
-      "original_source": "Business Standard",
-      "source_url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQUW1ldDNNUHNRczR1STliOC1jNmtmbTZnNV9Sb2hERTZsbVZkaWdaSjVEVDRsQ09JdXpYWlBHaDRDZjRHbnBGaWJIWnhZcENEX3ZkZ0V3VnI2OWtHa3lJQVZMWFpWaGVyaDFzRnEwNW9Rd0pEczYzRFVsdk5wOWt1VWFXZFlSbnpkem5NSVJDMmJOWFllUm52X0FaNDVNOUk5Y1hrUlRjYy1LakRoV2ZmRVFiS05WTHIxRXNkaE1wLXZDMjhvMG05ZHNLa9IB0AFBVV95cUxQTUY1OXF4OFRZQjdPdTBuYjlMTHlUNjNnOV9yOTFQX1NwYUNxLVNoZzY0eVNiNVVzNC1yaExFeUdwQzAyX2RYZ210aWNBR0pHdkRFN01NeU5yUGZEcjFWdjN0akJMVE5iNzRyVVA2R2pIVmx1a1Zkb0h3a1BDOFNDS0ZoZ0QzVjk5azZXcTdSekhlbHpBb0hqT2syUUtyNDdFelVlX3d0a1ZUd3VmMnR2S0xkTC1nQTNZM0hkN3dSeG45TDVvNGpJRDV3T1lKSGVF?oc=5",
-      "publication_timestamp": "2026-11-17T14:02:00+05:30",
-      "event_timestamp": "2026-11-17T14:02:00+05:30",
-      "effective_trading_date": "2026-11-17",
-      "sentiment": "neutral",
-      "impact_magnitude": "low",
-      "classification_confidence": 0.54,
-      "expected_impact_duration": "1-2 trading sessions",
-      "relevant_horizon": "1D",
-      "novelty_score": 0.72,
-      "source_credibility": 0.86,
-      "related_companies": [
-        "TCS"
-      ],
-      "related_sectors": [
-        "IT Services & Consulting"
-      ],
-      "is_duplicate_report": false,
-      "canonical_event_id": "4533dd98cf82b850",
-      "extraction_method": "deterministic",
-      "facts_summary": "Reported by Business Standard (2026-11-17 session): India's IT spending to grow 10% to ₹16.9 trillion in 2027: Gartner - Business Standard",
-      "interpretation_summary": "Informational industry sector update with balanced immediate directional skew.",
-      "promoter_verification_status": "NOT_APPLICABLE",
-      "classification_evidence": [],
-      "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.629620+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.682145+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3464,7 +3501,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.739154+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.783992+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3500,7 +3537,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.623798+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.680177+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3536,7 +3573,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.627491+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.686028+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3572,7 +3609,43 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.586291+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.653961+05:30",
+      "validation_status": "VALID"
+    },
+    {
+      "event_id": "10de0be6f6efa596",
+      "company_name": "ITC Ltd",
+      "ticker": "ITC",
+      "related_competitor_or_industry": "FMCG, Agri & Paperboards",
+      "event_category": "company_news",
+      "event_description": "ITC Share Price - Upstox",
+      "original_source": "Upstox",
+      "source_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE5IMkRMcVVlTDVzbjFob3JsSlJPSWdHbFpvZjJyLTlwQnY4ejlneWdlUk01d1VMbnE2ejBSeWNvcXZuMnZWbklIeVM4UU5hcmMwendocGU1UmE1UQ?oc=5",
+      "publication_timestamp": "2026-11-16T20:46:00+05:30",
+      "event_timestamp": "2026-11-16T20:46:00+05:30",
+      "effective_trading_date": "2026-11-17",
+      "sentiment": "neutral",
+      "impact_magnitude": "low",
+      "classification_confidence": 0.54,
+      "expected_impact_duration": "1-2 trading sessions",
+      "relevant_horizon": "1D",
+      "novelty_score": 0.72,
+      "source_credibility": 0.68,
+      "related_companies": [
+        "ITC"
+      ],
+      "related_sectors": [
+        "FMCG, Agri & Paperboards"
+      ],
+      "is_duplicate_report": false,
+      "canonical_event_id": "10de0be6f6efa596",
+      "extraction_method": "deterministic",
+      "facts_summary": "Reported by Upstox (2026-11-17 session): ITC Share Price - Upstox",
+      "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
+      "promoter_verification_status": "NOT_APPLICABLE",
+      "classification_evidence": [],
+      "promoter_classification_confidence": null,
+      "collection_timestamp": "2026-11-19T02:34:53.747444+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3608,56 +3681,56 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.690713+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.751311+05:30",
       "validation_status": "VALID"
     },
     {
-      "event_id": "3017d515f1ea28f1",
+      "event_id": "872c39cba7b682c7",
       "company_name": "Tata Consultancy Services Ltd",
       "ticker": "TCS",
-      "related_competitor_or_industry": "IT Services & Consulting",
-      "event_category": "company_news",
-      "event_description": "Tata Consultancy Services falls Monday, outperforms competitors - MarketWatch",
-      "original_source": "MarketWatch",
-      "source_url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxQOUZZaUhIQk9Ea1ExYmRINXEzYU5XTGNUaWVPTmhvRFpwMWYzeFFZaklKZENwNXNMTEdjNEVabUZBQVJvMlQ4LXI1U3l1a2VrVU9nSFpVRjA0VE52RHE0dHpmZ0JzakRhZ3Z1NFlsS05XSEdnVS1jU2w4MkdxemY3ajNyOTJONUtCdzVXb2ZTb3ZaR19GcG1YdXZoTXF3QlZPNWxkZ3BwWVd0VVlqS1dXaHREUjYzMDRWOF9DOHo0WHJ3a08xdWV1eDJFNzBMNDlOLWRZMmRSQQ?oc=5",
-      "publication_timestamp": "2026-11-16T10:33:00+05:30",
-      "event_timestamp": "2026-11-16T10:33:00+05:30",
+      "related_competitor_or_industry": "Global Macro",
+      "event_category": "global_macro",
+      "event_description": "Rupee rises, volatility ebbs as equity inflows blunt global headwinds - Reuters",
+      "original_source": "Reuters",
+      "source_url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNUnZsV3JvbXpiRElEdnViZ25tOXl2YldqM1VUT3JfSFlYTVBNZGxVZGllZWtORUxWTThHNXhfRU5NUHU0Nm1lcUw3Q0JOOXpwRjlybGFVb3IwbUhpVm9DMGIxLUN4c1VYMGFXLVJPVE9WZDNVazUtZmc0bWYzSDlXekw5QWU1cnA2ZlRRYURYQlBPSFhWcHcwTXU3cDE2ajJ0X2llUzdqb2pxOGRoVXNV?oc=5",
+      "publication_timestamp": "2026-11-16T10:50:00+05:30",
+      "event_timestamp": "2026-11-16T10:50:00+05:30",
       "effective_trading_date": "2026-11-16",
-      "sentiment": "negative",
+      "sentiment": "neutral",
       "impact_magnitude": "low",
-      "classification_confidence": 0.7,
-      "expected_impact_duration": "1-2 trading sessions",
-      "relevant_horizon": "1D",
+      "classification_confidence": 0.54,
+      "expected_impact_duration": "5-15 trading sessions",
+      "relevant_horizon": "10D",
       "novelty_score": 0.72,
-      "source_credibility": 0.68,
+      "source_credibility": 0.86,
       "related_companies": [
         "TCS"
       ],
       "related_sectors": [
-        "IT Services & Consulting"
+        "Global Macro"
       ],
       "is_duplicate_report": false,
-      "canonical_event_id": "3017d515f1ea28f1",
+      "canonical_event_id": "872c39cba7b682c7",
       "extraction_method": "deterministic",
-      "facts_summary": "Reported by MarketWatch (2026-11-16 session): Tata Consultancy Services falls Monday, outperforms competitors - MarketWatch",
-      "interpretation_summary": "Adverse company news risk for TCS (low magnitude).",
+      "facts_summary": "Reported by Reuters (2026-11-16 session): Rupee rises, volatility ebbs as equity inflows blunt global headwinds - Reuters",
+      "interpretation_summary": "Informational global macro update with balanced immediate directional skew.",
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.616124+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.707820+05:30",
       "validation_status": "VALID"
     },
     {
-      "event_id": "5e513762d6bc9cca",
+      "event_id": "90346966c04e2364",
       "company_name": "Tata Consultancy Services Ltd",
       "ticker": "TCS",
       "related_competitor_or_industry": "IT Services & Consulting",
       "event_category": "company_news",
-      "event_description": "TCS, Infosys, TechM, LTM, Cyient, Mphasis, TechM shares: Targets amid soft Q3 hopes - Business Today",
-      "original_source": "Business Today",
-      "source_url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOdWhhdWVfX210MDduaFlGaTdzZ1FlSUZ3REEyVzBvb2hieXhlVmgzVUJtTDFZV2lXNWhXN2FLTTA1TGNmV2pUcktFeEowQWFDV3hDVGs0T3pCNUlQOWdoTzF0ZGY4Y3VFbU5tbG0xd3dNa1dqYzBZMENkMlcxV2xLNjBPVDN5ekZvRWpaV2tCNlloZ05TRFlObG5SVVV6c2Vndkx4UWNSSFpQemtpLUFnY01FUFRIZWNtWm4xNWxPaU9BTEJkRXd5WUJNWTdySTJ6aDBHWTh2TFJXWDZx0gHiAUFVX3lxTFBibThOVnRFcTBzMElySFA1MnZUUnpSNkxqQ2l3TmxIUUtoNFdvOW1nRWZ2bVE5U3MzLVVrSWt1X09Rb1BneVpXRXE1WmFhWm0wVlFtTTdmRnBHMTFaUlBVTnNuMFM5V1BvcmVFSzIwMi1ZSnh0dG5DZXVRcXdYYi1kNll6T2szSU5IaWE4ZHlIOF9tRjBaV3pnZEhuS1hEdVZRMzJuSU5STFZFTXdCeHBWQ3MtSUlZQVN3S3NwekN4ZlBpQW5CYURkVkZnM2V5UG1pY3UyY1NTRElVeWQwYU9sSFE?oc=5",
-      "publication_timestamp": "2026-11-16T10:04:00+05:30",
-      "event_timestamp": "2026-11-16T10:04:00+05:30",
+      "event_description": "Tata Consultancy Services (NSEI:TCS) Stock Forecast & Analyst Predictions - Simply Wall St",
+      "original_source": "Simply Wall St",
+      "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNWnV6ajlIQV9tZmRhblEwR0NvUkZ5emFFbnk4SlZDdzAwRVdtX1hmcDV6ZV9YaHZGMGhPSUxNaWpsR0RXYUZSaWhZLUlaMWVTb1dyWUdFS2ZrVFFnbkJaaUNOWVM1bmhvVkQ1YXRxSnpPdnpDaHJWWkZLUGlEdlI4ekZRaU93TTVIQU5pVlV4Uzh3dw?oc=5",
+      "publication_timestamp": "2026-11-16T08:00:00+05:30",
+      "event_timestamp": "2026-11-16T08:00:00+05:30",
       "effective_trading_date": "2026-11-16",
       "sentiment": "neutral",
       "impact_magnitude": "low",
@@ -3673,14 +3746,14 @@
         "IT Services & Consulting"
       ],
       "is_duplicate_report": false,
-      "canonical_event_id": "5e513762d6bc9cca",
+      "canonical_event_id": "90346966c04e2364",
       "extraction_method": "deterministic",
-      "facts_summary": "Reported by Business Today (2026-11-16 session): TCS, Infosys, TechM, LTM, Cyient, Mphasis, TechM shares: Targets amid soft Q3 hopes - Business Today",
+      "facts_summary": "Reported by Simply Wall St (2026-11-16 session): Tata Consultancy Services (NSEI:TCS) Stock Forecast & Analyst Predictions - Simply Wall St",
       "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.618180+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.669942+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3716,43 +3789,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.649864+05:30",
-      "validation_status": "VALID"
-    },
-    {
-      "event_id": "b0183de66c23c046",
-      "company_name": "ITC Ltd",
-      "ticker": "ITC",
-      "related_competitor_or_industry": "FMCG, Agri & Paperboards",
-      "event_category": "company_news",
-      "event_description": "Sensex jumps 719 points, Nifty climbs above 25,300 in early trade; ITC, Airtel, Asian Paints, Eternal, lead - Fortune India",
-      "original_source": "Fortune India",
-      "source_url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOUVFicENfM2MzeDYzZFlEZjVqeWR2Qlp5VU5XUGlmYXVUUlRGSFdPczBvemxxNHRLWUF1TUxoYjR0UmhKVkUzOEFQTC1fRTlfM0lCUWVIcTg2RlFwQTYxel9YZm5TN0xrRmRoZkt6RXRFc3pIdGlqY3ZsR1MzT0hKelJrTUl0ZmQ4Q0d3a0VuajVzZFZoOGpEUTlMSjRFRmJXM0NKcDBxZXZMYVowVnNUYkpNMHNoQ3VsY0ZjRE8yRU1HT3g0X2FyTHBnSjFhZVlmUmthNlllTWRLTHVO0gHqAUFVX3lxTE81cUdGUk9ON3NRVFA1VDZFWE9vTW5IeVNqeWo5MzBTV0d4NEd0cE1jcWo3RDJFakdqY2tQOWNaTW1NUlVqNEFSUnk4dE1NZG5NNGtCalpIR3hHbE1BenpqU24yUm9xUmdvQ3pRR1B1d25oMUl1c2pUVGdvUHM5a3FRSHVqUDMxNVd3c2p3aHFybVFPZ0FpYlF0RjdBZkxfQ2lSTFBsaGtlSGQ1YVo5RXl4dmJKRy1BZ0RVanFHeVNuaXBaRHRpWURMQXhKZkctNi1Pb1hkUE54LXpCQnpxWXJ4NkJwUzM3VlBxdw?oc=5",
-      "publication_timestamp": "2026-11-16T05:30:00+05:30",
-      "event_timestamp": "2026-11-16T05:30:00+05:30",
-      "effective_trading_date": "2026-11-16",
-      "sentiment": "positive",
-      "impact_magnitude": "low",
-      "classification_confidence": 0.7,
-      "expected_impact_duration": "1-2 trading sessions",
-      "relevant_horizon": "1D",
-      "novelty_score": 0.72,
-      "source_credibility": 0.68,
-      "related_companies": [
-        "ITC"
-      ],
-      "related_sectors": [
-        "FMCG, Agri & Paperboards"
-      ],
-      "is_duplicate_report": false,
-      "canonical_event_id": "b0183de66c23c046",
-      "extraction_method": "deterministic",
-      "facts_summary": "Reported by Fortune India (2026-11-16 session): Sensex jumps 719 points, Nifty climbs above 25,300 in early trade; ITC, Airtel, Asian Paints, Eternal, lead - Fortune India",
-      "interpretation_summary": "Constructive company news signal for ITC (low magnitude).",
-      "promoter_verification_status": "NOT_APPLICABLE",
-      "classification_evidence": [],
-      "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.694460+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.709645+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3788,7 +3825,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.757753+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.799233+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3824,7 +3861,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.696424+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.757008+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3860,7 +3897,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.760435+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.803252+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3896,43 +3933,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.640421+05:30",
-      "validation_status": "VALID"
-    },
-    {
-      "event_id": "0d5f0ff0db4f3820",
-      "company_name": "Tata Consultancy Services Ltd",
-      "ticker": "TCS",
-      "related_competitor_or_industry": "Global Macro",
-      "event_category": "global_macro",
-      "event_description": "Indian rupee snaps rising streak on hawkish Fed, oil rise - Reuters",
-      "original_source": "Reuters",
-      "source_url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNZ2lRcFhDeEM4YTZPLVVWRHNYTnU2XzJhTFJMTUpjT2lyY0JwZ25WaGxCR01JTVpRZTJBVE5SZ0Y1LXdqSzJFRDBWVW15TnEwRE9idm9zeGVGZlpPVndfdGhoQlhmaHlkSFdDZmdXOGQ2N00xMVlKX3JFbkMtYzN5Y2VULUkzNkZmV1VtMnBCSU81eFRkRGFxUG9XRlVqcGNfelRrSHZQNXZQSExsbDhBaVdlcWlfWDhu?oc=5",
-      "publication_timestamp": "2026-11-13T03:18:00+05:30",
-      "event_timestamp": "2026-11-13T03:18:00+05:30",
-      "effective_trading_date": "2026-11-13",
-      "sentiment": "neutral",
-      "impact_magnitude": "low",
-      "classification_confidence": 0.54,
-      "expected_impact_duration": "5-15 trading sessions",
-      "relevant_horizon": "10D",
-      "novelty_score": 0.72,
-      "source_credibility": 0.86,
-      "related_companies": [
-        "TCS"
-      ],
-      "related_sectors": [
-        "Global Macro"
-      ],
-      "is_duplicate_report": false,
-      "canonical_event_id": "0d5f0ff0db4f3820",
-      "extraction_method": "deterministic",
-      "facts_summary": "Reported by Reuters (2026-11-13 session): Indian rupee snaps rising streak on hawkish Fed, oil rise - Reuters",
-      "interpretation_summary": "Informational global macro update with balanced immediate directional skew.",
-      "promoter_verification_status": "NOT_APPLICABLE",
-      "classification_evidence": [],
-      "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.646437+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.699321+05:30",
       "validation_status": "VALID"
     },
     {
@@ -3969,7 +3970,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.771778+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.812604+05:30",
       "validation_status": "VALID"
     },
     {
@@ -4006,7 +4007,80 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.767863+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.806863+05:30",
+      "validation_status": "VALID"
+    },
+    {
+      "event_id": "373d54a27038c64e",
+      "company_name": "Reliance Industries Ltd",
+      "ticker": "RELIANCE",
+      "related_competitor_or_industry": "Energy, Telecom & Retail",
+      "event_category": "company_news",
+      "event_description": "RELIANCE Share Price — NSE:RELIANCE - TradingView",
+      "original_source": "TradingView",
+      "source_url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE00anNGRF9JdzljQVhoc3o1RDloUllFYW5oVUw2d1hTbkNjZjRLYTUwdkZaTkJXWUhWamRQb285S2JyZkhfQzIzUm5yWS1TQ09wZEl5b29JUE5scTdGMEE?oc=5",
+      "publication_timestamp": "2026-11-11T15:55:00+05:30",
+      "event_timestamp": "2026-11-11T15:55:00+05:30",
+      "effective_trading_date": "2026-11-12",
+      "sentiment": "neutral",
+      "impact_magnitude": "low",
+      "classification_confidence": 0.54,
+      "expected_impact_duration": "1-2 trading sessions",
+      "relevant_horizon": "1D",
+      "novelty_score": 0.72,
+      "source_credibility": 0.68,
+      "related_companies": [
+        "RELIANCE"
+      ],
+      "related_sectors": [
+        "Energy, Telecom & Retail"
+      ],
+      "is_duplicate_report": false,
+      "canonical_event_id": "373d54a27038c64e",
+      "extraction_method": "deterministic",
+      "facts_summary": "Reported by TradingView (2026-11-12 session): RELIANCE Share Price — NSE:RELIANCE - TradingView",
+      "interpretation_summary": "Informational company news update with balanced immediate directional skew.",
+      "promoter_verification_status": "NOT_APPLICABLE",
+      "classification_evidence": [],
+      "promoter_classification_confidence": null,
+      "collection_timestamp": "2026-11-19T02:34:53.616029+05:30",
+      "validation_status": "VALID"
+    },
+    {
+      "event_id": "064977d17bd27eb2",
+      "company_name": "Birla Cable Ltd",
+      "ticker": "BIRLACABLE",
+      "related_competitor_or_industry": "STLTECH",
+      "event_category": "competitor",
+      "event_description": "Price Band Hitters Today, 11 November 2026 at 3:30 PM IST: Sterlite Technologies Ltd Leads by Value - HDFC Sky",
+      "original_source": "HDFC Sky",
+      "source_url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNZmRmam83NUpacWl0eFU5Z25TXzFTWGlpRmNEMzBRcTZvY1UzX0hLMFBvcDBfZ3RMemVtQXhSNEZ0b3ZNRnFVcFNHRjh6c3M4bmlJU21ncmdEcXFHT3NZMkJYM1RVRkhJbU9vNkNFY0RwVG83VEJicEUyY1Y0VTVLdkJucw?oc=5",
+      "publication_timestamp": "2026-11-11T10:35:00+05:30",
+      "event_timestamp": "2026-11-11T10:35:00+05:30",
+      "effective_trading_date": "2026-11-11",
+      "sentiment": "neutral",
+      "impact_magnitude": "low",
+      "classification_confidence": 0.54,
+      "expected_impact_duration": "1-2 trading sessions",
+      "relevant_horizon": "1D",
+      "novelty_score": 0.72,
+      "source_credibility": 0.68,
+      "related_companies": [
+        "BIRLACABLE",
+        "STLTECH"
+      ],
+      "related_sectors": [
+        "STLTECH"
+      ],
+      "is_duplicate_report": false,
+      "canonical_event_id": "064977d17bd27eb2",
+      "extraction_method": "deterministic",
+      "facts_summary": "Reported by HDFC Sky (2026-11-11 session): Price Band Hitters Today, 11 November 2026 at 3:30 PM IST: Sterlite Technologies Ltd Leads by Value - HDFC Sky",
+      "interpretation_summary": "Informational competitor update with balanced immediate directional skew.",
+      "promoter_verification_status": "NOT_APPLICABLE",
+      "classification_evidence": [],
+      "promoter_classification_confidence": null,
+      "collection_timestamp": "2026-11-19T02:34:53.801063+05:30",
       "validation_status": "VALID"
     },
     {
@@ -4042,7 +4116,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.701896+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.762543+05:30",
       "validation_status": "VALID"
     },
     {
@@ -4079,7 +4153,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.592345+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.660758+05:30",
       "validation_status": "VALID"
     },
     {
@@ -4115,7 +4189,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.590380+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.658454+05:30",
       "validation_status": "VALID"
     },
     {
@@ -4151,7 +4225,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.698319+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.758726+05:30",
       "validation_status": "VALID"
     },
     {
@@ -4187,43 +4261,7 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.556029+05:30",
-      "validation_status": "VALID"
-    },
-    {
-      "event_id": "c09b2b5ebd894426",
-      "company_name": "Tata Consultancy Services Ltd",
-      "ticker": "TCS",
-      "related_competitor_or_industry": "Global Macro",
-      "event_category": "global_macro",
-      "event_description": "What’s happening this week in economics? - Deloitte",
-      "original_source": "Deloitte",
-      "source_url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNcV9VYnV0R0RPcWN0d2g1SHJIVlNmaVA1TV9nXzRKdVlFcWtSMjQ1T1B0djE4dDNRanZvSVFGX0ZBNUd6cnZkVnAtenFuMnFzdU9zYzg5cFdkTVRxU1F5YVVXVFhVWGdhd2RsTDBkNS1Xcm9ub1FnMFp5NnB3WVBYa3JJa1FVbG5IT0ZRRHphTUhtNThkenVJS1ZrdWNDdw?oc=5",
-      "publication_timestamp": "2026-11-10T08:00:00+05:30",
-      "event_timestamp": "2026-11-10T08:00:00+05:30",
-      "effective_trading_date": "2026-11-10",
-      "sentiment": "neutral",
-      "impact_magnitude": "low",
-      "classification_confidence": 0.54,
-      "expected_impact_duration": "5-15 trading sessions",
-      "relevant_horizon": "10D",
-      "novelty_score": 0.72,
-      "source_credibility": 0.68,
-      "related_companies": [
-        "TCS"
-      ],
-      "related_sectors": [
-        "Global Macro"
-      ],
-      "is_duplicate_report": false,
-      "canonical_event_id": "c09b2b5ebd894426",
-      "extraction_method": "deterministic",
-      "facts_summary": "Reported by Deloitte (2026-11-10 session): What’s happening this week in economics? - Deloitte",
-      "interpretation_summary": "Informational global macro update with balanced immediate directional skew.",
-      "promoter_verification_status": "NOT_APPLICABLE",
-      "classification_evidence": [],
-      "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.648069+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.620616+05:30",
       "validation_status": "VALID"
     },
     {
@@ -4259,64 +4297,28 @@
       "promoter_verification_status": "NOT_APPLICABLE",
       "classification_evidence": [],
       "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.655727+05:30",
-      "validation_status": "VALID"
-    },
-    {
-      "event_id": "f78cc2eb5792c173",
-      "company_name": "Reliance Industries Ltd",
-      "ticker": "RELIANCE",
-      "related_competitor_or_industry": "Global Macro",
-      "event_category": "global_macro",
-      "event_description": "USD/INR: How is the oil slide strengthening the rupee? – Societe Generale - www.tmgm.com",
-      "original_source": "www.tmgm.com",
-      "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPamloUmJUbWFveGNiZFN0ZGY1RVlHV216c1dSTVREU3dHTGF3TnJLQUROS3NsZkFKcmowOXJZYW1ocXZBZERlNUotRFRoVlBCdkhNTzJvbHJTY1JucFgwbHhxNGl5M2pqMUptVE1uNGNnZnBTS21lbXJja0FSS2tlZlN2V1RkX3k4OGtxOWFxUkk3MklvRmo5dlJrRHlDeUVNbGVtTFllcVdSQ2NxN2NvTWVITDEwblFkS3phd1VR?oc=5",
-      "publication_timestamp": "2026-11-09T17:39:00+05:30",
-      "event_timestamp": "2026-11-09T17:39:00+05:30",
-      "effective_trading_date": "2026-11-10",
-      "sentiment": "neutral",
-      "impact_magnitude": "low",
-      "classification_confidence": 0.54,
-      "expected_impact_duration": "5-15 trading sessions",
-      "relevant_horizon": "10D",
-      "novelty_score": 0.72,
-      "source_credibility": 0.68,
-      "related_companies": [
-        "RELIANCE"
-      ],
-      "related_sectors": [
-        "Global Macro"
-      ],
-      "is_duplicate_report": false,
-      "canonical_event_id": "f78cc2eb5792c173",
-      "extraction_method": "deterministic",
-      "facts_summary": "Reported by www.tmgm.com (2026-11-10 session): USD/INR: How is the oil slide strengthening the rupee? – Societe Generale - www.tmgm.com",
-      "interpretation_summary": "Informational global macro update with balanced immediate directional skew.",
-      "promoter_verification_status": "NOT_APPLICABLE",
-      "classification_evidence": [],
-      "promoter_classification_confidence": null,
-      "collection_timestamp": "2026-11-18T17:33:01.609024+05:30",
+      "collection_timestamp": "2026-11-19T02:34:53.715613+05:30",
       "validation_status": "VALID"
     }
   ],
   "monitoring": {
-    "evaluated_at": "2026-11-18T17:33:01.783981+05:30",
-    "total_logged_predictions": 75,
-    "evaluated_outcomes_count": 60,
-    "rolling_directional_accuracy_pct": 60.0,
-    "brier_score_recent": 0.2436,
+    "evaluated_at": "2026-11-19T02:34:53.823604+05:30",
+    "total_logged_predictions": 90,
+    "evaluated_outcomes_count": 75,
+    "rolling_directional_accuracy_pct": 52.0,
+    "brier_score_recent": 0.2492,
     "drift_status": "OK",
     "horizon_metrics": {
       "1D": {
         "horizon": "1D",
-        "evaluated_outcomes_count": 60,
-        "directional_accuracy_pct": 60.0,
-        "roc_auc": 0.7452,
-        "brier_score": 0.2436,
-        "rank_ic": -0.0671,
+        "evaluated_outcomes_count": 75,
+        "directional_accuracy_pct": 52.0,
+        "roc_auc": 0.625,
+        "brier_score": 0.2492,
+        "rank_ic": 0.2478,
         "prediction_coverage_pct": 100.0,
         "data_freshness": "Current",
-        "model_vs_benchmark_accuracy_diff_pct": -1.54,
+        "model_vs_benchmark_accuracy_diff_pct": -5.58,
         "status": "OK"
       },
       "5D": {
@@ -4345,11 +4347,11 @@
       }
     },
     "data_quality_warnings": [
-      "Quarantined 18 news items due to missing/invalid publication timestamps or entity contamination."
+      "Quarantined 15 news items due to missing/invalid publication timestamps or entity contamination."
     ],
     "failure_alerts": []
   },
   "data_quality_warnings": [
-    "Quarantined 18 news items due to missing/invalid publication timestamps or entity contamination."
+    "Quarantined 15 news items due to missing/invalid publication timestamps or entity contamination."
   ]
 }

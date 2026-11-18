@@ -1755,31 +1755,31 @@
     ]
   },
   "quantitative_prediction": {
-    "prediction_id": "SBIN_2026-11-17_ml_ensemble_3.2.0_20261117T213007Z",
+    "prediction_id": "SBIN_2026-11-18_ml_ensemble_3.2.0_20261118T210426Z",
     "symbol": "SBIN",
-    "observation_date": "2026-11-17",
-    "generated_at": "2026-11-17T21:30:07.801484+00:00",
+    "observation_date": "2026-11-18",
+    "generated_at": "2026-11-18T21:04:26.591210+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.2.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.5228,
-    "prob_5d_up": 0.533,
-    "prob_10d_up": 0.5615,
-    "prob_lgbm_up": 0.4938,
-    "prob_xgb_up": 0.4900999963283539,
-    "prob_linear_up": 0.4955,
-    "expected_next_day_return_pct": 0.09,
-    "expected_5d_return_pct": 0.1807,
-    "expected_10d_return_pct": 0.4354,
-    "downside_risk_mae_pct": -0.899,
-    "expected_upside_mfe_pct": 0.9624,
-    "reward_to_risk_ratio": 1.071,
-    "model_agreement_score": 0.9784,
-    "confidence_score": 70.83,
-    "roundtrip_delivery_cost_pct": 0.3537,
-    "roundtrip_intraday_cost_pct": 0.2025,
-    "net_expected_1d_return_pct": -0.1125,
-    "net_expected_5d_return_pct": -0.173,
+    "prob_next_day_up": 0.5196,
+    "prob_5d_up": 0.5489,
+    "prob_10d_up": 0.5815,
+    "prob_lgbm_up": 0.4885,
+    "prob_xgb_up": 0.4934000074863434,
+    "prob_linear_up": 0.4983,
+    "expected_next_day_return_pct": 0.0883,
+    "expected_5d_return_pct": 0.2629,
+    "expected_10d_return_pct": 0.5299,
+    "downside_risk_mae_pct": -0.9441,
+    "expected_upside_mfe_pct": 0.9767,
+    "reward_to_risk_ratio": 1.035,
+    "model_agreement_score": 0.9766,
+    "confidence_score": 70.32,
+    "roundtrip_delivery_cost_pct": 0.3543,
+    "roundtrip_intraday_cost_pct": 0.2031,
+    "net_expected_1d_return_pct": -0.1148,
+    "net_expected_5d_return_pct": -0.0914,
     "recommended_action": "HOLD / WATCH",
     "abstention_reason": null,
     "top_bullish_drivers": [
@@ -1787,35 +1787,35 @@
         "feature": "fq_asset_turnover",
         "family": "6. Financial Quality",
         "value": 0.0619,
-        "contribution": 0.0402,
+        "contribution": 0.03407,
         "direction": "BULLISH"
       },
       {
         "feature": "pm_atr_ratio_7_21",
         "family": "1. Price & Technical Momentum",
-        "value": 1.1306,
-        "contribution": 0.02783,
+        "value": 1.1727,
+        "contribution": 0.02064,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "vd_rel_vol_100d",
+        "family": "2. Volume & Delivery",
+        "value": 3.2402,
+        "contribution": 0.01084,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "pm_ret_20d_pct",
+        "family": "1. Price & Technical Momentum",
+        "value": 16.5657,
+        "contribution": 0.00928,
         "direction": "BULLISH"
       },
       {
         "feature": "inst_named_holders_count",
         "family": "4. Institutional & Promoter Activity",
         "value": 0.0,
-        "contribution": 0.01058,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "pm_ret_1d_pct",
-        "family": "1. Price & Technical Momentum",
-        "value": 1.6598,
-        "contribution": 0.00667,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "inst_dii_chg_4q",
-        "family": "4. Institutional & Promoter Activity",
-        "value": -1.44,
-        "contribution": 0.0057,
+        "contribution": 0.00815,
         "direction": "BULLISH"
       }
     ],
@@ -1823,58 +1823,58 @@
       {
         "feature": "ms_corr_nifty_20d",
         "family": "3. Market & Sector Strength",
-        "value": 0.3332,
-        "contribution": -0.03102,
-        "direction": "BEARISH"
-      },
-      {
-        "feature": "vd_vol_trend_5_20",
-        "family": "2. Volume & Delivery",
-        "value": 1.3233,
-        "contribution": -0.01841,
+        "value": 0.2911,
+        "contribution": -0.03987,
         "direction": "BEARISH"
       },
       {
         "feature": "ms_nifty_ret_1d_pct",
         "family": "3. Market & Sector Strength",
-        "value": 0.3808,
-        "contribution": -0.00763,
+        "value": -0.6281,
+        "contribution": -0.03565,
         "direction": "BEARISH"
       },
       {
         "feature": "pm_rsi_14_chg_3d",
         "family": "1. Price & Technical Momentum",
-        "value": 1.4542,
-        "contribution": -0.00654,
+        "value": 7.0005,
+        "contribution": -0.00519,
         "direction": "BEARISH"
       },
       {
-        "feature": "eg_qtr_np_qoq_pct",
-        "family": "7. Earnings & Management Guidance",
-        "value": 4.37,
-        "contribution": -0.0029,
+        "feature": "fq_dynamic_pe",
+        "family": "6. Financial Quality",
+        "value": 12.5776,
+        "contribution": -0.00327,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "pm_macd_hist_chg_1d",
+        "family": "1. Price & Technical Momentum",
+        "value": 0.0531,
+        "contribution": -0.00274,
         "direction": "BEARISH"
       }
     ],
-    "target_session_date": "2026-11-18",
-    "last_close": 1108.6,
-    "atr_14_pct": 2.068,
-    "momentum_prob_up": 0.5304,
-    "momentum_5d_return_pct": 4.1038,
-    "momentum_prob_5d_up": 0.5583,
-    "momentum_prob_10d_up": 0.5719,
-    "momentum_1d_return_pct": 0.4117,
-    "momentum_10d_return_pct": 5.9477,
+    "target_session_date": "2026-11-19",
+    "last_close": 1135.0,
+    "atr_14_pct": 2.108,
+    "momentum_prob_up": 0.532,
+    "momentum_5d_return_pct": 4.479,
+    "momentum_prob_5d_up": 0.563,
+    "momentum_prob_10d_up": 0.5775,
+    "momentum_1d_return_pct": 0.4135,
+    "momentum_10d_return_pct": 6.4934,
     "feature_snapshot": {
       "ne_is_earnings_window": 1.0,
-      "ms_corr_nifty_20d": 0.3332,
+      "ms_corr_nifty_20d": 0.29111,
       "fq_asset_turnover": 0.06188,
       "inst_dii_chg_4q": -1.44,
-      "eg_qtr_np_qoq_pct": 4.37,
       "fq_debt_to_equity": 10.1372,
+      "eg_qtr_np_qoq_pct": 4.37,
       "inst_named_holders_count": 0.0,
-      "ms_india_vix_zscore_20d": -0.62253,
-      "pm_ret_180d_pct": -8.83973,
+      "pm_ret_180d_pct": -7.55823,
+      "ms_india_vix_zscore_20d": -0.64524,
       "fq_roce_pct": -1.18768
     },
     "outcome_evaluated_at": null,
@@ -1883,7 +1883,7 @@
   },
   "corporate_intelligence": {
     "symbol": "SBIN",
-    "evaluated_at": "2026-11-17T21:30:19.173388+00:00",
+    "evaluated_at": "2026-11-18T21:04:36.021678+00:00",
     "promoter_holding_pct": 55.45,
     "promoter_chg_1q": -0.02,
     "promoter_chg_4q": -0.05,
@@ -1896,12 +1896,12 @@
     "dii_chg_4q": -1.44,
     "net_institutional_flow_4q": 0.06,
     "is_fno_eligible": true,
-    "latest_delivery_pct": 56.33,
-    "delivery_vs_20d_avg": -4.64,
-    "fno_positioning_heuristic": "High Cash Delivery Accumulation (56.3%)",
+    "latest_delivery_pct": 63.82,
+    "delivery_vs_20d_avg": 3.56,
+    "fno_positioning_heuristic": "Long Buildup Heuristic (Price Up + Vol Surge)",
     "net_bulk_block_value_cr": 0.0,
     "bulk_block_deals_count": 0,
-    "institutional_conviction_score": 55.0,
+    "institutional_conviction_score": 64.0,
     "smart_money_verdict": "MODERATE ACCUMULATION",
     "bulk_block_deals": [],
     "recent_corporate_actions": [
@@ -1924,87 +1924,88 @@
     ],
     "key_signals": [
       "Stable majority promoter holding at 55.45%.",
+      "High verified NSE cash delivery at 63.8% (vs avg +3.6%).",
       "Recent Corporate Action: Cash Dividend of \u20b917.35/share (Ex-Date: 2026-05-15)."
     ]
   },
   "market_regime": {
-    "observation_date": "2026-11-17",
+    "observation_date": "2026-11-18",
     "regime": "Weak Bull",
-    "nifty_50_close": 25387.4,
-    "nifty_50_day_change_pct": 0.38,
-    "nifty_50_return_20d_pct": 9.68,
-    "nifty_50_dma_50": 23385.96,
-    "nifty_50_dma_200": 23992.91,
-    "india_vix_close": 15.52,
-    "india_vix_change_pct": -1.02,
-    "advance_count": 1318,
-    "decline_count": 1404,
-    "unchanged_count": 38,
-    "advance_decline_ratio": 0.939,
-    "pct_above_50dma": 86.7,
-    "pct_above_200dma": 80.0,
+    "nifty_50_close": 25227.95,
+    "nifty_50_day_change_pct": -0.63,
+    "nifty_50_return_20d_pct": 10.22,
+    "nifty_50_dma_50": 23413.05,
+    "nifty_50_dma_200": 23993.81,
+    "india_vix_close": 15.57,
+    "india_vix_change_pct": 0.32,
+    "advance_count": 693,
+    "decline_count": 2035,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.341,
+    "pct_above_50dma": 80.0,
+    "pct_above_200dma": 73.3,
     "allow_aggressive_longs": true,
     "regime_rationale": [
-      "Structural uptrend intact above 200-DMA (23,992.9), though short-term momentum is moderate (20D: +9.68%).",
-      "NSE Market Breadth: 1318 Advances vs 1404 Declines (A/D Ratio 0.94).",
-      "Universe Breadth: 86.7% above 50-DMA, 80.0% above 200-DMA."
+      "Structural uptrend intact above 200-DMA (23,993.8), though short-term momentum is moderate (20D: +10.22%).",
+      "NSE Market Breadth: 693 Advances vs 2035 Declines (A/D Ratio 0.34).",
+      "Universe Breadth: 80.0% above 50-DMA, 73.3% above 200-DMA."
     ],
     "sector_performances": [
       {
-        "index_code": "NIFTY_BANK",
-        "index_name": "Nifty Bank",
-        "close": 62273.25,
-        "day_change_pct": 1.13,
-        "return_20d_pct": 11.51,
-        "pe_ratio": 13.76
-      },
-      {
-        "index_code": "NIFTY_AUTO",
-        "index_name": "Nifty Auto",
-        "close": 27769.15,
-        "day_change_pct": 0.72,
-        "return_20d_pct": 7.76,
-        "pe_ratio": 30.32
-      },
-      {
-        "index_code": "NIFTY_METAL",
-        "index_name": "Nifty Metal",
-        "close": 12530.3,
-        "day_change_pct": 0.58,
-        "return_20d_pct": 3.27,
-        "pe_ratio": 14.82
-      },
-      {
         "index_code": "NIFTY_PHARMA",
         "index_name": "Nifty Pharma",
-        "close": 28157.1,
-        "day_change_pct": 0.21,
-        "return_20d_pct": 9.21,
-        "pe_ratio": 45.29
+        "close": 28200.5,
+        "day_change_pct": 0.15,
+        "return_20d_pct": 10.09,
+        "pe_ratio": 45.36
       },
       {
         "index_code": "NIFTY_FMCG",
         "index_name": "Nifty FMCG",
-        "close": 47611.6,
-        "day_change_pct": -0.2,
-        "return_20d_pct": 6.71,
-        "pe_ratio": 33.4
+        "close": 47569.1,
+        "day_change_pct": -0.09,
+        "return_20d_pct": 8.17,
+        "pe_ratio": 33.37
+      },
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 62038.65,
+        "day_change_pct": -0.38,
+        "return_20d_pct": 11.81,
+        "pe_ratio": 13.71
       },
       {
         "index_code": "NIFTY_ENERGY",
         "index_name": "Nifty Energy",
-        "close": 37176.7,
-        "day_change_pct": -0.27,
-        "return_20d_pct": 2.72,
-        "pe_ratio": 13.31
+        "close": 36979.55,
+        "day_change_pct": -0.53,
+        "return_20d_pct": 2.79,
+        "pe_ratio": 13.24
       },
       {
         "index_code": "NIFTY_IT",
         "index_name": "Nifty IT",
-        "close": 31654.1,
-        "day_change_pct": -0.9,
-        "return_20d_pct": -0.85,
-        "pe_ratio": 19.24
+        "close": 31262.3,
+        "day_change_pct": -1.24,
+        "return_20d_pct": -0.81,
+        "pe_ratio": 19.0
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27394.95,
+        "day_change_pct": -1.35,
+        "return_20d_pct": 7.05,
+        "pe_ratio": 29.91
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12222.3,
+        "day_change_pct": -2.46,
+        "return_20d_pct": 1.29,
+        "pe_ratio": 14.46
       }
     ]
   }

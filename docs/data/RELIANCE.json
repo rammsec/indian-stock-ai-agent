@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-18 02:59:07 IST",
+  "fetched_at": "2026-11-19 02:33:29 IST",
   "overview": {
     "symbol": "RELIANCE",
     "name": "Reliance Industries Ltd",
@@ -9,8 +9,8 @@
     "sector": "Energy",
     "industry": "Refineries & Marketing",
     "about": "Reliance was founded by Dhirubhai Ambani and is now promoted and managed by his elder son, Mukesh Dhirubhai Ambani. Ambani's family has about 50% shareholding in the conglomerate.",
-    "market_cap_cr": 1849898.0,
-    "current_price": 1367.0,
+    "market_cap_cr": 1844485.0,
+    "current_price": 1363.0,
     "high_52w": 1612.0,
     "low_52w": 1152.0,
     "stock_pe": 22.5,
@@ -211,7 +211,7 @@
     "net_cash_position_cr": 12507.0,
     "debt_to_equity": 0.43,
     "cash_to_debt_ratio": 1.03,
-    "cash_pct_of_mcap": 22.59,
+    "cash_pct_of_mcap": 22.65,
     "latest_ocf_cr": 0.0,
     "latest_fcf_cr": 0.0,
     "cumulative_5y_ocf_cr": 418.0,
@@ -893,55 +893,45 @@
     ]
   },
   "technicals": {
-    "current_price": 1367.0,
-    "prev_close": 1344.8,
-    "day_change_pct": 1.65,
-    "day_high": 1374.0,
-    "day_low": 1335.0,
+    "current_price": 1363.0,
+    "prev_close": 1367.0,
+    "day_change_pct": -0.29,
+    "day_high": 1376.5,
+    "day_low": 1354.0,
     "high_52w": 1612.0,
     "low_52w": 1152.0,
-    "return_5d_pct": 3.22,
-    "return_1m_pct": 12.86,
-    "return_6m_pct": 2.33,
-    "return_1y_pct": -10.03,
-    "rsi_14": 75.05,
-    "macd_line": 37.24,
-    "macd_signal": 27.07,
-    "macd_hist": 10.18,
-    "ema_20": 1290.75,
-    "dma_50": 1264.89,
-    "dma_200": 1312.75,
-    "bb_upper": 1418.58,
-    "bb_middle": 1269.96,
-    "bb_lower": 1121.33,
-    "atr_14": 27.66,
-    "atr_pct": 2.02,
-    "volume_latest": 16656968.0,
-    "volume_20d_avg": 22158796.65,
-    "volume_Surge_ratio": 0.75,
-    "annualized_volatility_pct": 37.7,
-    "pivot_point": 1358.67,
-    "support_1": 1343.34,
-    "support_2": 1319.67,
-    "resistance_1": 1382.34,
-    "resistance_2": 1397.67,
+    "return_5d_pct": 2.07,
+    "return_1m_pct": 13.39,
+    "return_6m_pct": 3.05,
+    "return_1y_pct": -10.26,
+    "rsi_14": 73.4,
+    "macd_line": 38.2,
+    "macd_signal": 29.3,
+    "macd_hist": 8.91,
+    "ema_20": 1297.63,
+    "dma_50": 1268.74,
+    "dma_200": 1313.25,
+    "bb_upper": 1428.91,
+    "bb_middle": 1277.66,
+    "bb_lower": 1126.4,
+    "atr_14": 27.3,
+    "atr_pct": 2.0,
+    "volume_latest": 19501209.0,
+    "volume_20d_avg": 22184325.85,
+    "volume_Surge_ratio": 0.88,
+    "annualized_volatility_pct": 37.19,
+    "pivot_point": 1364.5,
+    "support_1": 1352.5,
+    "support_2": 1342.0,
+    "resistance_1": 1375.0,
+    "resistance_2": 1387.0,
     "trend_regime": "BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA)",
     "technical_signals": [
       "Price below both 50-DMA and 200-DMA; wait for support stabilization",
-      "RSI(14) at 75.05 \u2014 Overbought zone, watch for profit-booking near R1",
-      "MACD Bullish Crossover active (Histogram +10.18)"
+      "RSI(14) at 73.4 \u2014 Overbought zone, watch for profit-booking near R1",
+      "MACD Bullish Crossover active (Histogram +8.91)"
     ],
     "price_series": [
-      {
-        "date": "2026-07-10",
-        "close": 1307.8,
-        "open": 1291.9,
-        "high": 1311.1,
-        "low": 1287.8,
-        "dma50": 1325.96,
-        "dma200": 1382.35,
-        "volume": 8846772.0
-      },
       {
         "date": "2026-07-13",
         "close": 1296.9,
@@ -1831,6 +1821,16 @@
         "dma50": 1264.89,
         "dma200": 1312.75,
         "volume": 16656968.0
+      },
+      {
+        "date": "2026-11-18",
+        "close": 1363.0,
+        "open": 1370.0,
+        "high": 1376.5,
+        "low": 1354.0,
+        "dma50": 1268.74,
+        "dma200": 1313.25,
+        "volume": 19501209.0
       }
     ]
   },
@@ -1937,20 +1937,20 @@
       "score": 41.0,
       "confidence": 71,
       "weight_pct": 20,
-      "headline": "RSI(14) 75.0 | 50-DMA \u20b91,264.9 | 200-DMA \u20b91,312.8 | ATR \u20b927.7",
+      "headline": "RSI(14) 73.4 | 50-DMA \u20b91,268.7 | 200-DMA \u20b91,313.2 | ATR \u20b927.3",
       "key_metrics": {
-        "RSI (14)": "75.0",
-        "MACD Histogram": "+10.18",
-        "50-DMA / 200-DMA": "\u20b91,264.9 / \u20b91,312.8",
-        "ATR (14) Daily Range": "\u20b927.66 (2.02%)",
-        "Volume vs 20D Avg": "0.75x",
-        "Pivot S1 / R1": "\u20b91,343.3 / \u20b91,382.3"
+        "RSI (14)": "73.4",
+        "MACD Histogram": "+8.91",
+        "50-DMA / 200-DMA": "\u20b91,268.7 / \u20b91,313.2",
+        "ATR (14) Daily Range": "\u20b927.30 (2.00%)",
+        "Volume vs 20D Avg": "0.88x",
+        "Pivot S1 / R1": "\u20b91,352.5 / \u20b91,375.0"
       },
       "reasoning": [
         "Price below both 50-DMA and 200-DMA; wait for support stabilization",
-        "RSI(14) at 75.05 \u2014 Overbought zone, watch for profit-booking near R1",
-        "MACD Bullish Crossover active (Histogram +10.18)",
-        "News Catalyst: 2 positive vs 0 negative recent Indian market headlines."
+        "RSI(14) at 73.4 \u2014 Overbought zone, watch for profit-booking near R1",
+        "MACD Bullish Crossover active (Histogram +8.91)",
+        "News Catalyst: 3 positive vs 0 negative recent Indian market headlines."
       ]
     }
   ],
@@ -1959,23 +1959,23 @@
     "conviction_score": 70.3,
     "fundamental_score": 77.7,
     "technical_score": 41.0,
-    "current_price": 1367.0,
-    "entry_zone_low": 1355.94,
-    "entry_zone_high": 1369.77,
-    "target_1_next_day": 1400.19,
-    "target_2_swing": 1429.23,
-    "stop_loss": 1340.72,
+    "current_price": 1363.0,
+    "entry_zone_low": 1352.08,
+    "entry_zone_high": 1365.73,
+    "target_1_next_day": 1395.76,
+    "target_2_swing": 1424.42,
+    "stop_loss": 1337.07,
     "risk_reward_ratio": 1.26,
-    "expected_next_day_range_low": 1339.34,
-    "expected_next_day_range_high": 1394.66,
+    "expected_next_day_range_low": 1335.7,
+    "expected_next_day_range_high": 1390.3,
     "position_size_suggestion_pct": 5.0,
-    "executive_summary": "Reliance Industries Ltd (RELIANCE) earns a composite conviction score of 70.3/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b9417,829 Cr in cash & investments, 8.9% ROE, 0.44% R&D intensity, and 88.7% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b91,355.94\u2013\u20b91,369.77 zone targeting \u20b91,400.19 (T1) and \u20b91,429.23 (T2) with a strict ATR-calibrated stop-loss at \u20b91,340.72 (Risk:Reward 1:1.26).",
+    "executive_summary": "Reliance Industries Ltd (RELIANCE) earns a composite conviction score of 70.3/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b9417,829 Cr in cash & investments, 8.9% ROE, 0.44% R&D intensity, and 88.7% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b91,352.08\u2013\u20b91,365.73 zone targeting \u20b91,395.76 (T1) and \u20b91,424.42 (T2) with a strict ATR-calibrated stop-loss at \u20b91,337.07 (Risk:Reward 1:1.26).",
     "rationale_points": [
       "5-Report Fundamental Score: 77.7/100 (5Y Profit CAGR: 9.0%, Piotroski: 6/9).",
       "Balance Sheet & Cash in Hand: \u20b9417,829 Cr liquid cash/investments vs \u20b9405,322 Cr total borrowings (D/E 0.43x).",
       "Stockholder Conviction: Promoters hold 50.44%, FIIs 16.67%, DIIs 21.62% (Total Institutional: 38.29%).",
       "R&D & Innovation Moat: \u20b94,645 Cr annual R&D (0.44% of sales; 5Y cumulative \u20b919,750 Cr).",
-      "Next-Day Technical Trigger (41.0/100): BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA); RSI(14) at 75.0 with ATR(14) daily range of \u20b927.66."
+      "Next-Day Technical Trigger (41.0/100): BEARISH / CORRECTIVE PHASE (Below 50-DMA & 200-DMA); RSI(14) at 73.4 with ATR(14) daily range of \u20b927.30."
     ],
     "key_catalysts": [
       "R&D & CapEx Pipeline: New Energy giga-factories (solar, sodium-ion battery, green hydrogen), 6G & JioBrain AI",
@@ -1984,7 +1984,7 @@
     "key_risks": [
       "Company has a low return on equity of 8.77% over last 3 years.",
       "Dividend payout has been low at 10.2% of profits over last 3 years",
-      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b91,340.72"
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b91,337.07"
     ],
     "llm_synthesized": false,
     "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
@@ -2040,18 +2040,18 @@
         "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
       },
       {
-        "speaker_or_source": "Mukesh D. Ambani (Chairman & Managing Director) via India Today",
-        "published": "Wed, 21 Oct 2026 07:00",
-        "headline": "Marco Rubio visits Reliance's Jamnagar refinery, meets Mukesh Ambani and family - India Today",
-        "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPblZuSkVKYWc2Nm1VSlZIM3VoUktEdXpzVEFDSXFjbkVMTWNLaVdVTTdBVmtlLWVJLXVGSndOb21nOW9vN2kzNFFGRnZRSUV2Mk5paFduTjdYc0ZNTEdsZzVvUnRtWkpSWFRBTk0taFhEdmJtWm1NVWRVaW94WFNCcHlsbFU1NVlrOVdLZ0lEa181a0xIZFN5U2kxS0FHSVlkeGplWWUzQWM5elNGazJQek9CcWptdkU1UFh0NmUtSDFMcnlLUXZxVVJZcGRNWEhaYVBBdmp4ZDI4NnFs0gHiAUFVX3lxTE54cDZZQjhLMjA1Y091MkdJdWY2VmhRem03ZGIwMTIwdUdvWjE2TW9KTUp6QUVLbEs3aHZ5eGF0UzJSd1FDd285UmV2dTZ6c2J2RWhsbjZYbjJ2OXdTZTVSZ2xqbDNnT1BsRzBSOUdULXVqVjVHaGtiRGZ1cTlmYzhTaVMwTnBxUmJNd1M4VkUtWnJKTXlBQnlSWVVfZTZKcFVoQ05uX05QUVAxdzBrTVFTYXN4RFU1Q0N3Rl9SVFFWWm84YUJKZEx2THZsM01HLUxBbWw2ZVlaSjJ5RlN1SXVhenc?oc=5",
-        "share_price_impact": "NEUTRAL",
-        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for Reliance Industries Ltd."
-      },
-      {
         "speaker_or_source": "Al Jazeera",
         "published": "Tue, 20 Oct 2026 07:00",
         "headline": "Why Rubio is visiting Reliance\u2019s oil refinery in India, the world\u2019s largest - Al Jazeera",
         "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNY3o3LVJjQV8xVkxMVGg0Q1FnaHhqa1hwZjR3R2djZ09kZ1QtOFZ2M3JtUDQtTm5yMUJUc2tseVNJbXNjOGFvVlBXT1EwTmgyTnJDVGxleFRqdDNhUG40WmxTS1VVTDhBWjBhLTR5U1haRUVncFhJVGs3U2psaWxTSk9IM3VwQWhQeHlRNTFaS1Rzb29ELXlwOTNFQmJHbTJnRjR0M2d4WUVtam5Cb04yNFNWRmXSAboBQVVfeXFMT1pxZVRhX0RrRi0tRlNtNHV2MG83OVV5TDE2Y2lrZ3NlNlFZZTJnc2Q3Rzd3dC1xRlFMY3M3eXEzR0RnS1hhU1hDc2NhVjlxcUs3OFZTOGRGN0NJdmFjQjNyVlhwcGJPbzUtdlFLUjJlRWN5SVdaTE4zVkRDTnJxSHduRXVQQUR5ZmgyakZVR1lsMUxZck1GYjVkb3l2WTRYMGFXOVk0YjVjajBHb1NNbHdwN1JQRF9wQUVn?oc=5",
+        "share_price_impact": "NEUTRAL",
+        "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for Reliance Industries Ltd."
+      },
+      {
+        "speaker_or_source": "Mukesh D. Ambani (Chairman & Managing Director) via India Today",
+        "published": "Wed, 21 Oct 2026 07:00",
+        "headline": "Marco Rubio visits Reliance's Jamnagar refinery, meets Mukesh Ambani and family - India Today",
+        "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPblZuSkVKYWc2Nm1VSlZIM3VoUktEdXpzVEFDSXFjbkVMTWNLaVdVTTdBVmtlLWVJLXVGSndOb21nOW9vN2kzNFFGRnZRSUV2Mk5paFduTjdYc0ZNTEdsZzVvUnRtWkpSWFRBTk0taFhEdmJtWm1NVWRVaW94WFNCcHlsbFU1NVlrOVdLZ0lEa181a0xIZFN5U2kxS0FHSVlkeGplWWUzQWM5elNGazJQek9CcWptdkU1UFh0NmUtSDFMcnlLUXZxVVJZcGRNWEhaYVBBdmp4ZDI4NnFs0gHiAUFVX3lxTE54cDZZQjhLMjA1Y091MkdJdWY2VmhRem03ZGIwMTIwdUdvWjE2TW9KTUp6QUVLbEs3aHZ5eGF0UzJSd1FDd285UmV2dTZ6c2J2RWhsbjZYbjJ2OXdTZTVSZ2xqbDNnT1BsRzBSOUdULXVqVjVHaGtiRGZ1cTlmYzhTaVMwTnBxUmJNd1M4VkUtWnJKTXlBQnlSWVVfZTZKcFVoQ05uX05QUVAxdzBrTVFTYXN4RFU1Q0N3Rl9SVFFWWm84YUJKZEx2THZsM01HLUxBbWw2ZVlaSjJ5RlN1SXVhenc?oc=5",
         "share_price_impact": "NEUTRAL",
         "why_it_affects_share_value": "Ongoing leadership commentary and corporate updates monitored by institutional desks for Reliance Industries Ltd."
       },
@@ -2077,13 +2077,13 @@
         "symbol": "BHARTIARTL",
         "name": "Bharti Airtel Ltd",
         "segment": "Telecom & 5G Home Broadband (vs. Jio)",
-        "current_price": 2153.5,
-        "day_change_pct": 2.26,
-        "return_1m_pct": 14.84,
+        "current_price": 2138.3,
+        "day_change_pct": -0.71,
+        "return_1m_pct": 14.03,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "Bharti Airtel Limited (BHARTIARTL.NS) stock price, news, quote and history - Yahoo Finance Singapore",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE1qLTh0RWhrcTJKWmcyVHJMQUMxNVp3MHNNTzJab1VpUl9wQ0dsVUp0azBGZ0tSYjBwZ0Y3bWFtRmV2QUZtVFlaSnREdVh1aVE4MHdiM0o5M3FfMG5RTGc?oc=5",
+        "latest_statement_or_news": "Weekly Recap: Revenue and profit gains and Bharti Telecom stake-rise plans - TradingView",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOSzQ5T0JXbnBWV29HempNWlNySWY0RlhVeHkyU3lISExqeFQ2MEtBb1ktaVgxejZRa2FIaFhTUWhpaVVQMGJCZzVxZjVIZTBIdkxvRE5yaXFBX0ZpdE83VlV1Vk5DVnpaS3RQYWFpdV9CQ09BMW1vRlhHcUVHVUY1X1VPNlZyZ2ljcndGSmhXbXJfVkV5dms5T0NKWHZFTU5kTWUwd2NxRTRrVElWUTdJQ1FwaExPV1BhU2hvNS1JM3FCbnlOSFdnOEloaUhNVFU?oc=5",
         "read_across_signal": "POSITIVE READ-ACROSS",
         "impact_on_share_value": "Airtel tariff hike commentary & postpaid ARPU gains directly re-rate Jio's valuation multiple."
       },
@@ -2091,23 +2091,23 @@
         "symbol": "DMART",
         "name": "Avenue Supermarts (DMart)",
         "segment": "Organized Grocery & Value Retail (vs. Reliance Retail)",
-        "current_price": 3457.6,
-        "day_change_pct": 0.53,
-        "return_1m_pct": 4.65,
+        "current_price": 3470.0,
+        "day_change_pct": 0.36,
+        "return_1m_pct": 5.02,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "How DMart Became a Retail Powerhouse - HDFC Sky",
         "latest_news_url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPM3ZKYmE1YU9OUEw2NU1naERIWFg0bHo2Q3RyeXkyVlhXY1JRaDZZZzdsQnJRa3A5S051OFlBWUs0dXdveE5Ia0l4eS1WRGtsRVlhR0N0eGRKVC02TkJtcVgyTGFkcnlYZXZrcXFJbDY4MDJiN2dUVURES2I0bGNfZ285bTFkVUxHUFh1Qkg4Y0tFVmZQbFpOanhRdw?oc=5",
-        "read_across_signal": "NEUTRAL",
+        "read_across_signal": "POSITIVE READ-ACROSS",
         "impact_on_share_value": "Same-store sales growth (SSSG) & quick-commerce margin pressure read-across for Reliance Retail."
       },
       {
         "symbol": "TRENT",
         "name": "Trent Ltd (Zudio / Westside)",
         "segment": "Fast Fashion & Lifestyle Retail (vs. Reliance Trends / Yousta)",
-        "current_price": 3203.7,
-        "day_change_pct": 1.22,
-        "return_1m_pct": 10.79,
+        "current_price": 3176.3,
+        "day_change_pct": -0.86,
+        "return_1m_pct": 9.85,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "Weekly Recap: Q2 revenue +23%, H1 +21% and 1,000 Zudio, 1,342 total stores - TradingView",
@@ -2119,13 +2119,13 @@
         "symbol": "BPCL",
         "name": "Bharat Petroleum Corp Ltd",
         "segment": "Oil-to-Chemicals & Refining Margins (O2C)",
-        "current_price": 305.3,
-        "day_change_pct": 1.09,
-        "return_1m_pct": 3.74,
+        "current_price": 305.8,
+        "day_change_pct": 0.16,
+        "return_1m_pct": 3.91,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "BPCL Share Price Today - Bharat Petroleum on NSE/BSE - scanx.trade",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9TR3VDams0a2pSMEV3djBQZHFNOGpnRG9CYklEU0NtLTUtNDFNV1daTDA4V0owWUNUdjRZbXlLSUJvVUp3WlMxbVY1NWZMbGJXc2cwcnB2UzNSaWMw?oc=5",
+        "latest_statement_or_news": "BPCL Share Price - Upstox",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4wdklFdjVkWllQRXhvR3NyZUNqdXJ5Z2t4eHo3Q05LaUprY2RFZlBDNmJURVI2Rnk3ODk3ajIyR1B3dWtKSjBzZ082X00yM0RNT0l2YmN0OWhtOWhRT1dQVmdtUndWaEYtaENnUGQtZ1A?oc=5",
         "read_across_signal": "NEUTRAL",
         "impact_on_share_value": "Singapore Gross Refining Margin (GRM) & diesel/ATF crack spreads affect RIL's O2C cash flows."
       }
@@ -2133,11 +2133,25 @@
   },
   "news": [
     {
-      "title": "RIGD Stock Price and Chart \u2014 LSIN:RIGD - TradingView",
-      "source": "TradingView",
-      "published": "Wed, 11 Nov 2026 15:55:58",
-      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTFBqdFJEb0FMeFdVZ3E5dlVWTmRRNk1PVWNwWWthN2U4TGxKaF9sUmtRODJuTzYtNUE3WjE4Ym5McTBHeDA0cm1UZWRXWmYzWWlyaUVJVHJ0U1FTZw?oc=5",
+      "title": "Reliance Industries Limited (RELIANCE.NS) stock price, news, quote and history - Yahoo Finance Singapore",
+      "source": "Yahoo Finance Singapore",
+      "published": "Wed, 18 Nov 2026 02:56:16",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFB1UDZIUDhFZW9XLXg2c2J0LVI1aDE2SVJCcVBOZGJMbDlpdmlfaHRPeWZIZjlqQkNzWEtOUmtsa19NUVpGcnRwazJ1djQ4ckYtZm1TQVpkb3MzaTg?oc=5",
       "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Reliance Industries Limited (RELIANCE.NS) Stock Price, News, Quote & History - Yahoo! Finance Canada",
+      "source": "Yahoo! Finance Canada",
+      "published": "Wed, 18 Nov 2026 02:53:18",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE05cTlPZzV1eU5MeDQ3eW1UaXJrYkVIUlZ4MkJ6NHluLXR0WHhKTEo2Z0h3cmp6WEZSQTJaQVRfWEN3MGVQbzk2VzU0dHFOZVJPTXpzNUM4MDhYa28?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "Reliance Shares Rally 17% in 11 Sessions: What\u2019s Behind the Rs 2.74 Lakh Crore Gain? - NiftyTrader",
+      "source": "NiftyTrader",
+      "published": "Wed, 18 Nov 2026 11:27:57",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNM2tJOFFoVkNtQlRjWm1SSEI0dlJYYWRIZkNqVWNaQ1REaTFVeVdESU1GTVBxV190YkhGdGdhS0RvUGhDS2xpNXlZd3JHcnRWZzI4cHphZndyLUtQTVpKbFo4MWNlTy1nc1IwVm9HVXpfbnR4N0tockU1SFJZb3d4NQ?oc=5",
+      "sentiment": "POSITIVE"
     },
     {
       "title": "RELIANCE Outlook for the Week - Equitypandit",
@@ -2147,17 +2161,17 @@
       "sentiment": "NEUTRAL"
     },
     {
-      "title": "Reliance Industrial Infra Share Price - Live NSE: RIIL Stock Price & Chart - Upstox",
-      "source": "Upstox",
-      "published": "Fri, 13 Nov 2026 08:00:00",
-      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE54eG1fdkZ5LXBFbDVfU1NrZ0xsRlZHd1lZOTExQVc2LW96UXcyUDRvZ0M2eldMNS1yMnRiMDZYa3pMbi1lYy1yUG5oM1hZY1JjLTZXNmRIcm90M0xOclJUcmx1YVlYNHREV2R5X3VSdjEzdw?oc=5",
-      "sentiment": "NEUTRAL"
+      "title": "Reliance Industries on course for longest winning streak in 19 years - Moneycontrol.com",
+      "source": "Moneycontrol.com",
+      "published": "Wed, 18 Nov 2026 08:29:50",
+      "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOdjItdmxaMnZXaUFOMnhBZFFzNzd3Ni1UU3FiQlh6emFoMVd0bUtkODNsVXRjLVotOUp5OXRVNjVFOEx3MDRQcHdKUVZ6ZjNIS2tkNGZ1MFMyNTAxVmNlX0lUZUE2Z0xrenBBTGVXRUtyTG4wRUIweVhiRTNlTEY3ZGNBVUZhampBam0zUFBlbnVRWWduY19vOW9HT1FSdGg5VDJfU2hYaVdiTTdNdHphS3RoQjhqX3Z0YUVEVlhYeUF5RjTSAcgBQVVfeXFMUFI3emhsRHAyS19IMl9mdUZJWFJHTlZic3dla3VXQllKV3RtMjZPVWE3WlphcUlZejViMWV0cWpOV3ZGNnNIWkl0TVFfZ3BYdXBCUVNISW1Jam1vSEFHM2M2VUpoRkxQSVJvUXVWdG14cGR0REw4eFgyQlB4UmlwQndqS096eWJYTjJuMlFiNDdBZ2ppLU15UXQ2UnBzbnR0SlpvMHdldENXZWl3TWZxb19wTEdlMkRmWjBYdGIySWQwOGVGQmNOcEs?oc=5",
+      "sentiment": "POSITIVE"
     },
     {
-      "title": "Reliance Industries refining margins boosted by strong diesel cracks - scanx.trade",
-      "source": "scanx.trade",
-      "published": "Tue, 17 Nov 2026 04:27:09",
-      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQVFNYQUlWYXR4SE95Yk1UNUwtbmdTc0VHcG10bFhza1JrZmxac05YSVRZR0JWWVFaSjZXSHUyV3JIRXFZSGxrYUt3M0lOWmZENkFHSFRiVks2T3lyRTQ1TGVSa1RCRDBZdFlCMDkzN1ppSm10d0dPSjRWMW11TEEwRVI2Z1AwaDFRd25iT0hIRDdFMWJfZFlWYVBKZlBtc2hyY01PNmpocG9oZGZsWTVtRlpfcnNRblR1Sk9wQUV0aw?oc=5",
+      "title": "Reliance, Hindustan Zinc and other metal stocks shine in Q2FY27 earnings; while auto sector faces pressure: Check key highlights - Upstox",
+      "source": "Upstox",
+      "published": "Tue, 17 Nov 2026 19:35:47",
+      "url": "https://news.google.com/rss/articles/CBMilAJBVV95cUxQcWtNMHZIZDZ5ZFpRUHg4WVRZaDh3LVVDNkdLTTVia1hkNWlOSTh2VExIZGxIcWQ4SGZYc2o4Wm83S095MUM3OUFxLWZiWTJlQ2VSblk3X1pEVFg2d19RcjlNTjI4dzZTeVFYWlNoZ3E1RVJfZGpCeS14RDFVOEhwOHBvMTlaU1V0b1l1X0Y2ZnlXQVlBOU8tTllkdW1PMm55alNIbGg0UGJMLU9ubEYyOU00NkNQei1GT0poMkpXTV9ETVpmZDZTOXZCX0dyamNIeUlIRnlhVWxmMW43TFVQVl93VXBxeVVXZm95eldoOEJ6dlZ3UjJsSElYTjJaNkVCOWRONkVxbWYydVF6OExTYVN1YTE?oc=5",
       "sentiment": "NEUTRAL"
     },
     {
@@ -2168,30 +2182,16 @@
       "sentiment": "POSITIVE"
     },
     {
-      "title": "Stock markets rally for 2nd day on foreign fund inflows, moderate crude oil prices - DD India",
-      "source": "DD India",
-      "published": "Tue, 17 Nov 2026 10:50:00",
-      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPbEp6ZjBiMXVMSUpjb2Q3cGYxbVgxd2xZVENmTC1idlE0RVdQTGd1Y25OZzNxdHNqRGdyRDBLY0hndFpBWVhhRlgwU25rMFFCWWJ3TzU2WHJxQk9wZ0Z4TjVhQ29fLWY4SDRlb3FWRkdDbl9MVlp3OFJ6RGdUaEdhS0J0cGFiSUUxTWFrZlRzUnIwVUNwa29pc3EwWmxENFBHX3ZtTXN2R2VNRkdTTm5RVW1B?oc=5",
-      "sentiment": "POSITIVE"
-    },
-    {
-      "title": "India stocks higher at close of trade; Nifty 50 up 0.38% - Investing.com",
-      "source": "Investing.com",
-      "published": "Tue, 17 Nov 2026 10:40:04",
-      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPNVgyaU81bmRlVVViSWFnaGFsV25Xc25yVU1mQ1RnN2dyM3hXTy1HSW14b0xWMGhKRjMzYnJVTDNBOGg5cjAyY193ZHBxQ2NGYU9hbWV1MWc5RmxUbkZMdE1ENG5LTEpsUVBhUU5DZ2wtNDlGMGl5RFhCZjlERWpzeFctQjFmRlBHLXBDUVJVemNoaXdsUTFwTFNtR19LQklOSUhEQVBQdmhmM1Z3ZXFZ?oc=5",
-      "sentiment": "NEUTRAL"
-    },
-    {
-      "title": "Top 30 Stocks For New Investors In India November 2026 - Samco",
-      "source": "Samco",
-      "published": "Thu, 12 Nov 2026 06:51:21",
-      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOdXc3YnppbkVRc1M2ZmotTUFZcFQtNzg5WGt5aW1NYW1MSURkaXVRRlZCbWZMUnJpX2FCLWlWOXBTV09CRngtVHRHcGR3LW5HNHg2SWV5d1pZenFlQmZkdmxhVTE3eWJIcllWaUNUVWVhaEtodllzMV9wczhTODRkRS1LaDdKaWo0aFJReklvX0RZaUE?oc=5",
+      "title": "Reliance Industries refining margins boosted by strong diesel cracks - scanx.trade",
+      "source": "scanx.trade",
+      "published": "Tue, 17 Nov 2026 04:27:09",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQVFNYQUlWYXR4SE95Yk1UNUwtbmdTc0VHcG10bFhza1JrZmxac05YSVRZR0JWWVFaSjZXSHUyV3JIRXFZSGxrYUt3M0lOWmZENkFHSFRiVks2T3lyRTQ1TGVSa1RCRDBZdFlCMDkzN1ppSm10d0dPSjRWMW11TEEwRVI2Z1AwaDFRd25iT0hIRDdFMWJfZFlWYVBKZlBtc2hyY01PNmpocG9oZGZsWTVtRlpfcnNRblR1Sk9wQUV0aw?oc=5",
       "sentiment": "NEUTRAL"
     }
   ],
   "data_quality": {
     "symbol": "RELIANCE",
-    "evaluated_at": "2026-11-18 02:58:48 IST",
+    "evaluated_at": "2026-11-19 02:33:11 IST",
     "quality_score": 89.6,
     "trade_eligible": true,
     "has_minimum_price_history": true,
@@ -2201,207 +2201,207 @@
     "critical_failures": []
   },
   "market_regime": {
-    "observation_date": "2026-11-17",
+    "observation_date": "2026-11-18",
     "regime": "Weak Bull",
-    "nifty_50_close": 25387.4,
-    "nifty_50_day_change_pct": 0.38,
-    "nifty_50_return_20d_pct": 9.68,
-    "nifty_50_dma_50": 23385.96,
-    "nifty_50_dma_200": 23992.91,
-    "india_vix_close": 15.52,
-    "india_vix_change_pct": -1.02,
-    "advance_count": 1318,
-    "decline_count": 1404,
-    "unchanged_count": 38,
-    "advance_decline_ratio": 0.939,
-    "pct_above_50dma": 86.7,
-    "pct_above_200dma": 80.0,
+    "nifty_50_close": 25227.95,
+    "nifty_50_day_change_pct": -0.63,
+    "nifty_50_return_20d_pct": 10.22,
+    "nifty_50_dma_50": 23413.05,
+    "nifty_50_dma_200": 23993.81,
+    "india_vix_close": 15.57,
+    "india_vix_change_pct": 0.32,
+    "advance_count": 693,
+    "decline_count": 2035,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.341,
+    "pct_above_50dma": 80.0,
+    "pct_above_200dma": 73.3,
     "allow_aggressive_longs": true,
     "regime_rationale": [
-      "Structural uptrend intact above 200-DMA (23,992.9), though short-term momentum is moderate (20D: +9.68%).",
-      "NSE Market Breadth: 1318 Advances vs 1404 Declines (A/D Ratio 0.94).",
-      "Universe Breadth: 86.7% above 50-DMA, 80.0% above 200-DMA."
+      "Structural uptrend intact above 200-DMA (23,993.8), though short-term momentum is moderate (20D: +10.22%).",
+      "NSE Market Breadth: 693 Advances vs 2035 Declines (A/D Ratio 0.34).",
+      "Universe Breadth: 80.0% above 50-DMA, 73.3% above 200-DMA."
     ],
     "sector_performances": [
       {
-        "index_code": "NIFTY_BANK",
-        "index_name": "Nifty Bank",
-        "close": 62273.25,
-        "day_change_pct": 1.13,
-        "return_20d_pct": 11.51,
-        "pe_ratio": 13.76
-      },
-      {
-        "index_code": "NIFTY_AUTO",
-        "index_name": "Nifty Auto",
-        "close": 27769.15,
-        "day_change_pct": 0.72,
-        "return_20d_pct": 7.76,
-        "pe_ratio": 30.32
-      },
-      {
-        "index_code": "NIFTY_METAL",
-        "index_name": "Nifty Metal",
-        "close": 12530.3,
-        "day_change_pct": 0.58,
-        "return_20d_pct": 3.27,
-        "pe_ratio": 14.82
-      },
-      {
         "index_code": "NIFTY_PHARMA",
         "index_name": "Nifty Pharma",
-        "close": 28157.1,
-        "day_change_pct": 0.21,
-        "return_20d_pct": 9.21,
-        "pe_ratio": 45.29
+        "close": 28200.5,
+        "day_change_pct": 0.15,
+        "return_20d_pct": 10.09,
+        "pe_ratio": 45.36
       },
       {
         "index_code": "NIFTY_FMCG",
         "index_name": "Nifty FMCG",
-        "close": 47611.6,
-        "day_change_pct": -0.2,
-        "return_20d_pct": 6.71,
-        "pe_ratio": 33.4
+        "close": 47569.1,
+        "day_change_pct": -0.09,
+        "return_20d_pct": 8.17,
+        "pe_ratio": 33.37
+      },
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 62038.65,
+        "day_change_pct": -0.38,
+        "return_20d_pct": 11.81,
+        "pe_ratio": 13.71
       },
       {
         "index_code": "NIFTY_ENERGY",
         "index_name": "Nifty Energy",
-        "close": 37176.7,
-        "day_change_pct": -0.27,
-        "return_20d_pct": 2.72,
-        "pe_ratio": 13.31
+        "close": 36979.55,
+        "day_change_pct": -0.53,
+        "return_20d_pct": 2.79,
+        "pe_ratio": 13.24
       },
       {
         "index_code": "NIFTY_IT",
         "index_name": "Nifty IT",
-        "close": 31654.1,
-        "day_change_pct": -0.9,
-        "return_20d_pct": -0.85,
-        "pe_ratio": 19.24
+        "close": 31262.3,
+        "day_change_pct": -1.24,
+        "return_20d_pct": -0.81,
+        "pe_ratio": 19.0
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27394.95,
+        "day_change_pct": -1.35,
+        "return_20d_pct": 7.05,
+        "pe_ratio": 29.91
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12222.3,
+        "day_change_pct": -2.46,
+        "return_20d_pct": 1.29,
+        "pe_ratio": 14.46
       }
     ]
   },
   "quantitative_prediction": {
-    "prediction_id": "RELIANCE_2026-11-17_ml_ensemble_3.2.0_20261117T213007Z",
+    "prediction_id": "RELIANCE_2026-11-18_ml_ensemble_3.2.0_20261118T210426Z",
     "symbol": "RELIANCE",
-    "observation_date": "2026-11-17",
-    "generated_at": "2026-11-17T21:30:07.801484+00:00",
+    "observation_date": "2026-11-18",
+    "generated_at": "2026-11-18T21:04:26.591210+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.2.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.5124,
-    "prob_5d_up": 0.441,
-    "prob_10d_up": 0.4293,
-    "prob_lgbm_up": 0.4814,
-    "prob_xgb_up": 0.4878999888896942,
-    "prob_linear_up": 0.4815,
-    "expected_next_day_return_pct": 0.0301,
-    "expected_5d_return_pct": -0.4471,
-    "expected_10d_return_pct": -0.6229,
-    "downside_risk_mae_pct": -0.9638,
-    "expected_upside_mfe_pct": 0.9961,
-    "reward_to_risk_ratio": 1.034,
-    "model_agreement_score": 0.9779,
-    "confidence_score": 69.31,
-    "roundtrip_delivery_cost_pct": 0.3542,
-    "roundtrip_intraday_cost_pct": 0.203,
-    "net_expected_1d_return_pct": -0.1729,
-    "net_expected_5d_return_pct": -0.8013,
+    "prob_next_day_up": 0.5049,
+    "prob_5d_up": 0.4525,
+    "prob_10d_up": 0.4394,
+    "prob_lgbm_up": 0.4688,
+    "prob_xgb_up": 0.4677000045776367,
+    "prob_linear_up": 0.4759,
+    "expected_next_day_return_pct": 0.0226,
+    "expected_5d_return_pct": -0.364,
+    "expected_10d_return_pct": -0.5525,
+    "downside_risk_mae_pct": -0.9933,
+    "expected_upside_mfe_pct": 0.9925,
+    "reward_to_risk_ratio": 0.999,
+    "model_agreement_score": 0.9544,
+    "confidence_score": 67.71,
+    "roundtrip_delivery_cost_pct": 0.3538,
+    "roundtrip_intraday_cost_pct": 0.2026,
+    "net_expected_1d_return_pct": -0.1799,
+    "net_expected_5d_return_pct": -0.7178,
     "recommended_action": "HOLD / WATCH",
     "abstention_reason": null,
     "top_bullish_drivers": [
       {
-        "feature": "vd_vol_trend_5_20",
+        "feature": "vd_rel_vol_100d",
         "family": "2. Volume & Delivery",
-        "value": 0.6514,
-        "contribution": 0.02985,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "pm_ret_1d_pct",
-        "family": "1. Price & Technical Momentum",
-        "value": 1.6508,
-        "contribution": 0.00667,
+        "value": 1.2978,
+        "contribution": 0.00943,
         "direction": "BULLISH"
       },
       {
         "feature": "pm_ret_20d_pct",
         "family": "1. Price & Technical Momentum",
-        "value": 12.8633,
-        "contribution": 0.00556,
+        "value": 13.3943,
+        "contribution": 0.00905,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 0.4848,
+        "contribution": 0.00828,
         "direction": "BULLISH"
       },
       {
         "feature": "ms_india_vix_zscore_20d",
         "family": "3. Market & Sector Strength",
-        "value": -0.6225,
-        "contribution": 0.00523,
+        "value": -0.6452,
+        "contribution": 0.00666,
         "direction": "BULLISH"
       },
       {
         "feature": "fq_roe_pct",
         "family": "6. Financial Quality",
         "value": 10.5919,
-        "contribution": 0.005,
+        "contribution": 0.00589,
         "direction": "BULLISH"
       }
     ],
     "top_bearish_drivers": [
       {
+        "feature": "ms_nifty_ret_1d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6281,
+        "contribution": -0.0374,
+        "direction": "BEARISH"
+      },
+      {
         "feature": "ms_corr_nifty_20d",
         "family": "3. Market & Sector Strength",
-        "value": 0.4336,
-        "contribution": -0.03356,
+        "value": 0.4281,
+        "contribution": -0.03662,
         "direction": "BEARISH"
       },
       {
         "feature": "pm_atr_ratio_7_21",
         "family": "1. Price & Technical Momentum",
-        "value": 1.009,
-        "contribution": -0.00898,
-        "direction": "BEARISH"
-      },
-      {
-        "feature": "ms_nifty_ret_1d_pct",
-        "family": "3. Market & Sector Strength",
-        "value": 0.3808,
-        "contribution": -0.00801,
+        "value": 0.9887,
+        "contribution": -0.00735,
         "direction": "BEARISH"
       },
       {
         "feature": "pm_rsi_14_chg_3d",
         "family": "1. Price & Technical Momentum",
-        "value": 3.8559,
-        "contribution": -0.00561,
+        "value": 2.3099,
+        "contribution": -0.00615,
         "direction": "BEARISH"
       },
       {
         "feature": "inst_named_holders_count",
         "family": "4. Institutional & Promoter Activity",
         "value": 14.0,
-        "contribution": -0.0055,
+        "contribution": -0.00425,
         "direction": "BEARISH"
       }
     ],
-    "target_session_date": "2026-11-18",
-    "last_close": 1367.0,
-    "atr_14_pct": 2.117,
-    "momentum_prob_up": 0.512,
-    "momentum_5d_return_pct": 3.2159,
-    "momentum_prob_5d_up": 0.5372,
-    "momentum_prob_10d_up": 0.5554,
-    "momentum_1d_return_pct": 0.1583,
-    "momentum_10d_return_pct": 4.8238,
+    "target_session_date": "2026-11-19",
+    "last_close": 1363.0,
+    "atr_14_pct": 2.089,
+    "momentum_prob_up": 0.518,
+    "momentum_5d_return_pct": 3.1948,
+    "momentum_prob_5d_up": 0.5362,
+    "momentum_prob_10d_up": 0.5542,
+    "momentum_1d_return_pct": 0.1829,
+    "momentum_10d_return_pct": 4.8947,
     "feature_snapshot": {
       "ne_is_earnings_window": 1.0,
-      "ms_corr_nifty_20d": 0.43359,
+      "ms_corr_nifty_20d": 0.42813,
       "fq_asset_turnover": 0.48485,
       "inst_dii_chg_4q": 1.37,
-      "eg_qtr_np_qoq_pct": 27.39,
       "fq_debt_to_equity": 0.44574,
+      "eg_qtr_np_qoq_pct": 27.39,
       "inst_named_holders_count": 14.0,
-      "ms_india_vix_zscore_20d": -0.62253,
-      "pm_ret_180d_pct": -3.6917,
+      "pm_ret_180d_pct": -4.55182,
+      "ms_india_vix_zscore_20d": -0.64524,
       "fq_roce_pct": 13.70054
     },
     "outcome_evaluated_at": null,
@@ -2410,7 +2410,7 @@
   },
   "corporate_intelligence": {
     "symbol": "RELIANCE",
-    "evaluated_at": "2026-11-17T21:30:19.165394+00:00",
+    "evaluated_at": "2026-11-18T21:04:36.015792+00:00",
     "promoter_holding_pct": 50.44,
     "promoter_chg_1q": -0.04,
     "promoter_chg_4q": 0.43,
@@ -2423,9 +2423,9 @@
     "dii_chg_4q": 1.37,
     "net_institutional_flow_4q": -0.61,
     "is_fno_eligible": true,
-    "latest_delivery_pct": 46.91,
-    "delivery_vs_20d_avg": -1.67,
-    "fno_positioning_heuristic": "Balanced F&O / Cash Activity",
+    "latest_delivery_pct": 57.47,
+    "delivery_vs_20d_avg": 7.85,
+    "fno_positioning_heuristic": "High Cash Delivery Accumulation (57.5%)",
     "net_bulk_block_value_cr": 0.0,
     "bulk_block_deals_count": 0,
     "institutional_conviction_score": 60.0,

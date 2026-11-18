@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-18 02:59:10 IST",
+  "fetched_at": "2026-11-19 02:33:32 IST",
   "overview": {
     "symbol": "TCS",
     "name": "Tata Consultancy Services Ltd",
@@ -9,13 +9,13 @@
     "sector": "Information Technology",
     "industry": "Computers - Software & Consulting",
     "about": "Tata Consultancy Services is the flagship company and a part of Tata group. It is an IT services, consulting and business solutions organization that has been partnering with many of the world's largest businesses in their transformation journeys for over 50 years. TCS offers a consulting-led, cognitive powered, integrated portfolio of business, technology and engineering services and solutions. [1]",
-    "market_cap_cr": 870729.0,
-    "current_price": 2407.0,
+    "market_cap_cr": 848791.0,
+    "current_price": 2380.0,
     "high_52w": 3350.0,
     "low_52w": 1976.0,
-    "stock_pe": 15.9,
+    "stock_pe": 15.5,
     "book_value": 329.0,
-    "dividend_yield_pct": 2.66,
+    "dividend_yield_pct": 2.69,
     "roce_pct": 63.0,
     "roe_pct": 51.8,
     "face_value": 1.0,
@@ -27,7 +27,7 @@
       "Company has been maintaining a healthy dividend payout of 77.5%"
     ],
     "cons": [
-      "Stock is trading at 7.32 times its book value",
+      "Stock is trading at 7.24 times its book value",
       "The company has delivered a poor sales growth of 10.2% over past five years."
     ]
   },
@@ -214,7 +214,7 @@
     "net_cash_position_cr": 43090.0,
     "debt_to_equity": 0.1,
     "cash_to_debt_ratio": 4.65,
-    "cash_pct_of_mcap": 6.3,
+    "cash_pct_of_mcap": 6.47,
     "latest_ocf_cr": 0.0,
     "latest_fcf_cr": 0.0,
     "cumulative_5y_ocf_cr": 369.0,
@@ -834,55 +834,45 @@
     ]
   },
   "technicals": {
-    "current_price": 2406.6,
-    "prev_close": 2405.0,
-    "day_change_pct": 0.07,
-    "day_high": 2448.0,
-    "day_low": 2384.0,
+    "current_price": 2379.5,
+    "prev_close": 2406.6,
+    "day_change_pct": -1.13,
+    "day_high": 2408.0,
+    "day_low": 2379.5,
     "high_52w": 3350.0,
     "low_52w": 1976.0,
-    "return_5d_pct": -2.78,
-    "return_1m_pct": -2.37,
-    "return_6m_pct": 5.4,
-    "return_1y_pct": -22.04,
-    "rsi_14": 49.53,
-    "macd_line": 30.65,
-    "macd_signal": 51.65,
-    "macd_hist": -21.0,
-    "ema_20": 2429.24,
-    "dma_50": 2361.46,
-    "dma_200": 2465.35,
-    "bb_upper": 2560.04,
-    "bb_middle": 2478.86,
-    "bb_lower": 2397.68,
-    "atr_14": 63.11,
-    "atr_pct": 2.62,
-    "volume_latest": 3121617.0,
-    "volume_20d_avg": 3903143.5,
-    "volume_Surge_ratio": 0.8,
-    "annualized_volatility_pct": 31.8,
-    "pivot_point": 2412.87,
-    "support_1": 2377.74,
-    "support_2": 2348.87,
-    "resistance_1": 2441.74,
-    "resistance_2": 2476.87,
+    "return_5d_pct": -3.75,
+    "return_1m_pct": -3.31,
+    "return_6m_pct": 2.25,
+    "return_1y_pct": -24.41,
+    "rsi_14": 45.68,
+    "macd_line": 23.31,
+    "macd_signal": 45.98,
+    "macd_hist": -22.67,
+    "ema_20": 2424.51,
+    "dma_50": 2362.17,
+    "dma_200": 2464.5,
+    "bb_upper": 2560.29,
+    "bb_middle": 2471.38,
+    "bb_lower": 2382.48,
+    "atr_14": 60.64,
+    "atr_pct": 2.55,
+    "volume_latest": 1481700.0,
+    "volume_20d_avg": 3661555.1,
+    "volume_Surge_ratio": 0.4,
+    "annualized_volatility_pct": 31.97,
+    "pivot_point": 2389.0,
+    "support_1": 2370.0,
+    "support_2": 2360.5,
+    "resistance_1": 2398.5,
+    "resistance_2": 2417.5,
     "trend_regime": "RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA)",
     "technical_signals": [
       "Short-term momentum recovering above 50-DMA toward 200-DMA overhead resistance",
-      "RSI(14) at 49.53 \u2014 Neutral momentum band",
-      "MACD below signal line (Histogram -21.00)"
+      "RSI(14) at 45.68 \u2014 Neutral momentum band",
+      "MACD below signal line (Histogram -22.67)"
     ],
     "price_series": [
-      {
-        "date": "2026-07-10",
-        "close": 2069.0,
-        "open": 2082.65,
-        "high": 2110.45,
-        "low": 2042.48,
-        "dma50": 2220.28,
-        "dma200": 2672.69,
-        "volume": 7173897.0
-      },
       {
         "date": "2026-07-13",
         "close": 2181.5,
@@ -1772,6 +1762,16 @@
         "dma50": 2361.46,
         "dma200": 2465.35,
         "volume": 3121617.0
+      },
+      {
+        "date": "2026-11-18",
+        "close": 2379.5,
+        "open": 2382.5,
+        "high": 2408.0,
+        "low": 2379.5,
+        "dma50": 2362.17,
+        "dma200": 2464.5,
+        "volume": 1481700.0
       }
     ]
   },
@@ -1875,20 +1875,20 @@
       "score": 55.0,
       "confidence": 68,
       "weight_pct": 20,
-      "headline": "RSI(14) 49.5 | 50-DMA \u20b92,361.5 | 200-DMA \u20b92,465.3 | ATR \u20b963.1",
+      "headline": "RSI(14) 45.7 | 50-DMA \u20b92,362.2 | 200-DMA \u20b92,464.5 | ATR \u20b960.6",
       "key_metrics": {
-        "RSI (14)": "49.5",
-        "MACD Histogram": "-21.00",
-        "50-DMA / 200-DMA": "\u20b92,361.5 / \u20b92,465.3",
-        "ATR (14) Daily Range": "\u20b963.11 (2.62%)",
-        "Volume vs 20D Avg": "0.80x",
-        "Pivot S1 / R1": "\u20b92,377.7 / \u20b92,441.7"
+        "RSI (14)": "45.7",
+        "MACD Histogram": "-22.67",
+        "50-DMA / 200-DMA": "\u20b92,362.2 / \u20b92,464.5",
+        "ATR (14) Daily Range": "\u20b960.64 (2.55%)",
+        "Volume vs 20D Avg": "0.40x",
+        "Pivot S1 / R1": "\u20b92,370.0 / \u20b92,398.5"
       },
       "reasoning": [
         "Short-term momentum recovering above 50-DMA toward 200-DMA overhead resistance",
-        "RSI(14) at 49.53 \u2014 Neutral momentum band",
-        "MACD below signal line (Histogram -21.00)",
-        "News Catalyst: 2 positive vs 0 negative recent Indian market headlines."
+        "RSI(14) at 45.68 \u2014 Neutral momentum band",
+        "MACD below signal line (Histogram -22.67)",
+        "News Catalyst: 1 positive vs 0 negative recent Indian market headlines."
       ]
     }
   ],
@@ -1897,23 +1897,23 @@
     "conviction_score": 67.8,
     "fundamental_score": 71.0,
     "technical_score": 55.0,
-    "current_price": 2406.6,
-    "entry_zone_low": 2381.36,
-    "entry_zone_high": 2412.91,
-    "target_1_next_day": 2482.33,
-    "target_2_swing": 2548.6,
-    "stop_loss": 2346.65,
+    "current_price": 2379.5,
+    "entry_zone_low": 2355.24,
+    "entry_zone_high": 2385.56,
+    "target_1_next_day": 2452.27,
+    "target_2_swing": 2515.94,
+    "stop_loss": 2321.89,
     "risk_reward_ratio": 1.26,
-    "expected_next_day_range_low": 2343.49,
-    "expected_next_day_range_high": 2469.71,
+    "expected_next_day_range_low": 2318.86,
+    "expected_next_day_range_high": 2440.14,
     "position_size_suggestion_pct": 5.0,
-    "executive_summary": "Tata Consultancy Services Ltd (TCS) earns a composite conviction score of 67.8/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b954,898 Cr in cash & investments, 51.8% ROE, 1.15% R&D intensity, and 94.3% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b92,381.36\u2013\u20b92,412.91 zone targeting \u20b92,482.33 (T1) and \u20b92,548.60 (T2) with a strict ATR-calibrated stop-loss at \u20b92,346.65 (Risk:Reward 1:1.26).",
+    "executive_summary": "Tata Consultancy Services Ltd (TCS) earns a composite conviction score of 67.8/100 (BUY) for the next NSE trading session. Fundamentally backed by \u20b954,898 Cr in cash & investments, 51.8% ROE, 1.15% R&D intensity, and 94.3% combined Promoter + Institutional ownership. For tomorrow's session, look for entries in the \u20b92,355.24\u2013\u20b92,385.56 zone targeting \u20b92,452.27 (T1) and \u20b92,515.94 (T2) with a strict ATR-calibrated stop-loss at \u20b92,321.89 (Risk:Reward 1:1.26).",
     "rationale_points": [
       "5-Report Fundamental Score: 71.0/100 (5Y Profit CAGR: 6.5%, Piotroski: 7/9).",
       "Balance Sheet & Cash in Hand: \u20b954,898 Cr liquid cash/investments vs \u20b911,808 Cr total borrowings (D/E 0.10x).",
       "Stockholder Conviction: Promoters hold 71.77%, FIIs 9.01%, DIIs 13.57% (Total Institutional: 22.58%).",
       "R&D & Innovation Moat: \u20b93,071 Cr annual R&D (1.15% of sales; 5Y cumulative \u20b913,575 Cr).",
-      "Next-Day Technical Trigger (55.0/100): RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA); RSI(14) at 49.5 with ATR(14) daily range of \u20b963.11."
+      "Next-Day Technical Trigger (55.0/100): RECOVERY / REVERSAL ATTEMPT (Above 50-DMA, below 200-DMA); RSI(14) at 45.7 with ATR(14) daily range of \u20b960.64."
     ],
     "key_catalysts": [
       "Company has a good return on equity (ROE) track record: 3 Years ROE 51.9%",
@@ -1922,9 +1922,9 @@
       "Institutional Sponsorship: 22.6% held by FIIs + DIIs"
     ],
     "key_risks": [
-      "Stock is trading at 7.32 times its book value",
+      "Stock is trading at 7.24 times its book value",
       "The company has delivered a poor sales growth of 10.2% over past five years.",
-      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b92,346.65"
+      "Invalidate next-day bullish setup if NSE price closes below strict Stop-Loss of \u20b92,321.89"
     ],
     "llm_synthesized": false,
     "llm_model_used": "Quantitative Multi-Agent Committee Engine v2"
@@ -1958,10 +1958,18 @@
     ],
     "promoter_statements_and_articles": [
       {
+        "speaker_or_source": "TradingView",
+        "published": "Sun, 25 Oct 2026 07:00",
+        "headline": "Revenue gains take time to materialise even as Indian IT sees strong bookings - TradingView",
+        "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQM0pILVdGSC1fZU9PU0FVd2NUWkhIajBBeGxHVXhVaVEtUTdyalhEZWxab0lTZ0tzMkEwY2JZUnc1dnYxX2Noc0hlcDl6VEtXX0ZQUXVybVI2VXBYa21GQjlsazRIV2s4R01qMC1HUGFDZzY4bVc5cTV2WnFkbkpFaHZlb3FIQkZIODdaaHY5a0dIQW5lQjVLTjQyOW5ZT1VnZUl2SHl3TDcwS3lZa1pGTFZiU3JkZXNncGhybW5jUVY0aVhDenYtNF9BRHlvZ1U?oc=5",
+        "share_price_impact": "BULLISH",
+        "why_it_affects_share_value": "Strategic R&D, product launch, or capacity expansion strengthens long-term competitive moat."
+      },
+      {
         "speaker_or_source": "Moneycontrol.com",
         "published": "Tue, 17 Nov 2026 05:35",
         "headline": "TCS, Infosys stock ratings: CLSA cautious, flags growth, margin concerns; check target prices, downside... - Moneycontrol.com",
-        "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxNbm05Z2NHTlpGYklpcFU1aWNCbEU1aVZtLWhxZXRlSU90am8yWlFxeGxNSXRoYi1kMmRFbXJCUlFzejltUE5tOVFXZHBvVWIyQjFBbTU1akl3NHdONFNjRkpITm9XdlAzYWYwaDN3VFRUM1hmdHA0Xzk2dFlfdzhMa3V1cHlSd0JLeVRyb1dfYVIzaTJLRzZPYjE1ZkNBeC1FN0pFc3NleTZYNTJfTGc5al9ZMVVOQktRR01QbXdtVmxzZVJpN3pqNy0wdUR4Z1QwWVVneG83T0xaSC10MjlOTnMzc3ZXTzlsR19WWnBPd1RvNUNHQjB3dlhvYXB2Nmhr0gGAAkFVX3lxTE1ubTlnY0dOWkZiSWlwVTVpY0JsRTVpVm0taHFldGVJT3RqbzJaUXF4bE1JdGhiLWQyZEVtckJSUXN6OW1QTm05UVdkcG9VYjJCMUFtNTVqSXc0d040U2NGSkhOb1d2UDNhZjBoM3dUVFQzWGZ0cDRfOTZ0WV93OExrdXVweVJ3Qkt5VHJvV19hUjNpMktHNk9iMTVmQ0F4LUU3SkVzc2V5Nlg1Ml9MZzlqX1kxVU5CS1FHTVBtd21WbHNlUmk3emo3LTB1RHhnVDBZVWd4bzdPTFpILXQyOU5OczNzdldPOWxHX1ZacE93VG81Q0dCMHd2WG9hcHY2aGs?oc=5",
+        "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxPQlFDZ0FYcUpBQmpFdE1Ec2xhY2lTMGJKd1lsZ1Z3MjBJN0IwVm9zMW9lSjdOcTZNb3FNOEM2OGg5OEpJM1ZyUjczdnFPcFA1U2h3STNMcFZ2VS1YVVZzejhsSjV5QnBQeGlRaDlBeGdWWUprMVUwV1hTS0J3YWtrM0ZnVFM0VVdwbklnUmFFdVdvTjI0dEo2Zy1Ob29PdE5JUEc2THZJeFdUVlFETGFybExQWUNuNTFFV253OTJ5SkFrYXdzU1NtaEhMUzd4VG9oUE9iSVNJRXdIcHZrNFlhQy1KOWc2N2tHUGhzS05RbkVCbFpkYktnVmpla9IBgAJBVV95cUxNbm05Z2NHTlpGYklpcFU1aWNCbEU1aVZtLWhxZXRlSU90am8yWlFxeGxNSXRoYi1kMmRFbXJCUlFzejltUE5tOVFXZHBvVWIyQjFBbTU1akl3NHdONFNjRkpITm9XdlAzYWYwaDN3VFRUM1hmdHA0Xzk2dFlfdzhMa3V1cHlSd0JLeVRyb1dfYVIzaTJLRzZPYjE1ZkNBeC1FN0pFc3NleTZYNTJfTGc5al9ZMVVOQktRR01QbXdtVmxzZVJpN3pqNy0wdUR4Z1QwWVVneG83T0xaSC10MjlOTnMzc3ZXTzlsR19WWnBPd1RvNUNHQjB3dlhvYXB2Nmhr?oc=5",
         "share_price_impact": "BULLISH",
         "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
       },
@@ -1982,12 +1990,12 @@
         "why_it_affects_share_value": "Strategic R&D, product launch, or capacity expansion strengthens long-term competitive moat."
       },
       {
-        "speaker_or_source": "scanx.trade",
-        "published": "Tue, 03 Nov 2026 08:00",
-        "headline": "TCS study: 84% cite productivity as top AI benefit - scanx.trade",
-        "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNY3kxMV9qbXlkMzRBbUhXOV81ZFZUTTJTY2xTUnA5bTRTUHh2ZmZqZTAwNF93ZUJwU0JEVFpqdmRZS2hHMXJmMm8tdVAzWm05cU10cTFqSFRRMHAwOS1DdzJVakozbzZoQzJJdXZqN3Z6bWItY29YUkZWa3hFYlVuRlprYUFiaEpDYWx0TEhveFctcDFCbTZBeUxfTGxXaDJUTmpSSA?oc=5",
+        "speaker_or_source": "NiftyTrader",
+        "published": "Wed, 18 Nov 2026 08:13",
+        "headline": "Nvidia Q3 Revenue Jumps 103%: Why Did TCS and Infosys Fall? - NiftyTrader",
+        "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNNTEtdFlabjUxSlY3WFVhSjFVS0tPUXdXQlhteUFaWmtJWW5GdVViNFZiMU9KaXNVYzRpU0c2bXFoU3NPOHYxVFF5MVFxbXFVR0dQZjE2dkg1ZXNsUjE3eHg0cS1HRnBmR3V2ODFqMkhmU19XVkhDTGlybGJhbVFtbm1R?oc=5",
         "share_price_impact": "BULLISH",
-        "why_it_affects_share_value": "Strategic R&D, product launch, or capacity expansion strengthens long-term competitive moat."
+        "why_it_affects_share_value": "Strong operating performance and earnings beat drive institutional EPS upgrades for the next session."
       }
     ],
     "competitors": [
@@ -1995,9 +2003,9 @@
         "symbol": "INFY",
         "name": "Infosys Ltd",
         "segment": "Tier-1 Global IT Services & Consulting",
-        "current_price": 1145.1,
-        "day_change_pct": 0.32,
-        "return_1m_pct": 3.59,
+        "current_price": 1130.0,
+        "day_change_pct": -1.32,
+        "return_1m_pct": 2.23,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "Weekly Recap: Q2 revenue, AI growth and Guidance cut, wage margin risk - TradingView",
@@ -2009,37 +2017,37 @@
         "symbol": "HCLTECH",
         "name": "HCL Technologies Ltd",
         "segment": "IT Infrastructure, ER&D & Enterprise Apps",
-        "current_price": 1384.6,
-        "day_change_pct": 0.48,
-        "return_1m_pct": 0.34,
+        "current_price": 1355.7,
+        "day_change_pct": -2.09,
+        "return_1m_pct": -1.75,
         "pe": null,
         "roe_pct": null,
-        "latest_statement_or_news": "HCL Technologies Share Price - Live NSE: HCLTECH Stock Price & Chart - Upstox",
-        "latest_news_url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5VakFpRExUYldXMkNsOENVSHQ2NUIyNDhRZklKbjVtZGJBMzFsSXpfRGJyVzdQWkxCb0oyYnZIMTRBblBmZl9WRmlRVTZ3Qm8tR1dJS21pQkl6WGpWOWJ0dllEMVpKZEJTaE8w?oc=5",
-        "read_across_signal": "NEUTRAL",
+        "latest_statement_or_news": "HCL Technologies Limited (HCLTECH.NS) stock price, news, quote and history - Yahoo Finance Singapore",
+        "latest_news_url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9QWjRfLUdLWXhxdkc4VXR0YkpCRlJ1SGFMVFg1SGNTMEZQTHYzeTVyV3NMcWEwZWtDVnp1WGE1YUswM3lvMk1qRVhvaml1UGptcWZnSTVWY2FKUQ?oc=5",
+        "read_across_signal": "COMPETITIVE THREAT",
         "impact_on_share_value": "Vendor consolidation mega-deals & software margins compete directly with TCS."
       },
       {
         "symbol": "WIPRO",
         "name": "Wipro Ltd",
         "segment": "Global IT & Capco BFSI Consulting",
-        "current_price": 193.54,
-        "day_change_pct": -0.54,
-        "return_1m_pct": 6.26,
+        "current_price": 189.89,
+        "day_change_pct": -1.89,
+        "return_1m_pct": 4.25,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "Wipro Appoints Angan Guha as President and Chief Executive Officer for Americas 2 Strategic Market Unit - Wipro",
         "latest_news_url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxNTHZkM1RzVHh4aUp1UkpVWnp1ZWhZc1VCQTJMRTJCc3ZOQ2JuQUZOdGZkUkRpTlpWdkI3SG9CYUtqTDRNa3EtOWpHUmNnT1FnNlV3bG5UNkhwajJxeC1OQ2x2MGhxY2x1cUJGWWtBb1RPSmNha0hZZGZublNZOVh6TmZFV1BvSmZ6RGRXaU9KU0dfdVI1aTZXSkNSY1BSMURxLUJBa0ZBTjdvQnNtRHk0eG1vaWVldVdPZ1RsWjRJUTR1eGttXzM2Q2VvTk1DVldwRHdpYS0yVzlic0l1S09JOWMydk1JTnQ3cjVZ?oc=5",
-        "read_across_signal": "POSITIVE READ-ACROSS",
+        "read_across_signal": "COMPETITIVE THREAT",
         "impact_on_share_value": "US banking discretionary consulting trends give early signal for TCS's core BFSI vertical."
       },
       {
         "symbol": "TECHM",
         "name": "Tech Mahindra Ltd",
         "segment": "Telecom & Communications IT",
-        "current_price": 1776.4,
-        "day_change_pct": 0.7,
-        "return_1m_pct": 0.67,
+        "current_price": 1762.0,
+        "day_change_pct": -0.81,
+        "return_1m_pct": -0.14,
         "pe": null,
         "roe_pct": null,
         "latest_statement_or_news": "Tech Mahindra, Nottingham Spirk Partner on Smart Manufacturing - Tech Mahindra",
@@ -2053,15 +2061,15 @@
     {
       "title": "Tata Consultancy Services Limited (TCS.NS) stock price, news, quote and history - Yahoo Finance UK",
       "source": "Yahoo Finance UK",
-      "published": "Tue, 17 Nov 2026 12:29:46",
+      "published": "Wed, 18 Nov 2026 11:06:31",
       "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBZM0ZGSE1yV0ZoNjVJTXJQbGt6NzJmQ2ZndVJJcEItdEZ5cGpOTWx4WVNyZlpqNGQ2cmNfNkhldHNrSWduZ1AtdEVvcEZ2SU9xbnlocQ?oc=5",
       "sentiment": "NEUTRAL"
     },
     {
-      "title": "Tata Consultancy Services (TCS) Share Price Today (NSE), Market News - TechGraph",
-      "source": "TechGraph",
-      "published": "Mon, 16 Nov 2026 15:34:46",
-      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBFeGQ5c2VqX1BwUHJXcVRhS2ZmQm1aRHBwQU1QUU1hSjYwcmdneTA1UEh6dXRLZ21QWC1qSTF1SVpzSDdWYlNIakM4MzRXY3hNaVdhTkRYMTZVUkU?oc=5",
+      "title": "TCS Share Price - Upstox",
+      "source": "Upstox",
+      "published": "Wed, 18 Nov 2026 00:29:06",
+      "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4xa3lkaFFielNzaEh0c3oxTzdzMzV1MDk5TzFMYnoweVkwWG02cVBRTHZSUmM2Q1JpYVpsN2l2VmZwMFpwUzI5cm5WOUFHSGE1c2ZsRjRTWWl3MmlNOGdQUmdkSlZLUUxqRUctcGVsdDA?oc=5",
       "sentiment": "NEUTRAL"
     },
     {
@@ -2072,10 +2080,10 @@
       "sentiment": "NEUTRAL"
     },
     {
-      "title": "Tata Consultancy Services (NSEI:TCS) - Stock Analysis - Simply Wall St",
+      "title": "Tata Consultancy Services (NSEI:TCS) Stock Forecast & Analyst Predictions - Simply Wall St",
       "source": "Simply Wall St",
-      "published": "Sun, 15 Nov 2026 08:00:00",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNdURVTVFFYVdOREE4V3lFMlFNRUQ2SF95TDNpekozUFo1NnZ2SE1WYkZEV1B2cHhNQW9LM2lPeXhydDRzYjdpbVFlQ0dCOEpXVjJkOVBmWkRfcUY4Y1NURVRlYnVUT0hSZ0dfemxKRUpBdGRpUVlmVGJ0SjRKc2ZDZ1JjUldQTVBL?oc=5",
+      "published": "Mon, 16 Nov 2026 08:00:00",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNWnV6ajlIQV9tZmRhblEwR0NvUkZ5emFFbnk4SlZDdzAwRVdtX1hmcDV6ZV9YaHZGMGhPSUxNaWpsR0RXYUZSaWhZLUlaMWVTb1dyWUdFS2ZrVFFnbkJaaUNOWVM1bmhvVkQ1YXRxSnpPdnpDaHJWWkZLUGlEdlI4ekZRaU93TTVIQU5pVlV4Uzh3dw?oc=5",
       "sentiment": "NEUTRAL"
     },
     {
@@ -2086,11 +2094,18 @@
       "sentiment": "POSITIVE"
     },
     {
-      "title": "NIFTY briefly crosses 25,500, SENSEX gains over 400 pts; Senco Gold, InduInd, TCS among buzzing stocks - Upstox",
-      "source": "Upstox",
-      "published": "Tue, 17 Nov 2026 08:07:20",
-      "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxQZW8wZ2FsRElBOXlMYUhFTlRUcUFyWmh4bFl5SEMydEQyS1NzYmhjaUw2cUtNcmhUQUJucGdQVlQydUZEb1UySHlBRzZoTVJnclNKVzZWS09RVVRxRllMQ0x4dkkwcW9CaUFJekxiYml5aUt4MWdjc3hWWGU5dW5DNTBfTGVRd20xSmlZUUhMOGl4MUFTYkNwV2lfaW85MWlLVXRNcWZXUUN6cGcyS0QyWU5PQ2Q2TkQ1TnlXVk40b3ZmYVhqLTFsRUc1TmFiMGZCcHZXSDdFQ0hyWWpqNkY0YTM5Qzh4UWJiVVZJcUlRcw?oc=5",
-      "sentiment": "POSITIVE"
+      "title": "India shares lower at close of trade; Nifty 50 down 0.63% By Investing.com - Investing.com India",
+      "source": "Investing.com India",
+      "published": "Wed, 18 Nov 2026 10:32:57",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPZnZabi1RRnJFa1NTc3k0WFJVYlVnSXFGU2lyQkRySUtsMjNCdUU4UlNmaG9CSzN0enQyZHY4cENxMTl5bVdiNnMxbll5RV9uSGgtY1FVblRJeG5oTVhzYkZ2U29NTW5vUm9XNjV0OFBwS3N6R0VNU2FCQjB2dnp5cmlLcEUzOXpCX254OFRjaGlFdm5hcHg5Uk5GSU1qQUhFZHB0QnB5eTV2b1NOdUFZ?oc=5",
+      "sentiment": "NEUTRAL"
+    },
+    {
+      "title": "TCS Share Price Down 26% in 2026: Key Levels to Watch - Univest",
+      "source": "Univest",
+      "published": "Wed, 18 Nov 2026 04:59:00",
+      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNNjg5ZllCWkx2VWhUbVh4VnNqb3VybDZSTmt0ZlNBTWhLdzFBNlZxUXpDY2hXZHI3MEpqYW5vdWlVVmhsQWtzbXk1eDFNTGpEUkM1OXZiVHBYSUhPdnRZOXdKWkIxSS1qeXVXWl93NWZTV3JKTnljTkJ2cmVoYS1fdjZVZDI0Ui1yZzNTRk9GZXlrNEpiemZBOU5LdGRRVU9sWHVEQU1QQmc4OHh2cWFkejQ0LTBhb2dUTFlCTVV1cE55c0FNZ1lTU1VHb19NV3BQX2pUVlJhSXhka0tE?oc=5",
+      "sentiment": "NEUTRAL"
     },
     {
       "title": "TCS named leader in agentic application management services by HFS - scanx.trade",
@@ -2098,18 +2113,11 @@
       "published": "Tue, 17 Nov 2026 05:40:16",
       "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQaFB4eVlaTm4zQmhFMzdCdjhxYkh1cWhQNG8wMXRvd1FCeldDRmJ4SGRiU25pZVpCMmRPUVRQS1I0d1I3Ylp0Mk5HblFaSlVvR01TcjR6bGRTRUJUamY1MVN4b1liMWJhcXRvX0FFZFRMWmNsRmpvR04yOEpMTWJXbTdwNEtnM19IWGRZeUxiTWk1UUxUZzk1Yy1IMVJWUWRTdnd5bTRueDl1TWhVTzdQYmM2QjNFbnpa?oc=5",
       "sentiment": "NEUTRAL"
-    },
-    {
-      "title": "Tata Consultancy Services: Rio Marathon Technology Partnership Ex - Kalkine India",
-      "source": "Kalkine India",
-      "published": "Thu, 12 Nov 2026 14:47:00",
-      "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxONnNHcm40c1FQektvQVFYQjdpOHY3VWZaN0k2Z1g0ODhHcEVUbUk0T1p3ZzgyLU5naXpobEtoSUc1MmdQOFcza0IxM0FGNFA2blVrZDJYZE9RanNtUUR3bFZYU05fTXl2Y0NqSnlVeUNiRWhHcjE1ZFRteHUycXhNeGpfbF96Y1RYWm14cWQ5a285UDhUOHBjam91TlZSOTJzc3hrLVpRS19WOHloUTNrY1N4aWhSLTh0cTFkV24xRjdfYTdCeUtmTHJLWDEwVENhWUg2S1lmcnhXbENPMElSZTlaOA?oc=5",
-      "sentiment": "NEUTRAL"
     }
   ],
   "data_quality": {
     "symbol": "TCS",
-    "evaluated_at": "2026-11-18 02:58:52 IST",
+    "evaluated_at": "2026-11-19 02:33:15 IST",
     "quality_score": 89.6,
     "trade_eligible": true,
     "has_minimum_price_history": true,
@@ -2119,207 +2127,207 @@
     "critical_failures": []
   },
   "market_regime": {
-    "observation_date": "2026-11-17",
+    "observation_date": "2026-11-18",
     "regime": "Weak Bull",
-    "nifty_50_close": 25387.4,
-    "nifty_50_day_change_pct": 0.38,
-    "nifty_50_return_20d_pct": 9.68,
-    "nifty_50_dma_50": 23385.96,
-    "nifty_50_dma_200": 23992.91,
-    "india_vix_close": 15.52,
-    "india_vix_change_pct": -1.02,
-    "advance_count": 1318,
-    "decline_count": 1404,
-    "unchanged_count": 38,
-    "advance_decline_ratio": 0.939,
-    "pct_above_50dma": 86.7,
-    "pct_above_200dma": 80.0,
+    "nifty_50_close": 25227.95,
+    "nifty_50_day_change_pct": -0.63,
+    "nifty_50_return_20d_pct": 10.22,
+    "nifty_50_dma_50": 23413.05,
+    "nifty_50_dma_200": 23993.81,
+    "india_vix_close": 15.57,
+    "india_vix_change_pct": 0.32,
+    "advance_count": 693,
+    "decline_count": 2035,
+    "unchanged_count": 28,
+    "advance_decline_ratio": 0.341,
+    "pct_above_50dma": 80.0,
+    "pct_above_200dma": 73.3,
     "allow_aggressive_longs": true,
     "regime_rationale": [
-      "Structural uptrend intact above 200-DMA (23,992.9), though short-term momentum is moderate (20D: +9.68%).",
-      "NSE Market Breadth: 1318 Advances vs 1404 Declines (A/D Ratio 0.94).",
-      "Universe Breadth: 86.7% above 50-DMA, 80.0% above 200-DMA."
+      "Structural uptrend intact above 200-DMA (23,993.8), though short-term momentum is moderate (20D: +10.22%).",
+      "NSE Market Breadth: 693 Advances vs 2035 Declines (A/D Ratio 0.34).",
+      "Universe Breadth: 80.0% above 50-DMA, 73.3% above 200-DMA."
     ],
     "sector_performances": [
       {
-        "index_code": "NIFTY_BANK",
-        "index_name": "Nifty Bank",
-        "close": 62273.25,
-        "day_change_pct": 1.13,
-        "return_20d_pct": 11.51,
-        "pe_ratio": 13.76
-      },
-      {
-        "index_code": "NIFTY_AUTO",
-        "index_name": "Nifty Auto",
-        "close": 27769.15,
-        "day_change_pct": 0.72,
-        "return_20d_pct": 7.76,
-        "pe_ratio": 30.32
-      },
-      {
-        "index_code": "NIFTY_METAL",
-        "index_name": "Nifty Metal",
-        "close": 12530.3,
-        "day_change_pct": 0.58,
-        "return_20d_pct": 3.27,
-        "pe_ratio": 14.82
-      },
-      {
         "index_code": "NIFTY_PHARMA",
         "index_name": "Nifty Pharma",
-        "close": 28157.1,
-        "day_change_pct": 0.21,
-        "return_20d_pct": 9.21,
-        "pe_ratio": 45.29
+        "close": 28200.5,
+        "day_change_pct": 0.15,
+        "return_20d_pct": 10.09,
+        "pe_ratio": 45.36
       },
       {
         "index_code": "NIFTY_FMCG",
         "index_name": "Nifty FMCG",
-        "close": 47611.6,
-        "day_change_pct": -0.2,
-        "return_20d_pct": 6.71,
-        "pe_ratio": 33.4
+        "close": 47569.1,
+        "day_change_pct": -0.09,
+        "return_20d_pct": 8.17,
+        "pe_ratio": 33.37
+      },
+      {
+        "index_code": "NIFTY_BANK",
+        "index_name": "Nifty Bank",
+        "close": 62038.65,
+        "day_change_pct": -0.38,
+        "return_20d_pct": 11.81,
+        "pe_ratio": 13.71
       },
       {
         "index_code": "NIFTY_ENERGY",
         "index_name": "Nifty Energy",
-        "close": 37176.7,
-        "day_change_pct": -0.27,
-        "return_20d_pct": 2.72,
-        "pe_ratio": 13.31
+        "close": 36979.55,
+        "day_change_pct": -0.53,
+        "return_20d_pct": 2.79,
+        "pe_ratio": 13.24
       },
       {
         "index_code": "NIFTY_IT",
         "index_name": "Nifty IT",
-        "close": 31654.1,
-        "day_change_pct": -0.9,
-        "return_20d_pct": -0.85,
-        "pe_ratio": 19.24
+        "close": 31262.3,
+        "day_change_pct": -1.24,
+        "return_20d_pct": -0.81,
+        "pe_ratio": 19.0
+      },
+      {
+        "index_code": "NIFTY_AUTO",
+        "index_name": "Nifty Auto",
+        "close": 27394.95,
+        "day_change_pct": -1.35,
+        "return_20d_pct": 7.05,
+        "pe_ratio": 29.91
+      },
+      {
+        "index_code": "NIFTY_METAL",
+        "index_name": "Nifty Metal",
+        "close": 12222.3,
+        "day_change_pct": -2.46,
+        "return_20d_pct": 1.29,
+        "pe_ratio": 14.46
       }
     ]
   },
   "quantitative_prediction": {
-    "prediction_id": "TCS_2026-11-17_ml_ensemble_3.2.0_20261117T213007Z",
+    "prediction_id": "TCS_2026-11-18_ml_ensemble_3.2.0_20261118T210426Z",
     "symbol": "TCS",
-    "observation_date": "2026-11-17",
-    "generated_at": "2026-11-17T21:30:07.801484+00:00",
+    "observation_date": "2026-11-18",
+    "generated_at": "2026-11-18T21:04:26.591210+00:00",
     "model_name": "ml_ensemble",
     "model_version": "3.2.0",
     "market_regime": "Weak Bull",
-    "prob_next_day_up": 0.4853,
-    "prob_5d_up": 0.4692,
-    "prob_10d_up": 0.4599,
-    "prob_lgbm_up": 0.4635,
-    "prob_xgb_up": 0.46630001068115234,
-    "prob_linear_up": 0.4542,
-    "expected_next_day_return_pct": -0.0887,
-    "expected_5d_return_pct": -0.2932,
-    "expected_10d_return_pct": -0.5097,
-    "downside_risk_mae_pct": -1.0704,
-    "expected_upside_mfe_pct": 1.0834,
-    "reward_to_risk_ratio": 1.012,
-    "model_agreement_score": 0.9798,
-    "confidence_score": 69.69,
-    "roundtrip_delivery_cost_pct": 0.364,
-    "roundtrip_intraday_cost_pct": 0.2128,
-    "net_expected_1d_return_pct": -0.3015,
-    "net_expected_5d_return_pct": -0.6572,
+    "prob_next_day_up": 0.4618,
+    "prob_5d_up": 0.4779,
+    "prob_10d_up": 0.4694,
+    "prob_lgbm_up": 0.4344,
+    "prob_xgb_up": 0.42820000648498535,
+    "prob_linear_up": 0.4417,
+    "expected_next_day_return_pct": -0.1679,
+    "expected_5d_return_pct": -0.2212,
+    "expected_10d_return_pct": -0.4595,
+    "downside_risk_mae_pct": -1.0918,
+    "expected_upside_mfe_pct": 1.0797,
+    "reward_to_risk_ratio": 0.989,
+    "model_agreement_score": 0.9618,
+    "confidence_score": 72.69,
+    "roundtrip_delivery_cost_pct": 0.3628,
+    "roundtrip_intraday_cost_pct": 0.2116,
+    "net_expected_1d_return_pct": -0.3795,
+    "net_expected_5d_return_pct": -0.584,
     "recommended_action": "NO TRADE",
-    "abstention_reason": "Expected move (1D -0.09%, 5D -0.24%) does not clear Indian round-trip transaction costs (0.21% intraday / 0.36% delivery).",
+    "abstention_reason": "Expected move (1D -0.17%, 5D -0.34%) does not clear Indian round-trip transaction costs (0.21% intraday / 0.36% delivery).",
     "top_bullish_drivers": [
       {
-        "feature": "vd_vol_trend_5_20",
-        "family": "2. Volume & Delivery",
-        "value": 0.7038,
-        "contribution": 0.03074,
+        "feature": "ms_india_vix_zscore_20d",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6452,
+        "contribution": 0.00688,
         "direction": "BULLISH"
       },
       {
-        "feature": "inst_dii_chg_4q",
+        "feature": "inst_fii_chg_4q",
         "family": "4. Institutional & Promoter Activity",
-        "value": 0.93,
-        "contribution": 0.00653,
-        "direction": "BULLISH"
-      },
-      {
-        "feature": "inst_retail_dilution_4q",
-        "family": "4. Institutional & Promoter Activity",
-        "value": 0.45,
-        "contribution": 0.00489,
+        "value": -1.32,
+        "contribution": 0.00304,
         "direction": "BULLISH"
       },
       {
         "feature": "pm_ret_180d_pct",
         "family": "1. Price & Technical Momentum",
-        "value": -10.4088,
-        "contribution": 0.00391,
+        "value": -11.0899,
+        "contribution": 0.00286,
         "direction": "BULLISH"
       },
       {
-        "feature": "ms_india_vix_zscore_20d",
-        "family": "3. Market & Sector Strength",
-        "value": -0.6225,
-        "contribution": 0.00322,
+        "feature": "pm_macd_hist_chg_1d",
+        "family": "1. Price & Technical Momentum",
+        "value": -0.0863,
+        "contribution": 0.00273,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "eg_qtr_np_yoy_pct",
+        "family": "7. Earnings & Management Guidance",
+        "value": 14.8627,
+        "contribution": 0.0025,
         "direction": "BULLISH"
       }
     ],
     "top_bearish_drivers": [
       {
-        "feature": "ms_corr_nifty_20d",
-        "family": "3. Market & Sector Strength",
-        "value": 0.3033,
-        "contribution": -0.03857,
+        "feature": "vd_rel_vol_100d",
+        "family": "2. Volume & Delivery",
+        "value": 0.3338,
+        "contribution": -0.05233,
         "direction": "BEARISH"
       },
       {
-        "feature": "ms_corr_nifty_60d",
+        "feature": "ms_corr_nifty_20d",
         "family": "3. Market & Sector Strength",
-        "value": 0.3202,
-        "contribution": -0.01336,
+        "value": 0.3584,
+        "contribution": -0.03937,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_nifty_ret_1d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6281,
+        "contribution": -0.03625,
         "direction": "BEARISH"
       },
       {
         "feature": "fq_asset_turnover",
         "family": "6. Financial Quality",
         "value": 1.4739,
-        "contribution": -0.01143,
+        "contribution": -0.01256,
         "direction": "BEARISH"
       },
       {
-        "feature": "ms_nifty_ret_1d_pct",
+        "feature": "ms_corr_nifty_60d",
         "family": "3. Market & Sector Strength",
-        "value": 0.3808,
-        "contribution": -0.00899,
-        "direction": "BEARISH"
-      },
-      {
-        "feature": "inst_named_holders_count",
-        "family": "4. Institutional & Promoter Activity",
-        "value": 12.0,
-        "contribution": -0.0055,
+        "value": 0.3256,
+        "contribution": -0.00835,
         "direction": "BEARISH"
       }
     ],
-    "target_session_date": "2026-11-18",
-    "last_close": 2406.6,
-    "atr_14_pct": 2.756,
-    "momentum_prob_up": 0.4602,
-    "momentum_5d_return_pct": -0.8547,
-    "momentum_prob_5d_up": 0.4534,
-    "momentum_prob_10d_up": 0.4544,
-    "momentum_1d_return_pct": -0.2263,
-    "momentum_10d_return_pct": -1.1071,
+    "target_session_date": "2026-11-19",
+    "last_close": 2379.5,
+    "atr_14_pct": 2.674,
+    "momentum_prob_up": 0.4603,
+    "momentum_5d_return_pct": -1.1772,
+    "momentum_prob_5d_up": 0.447,
+    "momentum_prob_10d_up": 0.4456,
+    "momentum_1d_return_pct": -0.2321,
+    "momentum_10d_return_pct": -1.5323,
     "feature_snapshot": {
       "ne_is_earnings_window": 1.0,
-      "ms_corr_nifty_20d": 0.3033,
+      "ms_corr_nifty_20d": 0.35837,
       "fq_asset_turnover": 1.47389,
       "inst_dii_chg_4q": 0.93,
-      "eg_qtr_np_qoq_pct": 3.83,
       "fq_debt_to_equity": 0.10521,
+      "eg_qtr_np_qoq_pct": 3.83,
       "inst_named_holders_count": 12.0,
-      "ms_india_vix_zscore_20d": -0.62253,
-      "pm_ret_180d_pct": -10.40876,
+      "pm_ret_180d_pct": -11.08994,
+      "ms_india_vix_zscore_20d": -0.64524,
       "fq_roce_pct": 61.0835
     },
     "outcome_evaluated_at": null,
@@ -2328,7 +2336,7 @@
   },
   "corporate_intelligence": {
     "symbol": "TCS",
-    "evaluated_at": "2026-11-17T21:30:19.204244+00:00",
+    "evaluated_at": "2026-11-18T21:04:36.043408+00:00",
     "promoter_holding_pct": 71.77,
     "promoter_chg_1q": 0.0,
     "promoter_chg_4q": 0.0,
@@ -2341,8 +2349,8 @@
     "dii_chg_4q": 0.93,
     "net_institutional_flow_4q": -0.39,
     "is_fno_eligible": true,
-    "latest_delivery_pct": 46.99,
-    "delivery_vs_20d_avg": 1.28,
+    "latest_delivery_pct": 44.54,
+    "delivery_vs_20d_avg": -1.8,
     "fno_positioning_heuristic": "Balanced F&O / Cash Activity",
     "net_bulk_block_value_cr": 0.0,
     "bulk_block_deals_count": 0,
