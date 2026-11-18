@@ -1,5 +1,26 @@
 """Independent Data Quality Audit package for BharatAlpha AI."""
 
+from .classification import (
+    ClassificationReport,
+    ClassifiedRecord,
+    HorizonClassificationSummary,
+    LegacyLogClassificationSummary,
+    ProspectiveHorizonMetrics,
+    classify_forward_predictions,
+    classify_legacy_prediction_log,
+)
+from .data_integrity import (
+    CheckResult,
+    DataIntegrityReport,
+    DatasetAuditResult,
+    check_benchmark_integrity,
+    check_forward_outcomes,
+    check_forward_predictions,
+    check_legacy_prediction_log,
+    check_news_integrity,
+    check_published_reports,
+    run_data_integrity_audit,
+)
 from .data_quality_audit import (
     DataQualityAuditReport,
     DomainAuditSummary,
@@ -17,6 +38,23 @@ from .reporting_truth import (
 )
 
 __all__ = [
+    "ClassificationReport",
+    "ClassifiedRecord",
+    "HorizonClassificationSummary",
+    "LegacyLogClassificationSummary",
+    "ProspectiveHorizonMetrics",
+    "classify_forward_predictions",
+    "classify_legacy_prediction_log",
+    "CheckResult",
+    "DataIntegrityReport",
+    "DatasetAuditResult",
+    "check_benchmark_integrity",
+    "check_forward_outcomes",
+    "check_forward_predictions",
+    "check_legacy_prediction_log",
+    "check_news_integrity",
+    "check_published_reports",
+    "run_data_integrity_audit",
     "DataQualityAuditReport",
     "DomainAuditSummary",
     "audit_prediction_integrity",
