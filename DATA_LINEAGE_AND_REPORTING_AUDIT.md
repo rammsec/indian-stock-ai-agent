@@ -124,7 +124,33 @@ On the same dashboard view, [`frontend/app.js`](file:///home/antigravity/rammsec
 
 ---
 
-## 3. Authoritative Source Matrix
+### 2.10 Exact Metric Reconciliation (`40% / 0.6667` vs `60% / 0.7452`)
+The two reports are **not** measuring the same population or the same forecast:
+
+| Dimension | `forward_validation.json` | `phase5_intelligence.json` (`monitoring`) |
+| :--- | :--- | :--- |
+| **Underlying Store** | `forward_predictions.parquet` + `forward_outcomes.parquet` | `prediction_log.parquet` |
+| **Universe** | 5 Pilot Stocks | 15 Quant Stocks (`.tail(50)` covers 13 stocks) |
+| **Model / Signal** | Combined News + Quant (`prob_1d_up`, `5.3.0-pilot`) | Quant-only (`prob_next_day_up`, `3.2.0` × 38 + `3.0.0` × 12) |
+| **Deduplication** | Canonical only (`is_duplicate_run == False`) | **None** (4 duplicate runs per stock on `2026-11-16`) |
+| **Return Definition** | `open[t+1]` → `close[t+1]` (`gross_return_pct`) | `realized_next_day_return_pct` |
+| **Sample Size** | 10 matured 1D outcomes (5 stocks × 2 sessions) | 60 evaluated rows, truncated via `.tail(50)` |
+| **1D Accuracy / ROC-AUC** | **40.0% / 0.6667** (net return `-1.80%`) | **60.0% / 0.7452** (if deduped: `73.33%` on 15 stocks, `80.0%` on pilot-5) |
+
+---
+
+## 3. Authoritative Source Matrix & Reporting Source of Truth (Priority 2)
+
+Implemented in [`backend/audit/reporting_truth.py`](file:///home/antigravity/rammsec/indian-stock-ai-agent/backend/audit/reporting_truth.py) ([`CanonicalMetricRecord`](file:///home/antigravity/rammsec/indian-stock-ai-agent/backend/audit/reporting_truth.py#L30), [`build_reporting_source_of_truth()`](file:///home/antigravity/rammsec/indian-stock-ai-agent/backend/audit/reporting_truth.py#L58)), every published metric must carry:
+1. `model_version`
+2. `horizon` (`1D`, `5D`, `10D`, `ALL`)
+3. `evaluation_period` (`start_date`, `end_date`)
+4. `data_population` (e.g. `pilot_5_canonical_snapshots` vs `quant_15_stocks_unfiltered_tail50`)
+5. `canonical_predictions_count`
+6. `matured_outcomes_count`
+7. `pending_outcomes_count`
+8. `observation_classification` (`PROSPECTIVE` | `HISTORICAL` | `MIXED`)
+9. `generated_at`
 
 | Metric | Authoritative Source | Non-Authoritative / Conflicting Source |
 | :--- | :--- | :--- |

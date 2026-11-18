@@ -531,3 +531,30 @@ def test_full_audit_report_structure(tmp_path: Path) -> None:
     report = run_full_data_quality_audit(store=store)
     assert report.overall_status in {"PASS", "WARN", "FAIL"}
     assert report.total_records_inspected >= 0
+
+
+def test_reporting_source_of_truth_envelope(tmp_path: Path) -> None:
+    from backend.audit.reporting_truth import build_reporting_source_of_truth
+
+    store = _make_store(tmp_path)
+    quant = {"RELIANCE": {"observation_date": "2026-11-16", "market_regime": "Bull"}}
+    record_forward_prediction_snapshots(
+        store, _make_payload("2026-11-16", "2026-11-16T18:00:00+05:30", rec="BUY"), quant,
+        prediction_run_id="1", nse_session="POST_MARKET",
+    )
+    eq = pd.DataFrame([
+        {"symbol": "RELIANCE", "observation_date": "2026-11-16", "open": 1000.0, "close": 1000.0, "adj_close": 1000.0},
+        {"symbol": "RELIANCE", "observation_date": "2026-11-17", "open": 1000.0, "close": 1020.0, "adj_close": 1020.0},
+    ])
+    evaluate_forward_outcomes(store, equities_df=eq)
+    truth = build_reporting_source_of_truth(store=store)
+    rec_1d = truth.horizon_records["1D"]
+    assert rec_1d.model_version == "5.3.0-pilot"
+    assert rec_1d.horizon == "1D"
+    assert rec_1d.evaluation_period.start_date == "2026-11-16"
+    assert rec_1d.data_population == "pilot_5_canonical_snapshots"
+    assert rec_1d.canonical_predictions_count == 1
+    assert rec_1d.matured_outcomes_count == 1
+    assert rec_1d.pending_outcomes_count == 0
+    assert rec_1d.observation_classification == "PROSPECTIVE"
+    assert rec_1d.generated_at
