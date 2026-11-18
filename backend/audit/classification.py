@@ -1,9 +1,14 @@
-"""Read-only provenance and maturity classification for BharatAlpha AI predictions & outcomes.
+"""Read-only provenance and maturity classification for BharatAlpha AI datasets.
 
-Classifies every (prediction, horizon) record without modifying production files:
-- provenance_class: PROSPECTIVE | HISTORICAL | DUPLICATE | INVALID
-- maturity_class:   MATURED | PENDING | UNAVAILABLE
-- reporting_class:  single label with precedence DUPLICATE > INVALID > HISTORICAL > MATURED/PENDING
+Classifies:
+1. Forward (prediction, horizon) records into:
+   - provenance_class: PROSPECTIVE | HISTORICAL | DUPLICATE | INVALID
+   - maturity_class:   MATURED | PENDING | UNAVAILABLE
+   - reporting_class:  DUPLICATE | INVALID | HISTORICAL | MATURED | PENDING
+2. Legacy prediction_log records by (symbol, observation_date) deduplication.
+3. Structured news events by collection-time availability relative to prediction timestamps
+   (an article published before a prediction but collected after that prediction is HISTORICAL
+   backfill, never a prospective input to that prediction).
 """
 
 from __future__ import annotations
@@ -36,6 +41,8 @@ class ClassifiedRecord(BaseModel):
     provenance_class: str  # PROSPECTIVE | HISTORICAL | DUPLICATE | INVALID
     maturity_class: str  # MATURED | PENDING | UNAVAILABLE
     reporting_class: str  # DUPLICATE | INVALID | HISTORICAL | MATURED | PENDING
+    has_conflict: bool = False
+    conflict_note: str = ""
     reason: str = ""
 
 
@@ -49,6 +56,7 @@ class HorizonClassificationSummary(BaseModel):
     invalid: int = 0
     pending: int = 0
     matured: int = 0
+    conflicting_records: int = 0
 
 
 class ProspectiveHorizonMetrics(BaseModel):
@@ -74,11 +82,33 @@ class LegacyLogClassificationSummary(BaseModel):
     deduped_1d_accuracy_pct: float | None = None
 
 
+class ClassifiedNewsEvent(BaseModel):
+    event_id: str
+    ticker: str
+    publication_timestamp: str | None = None
+    collection_timestamp: str | None = None
+    effective_trading_date: str | None = None
+    classification: str  # PROSPECTIVE | HISTORICAL | DUPLICATE | INVALID
+    has_collection_leakage_conflict: bool = False
+    reason: str = ""
+
+
+class NewsClassificationSummary(BaseModel):
+    total_stored: int = 0
+    prospective: int = 0
+    historical: int = 0
+    duplicate: int = 0
+    invalid: int = 0
+    collection_leakage_conflicts: int = 0
+
+
 class ClassificationReport(BaseModel):
     horizon_summaries: dict[str, HorizonClassificationSummary] = Field(default_factory=dict)
     prospective_metrics: dict[str, ProspectiveHorizonMetrics] = Field(default_factory=dict)
     legacy_prediction_log: LegacyLogClassificationSummary | None = None
+    news_summary: NewsClassificationSummary | None = None
     records: list[ClassifiedRecord] = Field(default_factory=list)
+    news_records: list[ClassifiedNewsEvent] = Field(default_factory=list)
 
 
 def _next_nse_trading_day(obs_date_str: str) -> date | None:
@@ -174,12 +204,17 @@ def classify_forward_predictions(
             raw_status = str(out_row.get("status", "PENDING")).upper().strip()
             maturity_class = raw_status if raw_status in ("MATURED", "PENDING", "UNAVAILABLE") else "PENDING"
 
+            has_conflict = False
+            conflict_note = ""
+
             if is_dup_run:
                 prov = "DUPLICATE"
                 reason = "Flagged is_duplicate_run=True in forward_predictions."
             elif entry_dt is None or exit_dt is None or ts_ist is None:
                 prov = "INVALID"
                 reason = "Missing or unparseable observation_date or prediction_timestamp."
+                has_conflict = True
+                conflict_note = "Stored as canonical (is_duplicate_run=False) but timestamp/date is invalid."
             else:
                 entry_open = datetime.combine(entry_dt, NSE_OPEN_TIME, tzinfo=IST_TZ)
                 exit_close = datetime.combine(exit_dt, NSE_CLOSE_TIME, tzinfo=IST_TZ)
@@ -192,11 +227,21 @@ def classify_forward_predictions(
                         f"Look-ahead contamination: prediction_timestamp ({ts_ist.isoformat()}) "
                         f">= entry open ({entry_open.isoformat()}) and < exit close ({exit_close.isoformat()})."
                     )
+                    has_conflict = True
+                    conflict_note = (
+                        f"Stored as canonical prospective snapshot ({sess}) and status={maturity_class}, "
+                        f"but generated after target entry open."
+                    )
                 else:
                     prov = "HISTORICAL"
                     reason = (
                         f"Post-outcome snapshot: prediction_timestamp ({ts_ist.isoformat()}) "
                         f">= exit close ({exit_close.isoformat()})."
+                    )
+                    has_conflict = True
+                    conflict_note = (
+                        f"Stored as canonical snapshot ({sess}) with status={maturity_class}, "
+                        f"but generated after target exit close."
                     )
 
             candidates.append(
@@ -211,6 +256,8 @@ def classify_forward_predictions(
                     "target_exit_date": exit_dt.isoformat() if exit_dt else None,
                     "provenance_class": prov,
                     "maturity_class": maturity_class,
+                    "has_conflict": has_conflict,
+                    "conflict_note": conflict_note,
                     "reason": reason,
                     "_ts_sort": ts_ist.isoformat() if ts_ist else "9999-99-99",
                     "_out_row": out_row,
@@ -230,6 +277,11 @@ def classify_forward_predictions(
                 prospective_seen[tkey] = c["prediction_id"]
             else:
                 c["provenance_class"] = "DUPLICATE"
+                c["has_conflict"] = True
+                c["conflict_note"] = (
+                    f"Marked is_duplicate_run=False in storage, but duplicates target entry session "
+                    f"{c['target_entry_date']} already covered by {prospective_seen[tkey]}."
+                )
                 c["reason"] = (
                     f"Duplicate target session ({c['target_entry_date']}) for {c['symbol']} {h}; "
                     f"earlier prospective snapshot {prospective_seen[tkey]} takes precedence."
@@ -258,6 +310,8 @@ def classify_forward_predictions(
                 provenance_class=prov,
                 maturity_class=mat,
                 reporting_class=rep,
+                has_conflict=bool(c["has_conflict"]),
+                conflict_note=str(c["conflict_note"]),
                 reason=c["reason"],
             )
             h_records.append(rec)
@@ -286,6 +340,7 @@ def classify_forward_predictions(
             invalid=sum(1 for r in h_records if r.provenance_class == "INVALID"),
             pending=sum(1 for r in h_records if r.reporting_class == "PENDING"),
             matured=sum(1 for r in h_records if r.reporting_class == "MATURED"),
+            conflicting_records=sum(1 for r in h_records if r.has_conflict),
         )
 
         metrics[h] = _compute_prospective_metrics(h, matured_prospective_rows, min_samples=min_samples)
@@ -394,3 +449,107 @@ def classify_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> LegacyLo
         model_versions={str(k): int(v) for k, v in versions.items()},
         deduped_1d_accuracy_pct=dedup_acc,
     )
+
+
+def classify_news_events(
+    events_df: pd.DataFrame | None,
+    quarantined_df: pd.DataFrame | None = None,
+    predictions_df: pd.DataFrame | None = None,
+) -> tuple[list[ClassifiedNewsEvent], NewsClassificationSummary]:
+    """Classify structured news events using actual collection_timestamp availability.
+
+    Rule: A news article published before a prediction but collected after that prediction
+    (or lacking a collection_timestamp) is classified as HISTORICAL backfill, never PROSPECTIVE
+    for earlier snapshots. Quarantined leaks or missing publication timestamps are INVALID.
+    """
+    if events_df is None or events_df.empty:
+        return [], NewsClassificationSummary()
+
+    df = events_df.copy()
+    q_pairs: set[tuple[str, str]] = set()
+    if quarantined_df is not None and not quarantined_df.empty:
+        for _, qrow in quarantined_df.iterrows():
+            q_pairs.add((str(qrow.get("symbol", "")).upper().strip(), str(qrow.get("url", "")).strip()))
+
+    # Earliest prospective snapshot timestamp per symbol (for collection-time leakage check)
+    first_snap_ts_by_sym: dict[str, datetime] = {}
+    if predictions_df is not None and not predictions_df.empty:
+        for _, prow in predictions_df.iterrows():
+            sym = str(prow.get("symbol", "")).upper().strip()
+            pts = _parse_ist_timestamp(prow.get("prediction_timestamp"))
+            if sym and pts is not None:
+                if sym not in first_snap_ts_by_sym or pts < first_snap_ts_by_sym[sym]:
+                    first_snap_ts_by_sym[sym] = pts
+
+    seen_url_pairs: set[tuple[str, str]] = set()
+    out_records: list[ClassifiedNewsEvent] = []
+
+    for idx, row in df.iterrows():
+        eid = str(row.get("event_id", idx))
+        ticker = str(row.get("ticker", "")).upper().strip()
+        url = str(row.get("source_url", "")).strip()
+        pub_raw = None if pd.isna(row.get("publication_timestamp")) else str(row.get("publication_timestamp"))
+        coll_raw = None if pd.isna(row.get("collection_timestamp")) else str(row.get("collection_timestamp"))
+        eff_raw = None if pd.isna(row.get("effective_trading_date")) else str(row.get("effective_trading_date"))[:10]
+        is_dup_rep = bool(row.get("is_duplicate_report", False)) if pd.notna(row.get("is_duplicate_report")) else False
+
+        pub_ist = _parse_ist_timestamp(pub_raw)
+        coll_ist = _parse_ist_timestamp(coll_raw)
+
+        url_key = (ticker, url)
+        is_repeat_url = bool(url and url_key in seen_url_pairs)
+        if url:
+            seen_url_pairs.add(url_key)
+
+        leak_conflict = False
+        if not ticker or pub_ist is None:
+            cls = "INVALID"
+            reason = "Missing ticker or publication_timestamp."
+        elif url_key in q_pairs:
+            cls = "INVALID"
+            reason = "Quarantine leak: (ticker, source_url) also present in quarantined_events.parquet."
+            leak_conflict = True
+        elif coll_ist is not None and coll_ist < pub_ist - timedelta(minutes=5):
+            cls = "INVALID"
+            reason = f"Impossible timestamp order: collection_timestamp ({coll_ist.isoformat()}) < publication_timestamp ({pub_ist.isoformat()})."
+        elif is_dup_rep or is_repeat_url:
+            cls = "DUPLICATE"
+            reason = "Duplicate article report (is_duplicate_report=True or repeated (ticker, source_url))."
+        elif coll_ist is None:
+            cls = "HISTORICAL"
+            reason = "Missing collection_timestamp; historical RSS backfill record."
+        else:
+            earliest_snap = first_snap_ts_by_sym.get(ticker)
+            if earliest_snap is not None and pub_ist <= earliest_snap and coll_ist > earliest_snap:
+                cls = "HISTORICAL"
+                leak_conflict = True
+                reason = (
+                    f"Published ({pub_ist.isoformat()}) before earliest snapshot ({earliest_snap.isoformat()}) "
+                    f"but collected later ({coll_ist.isoformat()}); not available at initial prediction time."
+                )
+            else:
+                cls = "PROSPECTIVE"
+                reason = f"Collected prospectively at {coll_ist.isoformat()}."
+
+        out_records.append(
+            ClassifiedNewsEvent(
+                event_id=eid,
+                ticker=ticker,
+                publication_timestamp=pub_raw,
+                collection_timestamp=coll_raw,
+                effective_trading_date=eff_raw,
+                classification=cls,
+                has_collection_leakage_conflict=leak_conflict,
+                reason=reason,
+            )
+        )
+
+    summary = NewsClassificationSummary(
+        total_stored=len(out_records),
+        prospective=sum(1 for r in out_records if r.classification == "PROSPECTIVE"),
+        historical=sum(1 for r in out_records if r.classification == "HISTORICAL"),
+        duplicate=sum(1 for r in out_records if r.classification == "DUPLICATE"),
+        invalid=sum(1 for r in out_records if r.classification == "INVALID"),
+        collection_leakage_conflicts=sum(1 for r in out_records if r.has_collection_leakage_conflict),
+    )
+    return out_records, summary

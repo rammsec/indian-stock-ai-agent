@@ -39,8 +39,14 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
+        default=ROOT / "reports" / "DATA_QUALITY_REPORT.json",
+        help="Primary output JSON report path (must not target production data directories).",
+    )
+    parser.add_argument(
+        "--legacy-output",
+        type=Path,
         default=ROOT / "reports" / "data_integrity_audit.json",
-        help="Output JSON report path (must not target production data directories).",
+        help="Secondary output JSON path for backward compatibility.",
     )
     parser.add_argument(
         "--reference-rev",
@@ -62,11 +68,19 @@ def main() -> int:
         reference_outcomes_df=ref_df,
     )
 
-    out_path = args.output if args.output.is_absolute() else (ROOT / args.output)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(report.model_dump(), indent=2, default=str) + "\n", encoding="utf-8")
+    payload_txt = json.dumps(report.model_dump(), indent=2, default=str) + "\n"
+    for target in (args.output, args.legacy_output):
+        if target is None:
+            continue
+        out_path = target if target.is_absolute() else (ROOT / target)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(payload_txt, encoding="utf-8")
 
-    print(f"Overall status: {report.overall_status} -> {out_path}")
+    print(
+        f"Overall status: {report.overall_status} | "
+        f"CRITICAL={report.critical_findings_count} HIGH={report.high_findings_count} "
+        f"MEDIUM={report.medium_findings_count} LOW={report.low_findings_count} -> {args.output}"
+    )
     for ds_name, ds in report.datasets.items():
         print(
             f"  - {ds_name}: status={ds.status} inspected={ds.records_inspected} "
@@ -78,8 +92,16 @@ def main() -> int:
         print(
             f"  [Class {h}] total={s.total_stored} canonical={s.unique_canonical} "
             f"prospective={s.prospective} (matured={s.matured}, pending={s.pending}) "
-            f"historical={s.historical} invalid={s.invalid} duplicate={s.duplicate} | "
+            f"historical={s.historical} invalid={s.invalid} duplicate={s.duplicate} "
+            f"conflicts={s.conflicting_records} | "
             f"prospective_acc={m.directional_accuracy_pct}% (n={m.n_matured_prospective})"
+        )
+    if report.classification.news_summary:
+        ns = report.classification.news_summary
+        print(
+            f"  [News] total={ns.total_stored} prospective={ns.prospective} "
+            f"historical={ns.historical} duplicate={ns.duplicate} invalid={ns.invalid} "
+            f"leak_conflicts={ns.collection_leakage_conflicts}"
         )
 
     if args.fail_on_error and report.overall_status == "FAIL":

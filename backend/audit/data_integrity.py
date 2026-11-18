@@ -1,11 +1,12 @@
 """Deterministic Data Integrity Audit Engine for BharatAlpha AI.
 
-Read-only audit across all datasets:
-- A: Predictions (forward_predictions + legacy prediction_log)
-- B: Outcomes (forward_outcomes + equities_daily + optional reference snapshot)
-- C: News (structured_events + quarantined_events + phase5_intelligence timelines)
-- D: Benchmark (indices_daily + forward_validation benchmarks)
-- E: Published Reports (docs/data vs data/predictions consistency)
+Read-only audit across all research domains:
+- Prediction integrity (forward_predictions + legacy prediction_log)
+- Outcome integrity (forward_outcomes + equities_daily + reference snapshot)
+- News integrity (structured_events + quarantined_events + phase5_intelligence timelines)
+- Benchmark integrity (indices_daily + forward_validation benchmarks)
+- Portfolio integrity (paper_portfolio strategies + paper_trades + equities_daily)
+- Published reports consistency (docs/data vs data/predictions)
 """
 
 from __future__ import annotations
@@ -31,20 +32,41 @@ from .classification import (
     _parse_ist_timestamp,
     classify_forward_predictions,
     classify_legacy_prediction_log,
+    classify_news_events,
 )
 
-Severity = Literal["INFO", "WARNING", "ERROR", "CRITICAL"]
-OverallStatus = Literal["PASS", "WARN", "FAIL"]
+Severity = Literal["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO", "ERROR", "WARNING"]
+OverallStatus = Literal["PASS", "PASS_WITH_WARNINGS", "WARN", "FAIL", "INSUFFICIENT_DATA"]
 
 
 class CheckResult(BaseModel):
     check_id: str
     dataset: str
+    category: str = ""
     description: str
     passed: bool
     severity: Severity
     affected_records: int = 0
+    record_identifiers: list[str] = Field(default_factory=list)
     examples: list[str] = Field(default_factory=list)
+    human_explanation: str = ""
+    recommended_remediation: str = ""
+
+    def model_post_init(self, __context: Any) -> None:
+        if not self.category:
+            self.category = self.dataset
+        if not self.record_identifiers and self.examples:
+            self.record_identifiers = list(self.examples)
+        elif not self.examples and self.record_identifiers:
+            self.examples = list(self.record_identifiers)
+        if not self.human_explanation:
+            self.human_explanation = self.description
+        if not self.recommended_remediation:
+            self.recommended_remediation = (
+                "No action required."
+                if self.passed
+                else "Inspect affected records and apply the recommended post-freeze engineering remediation."
+            )
 
 
 class DatasetAuditResult(BaseModel):
@@ -60,7 +82,26 @@ class DatasetAuditResult(BaseModel):
 
 class DataIntegrityReport(BaseModel):
     audit_timestamp: str
+    git_commit_sha: str = "8f328b8cdb8f7a1e508c1c47a648849945873013"
     base_commit_sha: str = "8f328b8cdb8f7a1e508c1c47a648849945873013"
+    model_version: str = "5.3.0-pilot (quant: ml_ensemble 3.2.0)"
+    feature_set_version: str = "237+17"
+    total_records_inspected: int = 0
+    prospective_records: int = 0
+    historical_records: int = 0
+    duplicate_records: int = 0
+    invalid_records: int = 0
+    pending_outcomes: int = 0
+    matured_outcomes: int = 0
+    critical_findings_count: int = 0
+    high_findings_count: int = 0
+    medium_findings_count: int = 0
+    low_findings_count: int = 0
+    critical_findings: list[CheckResult] = Field(default_factory=list)
+    high_severity_findings: list[CheckResult] = Field(default_factory=list)
+    medium_severity_findings: list[CheckResult] = Field(default_factory=list)
+    low_severity_findings: list[CheckResult] = Field(default_factory=list)
+    individual_check_results: list[CheckResult] = Field(default_factory=list)
     datasets: dict[str, DatasetAuditResult] = Field(default_factory=dict)
     classification: ClassificationReport = Field(default_factory=ClassificationReport)
     overall_status: OverallStatus = "PASS"
@@ -74,11 +115,11 @@ def _summarize_dataset(dataset: str, records_inspected: int, checks: list[CheckR
     for c in checks:
         if not c.passed:
             msg = f"[{c.check_id}] ({c.severity}) {c.description} [affected={c.affected_records}]"
-            if c.severity in ("ERROR", "CRITICAL"):
+            if c.severity in ("CRITICAL", "HIGH", "ERROR"):
                 errors.append(msg)
-            elif c.severity == "WARNING":
+            elif c.severity in ("MEDIUM", "LOW", "WARNING"):
                 warnings.append(msg)
-    status: OverallStatus = "FAIL" if errors else ("WARN" if warnings else "PASS")
+    status: OverallStatus = "FAIL" if errors else ("PASS_WITH_WARNINGS" if warnings else "PASS")
     return DatasetAuditResult(
         dataset=dataset,
         records_inspected=records_inspected,
@@ -129,9 +170,11 @@ def check_forward_predictions(
                 CheckResult(
                     check_id="PRED_EMPTY",
                     dataset=dataset,
+                    category="prediction_integrity",
                     description="forward_predictions dataset is empty or missing.",
                     passed=False,
-                    severity="WARNING",
+                    severity="HIGH",
+                    recommended_remediation="Verify forward_predictions.parquet exists and is readable.",
                 )
             ],
         )
@@ -145,11 +188,13 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_MISSING_ID",
             dataset=dataset,
+            category="prediction_integrity",
             description="Every forward prediction must have a non-empty prediction_id.",
             passed=len(missing_id) == 0,
             severity="CRITICAL",
             affected_records=len(missing_id),
             examples=[str(i) for i in missing_id.index[:5]],
+            recommended_remediation="Enforce make_prediction_id() at snapshot creation.",
         )
     )
 
@@ -159,11 +204,13 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_DUPLICATE_ID",
             dataset=dataset,
+            category="prediction_integrity",
             description="prediction_id must be unique across forward_predictions.",
             passed=len(dup_id) == 0,
             severity="CRITICAL",
             affected_records=len(dup_id),
             examples=dup_id["prediction_id"].astype(str).head(5).tolist() if not dup_id.empty else [],
+            recommended_remediation="Deduplicate on prediction_id during atomic Parquet upsert.",
         )
     )
 
@@ -179,18 +226,22 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_UNFLAGGED_DUP_SESSION",
             dataset=dataset,
+            category="prediction_integrity",
             description="At most one canonical (is_duplicate_run=False) snapshot per (symbol, observation_date, nse_session).",
             passed=len(unflagged_dups) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(unflagged_dups),
             examples=unflagged_dups[:5],
+            recommended_remediation="Run deduplicate_forward_predictions() before computing metrics.",
         )
     )
 
     # 4. Duplicate target entry session across different nse_sessions
     dup_targets: list[str] = []
     if not canon.empty and {"symbol", "observation_date"}.issubset(canon.columns):
-        canon["_target_entry"] = canon["observation_date"].apply(lambda d: (_next_nse_trading_day(str(d)) or "").isoformat() if _next_nse_trading_day(str(d)) else "")
+        canon["_target_entry"] = canon["observation_date"].apply(
+            lambda d: (_next_nse_trading_day(str(d)) or "").isoformat() if _next_nse_trading_day(str(d)) else ""
+        )
         tgrp = canon[canon["_target_entry"] != ""].groupby(["symbol", "_target_entry"]).size()
         bad_t = tgrp[tgrp > 1]
         dup_targets = [f"{k[0]}|entry={k[1]} (n={v})" for k, v in bad_t.items()]
@@ -198,11 +249,13 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_DUPLICATE_TARGET_SESSION",
             dataset=dataset,
+            category="prediction_integrity",
             description="Canonical snapshots across sessions should not target the same (symbol, entry_date) without deduplication.",
             passed=len(dup_targets) == 0,
-            severity="WARNING",
+            severity="MEDIUM",
             affected_records=len(dup_targets),
             examples=dup_targets[:5],
+            recommended_remediation="Deduplicate canonical snapshots by (symbol, target_entry_date, horizon) so only the earliest pre-open forecast is evaluated.",
         )
     )
 
@@ -212,11 +265,13 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_MISSING_MODEL_VERSION",
             dataset=dataset,
+            category="prediction_integrity",
             description="Every prediction must record a non-empty model_version.",
             passed=len(miss_mv) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(miss_mv),
             examples=miss_mv["prediction_id"].astype(str).head(5).tolist() if "prediction_id" in miss_mv else [],
+            recommended_remediation="Populate model_version from a central version registry.",
         )
     )
     miss_fv = df[~df["feature_set_version"].apply(_is_non_empty)] if "feature_set_version" in df.columns else df
@@ -224,18 +279,21 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_MISSING_FEATURE_VERSION",
             dataset=dataset,
+            category="prediction_integrity",
             description="Every prediction must record a non-empty feature_set_version.",
             passed=len(miss_fv) == 0,
-            severity="WARNING",
+            severity="MEDIUM",
             affected_records=len(miss_fv),
             examples=miss_fv["prediction_id"].astype(str).head(5).tolist() if "prediction_id" in miss_fv else [],
+            recommended_remediation="Populate feature_set_version ('237+17') on all forward snapshots.",
         )
     )
 
-    # 6. Missing/invalid prediction_timestamp & non-trading observation_date
+    # 6. Missing/invalid prediction_timestamp, non-trading observation_date, post-event timing & session label check
     bad_ts: list[str] = []
     non_trading_obs: list[str] = []
     post_event_canon: list[str] = []
+    bad_session: list[str] = []
     for _, row in df.iterrows():
         pid = str(row.get("prediction_id", ""))
         ts_ist = _parse_ist_timestamp(row.get("prediction_timestamp"))
@@ -249,6 +307,10 @@ def check_forward_predictions(
         except Exception:
             non_trading_obs.append(f"{pid} ({obs_str})")
 
+        sess = str(row.get("nse_session", "")).strip()
+        if sess not in ("PRE_MARKET", "INTRADAY", "POST_MARKET"):
+            bad_session.append(f"{pid} ({sess})")
+
         if not bool(row.get("is_duplicate_run", False)) and ts_ist is not None:
             entry_d = _next_nse_trading_day(obs_str)
             if entry_d is not None:
@@ -260,33 +322,52 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_INVALID_TIMESTAMP",
             dataset=dataset,
+            category="prediction_integrity",
             description="Every prediction must have a valid ISO prediction_timestamp.",
             passed=len(bad_ts) == 0,
             severity="CRITICAL",
             affected_records=len(bad_ts),
             examples=bad_ts[:5],
+            recommended_remediation="Require timezone-aware ISO-8601 IST timestamps on all snapshots.",
         )
     )
     checks.append(
         CheckResult(
             check_id="PRED_NON_TRADING_OBS_DATE",
             dataset=dataset,
+            category="prediction_integrity",
             description="observation_date must be a valid NSE trading day.",
             passed=len(non_trading_obs) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(non_trading_obs),
             examples=non_trading_obs[:5],
+            recommended_remediation="Derive observation_date from the latest NSE trading session in equities_daily.",
+        )
+    )
+    checks.append(
+        CheckResult(
+            check_id="PRED_INVALID_SESSION_CLASSIFICATION",
+            dataset=dataset,
+            category="prediction_integrity",
+            description="nse_session must be one of PRE_MARKET, INTRADAY, or POST_MARKET.",
+            passed=len(bad_session) == 0,
+            severity="MEDIUM",
+            affected_records=len(bad_session),
+            examples=bad_session[:5],
+            recommended_remediation="Derive nse_session from workflow schedule identity rather than wall-clock time.",
         )
     )
     checks.append(
         CheckResult(
             check_id="PRED_POST_EVENT_TIMING",
             dataset=dataset,
+            category="prediction_integrity",
             description="Canonical prospective predictions must be generated strictly before entry open (09:15 IST on next trading day).",
             passed=len(post_event_canon) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(post_event_canon),
             examples=post_event_canon[:5],
+            recommended_remediation="Enforce prediction_timestamp < entry_open for prospective eligibility; classify post-open snapshots as INVALID or HISTORICAL.",
         )
     )
 
@@ -329,22 +410,26 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_HORIZON_AVAILABILITY_MISMATCH",
             dataset=dataset,
+            category="prediction_integrity",
             description="Horizons marked available in model_availability must have non-null probabilities.",
             passed=len(avail_mismatch) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(avail_mismatch),
             examples=avail_mismatch[:5],
+            recommended_remediation="Ensure prob_1d_up, prob_5d_up, and prob_10d_up are populated whenever model_availability is true.",
         )
     )
     checks.append(
         CheckResult(
             check_id="PRED_PROB_RANGE",
             dataset=dataset,
+            category="prediction_integrity",
             description="All model and benchmark probabilities must lie in [0.0, 1.0].",
             passed=len(prob_out_of_range) == 0,
             severity="CRITICAL",
             affected_records=len(prob_out_of_range),
             examples=prob_out_of_range[:5],
+            recommended_remediation="Validate probability bounds [0.0, 1.0] before persisting snapshots.",
         )
     )
 
@@ -355,6 +440,7 @@ def check_forward_predictions(
         CheckResult(
             check_id="PRED_PROSPECTIVE_VS_HISTORICAL",
             dataset=dataset,
+            category="prediction_integrity",
             description=(
                 f"1D classification counts: total={s1.total_stored}, canonical={s1.unique_canonical}, "
                 f"prospective={s1.prospective} (matured={s1.matured}, pending={s1.pending}), "
@@ -384,9 +470,10 @@ def check_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> DatasetAudi
                 CheckResult(
                     check_id="LOG_EMPTY",
                     dataset=dataset,
+                    category="prediction_integrity",
                     description="prediction_log dataset is empty or missing.",
                     passed=False,
-                    severity="WARNING",
+                    severity="MEDIUM",
                 )
             ],
         )
@@ -399,6 +486,7 @@ def check_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> DatasetAudi
         CheckResult(
             check_id="LOG_MISSING_ID",
             dataset=dataset,
+            category="prediction_integrity",
             description="Every prediction_log row must have a non-empty prediction_id.",
             passed=len(miss_id) == 0,
             severity="CRITICAL",
@@ -411,6 +499,7 @@ def check_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> DatasetAudi
         CheckResult(
             check_id="LOG_DUPLICATE_ID",
             dataset=dataset,
+            category="prediction_integrity",
             description="prediction_id must be unique in prediction_log.",
             passed=len(dup_id) == 0,
             severity="CRITICAL",
@@ -423,11 +512,13 @@ def check_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> DatasetAudi
         CheckResult(
             check_id="LOG_DUPLICATE_SYMBOL_DATE",
             dataset=dataset,
+            category="prediction_integrity",
             description="prediction_log contains repeated runs for the same (symbol, observation_date) counted independently by monitoring.",
             passed=summary.duplicate == 0,
-            severity="WARNING",
+            severity="MEDIUM",
             affected_records=summary.duplicate,
             examples=[f"total={summary.total_stored}, unique={summary.unique_canonical_symbol_date}, duplicates={summary.duplicate}"],
+            recommended_remediation="Deduplicate prediction_log by (symbol, observation_date) before computing rolling monitoring metrics.",
         )
     )
 
@@ -435,11 +526,13 @@ def check_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> DatasetAudi
         CheckResult(
             check_id="LOG_MIXED_MODEL_VERSIONS",
             dataset=dataset,
+            category="prediction_integrity",
             description="prediction_log mixes multiple model_version cohorts in a single rolling metric.",
             passed=len(summary.model_versions) <= 1,
-            severity="WARNING",
+            severity="MEDIUM",
             affected_records=len(summary.model_versions),
             examples=[f"{k}: {v}" for k, v in summary.model_versions.items()],
+            recommended_remediation="Filter prediction_log by the active model_version (3.2.0) when computing rolling metrics.",
         )
     )
 
@@ -457,6 +550,7 @@ def check_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> DatasetAudi
         CheckResult(
             check_id="LOG_PROB_RANGE",
             dataset=dataset,
+            category="prediction_integrity",
             description="All prediction_log probabilities must lie in [0.0, 1.0].",
             passed=len(bad_probs) == 0,
             severity="CRITICAL",
@@ -469,6 +563,7 @@ def check_legacy_prediction_log(pred_log_df: pd.DataFrame | None) -> DatasetAudi
         CheckResult(
             check_id="LOG_OUTCOME_DEFINITION_NOTE",
             dataset=dataset,
+            category="prediction_integrity",
             description="prediction_log uses close[t]->close[t+1] returns, which differs from forward_outcomes open[t+1]->close[t+H].",
             passed=True,
             severity="INFO",
@@ -499,9 +594,10 @@ def check_forward_outcomes(
                 CheckResult(
                     check_id="OUT_EMPTY",
                     dataset=dataset,
+                    category="outcome_integrity",
                     description="forward_outcomes dataset is empty or missing.",
                     passed=False,
-                    severity="WARNING",
+                    severity="HIGH",
                 )
             ],
         )
@@ -515,11 +611,13 @@ def check_forward_outcomes(
         CheckResult(
             check_id="OUT_ORPHAN_OUTCOME",
             dataset=dataset,
+            category="outcome_integrity",
             description="Every outcome must reference an existing prediction_id in forward_predictions.",
             passed=len(orphans) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(orphans),
             examples=orphans["prediction_id"].astype(str).head(5).tolist() if not orphans.empty else [],
+            recommended_remediation="Ensure outcomes are only generated for existing forward_predictions rows.",
         )
     )
 
@@ -536,11 +634,13 @@ def check_forward_outcomes(
         CheckResult(
             check_id="OUT_MISSING_HORIZON_ROW",
             dataset=dataset,
+            category="outcome_integrity",
             description="Every canonical prediction should have 1D, 5D, and 10D rows in forward_outcomes.",
             passed=len(missing_h) == 0,
-            severity="WARNING",
+            severity="MEDIUM",
             affected_records=len(missing_h),
             examples=missing_h[:5],
+            recommended_remediation="Run evaluate_forward_outcomes() after recording new snapshots.",
         )
     )
 
@@ -550,11 +650,13 @@ def check_forward_outcomes(
         CheckResult(
             check_id="OUT_DUPLICATE_PRED_HORIZON",
             dataset=dataset,
+            category="outcome_integrity",
             description="(prediction_id, horizon) must be unique in forward_outcomes.",
             passed=len(dup_ph) == 0,
             severity="CRITICAL",
             affected_records=len(dup_ph),
             examples=[f"{r['prediction_id']}:{r['horizon']}" for _, r in dup_ph.head(5).iterrows()],
+            recommended_remediation="Enforce composite primary key (prediction_id, horizon) on forward_outcomes upsert.",
         )
     )
 
@@ -656,6 +758,7 @@ def check_forward_outcomes(
             CheckResult(
                 check_id="OUT_PREMATURE_MATURITY",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="MATURED outcomes must have at least H future NSE trading sessions in equities_daily.",
                 passed=len(premature) == 0,
                 severity="CRITICAL",
@@ -665,6 +768,7 @@ def check_forward_outcomes(
             CheckResult(
                 check_id="OUT_INVALID_PRICES",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="MATURED outcomes must have positive entry_price and exit_price.",
                 passed=len(invalid_px) == 0,
                 severity="CRITICAL",
@@ -674,24 +778,27 @@ def check_forward_outcomes(
             CheckResult(
                 check_id="OUT_ENTRY_EXIT_DATE_ALIGNMENT",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="entry_date must equal first trading day after obs_date and exit_date must equal entry + (H-1) sessions.",
                 passed=len(date_align_err) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(date_align_err),
                 examples=date_align_err[:5],
             ),
             CheckResult(
                 check_id="OUT_PRICE_MISMATCH_EQUITIES",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="MATURED entry_price/exit_price must match equities_daily open/close.",
                 passed=len(px_mismatch) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(px_mismatch),
                 examples=px_mismatch[:5],
             ),
             CheckResult(
                 check_id="OUT_MODIFIED_AFTER_FINALISATION",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="Previously MATURED outcomes must remain immutable relative to reference snapshot.",
                 passed=len(modified_finalised) == 0,
                 severity="CRITICAL",
@@ -701,36 +808,41 @@ def check_forward_outcomes(
             CheckResult(
                 check_id="OUT_BENCHMARK_MISSING",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="MATURED outcomes should have a populated benchmark_return_pct.",
                 passed=len(bench_missing) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(bench_missing),
                 examples=bench_missing[:5],
+                recommended_remediation="Fix NIFTY_50 vs 'NIFTY 50' index_code lookup in evaluate_forward_outcomes().",
             ),
             CheckResult(
                 check_id="OUT_RETURN_MATH",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="gross_return_pct and net_return_pct must match price ratio and transaction cost arithmetic.",
                 passed=len(math_err) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(math_err),
                 examples=math_err[:5],
             ),
             CheckResult(
                 check_id="OUT_UNEXPLAINED_STATUS",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="INVALID or UNAVAILABLE outcomes must include a non-empty status_reason.",
                 passed=len(unexplained) == 0,
-                severity="WARNING",
+                severity="LOW",
                 affected_records=len(unexplained),
                 examples=unexplained[:5],
             ),
             CheckResult(
                 check_id="OUT_OVERDUE_PENDING",
                 dataset=dataset,
+                category="outcome_integrity",
                 description="PENDING outcomes whose target exit session is already in equities_daily should be evaluated.",
                 passed=len(overdue_pending) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(overdue_pending),
                 examples=overdue_pending[:5],
             ),
@@ -761,9 +873,10 @@ def check_news_integrity(
                 CheckResult(
                     check_id="NEWS_EMPTY",
                     dataset=dataset,
+                    category="news_integrity",
                     description="structured_events dataset is empty or missing.",
                     passed=False,
-                    severity="WARNING",
+                    severity="HIGH",
                 )
             ],
         )
@@ -777,6 +890,8 @@ def check_news_integrity(
     coll_before_pub: list[str] = []
     future_pub: list[str] = []
     miss_ticker: list[str] = []
+    miss_source: list[str] = []
+    invalid_eff_date: list[str] = []
     misattrib: list[str] = []
     bad_sent: list[str] = []
     bad_scores: list[str] = []
@@ -794,6 +909,15 @@ def check_news_integrity(
             miss_coll.append(eid)
         elif pub_ist is not None and coll_ist < pub_ist - timedelta(minutes=5):
             coll_before_pub.append(f"{eid} (coll={coll_ist.isoformat()} < pub={pub_ist.isoformat()})")
+
+        if not _is_non_empty(row.get("original_source")) and not _is_non_empty(row.get("source_url")):
+            miss_source.append(eid)
+
+        eff_str = str(row.get("effective_trading_date", "")).strip()[:10]
+        try:
+            date.fromisoformat(eff_str)
+        except Exception:
+            invalid_eff_date.append(f"{eid} ({eff_str})")
 
         ticker = str(row.get("ticker", "")).upper().strip() if _is_non_empty(row.get("ticker")) else ""
         if not ticker:
@@ -887,6 +1011,7 @@ def check_news_integrity(
             CheckResult(
                 check_id="NEWS_MISSING_PUB_TS",
                 dataset=dataset,
+                category="news_integrity",
                 description="All structured news events must have a valid publication_timestamp.",
                 passed=len(miss_pub) == 0,
                 severity="CRITICAL",
@@ -896,51 +1021,79 @@ def check_news_integrity(
             CheckResult(
                 check_id="NEWS_MISSING_COLL_TS",
                 dataset=dataset,
-                description="All structured news events should record a collection_timestamp.",
+                category="news_integrity",
+                description="All structured news events should record a collection_timestamp (historical backfills lack collection_timestamp).",
                 passed=len(miss_coll) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(miss_coll),
                 examples=miss_coll[:5],
+                recommended_remediation="Filter compute_pit_news_features() by collection_timestamp <= as_of_ts so un-timestamped historical backfills cannot enter prospective features.",
             ),
             CheckResult(
                 check_id="NEWS_COLL_BEFORE_PUB",
                 dataset=dataset,
+                category="news_integrity",
                 description="collection_timestamp must not precede publication_timestamp by more than 5 minutes.",
                 passed=len(coll_before_pub) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(coll_before_pub),
                 examples=coll_before_pub[:5],
             ),
             CheckResult(
                 check_id="NEWS_FUTURE_PUB",
                 dataset=dataset,
+                category="news_integrity",
                 description="publication_timestamp must not be in the future relative to audit time.",
                 passed=len(future_pub) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(future_pub),
                 examples=future_pub[:5],
             ),
             CheckResult(
                 check_id="NEWS_MISSING_TICKER",
                 dataset=dataset,
+                category="news_integrity",
                 description="Every news event must be attributed to a non-empty ticker.",
                 passed=len(miss_ticker) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(miss_ticker),
                 examples=miss_ticker[:5],
             ),
             CheckResult(
+                check_id="NEWS_MISSING_SOURCE",
+                dataset=dataset,
+                category="news_integrity",
+                description="Every news event must have source attribution (original_source or source_url).",
+                passed=len(miss_source) == 0,
+                severity="MEDIUM",
+                affected_records=len(miss_source),
+                examples=miss_source[:5],
+            ),
+            CheckResult(
+                check_id="NEWS_INVALID_EVENT_DATE",
+                dataset=dataset,
+                category="news_integrity",
+                description="Every news event must have a valid ISO effective_trading_date.",
+                passed=len(invalid_eff_date) == 0,
+                severity="MEDIUM",
+                affected_records=len(invalid_eff_date),
+                examples=invalid_eff_date[:5],
+            ),
+            CheckResult(
                 check_id="NEWS_ENTITY_MISATTRIBUTION",
                 dataset=dataset,
+                category="news_integrity",
                 description="News events must not match false-positive entity patterns or other-company aliases.",
                 passed=len(misattrib) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(misattrib),
                 examples=misattrib[:5],
+                recommended_remediation="Purge legacy misattributed events or filter structured_events through current entity attribution rules on read.",
             ),
             CheckResult(
                 check_id="NEWS_DUPLICATE_EVENT_ID",
                 dataset=dataset,
+                category="news_integrity",
                 description="event_id must be unique in structured_events.",
                 passed=len(dup_eid) == 0,
                 severity="CRITICAL",
@@ -949,65 +1102,76 @@ def check_news_integrity(
             CheckResult(
                 check_id="NEWS_UNFLAGGED_DUP_URL",
                 dataset=dataset,
+                category="news_integrity",
                 description="Repeated (ticker, source_url) rows should be flagged is_duplicate_report=True.",
                 passed=len(unflagged_url) == 0,
-                severity="WARNING",
+                severity="LOW",
                 affected_records=len(unflagged_url),
                 examples=unflagged_url[:5],
+                recommended_remediation="Deduplicate cross-category RSS hits by (ticker, source_url) before feature extraction.",
             ),
             CheckResult(
                 check_id="NEWS_INVALID_SENTIMENT",
                 dataset=dataset,
+                category="news_integrity",
                 description="sentiment must be one of {positive, negative, neutral}.",
                 passed=len(bad_sent) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(bad_sent),
                 examples=bad_sent[:5],
             ),
             CheckResult(
                 check_id="NEWS_SCORE_RANGE",
                 dataset=dataset,
+                category="news_integrity",
                 description="classification_confidence, novelty_score, and source_credibility must lie in [0, 1].",
                 passed=len(bad_scores) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(bad_scores),
                 examples=bad_scores[:5],
             ),
             CheckResult(
                 check_id="NEWS_QUARANTINE_LEAK",
                 dataset=dataset,
+                category="news_integrity",
                 description="Quarantined (ticker, url) items must not appear in structured_events or published timelines.",
                 passed=(len(leak_pairs) + len(timeline_leaks)) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(set(leak_pairs + timeline_leaks)),
                 examples=list(dict.fromkeys(leak_pairs + timeline_leaks))[:5],
+                recommended_remediation="Exclude any (ticker, source_url) present in quarantined_events.parquet when reading structured_events.parquet.",
             ),
             CheckResult(
                 check_id="NEWS_COLL_AFTER_PRED_WARN",
                 dataset=dataset,
+                category="news_integrity",
                 description="Published timeline events with collection_timestamp > latest_prediction_at (<= 15 min; pipeline timestamp ordering).",
                 passed=len(coll_after_pred_warn) == 0,
-                severity="WARNING",
+                severity="LOW",
                 affected_records=len(coll_after_pred_warn),
                 examples=coll_after_pred_warn[:5],
+                recommended_remediation="Record latest_prediction_at after news collection and feature synthesis complete.",
             ),
             CheckResult(
                 check_id="NEWS_COLL_AFTER_PRED_ERR",
                 dataset=dataset,
+                category="news_integrity",
                 description="Published timeline events with collection_timestamp > latest_prediction_at by > 15 minutes.",
                 passed=len(coll_after_pred_err) == 0,
-                severity="ERROR",
+                severity="HIGH",
                 affected_records=len(coll_after_pred_err),
                 examples=coll_after_pred_err[:5],
             ),
             CheckResult(
                 check_id="NEWS_LATE_EFFECTIVE_DATE",
                 dataset=dataset,
+                category="news_integrity",
                 description="Events collected after snapshot timestamp should not carry effective_trading_date <= snapshot observation_date.",
                 passed=len(late_effective) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(late_effective),
                 examples=late_effective[:5],
+                recommended_remediation="Gate point-in-time news features on collection_timestamp <= prediction_timestamp in addition to publication_timestamp.",
             ),
         ]
     )
@@ -1035,6 +1199,7 @@ def check_benchmark_integrity(
                 CheckResult(
                     check_id="BENCH_NIFTY_MISSING",
                     dataset=dataset,
+                    category="benchmark_integrity",
                     description="indices_daily dataset is empty or missing.",
                     passed=False,
                     severity="CRITICAL",
@@ -1051,6 +1216,7 @@ def check_benchmark_integrity(
         CheckResult(
             check_id="BENCH_NIFTY_MISSING",
             dataset=dataset,
+            category="benchmark_integrity",
             description="Nifty 50 series must exist in indices_daily.",
             passed=not n50.empty,
             severity="CRITICAL",
@@ -1061,11 +1227,13 @@ def check_benchmark_integrity(
         CheckResult(
             check_id="BENCH_KEY_MISMATCH",
             dataset=dataset,
+            category="benchmark_integrity",
             description="indices_daily uses index_code='NIFTY_50' while forward_validation.py queries 'NIFTY 50'.",
             passed=not has_space.empty,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(has_under) if has_space.empty else 0,
             examples=[f"NIFTY_50 rows={len(has_under)}, NIFTY 50 rows={len(has_space)}"],
+            recommended_remediation="Update forward_validation.py to match index_code.isin(['NIFTY_50', 'NIFTY 50']).",
         )
     )
 
@@ -1092,9 +1260,10 @@ def check_benchmark_integrity(
         CheckResult(
             check_id="BENCH_NON_TRADING_DAYS",
             dataset=dataset,
-            description="Nifty 50 index bars must fall on valid NSE trading days.",
+            category="benchmark_integrity",
+            description="Nifty 50 index bars must fall on valid NSE trading days (except special Muhurat/budget sessions).",
             passed=len(bad_days) == 0,
-            severity="WARNING",
+            severity="LOW",
             affected_records=len(bad_days),
             examples=bad_days[:5],
         )
@@ -1103,6 +1272,7 @@ def check_benchmark_integrity(
         CheckResult(
             check_id="BENCH_INVALID_PRICES",
             dataset=dataset,
+            category="benchmark_integrity",
             description="Nifty 50 open/close prices must be positive and non-null.",
             passed=len(bad_px) == 0,
             severity="CRITICAL",
@@ -1131,9 +1301,10 @@ def check_benchmark_integrity(
         CheckResult(
             check_id="BENCH_WINDOW_RETURN_MATCH",
             dataset=dataset,
+            category="benchmark_integrity",
             description="Populated benchmark_return_pct on MATURED outcomes must match Nifty 50 window return.",
             passed=len(window_err) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(window_err),
             examples=window_err[:5],
         )
@@ -1142,9 +1313,10 @@ def check_benchmark_integrity(
         CheckResult(
             check_id="BENCH_EQUALS_STOCK_RETURN",
             dataset=dataset,
+            category="benchmark_integrity",
             description="benchmark_return_pct must not trivially equal stock gross_return_pct.",
             passed=len(eq_stock) == 0,
-            severity="WARNING",
+            severity="MEDIUM",
             affected_records=len(eq_stock),
             examples=eq_stock[:5],
         )
@@ -1159,9 +1331,10 @@ def check_benchmark_integrity(
             CheckResult(
                 check_id="BENCH_HORIZON_KEYS_AND_ALIAS",
                 dataset=dataset,
+                category="benchmark_integrity",
                 description="Horizon-specific benchmark keys must be present; unlabelled 'naive_momentum' alias should be avoided.",
                 passed=(len(missing_keys) == 0 and not has_alias),
-                severity="WARNING",
+                severity="LOW",
                 affected_records=len(missing_keys) + (1 if has_alias else 0),
                 examples=([f"missing={missing_keys}"] if missing_keys else []) + (["unlabelled alias: naive_momentum"] if has_alias else []),
             )
@@ -1175,9 +1348,10 @@ def check_benchmark_integrity(
             CheckResult(
                 check_id="BENCH_UNAVAILABLE_NO_REASON",
                 dataset=dataset,
+                category="benchmark_integrity",
                 description="UNAVAILABLE or INSUFFICIENT_DATA benchmarks should include an explanatory reason.",
                 passed=len(unexpl_b) == 0,
-                severity="WARNING",
+                severity="LOW",
                 affected_records=len(unexpl_b),
                 examples=unexpl_b,
             )
@@ -1187,7 +1361,322 @@ def check_benchmark_integrity(
 
 
 # ---------------------------------------------------------------------------
-# Dataset E: Published Reports Consistency
+# Dataset E: Portfolio Integrity (paper_portfolio + paper_trades)
+# ---------------------------------------------------------------------------
+
+
+def check_portfolio_integrity(
+    forward_validation_payload: dict[str, Any] | None,
+    paper_trades_df: pd.DataFrame | None = None,
+    predictions_df: pd.DataFrame | None = None,
+    equities_df: pd.DataFrame | None = None,
+) -> DatasetAuditResult:
+    dataset = "paper_portfolio"
+    checks: list[CheckResult] = []
+
+    pp = (forward_validation_payload or {}).get("paper_portfolio") or {}
+    strategies = pp.get("strategies") or {}
+    recent_trades = pp.get("recent_trades") or []
+
+    if not strategies and (paper_trades_df is None or paper_trades_df.empty):
+        return _summarize_dataset(
+            dataset,
+            0,
+            [
+                CheckResult(
+                    check_id="PORT_EMPTY",
+                    dataset=dataset,
+                    category="portfolio_integrity",
+                    description="paper_portfolio strategies and paper_trades dataset are empty or missing.",
+                    passed=False,
+                    severity="HIGH",
+                )
+            ],
+        )
+
+    start_cap = float(pp.get("starting_capital_inr") or 1_000_000.0)
+    max_pos_pct = float(pp.get("max_position_pct") or 10.0)
+    max_exp_pct = float(pp.get("max_total_exposure_pct") or 80.0)
+
+    # 1. Cash + Invested + Unrealized == Ending Capital, and Cash + Invested == Starting + Realized
+    cap_reconcile_err: list[str] = []
+    eq_reconcile_err: list[str] = []
+    exp_limit_err: list[str] = []
+    open_state_err: list[str] = []
+
+    for h, s in strategies.items():
+        if not isinstance(s, dict):
+            continue
+        s_start = float(s.get("starting_capital_inr") or start_cap)
+        s_end = float(s.get("ending_capital_inr") or 0.0)
+        s_cash = float(s.get("cash_inr") or 0.0)
+        s_inv = float(s.get("invested_capital_inr") or 0.0)
+        s_real = float(s.get("realized_pnl_inr") or 0.0)
+        s_unrl = float(s.get("unrealized_pnl_inr") or 0.0)
+        s_peak = float(s.get("peak_exposure_pct") or 0.0)
+        s_open = int(s.get("open_positions_count") or 0)
+
+        if abs((s_cash + s_inv) - (s_start + s_real)) > 0.05:
+            cap_reconcile_err.append(f"{h}: cash({s_cash})+inv({s_inv}) != start({s_start})+real({s_real})")
+        if abs((s_cash + s_inv + s_unrl) - s_end) > 0.05:
+            eq_reconcile_err.append(f"{h}: cash({s_cash})+inv({s_inv})+unrl({s_unrl}) != end({s_end})")
+        if s_peak > max_exp_pct + 0.5 or (s_inv / max(s_start + s_real, 1.0)) * 100.0 > max_exp_pct + 0.5:
+            exp_limit_err.append(f"{h}: peak_exposure={s_peak}% > {max_exp_pct}%")
+        if (s_open == 0 and s_inv > 0.01) or (s_open > 0 and s_inv <= 0.0):
+            open_state_err.append(f"{h}: open_positions_count={s_open}, invested={s_inv}")
+
+    checks.extend(
+        [
+            CheckResult(
+                check_id="PORT_CASH_INVESTED_RECONCILIATION",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="cash_inr + invested_capital_inr must equal starting_capital_inr + realized_pnl_inr.",
+                passed=len(cap_reconcile_err) == 0,
+                severity="CRITICAL",
+                affected_records=len(cap_reconcile_err),
+                examples=cap_reconcile_err,
+            ),
+            CheckResult(
+                check_id="PORT_EQUITY_RECONCILIATION",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="cash_inr + invested_capital_inr + unrealized_pnl_inr must equal ending_capital_inr.",
+                passed=len(eq_reconcile_err) == 0,
+                severity="CRITICAL",
+                affected_records=len(eq_reconcile_err),
+                examples=eq_reconcile_err,
+            ),
+            CheckResult(
+                check_id="PORT_EXPOSURE_LIMIT",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Total portfolio exposure must not exceed max_total_exposure_pct (80%).",
+                passed=len(exp_limit_err) == 0,
+                severity="HIGH",
+                affected_records=len(All := exp_limit_err),
+                examples=All,
+            ),
+            CheckResult(
+                check_id="PORT_OPEN_POSITION_STATE",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="open_positions_count and invested_capital_inr must be mutually consistent.",
+                passed=len(open_state_err) == 0,
+                severity="HIGH",
+                affected_records=len(open_state_err),
+                examples=open_state_err,
+            ),
+        ]
+    )
+
+    # Build equities lookup for entry/exit/MTM verification
+    eq_by_sym: dict[str, list[tuple[str, float, float]]] = {}
+    if equities_df is not None and not equities_df.empty:
+        eq = equities_df.copy()
+        eq["observation_date"] = eq["observation_date"].astype(str).str[:10]
+        eq = eq.sort_values(["symbol", "observation_date"])
+        for sym, grp in eq.groupby("symbol"):
+            eq_by_sym[str(sym).upper()] = [
+                (str(r["observation_date"]), float(r["open"]), float(r["close"]))
+                for _, r in grp.iterrows()
+            ]
+
+    trades_list: list[dict[str, Any]] = []
+    if paper_trades_df is not None and not paper_trades_df.empty:
+        trades_list = paper_trades_df.to_dict(orient="records")
+    elif recent_trades:
+        trades_list = list(recent_trades)
+
+    pos_limit_err: list[str] = []
+    dup_entry_err: list[str] = []
+    entry_dt_err: list[str] = []
+    exit_dt_err: list[str] = []
+    unrl_math_err: list[str] = []
+    real_math_err: list[str] = []
+    cost_err: list[str] = []
+    lookahead_entry_err: list[str] = []
+    dup_signal_err: list[str] = []
+
+    pred_ts_map: dict[str, datetime] = {}
+    if predictions_df is not None and not predictions_df.empty:
+        for _, prow in predictions_df.iterrows():
+            pts = _parse_ist_timestamp(prow.get("prediction_timestamp"))
+            if pts is not None:
+                pred_ts_map[str(prow.get("prediction_id", ""))] = pts
+        is_dup = predictions_df["is_duplicate_run"].fillna(False).astype(bool) if "is_duplicate_run" in predictions_df.columns else pd.Series(False, index=predictions_df.index)
+        canon = predictions_df[~is_dup]
+        if not canon.empty and {"symbol", "observation_date"}.issubset(canon.columns):
+            grp = canon.groupby(["symbol", "observation_date"]).size()
+            for (sym, obs), cnt in grp[grp > 1].items():
+                dup_signal_err.append(f"{sym}|{obs} (n={cnt} canonical snapshots counted as signals)")
+
+    seen_entries: set[tuple[str, str, str]] = set()
+    horizon_n = {"1D": 1, "5D": 5, "10D": 10}
+
+    for tr in trades_list:
+        act = str(tr.get("action", "")).upper().strip()
+        h = str(tr.get("strategy_horizon", "")).strip()
+        sym = str(tr.get("symbol", "")).upper().strip()
+        pid = str(tr.get("prediction_id", "")).strip()
+        sig_dt = str(tr.get("signal_date", "")).strip()[:10]
+        ent_dt = None if pd.isna(tr.get("entry_date")) else str(tr.get("entry_date", "")).strip()[:10]
+        ext_dt = None if pd.isna(tr.get("exit_date")) else str(tr.get("exit_date", "")).strip()[:10]
+
+        if act == "ENTRY_EXECUTED":
+            w_pct = float(tr.get("position_weight_pct") or 0.0)
+            alloc = float(tr.get("allocated_capital_inr") or 0.0)
+            if w_pct > max_pos_pct + 0.05 or alloc > start_cap * (max_pos_pct / 100.0) + 1.0:
+                pos_limit_err.append(f"{pid}:{h} weight={w_pct}%, alloc={alloc}")
+
+            ekey = (h, sym, ent_dt or "")
+            if ekey in seen_entries:
+                dup_entry_err.append(f"{h}:{sym}:{ent_dt} ({pid})")
+            seen_entries.add(ekey)
+
+            bars = eq_by_sym.get(sym, [])
+            future_bars = [b for b in bars if b[0] > sig_dt]
+            if future_bars and ent_dt != future_bars[0][0]:
+                entry_dt_err.append(f"{pid}:{h} entry_date={ent_dt} != expected {future_bars[0][0]}")
+            elif future_bars and pd.notna(tr.get("entry_price")):
+                if abs(float(tr["entry_price"]) - future_bars[0][1]) > 0.05:
+                    entry_dt_err.append(f"{pid}:{h} entry_price={tr['entry_price']} != open {future_bars[0][1]}")
+
+            pts = pred_ts_map.get(pid)
+            if pts is not None and ent_dt:
+                try:
+                    e_open = datetime.combine(date.fromisoformat(ent_dt), NSE_OPEN_TIME, tzinfo=IST_TZ)
+                    if pts >= e_open:
+                        lookahead_entry_err.append(f"{pid}:{h} (pred_ts={pts.isoformat()} >= entry_open={e_open.isoformat()})")
+                except Exception:
+                    pass
+
+        elif act == "POSITION_OPEN":
+            bars = eq_by_sym.get(sym, [])
+            if bars and pd.notna(tr.get("entry_price")) and pd.notna(tr.get("allocated_capital_inr")) and pd.notna(tr.get("unrealized_pnl_inr")):
+                latest_close = bars[-1][2]
+                ep = float(tr["entry_price"])
+                alloc = float(tr["allocated_capital_inr"])
+                exp_unrl = alloc * ((latest_close / ep) - 1.0)
+                if abs(float(tr["unrealized_pnl_inr"]) - exp_unrl) > 0.5:
+                    unrl_math_err.append(f"{pid}:{h} unrl={tr['unrealized_pnl_inr']} != expected {exp_unrl:.2f}")
+
+        elif act == "POSITION_EXITED":
+            bars = eq_by_sym.get(sym, [])
+            future_bars = [b for b in bars if b[0] > sig_dt]
+            n_sess = horizon_n.get(h, 1)
+            if len(future_bars) >= n_sess and ext_dt != future_bars[n_sess - 1][0]:
+                exit_dt_err.append(f"{pid}:{h} exit_date={ext_dt} != expected {future_bars[n_sess - 1][0]}")
+
+            ep = tr.get("entry_price")
+            xp = tr.get("exit_price")
+            alloc = tr.get("allocated_capital_inr")
+            g_ret = tr.get("gross_return_pct")
+            n_ret = tr.get("net_return_pct")
+            c_inr = tr.get("transaction_cost_inr")
+            r_pnl = tr.get("realized_pnl_inr")
+            if all(pd.notna(x) for x in (ep, xp, alloc, g_ret, n_ret, c_inr, r_pnl)):
+                exp_g = ((float(xp) / float(ep)) - 1.0) * 100.0
+                if abs(float(g_ret) - exp_g) > 0.05:
+                    real_math_err.append(f"{pid}:{h} gross_ret={g_ret} != {exp_g:.4f}")
+                exp_r_pnl = float(alloc) * (float(n_ret) / 100.0)
+                if abs(float(r_pnl) - exp_r_pnl) > 0.5:
+                    real_math_err.append(f"{pid}:{h} realized_pnl={r_pnl} != {exp_r_pnl:.2f}")
+                if float(c_inr) <= 0.0:
+                    cost_err.append(f"{pid}:{h} transaction_cost_inr={c_inr} <= 0 on exited trade")
+
+    checks.extend(
+        [
+            CheckResult(
+                check_id="PORT_POSITION_ALLOCATION_LIMIT",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Individual position allocation must not exceed max_position_pct (10%).",
+                passed=len(pos_limit_err) == 0,
+                severity="HIGH",
+                affected_records=len(pos_limit_err),
+                examples=pos_limit_err[:5],
+            ),
+            CheckResult(
+                check_id="PORT_DUPLICATE_ENTRIES",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="No duplicate ENTRY_EXECUTED records for the same (horizon, symbol, entry_date).",
+                passed=len(dup_entry_err) == 0,
+                severity="CRITICAL",
+                affected_records=len(dup_entry_err),
+                examples=dup_entry_err[:5],
+            ),
+            CheckResult(
+                check_id="PORT_ENTRY_DATE_PRICE_VALID",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Executed entries must occur at the next eligible NSE trading session open price.",
+                passed=len(entry_dt_err) == 0,
+                severity="HIGH",
+                affected_records=len(entry_dt_err),
+                examples=entry_dt_err[:5],
+            ),
+            CheckResult(
+                check_id="PORT_EXIT_DATE_VALID",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Exited positions must exit on the scheduled H-th trading session.",
+                passed=len(exit_dt_err) == 0,
+                severity="HIGH",
+                affected_records=len(exit_dt_err),
+                examples=exit_dt_err[:5],
+            ),
+            CheckResult(
+                check_id="PORT_UNREALIZED_PNL_MATH",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Open position unrealized_pnl_inr must match latest close mark-to-market valuation.",
+                passed=len(unrl_math_err) == 0,
+                severity="HIGH",
+                affected_records=len(unrl_math_err),
+                examples=unrl_math_err[:5],
+            ),
+            CheckResult(
+                check_id="PORT_REALIZED_PNL_AND_COST_MATH",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Exited position realized_pnl_inr and transaction_cost_inr must reconcile with entry/exit prices.",
+                passed=(len(real_math_err) + len(cost_err)) == 0,
+                severity="HIGH",
+                affected_records=len(real_math_err) + len(cost_err),
+                examples=(real_math_err + cost_err)[:5],
+            ),
+            CheckResult(
+                check_id="PORT_LOOKAHEAD_CONTAMINATED_ENTRY",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Executed paper portfolio entries must originate from predictions generated strictly before entry session open (09:15 IST).",
+                passed=len(lookahead_entry_err) == 0,
+                severity="HIGH",
+                affected_records=len(lookahead_entry_err),
+                examples=lookahead_entry_err[:5],
+                recommended_remediation="Filter run_paper_research_portfolio() input snapshots to genuinely prospective predictions (prediction_timestamp < entry_open).",
+            ),
+            CheckResult(
+                check_id="PORT_DUPLICATE_SIGNAL_COUNTING",
+                dataset=dataset,
+                category="portfolio_integrity",
+                description="Multiple canonical snapshots on the same (symbol, observation_date) across sessions are counted as separate signals in signals_received.",
+                passed=len(dup_signal_err) == 0,
+                severity="MEDIUM",
+                affected_records=len(dup_signal_err),
+                examples=dup_signal_err[:5],
+                recommended_remediation="Deduplicate portfolio signals by (symbol, target_entry_date, horizon) before simulation.",
+            ),
+        ]
+    )
+
+    return _summarize_dataset(dataset, len(trades_list) or len(strategies), checks)
+
+
+# ---------------------------------------------------------------------------
+# Dataset F: Published Reports Consistency
 # ---------------------------------------------------------------------------
 
 
@@ -1214,9 +1703,10 @@ def check_published_reports(
         CheckResult(
             check_id="REP_DOCS_DATA_SYNC",
             dataset=dataset,
+            category="report_consistency",
             description="Published docs/data JSONs must stay in sync with data/predictions JSONs.",
             passed=len(sync_diffs) == 0,
-            severity="ERROR",
+            severity="HIGH",
             affected_records=len(sync_diffs),
             examples=sync_diffs,
         )
@@ -1233,11 +1723,13 @@ def check_published_reports(
             CheckResult(
                 check_id="REP_MODEL_VERSION_MISMATCH",
                 dataset=dataset,
+                category="report_consistency",
                 description="forward_validation.json and phase5_intelligence.json report different subsystem model_version labels.",
                 passed=(mv_fv == mv_p5),
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=0 if mv_fv == mv_p5 else 2,
                 examples=[f"forward_validation={mv_fv}", f"phase5_intelligence={mv_p5}"],
+                recommended_remediation="Unify version registry so both reports state quant model version (ml_ensemble 3.2.0) and subsystem schema version.",
             )
         )
 
@@ -1249,11 +1741,13 @@ def check_published_reports(
             CheckResult(
                 check_id="REP_OUTCOME_POPULATION_MISMATCH",
                 dataset=dataset,
+                category="report_consistency",
                 description="phase5_intelligence.monitoring.evaluated_outcomes_count and forward_validation.matured_outcomes_total measure different populations.",
                 passed=(n_mon == n_fv),
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=0 if n_mon == n_fv else 2,
                 examples=[f"phase5_monitoring={n_mon}", f"forward_validation={n_fv}"],
+                recommended_remediation="Label phase5_intelligence.monitoring explicitly as Legacy Quant Backtest Log (15 stocks, close->close) and deduplicate by (symbol, observation_date).",
             )
         )
 
@@ -1263,11 +1757,13 @@ def check_published_reports(
             CheckResult(
                 check_id="REP_MONITORING_TRUNCATION",
                 dataset=dataset,
+                category="report_consistency",
                 description="monitoring.py computes metrics on eval_df.tail(50) while reporting evaluated_outcomes_count > 50.",
                 passed=not truncated,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=(n_mon - 50) if truncated else 0,
                 examples=[f"evaluated_outcomes_count={n_mon}, metric_window=50"] if truncated else [],
+                recommended_remediation="Report exact metric sample size alongside evaluated_outcomes_count and remove silent tail(50) truncation.",
             )
         )
 
@@ -1285,11 +1781,13 @@ def check_published_reports(
             CheckResult(
                 check_id="REP_OBS_DATE_MISMATCH",
                 dataset=dataset,
+                category="report_consistency",
                 description="phase5_intelligence stock observation_date should match the underlying prediction snapshot observation_date.",
                 passed=len(obs_mismatches) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(obs_mismatches),
                 examples=obs_mismatches[:5],
+                recommended_remediation="Set StockIntelligenceItem.observation_date from the underlying quant prediction observation_date instead of wall-clock now.",
             )
         )
 
@@ -1306,9 +1804,10 @@ def check_published_reports(
             CheckResult(
                 check_id="REP_LATEST_PRED_STALE",
                 dataset=dataset,
+                category="report_consistency",
                 description="latest_predictions.json was generated >12h before phase5_intelligence.json (stale quant inputs reused in pre-market run).",
                 passed=not stale,
-                severity="WARNING",
+                severity="LOW",
                 affected_records=1 if stale else 0,
                 examples=[f"age_hours={delta_h:.2f}h (latest={lp_ts.isoformat() if lp_ts else None})"] if stale else [],
             )
@@ -1328,11 +1827,13 @@ def check_published_reports(
             CheckResult(
                 check_id="REP_SESSION_WORKFLOW_CONSISTENCY",
                 dataset=dataset,
+                category="report_consistency",
                 description="POST_MARKET session label when equities_daily has not updated for that date indicates delayed pre-market cron mislabelled by wall-clock time.",
                 passed=len(sess_anomalies) == 0,
-                severity="WARNING",
+                severity="MEDIUM",
                 affected_records=len(sess_anomalies),
                 examples=sess_anomalies[:5],
+                recommended_remediation="Pass explicit workflow session identity (PRE_MARKET vs POST_MARKET) from GitHub Actions schedule instead of inferring from wall-clock time.",
             )
         )
 
@@ -1371,6 +1872,7 @@ def run_data_integrity_audit(
     fwd_preds = _read_parquet_safe(store.forward_predictions_parquet)
     fwd_outs = _read_parquet_safe(store.forward_outcomes_parquet)
     pred_log = _read_parquet_safe(store.predictions_parquet)
+    paper_trades = _read_parquet_safe(store.paper_trades_parquet)
     equities = _read_parquet_safe(store.equities_parquet)
     indices = _read_parquet_safe(store.indices_parquet)
     events = _read_parquet_safe(store.events_parquet)
@@ -1388,24 +1890,66 @@ def run_data_integrity_audit(
         "forward_outcomes": check_forward_outcomes(fwd_outs, fwd_preds, equities, reference_outcomes_df),
         "news_events": check_news_integrity(events, quarantined, p5_docs or p5_data, fwd_preds),
         "benchmark": check_benchmark_integrity(indices, fwd_outs, fv_docs or fv_data),
+        "paper_portfolio": check_portfolio_integrity(fv_docs or fv_data, paper_trades, fwd_preds, equities),
         "published_reports": check_published_reports(fv_docs, fv_data, p5_docs, p5_data, latest_preds, fwd_preds, equities),
     }
 
     records, h_sums, p_metrics = classify_forward_predictions(fwd_preds, fwd_outs)
     legacy_sum = classify_legacy_prediction_log(pred_log)
+    news_recs, news_sum = classify_news_events(events, quarantined, fwd_preds)
     classification = ClassificationReport(
         horizon_summaries=h_sums,
         prospective_metrics=p_metrics,
         legacy_prediction_log=legacy_sum,
+        news_summary=news_sum,
         records=records,
+        news_records=news_recs,
     )
 
-    statuses = {d.status for d in ds_results.values()}
-    overall: OverallStatus = "FAIL" if "FAIL" in statuses else ("WARN" if "WARN" in statuses else "PASS")
+    all_checks: list[CheckResult] = [c for d in ds_results.values() for c in d.checks]
+    failed_checks = [c for c in all_checks if not c.passed]
+
+    crit_list = [c for c in failed_checks if c.severity == "CRITICAL"]
+    high_list = [c for c in failed_checks if c.severity in ("HIGH", "ERROR")]
+    med_list = [c for c in failed_checks if c.severity in ("MEDIUM", "WARNING")]
+    low_list = [c for c in failed_checks if c.severity == "LOW"]
+
+    s1 = h_sums.get("1D")
+    total_inspected = sum(d.records_inspected for d in ds_results.values())
+    matured_total = sum(s.matured for s in h_sums.values())
+    pending_total = sum(s.pending for s in h_sums.values())
+
+    if total_inspected == 0 or (fwd_preds is None or fwd_preds.empty):
+        overall: OverallStatus = "INSUFFICIENT_DATA"
+    elif crit_list or high_list:
+        overall = "FAIL"
+    elif med_list or low_list:
+        overall = "PASS_WITH_WARNINGS"
+    else:
+        overall = "PASS"
 
     return DataIntegrityReport(
         audit_timestamp=datetime.now(IST_TZ).isoformat(),
+        git_commit_sha=base_commit_sha,
         base_commit_sha=base_commit_sha,
+        model_version=str((fv_docs or fv_data or {}).get("model_version") or "5.3.0-pilot"),
+        feature_set_version=str((fv_docs or fv_data or {}).get("feature_set_version") or "237+17"),
+        total_records_inspected=total_inspected,
+        prospective_records=s1.prospective if s1 else 0,
+        historical_records=s1.historical if s1 else 0,
+        duplicate_records=s1.duplicate if s1 else 0,
+        invalid_records=s1.invalid if s1 else 0,
+        pending_outcomes=pending_total,
+        matured_outcomes=matured_total,
+        critical_findings_count=len(crit_list),
+        high_findings_count=len(high_list),
+        medium_findings_count=len(med_list),
+        low_findings_count=len(low_list),
+        critical_findings=crit_list,
+        high_severity_findings=high_list,
+        medium_severity_findings=med_list,
+        low_severity_findings=low_list,
+        individual_check_results=all_checks,
         datasets=ds_results,
         classification=classification,
         overall_status=overall,

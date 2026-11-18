@@ -2,12 +2,15 @@
 
 from .classification import (
     ClassificationReport,
+    ClassifiedNewsEvent,
     ClassifiedRecord,
     HorizonClassificationSummary,
     LegacyLogClassificationSummary,
+    NewsClassificationSummary,
     ProspectiveHorizonMetrics,
     classify_forward_predictions,
     classify_legacy_prediction_log,
+    classify_news_events,
 )
 from .data_integrity import (
     CheckResult,
@@ -18,6 +21,7 @@ from .data_integrity import (
     check_forward_predictions,
     check_legacy_prediction_log,
     check_news_integrity,
+    check_portfolio_integrity,
     check_published_reports,
     run_data_integrity_audit,
 )
@@ -39,12 +43,15 @@ from .reporting_truth import (
 
 __all__ = [
     "ClassificationReport",
+    "ClassifiedNewsEvent",
     "ClassifiedRecord",
     "HorizonClassificationSummary",
     "LegacyLogClassificationSummary",
+    "NewsClassificationSummary",
     "ProspectiveHorizonMetrics",
     "classify_forward_predictions",
     "classify_legacy_prediction_log",
+    "classify_news_events",
     "CheckResult",
     "DataIntegrityReport",
     "DatasetAuditResult",
@@ -53,6 +60,7 @@ __all__ = [
     "check_forward_predictions",
     "check_legacy_prediction_log",
     "check_news_integrity",
+    "check_portfolio_integrity",
     "check_published_reports",
     "run_data_integrity_audit",
     "DataQualityAuditReport",
