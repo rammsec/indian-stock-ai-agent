@@ -2061,6 +2061,9 @@ span.rr-pos { color: var(--signal-bull); } span.rr-neg { color: var(--signal-bea
           </div>
 
           <h3 style="font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem;">Paper Research Portfolio (₹10,00,000 Virtual Capital • Max Pos 10% • Max Exposure 80% • No Leverage)</h3>
+          <div id="fv-rejection-summary" class="evidence-note-box" style="margin-bottom: 0.65rem; font-size: 0.76rem; color: var(--text-secondary);">
+            Rejected-signal reason breakdown loading...
+          </div>
           <div class="table-wrap" style="margin-bottom: 1.15rem;">
             <table class="fin-table mono" style="font-size: 0.74rem;">
               <thead>
@@ -3077,7 +3080,7 @@ function rrAppendixHtml(ctx) {
     });
     parts.push(
       `<h4 class="rr-sub">Historical walk-forward backtest <span class="rr-tag">HISTORICAL \u2013 not live results</span></h4>` +
-        `<p class="rr-muted">Test window ${rrEsc(bt.test_start_date || RR_NA)} to ${rrEsc(bt.test_end_date || RR_NA)}, ${rrEsc(bt.total_walk_forward_folds || RR_NA)} folds, ${rrEsc(bt.execution_mode || RR_NA)}. Nifty 50 buy-and-hold over the window: ${rrPct(bt.nifty_50_buy_hold_return_pct, 2, true)}. ROC AUC at or below 0.50 means no demonstrated ranking skill.</p>` +
+        `<p class="rr-muted">Test window ${rrEsc(bt.test_start_date || RR_NA)} to ${rrEsc(bt.test_end_date || RR_NA)}, ${rrEsc(bt.total_walk_forward_folds || RR_NA)} folds, ${rrEsc(bt.execution_mode || RR_NA)} (cutoff/generated ${rrEsc(bt.generated_at || RR_NA)}). Nifty 50 buy-and-hold over the window: ${rrPct(bt.nifty_50_buy_hold_return_pct, 2, true)}. ROC AUC at or below 0.50 means no demonstrated ranking skill.</p>` +
         rrTable(["Model", "Predictions", "Directional accuracy", "ROC AUC", "Brier", "Net return", "Net Sharpe", "Max drawdown", "Trades"], rows)
     );
     const feats = (bt.top_global_features || []).slice(0, 10).map((f) => [f.feature, rrNum(f.importance, 4)]);
@@ -3101,7 +3104,7 @@ function rrAppendixHtml(ctx) {
       : "";
     parts.push(
       `<h4 class="rr-sub">Live forward validation <span class="rr-tag">PROSPECTIVE \u2013 real predictions made before outcomes</span></h4>` +
-        `<p class="rr-muted">Generated ${rrEsc(fv.generated_at || RR_NA)}. Snapshots ${rrEsc(canonTxt)}; matured outcomes ${rrEsc(fv.matured_outcomes_total)}; pending ${rrEsc(fv.pending_outcomes_total)}.${rrEsc(npTxt)} Metrics are not meaningful until the minimum sample is reached.</p>` +
+        `<p class="rr-muted">Model ${rrEsc(fv.model_version || RR_NA)} (${rrEsc(fv.feature_set_version || RR_NA)}) \u2022 Generated ${rrEsc(fv.generated_at || RR_NA)}. Snapshots ${rrEsc(canonTxt)}; matured outcomes ${rrEsc(fv.matured_outcomes_total)}; pending ${rrEsc(fv.pending_outcomes_total)}.${rrEsc(npTxt)} Metrics are not meaningful until the minimum sample is reached.</p>` +
         rrTable(["Horizon", "Snapshots", "Matured (sample size)", "Pending", "Minimum sample", "Status", "Directional accuracy", "ROC AUC", "Net return"], rows)
     );
     if (fv.paper_portfolio && fv.paper_portfolio.strategies) {
@@ -3115,6 +3118,7 @@ function rrAppendixHtml(ctx) {
           rrPct(s.max_drawdown_pct, 2),
           rrIsNum(s.entries_executed) ? s.entries_executed : RR_NA,
           rrIsNum(s.open_positions_count) ? s.open_positions_count : RR_NA,
+          rrIsNum(s.rejected_signals) ? s.rejected_signals : RR_NA,
           s.status || RR_NA,
         ];
       });
@@ -3134,12 +3138,34 @@ function rrAppendixHtml(ctx) {
           rrPct(bm.max_drawdown_pct, 2),
           RR_NA,
           RR_NA,
+          RR_NA,
           bm.status || RR_NA,
         ]);
       });
+
+      const rejMap = {};
+      let recentRej = 0;
+      (Array.isArray(pp.recent_trades) ? pp.recent_trades : []).forEach((t) => {
+        if (t && (t.action === "SIGNAL_REJECTED" || t.action === "REJECTED")) {
+          recentRej += 1;
+          const rsn = String(t.reason || "UNSPECIFIED");
+          rejMap[rsn] = (rejMap[rsn] || 0) + 1;
+        }
+      });
+      const totalRej = ["1D", "5D", "10D"].reduce((a, h) => a + Number((pp.strategies[h] || {}).rejected_signals || 0), 0);
+      const rejText = Object.entries(rejMap)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(", ");
+      const rejLine =
+        totalRej > 0
+          ? `<p class="rr-muted">Rejected signals (${rrEsc(totalRej)} total across 1D/5D/10D; ${rrEsc(recentRej)} in recent_trades window): ${rrEsc(rejText || RR_NA)}${totalRej > recentRej ? ` (${rrEsc(totalRej - recentRej)} earlier rejections truncated in JSON)` : ""}.</p>`
+          : "";
+
       parts.push(
         `<h4 class="rr-sub">Paper portfolio &amp; benchmark comparisons <span class="rr-tag">HYPOTHETICAL \u2013 max ${rrEsc(pp.max_position_pct || 10)}% pos / ${rrEsc(pp.max_total_exposure_pct || 80)}% exposure</span></h4>` +
-          rrTable(["Portfolio / Benchmark", "Ending capital (\u20b9)", "Net return", "Max drawdown", "Entries", "Open", "Status"], pRows)
+          rrTable(["Portfolio / Benchmark", "Ending capital (\u20b9)", "Net return", "Max drawdown", "Entries", "Open", "Rejected", "Status"], pRows) +
+          rejLine
       );
     }
   } else {
@@ -4268,7 +4294,7 @@ function renderBundle(b) {
   document.getElementById("kpi-rd").textContent =
     rd.latest_rd_spend_cr != null ? `${fmtCr(rd.latest_rd_spend_cr)} (${fmtPct(rd.latest_rd_pct_of_sales, 2)})` : "UNAVAILABLE";
   document.getElementById("kpi-roe-roce").textContent = `${fmtPct(ov.roe_pct, 1)} / ${fmtPct(ov.roce_pct, 1)}`;
-  document.getElementById("kpi-pe").textContent = ov.stock_pe ? `${fmtNum(ov.stock_pe, 1)}x` : "—";
+  document.getElementById("kpi-pe").textContent = ov.stock_pe ? `${fmtNum(ov.stock_pe, 1)}x` : "UNAVAILABLE";
   document.getElementById("kpi-ownership").textContent = `${fmtPct(shp.promoters_pct, 1)} / ${fmtPct(shp.institutional_total_pct, 1)}`;
   document.getElementById("kpi-profit-cagr").textContent = fmtPct(ov.profit_cagr_5y_pct, 1, true);
 
@@ -4880,7 +4906,8 @@ function updateRegimeBannerDOM(reg, quality) {
   if (reg && reg.regime) {
     const badge = document.getElementById("mr-regime-badge");
     if (badge) {
-      badge.textContent = `MARKET REGIME: ${String(reg.regime).toUpperCase()}`;
+      const obsLabel = reg.observation_date ? ` (${reg.observation_date})` : "";
+      badge.textContent = `MARKET REGIME: ${String(reg.regime).toUpperCase()}${obsLabel}`;
       badge.style.color = String(reg.regime).includes("Bull")
         ? "var(--signal-bull)"
         : String(reg.regime).includes("Bear")
@@ -4897,7 +4924,7 @@ function updateRegimeBannerDOM(reg, quality) {
     if (vixEl) {
       vixEl.innerHTML = vixVal !== undefined && vixVal !== null
         ? `India VIX: <strong>${fmtNum(vixVal, 2)}</strong>`
-        : "India VIX: —";
+        : "India VIX: UNAVAILABLE";
     }
     const brEl = document.getElementById("mr-breadth-metric");
     const adv = reg.advance_count ?? reg.advances_count;
@@ -4938,7 +4965,7 @@ function renderQuantAndCorporateIntelSection(b) {
 
   const rawQp = b.quantitative_prediction || null;
   const hasQp = Boolean(rawQp && rawQp.prob_next_day_up !== undefined && rawQp.prob_next_day_up !== null);
-  const actionStr = hasQp ? String(rawQp.recommended_action || "N/A") : "N/A";
+  const actionStr = hasQp ? String(rawQp.recommended_action || "UNAVAILABLE") : "UNAVAILABLE";
   const prob1d = hasQp ? rawQp.prob_next_day_up : null;
   const probLgbm = hasQp ? (rawQp.prob_lgbm_up ?? null) : null;
   const probXgb = hasQp ? (rawQp.prob_xgb_up ?? null) : null;
@@ -4956,18 +4983,18 @@ function renderQuantAndCorporateIntelSection(b) {
   const confScore = hasQp ? (rawQp.confidence_score ?? null) : null;
   const agreeScore = hasQp && rawQp.model_agreement_score !== undefined && rawQp.model_agreement_score !== null
     ? `${(rawQp.model_agreement_score * 100).toFixed(0)}%`
-    : "N/A";
-  const obsDate = hasQp ? (rawQp.observation_date || "N/A") : "N/A";
-  const targetDate = hasQp ? (rawQp.target_session_date || "N/A") : "N/A";
-  const genAt = hasQp && rawQp.generated_at ? String(rawQp.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
-  const modelVer = hasQp && rawQp.model_version ? `${rawQp.model_name || "ml_ensemble"} v${rawQp.model_version}` : "N/A";
+    : "UNAVAILABLE";
+  const obsDate = hasQp ? (rawQp.observation_date || "UNAVAILABLE") : "UNAVAILABLE";
+  const targetDate = hasQp ? (rawQp.target_session_date || "UNAVAILABLE") : "UNAVAILABLE";
+  const genAt = hasQp && rawQp.generated_at ? String(rawQp.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "UNAVAILABLE";
+  const modelVer = hasQp && rawQp.model_version ? `${rawQp.model_name || "ml_ensemble"} v${rawQp.model_version}` : "UNAVAILABLE";
 
   const ci = b.corporate_intelligence || null;
 
   // Render Left Panel: Calibrated ML Ensemble
   const qpActionEl = document.getElementById("qp-action-pill");
   if (qpActionEl) {
-    qpActionEl.textContent = hasQp ? `ML: ${actionStr}` : "ML: N/A";
+    qpActionEl.textContent = hasQp ? `ML: ${actionStr}` : "ML: UNAVAILABLE";
     qpActionEl.className = actionStr.includes("BUY")
       ? "signal-banner bull"
       : actionStr.includes("SELL") || actionStr.includes("AVOID")
@@ -4978,14 +5005,14 @@ function renderQuantAndCorporateIntelSection(b) {
   if (qpSub) {
     qpSub.textContent = hasQp
       ? `Obs: ${obsDate} → Target: ${targetDate} • Generated: ${genAt} • Model: ${modelVer} • Agreement: ${agreeScore}`
-      : "No quantitative prediction record available for this symbol.";
+      : "Quantitative prediction UNAVAILABLE for this symbol.";
   }
 
   const qpKpi = document.getElementById("qp-kpi-strip");
   if (qpKpi) {
-    const p1d = prob1d !== null ? `${(prob1d * 100).toFixed(1)}%` : "N/A";
-    const pLgbm = probLgbm !== null ? `${(probLgbm * 100).toFixed(1)}%` : "N/A";
-    const pXgb = probXgb !== null ? `${(probXgb * 100).toFixed(1)}%` : "N/A";
+    const p1d = prob1d !== null ? `${(prob1d * 100).toFixed(1)}%` : "UNAVAILABLE";
+    const pLgbm = probLgbm !== null ? `${(probLgbm * 100).toFixed(1)}%` : "UNAVAILABLE";
+    const pXgb = probXgb !== null ? `${(probXgb * 100).toFixed(1)}%` : "UNAVAILABLE";
     qpKpi.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">P(Up 1D) Calibrated</span>
@@ -4997,27 +5024,27 @@ function renderQuantAndCorporateIntelSection(b) {
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Gross E[R] (1D)</span>
-        <span class="kpi-value ${gross1d !== null ? (gross1d >= 0 ? "text-bull" : "text-bear") : ""}">${gross1d !== null ? fmtPct(gross1d, 2, true) : "N/A"}</span>
+        <span class="kpi-value ${gross1d !== null ? (gross1d >= 0 ? "text-bull" : "text-bear") : ""}">${gross1d !== null ? fmtPct(gross1d, 2, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Net E[R] 1D (Post Cost)</span>
-        <span class="kpi-value ${net1d !== null ? (net1d >= 0 ? "text-bull" : "text-bear") : ""}">${net1d !== null ? fmtPct(net1d, 2, true) : "N/A"}</span>
+        <span class="kpi-value ${net1d !== null ? (net1d >= 0 ? "text-bull" : "text-bear") : ""}">${net1d !== null ? fmtPct(net1d, 2, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Gross / Net E[R] 5D</span>
-        <span class="kpi-value ${net5d !== null ? (net5d >= 0 ? "text-bull" : "text-bear") : ""}">${gross5d !== null && net5d !== null ? `${fmtPct(gross5d, 2, true)} / ${fmtPct(net5d, 2, true)}` : "N/A"}</span>
+        <span class="kpi-value ${net5d !== null ? (net5d >= 0 ? "text-bull" : "text-bear") : ""}">${gross5d !== null && net5d !== null ? `${fmtPct(gross5d, 2, true)} / ${fmtPct(net5d, 2, true)}` : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Indian CNC / MIS Cost</span>
-        <span class="kpi-value">${cncBps !== null && misBps !== null ? `${fmtNum(cncBps, 1)} / ${fmtNum(misBps, 1)} bps` : "N/A"}</span>
+        <span class="kpi-value">${cncBps !== null && misBps !== null ? `${fmtNum(cncBps, 1)} / ${fmtNum(misBps, 1)} bps` : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">1D Downside MAE Risk</span>
-        <span class="kpi-value ${downsideMae !== null ? "text-bear" : ""}">${downsideMae !== null ? fmtPct(downsideMae, 2) : "N/A"}</span>
+        <span class="kpi-value ${downsideMae !== null ? "text-bear" : ""}">${downsideMae !== null ? fmtPct(downsideMae, 2) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Calibrated Confidence</span>
-        <span class="kpi-value">${confScore !== null ? `${fmtNum(confScore, 1)} / 100` : "N/A"}</span>
+        <span class="kpi-value">${confScore !== null ? `${fmtNum(confScore, 1)} / 100` : "UNAVAILABLE"}</span>
       </div>
     `;
   }
@@ -5027,18 +5054,18 @@ function renderQuantAndCorporateIntelSection(b) {
     const items = (rawQp && Array.isArray(rawQp.top_bullish_drivers)) ? rawQp.top_bullish_drivers : [];
     bullDrv.innerHTML = items.length
       ? items.map((d) => `<li>${formatShapDriverItem(d)}</li>`).join("")
-      : `<li style="color: var(--text-muted);">No TreeSHAP bullish drivers available</li>`;
+      : `<li style="color: var(--text-muted);">TreeSHAP bullish drivers UNAVAILABLE</li>`;
   }
   const bearDrv = document.getElementById("qp-bear-drivers");
   if (bearDrv) {
     const items = (rawQp && Array.isArray(rawQp.top_bearish_drivers)) ? rawQp.top_bearish_drivers : [];
     bearDrv.innerHTML = items.length
       ? items.map((d) => `<li>${formatShapDriverItem(d)}</li>`).join("")
-      : `<li style="color: var(--text-muted);">No TreeSHAP bearish drivers available</li>`;
+      : `<li style="color: var(--text-muted);">TreeSHAP bearish drivers UNAVAILABLE</li>`;
   }
 
   // Render Right Panel: Phase 4 Corporate & Institutional Intelligence
-  const verdictStr = ci && ci.smart_money_verdict ? String(ci.smart_money_verdict) : "N/A";
+  const verdictStr = ci && ci.smart_money_verdict ? String(ci.smart_money_verdict) : "UNAVAILABLE";
   const ciPill = document.getElementById("ci-conviction-pill");
   if (ciPill) {
     const ciScoreTxt = ci && ci.institutional_conviction_score != null ? ` (${fmtNum(ci.institutional_conviction_score, 1)}/100)` : "";
@@ -5058,27 +5085,27 @@ function renderQuantAndCorporateIntelSection(b) {
     ciKpi.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">NSE Delivery %</span>
-        <span class="kpi-value ${ci && (ci.latest_delivery_pct || 0) >= 55 ? "text-bull" : ""}">${ci && ci.latest_delivery_pct != null ? fmtPct(ci.latest_delivery_pct, 1) : "N/A"}</span>
+        <span class="kpi-value ${ci && (ci.latest_delivery_pct || 0) >= 55 ? "text-bull" : ""}">${ci && ci.latest_delivery_pct != null ? fmtPct(ci.latest_delivery_pct, 1) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Delivery vs 20D Avg</span>
-        <span class="kpi-value ${delivDiff !== null ? (delivDiff >= 0 ? "text-bull" : "text-bear") : ""}">${delivDiff !== null ? fmtPct(delivDiff, 1, true) : "N/A"}</span>
+        <span class="kpi-value ${delivDiff !== null ? (delivDiff >= 0 ? "text-bull" : "text-bear") : ""}">${delivDiff !== null ? fmtPct(delivDiff, 1, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">1Q Net FII+DII Flow</span>
-        <span class="kpi-value ${f1q !== null ? (f1q > 0 ? "text-bull" : f1q < 0 ? "text-bear" : "") : ""}">${f1q !== null ? fmtPct(f1q, 2, true) : "N/A"}</span>
+        <span class="kpi-value ${f1q !== null ? (f1q > 0 ? "text-bull" : f1q < 0 ? "text-bear" : "") : ""}">${f1q !== null ? fmtPct(f1q, 2, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">4Q Net FII+DII Flow</span>
-        <span class="kpi-value ${f4q !== null ? (f4q > 0 ? "text-bull" : f4q < 0 ? "text-bear" : "") : ""}">${f4q !== null ? fmtPct(f4q, 2, true) : "N/A"}</span>
+        <span class="kpi-value ${f4q !== null ? (f4q > 0 ? "text-bull" : f4q < 0 ? "text-bear" : "") : ""}">${f4q !== null ? fmtPct(f4q, 2, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box" style="grid-column: span 2;">
         <span class="kpi-label">F&amp;O Positioning Heuristic</span>
-        <span class="kpi-value" style="font-size: 0.78rem;">${ci && ci.fno_positioning_heuristic ? ci.fno_positioning_heuristic : "N/A"}</span>
+        <span class="kpi-value" style="font-size: 0.78rem;">${ci && ci.fno_positioning_heuristic ? ci.fno_positioning_heuristic : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box" style="grid-column: span 2;">
         <span class="kpi-label">Promoter Δ (1Q / 4Q)</span>
-        <span class="kpi-value">${ci && ci.promoter_chg_1q != null && ci.promoter_chg_4q != null ? `${fmtPct(ci.promoter_chg_1q, 2, true)} / ${fmtPct(ci.promoter_chg_4q, 2, true)}` : "N/A"}</span>
+        <span class="kpi-value">${ci && ci.promoter_chg_1q != null && ci.promoter_chg_4q != null ? `${fmtPct(ci.promoter_chg_1q, 2, true)} / ${fmtPct(ci.promoter_chg_4q, 2, true)}` : "UNAVAILABLE"}</span>
       </div>
     `;
   }
@@ -5163,46 +5190,46 @@ function renderWalkForwardBacktestTable(bt) {
   const pillEl = document.getElementById("mr-walkforward-pill");
   if (pillEl && bestKey && bt.models[bestKey]) {
     const bm = bt.models[bestKey];
-    pillEl.textContent = `Walk-Forward OOS (${bt.execution_mode || "next_open"}): ${bestKey} Sharpe ${fmtNum(bm.annualized_sharpe_net, 3)} (${fmtPct(bm.net_cumulative_return_pct, 2, true)} Net)`;
+    pillEl.textContent = `Walk-Forward OOS (${bt.execution_mode || "next_open"}): ${bestKey} Sharpe ${fmtNum(bm.annualized_sharpe_net, 3)} (${fmtPct(bm.net_cumulative_return_pct, 2, true)} Net, n=${bm.active_trades_count ?? "UNAVAILABLE"})`;
   } else if (pillEl) {
-    pillEl.textContent = "Walk-Forward OOS: N/A";
+    pillEl.textContent = "Walk-Forward OOS: UNAVAILABLE";
   }
 
   if (kpiEl && ens) {
     const netRet = ens.net_cumulative_return_pct ?? null;
     const alpha = (netRet !== null && niftyRet !== null) ? Number((netRet - niftyRet).toFixed(2)) : null;
-    const genStr = bt.generated_at ? String(bt.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
+    const genStr = bt.generated_at ? String(bt.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "UNAVAILABLE";
     kpiEl.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">OOS Test Window</span>
-        <span class="kpi-value" style="font-size: 0.82rem;">${bt.test_start_date || "N/A"} → ${bt.test_end_date || "N/A"}</span>
+        <span class="kpi-value" style="font-size: 0.82rem;">${bt.test_start_date || "UNAVAILABLE"} → ${bt.test_end_date || "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Folds / Purge / Embargo</span>
-        <span class="kpi-value">${bt.total_walk_forward_folds ?? "N/A"} Folds (${bt.purge_gap_days ?? "N/A"}s / ${bt.embargo_sessions ?? "N/A"}s)</span>
+        <span class="kpi-value">${bt.total_walk_forward_folds ?? "UNAVAILABLE"} Folds (${bt.purge_gap_days ?? "UNAVAILABLE"}s / ${bt.embargo_sessions ?? "UNAVAILABLE"}s)</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">ML Ensemble Net Return</span>
-        <span class="kpi-value ${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}">${netRet !== null ? fmtPct(netRet, 2, true) : "N/A"}</span>
+        <span class="kpi-label">ML Ensemble Net Return (n=${ens.active_trades_count ?? "UNAVAILABLE"})</span>
+        <span class="kpi-value ${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}">${netRet !== null ? fmtPct(netRet, 2, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Nifty 50 Benchmark</span>
-        <span class="kpi-value ${niftyRet !== null ? (niftyRet >= 0 ? "text-bull" : "text-bear") : ""}">${niftyRet !== null ? fmtPct(niftyRet, 2, true) : "N/A"}</span>
+        <span class="kpi-value ${niftyRet !== null ? (niftyRet >= 0 ? "text-bull" : "text-bear") : ""}">${niftyRet !== null ? fmtPct(niftyRet, 2, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">ML vs Nifty 50 (Alpha)</span>
-        <span class="kpi-value ${alpha !== null ? (alpha >= 0 ? "text-bull" : "text-bear") : ""}">${alpha !== null ? fmtPct(alpha, 2, true) : "N/A"}</span>
+        <span class="kpi-value ${alpha !== null ? (alpha >= 0 ? "text-bull" : "text-bear") : ""}">${alpha !== null ? fmtPct(alpha, 2, true) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">ML Net Sharpe / Expectancy</span>
-        <span class="kpi-value ${ens.annualized_sharpe_net >= 0 ? "text-bull" : "text-bear"}">${ens.annualized_sharpe_net != null ? fmtNum(ens.annualized_sharpe_net, 3) : "N/A"} / ${ens.expectancy_per_trade_bps != null ? `${fmtNum(ens.expectancy_per_trade_bps, 1)} bps` : "N/A"}</span>
+        <span class="kpi-value ${ens.annualized_sharpe_net != null && ens.annualized_sharpe_net >= 0 ? "text-bull" : "text-bear"}">${ens.annualized_sharpe_net != null ? fmtNum(ens.annualized_sharpe_net, 3) : "UNAVAILABLE"} / ${ens.expectancy_per_trade_bps != null ? `${fmtNum(ens.expectancy_per_trade_bps, 1)} bps` : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Execution Mode</span>
-        <span class="kpi-value" style="font-size: 0.78rem;">${bt.execution_mode || "N/A"}</span>
+        <span class="kpi-value" style="font-size: 0.78rem;">${bt.execution_mode || "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Backtest Freshness</span>
+        <span class="kpi-label">Backtest Cutoff / Generated</span>
         <span class="kpi-value" style="font-size: 0.74rem;">${genStr}</span>
       </div>
     `;
@@ -5231,17 +5258,17 @@ function renderWalkForwardBacktestTable(bt) {
       return `
         <tr style="${isBest ? "background: rgba(34, 197, 94, 0.07);" : ""}">
           <td style="text-align: left; font-weight: ${isBest ? "800" : "600"}; color: ${isBest ? "var(--signal-bull)" : "var(--text-primary)"};">${labelTxt}</td>
-          <td>${m.active_trades_count ?? "N/A"} (${tradeFreq !== null ? fmtPct(tradeFreq, 1) : "N/A"})</td>
-          <td>${m.directional_accuracy_all_pct != null ? fmtPct(m.directional_accuracy_all_pct, 2) : "N/A"}</td>
-          <td>${m.high_conviction_hit_rate_pct != null ? fmtPct(m.high_conviction_hit_rate_pct, 2) : "N/A"}</td>
-          <td class="${grossRet !== null ? (grossRet >= 0 ? "text-bull" : "text-bear") : ""}">${grossRet !== null ? fmtPct(grossRet, 2, true) : "N/A"}</td>
-          <td class="text-bear">${costDrag !== null ? `-${fmtPct(costDrag, 2)}` : "N/A"}</td>
-          <td class="${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 800;">${netRet !== null ? fmtPct(netRet, 2, true) : "N/A"}</td>
-          <td class="${m.annualized_sharpe_net != null ? (m.annualized_sharpe_net >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 700;">${m.annualized_sharpe_net != null ? fmtNum(m.annualized_sharpe_net, 3) : "N/A"}</td>
-          <td>${m.sortino_ratio_net != null ? fmtNum(m.sortino_ratio_net, 3) : "N/A"}</td>
-          <td class="text-bear">${m.max_drawdown_net_pct != null ? fmtPct(m.max_drawdown_net_pct, 2) : "N/A"}</td>
-          <td class="${vsNifty !== null ? (vsNifty >= 0 ? "text-bull" : "text-bear") : ""}">${vsNifty !== null ? fmtPct(vsNifty, 2, true) : "N/A"}</td>
-          <td>${m.brier_score != null ? fmtNum(m.brier_score, 4) : "N/A"} / ${m.roc_auc != null ? fmtNum(m.roc_auc, 3) : "N/A"}</td>
+          <td>${m.active_trades_count ?? "UNAVAILABLE"} (${tradeFreq !== null ? fmtPct(tradeFreq, 1) : "UNAVAILABLE"})</td>
+          <td>${m.directional_accuracy_all_pct != null ? fmtPct(m.directional_accuracy_all_pct, 2) : "UNAVAILABLE"}</td>
+          <td>${m.high_conviction_hit_rate_pct != null ? fmtPct(m.high_conviction_hit_rate_pct, 2) : "UNAVAILABLE"}</td>
+          <td class="${grossRet !== null ? (grossRet >= 0 ? "text-bull" : "text-bear") : ""}">${grossRet !== null ? fmtPct(grossRet, 2, true) : "UNAVAILABLE"}</td>
+          <td class="text-bear">${costDrag !== null ? `-${fmtPct(costDrag, 2)}` : "UNAVAILABLE"}</td>
+          <td class="${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 800;">${netRet !== null ? fmtPct(netRet, 2, true) : "UNAVAILABLE"}</td>
+          <td class="${m.annualized_sharpe_net != null ? (m.annualized_sharpe_net >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 700;">${m.annualized_sharpe_net != null ? fmtNum(m.annualized_sharpe_net, 3) : "UNAVAILABLE"}</td>
+          <td>${m.sortino_ratio_net != null ? fmtNum(m.sortino_ratio_net, 3) : "UNAVAILABLE"}</td>
+          <td class="text-bear">${m.max_drawdown_net_pct != null ? fmtPct(m.max_drawdown_net_pct, 2) : "UNAVAILABLE"}</td>
+          <td class="${vsNifty !== null ? (vsNifty >= 0 ? "text-bull" : "text-bear") : ""}">${vsNifty !== null ? fmtPct(vsNifty, 2, true) : "UNAVAILABLE"}</td>
+          <td>${m.brier_score != null ? fmtNum(m.brier_score, 4) : "UNAVAILABLE"} / ${m.roc_auc != null ? fmtNum(m.roc_auc, 3) : "UNAVAILABLE"}</td>
         </tr>
       `;
     })
@@ -5256,16 +5283,17 @@ function renderAllStockPredictionsMatrix(predData) {
     countBadgeEl.textContent = String(items.length || 0);
   }
   if (freshEl) {
-    const genStr = predData.generated_at ? String(predData.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
-    const targetStr = items[0]?.target_session_date || "N/A";
-    freshEl.textContent = `Generated: ${genStr} • Target Session: ${targetStr} • ${items.length} NSE Equities Ranked by Calibrated P(Up 1D)`;
+    const genStr = predData.generated_at ? String(predData.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "UNAVAILABLE";
+    const targetStr = items[0]?.target_session_date || "UNAVAILABLE";
+    const modVer = items[0]?.model_version ? `v${items[0].model_version}` : "UNAVAILABLE";
+    freshEl.textContent = `Model: ${modVer} • Generated: ${genStr} • Target Session: ${targetStr} • ${items.length} NSE Equities Ranked by Calibrated P(Up 1D)`;
   }
 
   const tbody = document.getElementById("tbody-quant-predictions");
   if (!tbody) return;
   tbody.innerHTML = items
     .map((p) => {
-      const actStr = String(p.recommended_action || "N/A");
+      const actStr = String(p.recommended_action || "UNAVAILABLE");
       const actCls = actStr.includes("BUY")
         ? "signal-banner bull"
         : actStr.includes("SELL") || actStr.includes("AVOID")
@@ -5282,17 +5310,17 @@ function renderAllStockPredictionsMatrix(predData) {
       return `
         <tr>
           <td style="text-align: left;">
-            <strong>${p.symbol || "N/A"}</strong>
-            <span style="display: block; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-sans);">Regime: ${p.market_regime || "N/A"}</span>
+            <strong>${p.symbol || "UNAVAILABLE"}</strong>
+            <span style="display: block; font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-sans);">Regime: ${p.market_regime || "UNAVAILABLE"}</span>
           </td>
-          <td>${p.observation_date || "N/A"}</td>
+          <td>${p.observation_date || "UNAVAILABLE"}</td>
           <td><span class="${actCls}" style="font-size: 0.72rem; padding: 0.18rem 0.5rem;">${actStr}</span></td>
-          <td class="${p1d !== null && p1d >= 0.53 ? "text-bull" : ""}" style="font-weight: 700;">${p1d !== null ? fmtPct(p1d * 100, 1) : "N/A"}</td>
-          <td>${pLgbm !== null ? fmtPct(pLgbm * 100, 1) : "N/A"}</td>
-          <td class="${gross1d !== null ? (gross1d >= 0 ? "text-bull" : "text-bear") : ""}">${gross1d !== null ? fmtPct(gross1d, 2, true) : "N/A"}</td>
-          <td class="text-bear">${cncBps !== null ? `-${fmtNum(cncBps, 1)} bps` : "N/A"}</td>
-          <td class="${net1d !== null ? (net1d >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 800;">${net1d !== null ? fmtPct(net1d, 2, true) : "N/A"}</td>
-          <td>${conf !== null ? fmtNum(conf, 1) : "N/A"}</td>
+          <td class="${p1d !== null && p1d >= 0.53 ? "text-bull" : ""}" style="font-weight: 700;">${p1d !== null ? fmtPct(p1d * 100, 1) : "UNAVAILABLE"}</td>
+          <td>${pLgbm !== null ? fmtPct(pLgbm * 100, 1) : "UNAVAILABLE"}</td>
+          <td class="${gross1d !== null ? (gross1d >= 0 ? "text-bull" : "text-bear") : ""}">${gross1d !== null ? fmtPct(gross1d, 2, true) : "UNAVAILABLE"}</td>
+          <td class="text-bear">${cncBps !== null ? `-${fmtNum(cncBps, 1)} bps` : "UNAVAILABLE"}</td>
+          <td class="${net1d !== null ? (net1d >= 0 ? "text-bull" : "text-bear") : ""}" style="font-weight: 800;">${net1d !== null ? fmtPct(net1d, 2, true) : "UNAVAILABLE"}</td>
+          <td>${conf !== null ? fmtNum(conf, 1) : "UNAVAILABLE"}</td>
           <td style="text-align: left; font-size: 0.74rem; max-width: 360px;">
             ${bullTxt ? `<div class="text-bull">▲ ${bullTxt}</div>` : ""}
             ${bearTxt ? `<div class="text-bear">▼ ${bearTxt}</div>` : ""}
@@ -5822,7 +5850,8 @@ function renderPhase5Intelligence(data) {
     const modVer = data.model_version || "UNAVAILABLE";
     const newsTs = data.last_news_collection_at ? String(data.last_news_collection_at).slice(0, 19).replace("T", " ") + " IST" : "UNAVAILABLE";
     const quantTs = data.last_quant_update_at ? String(data.last_quant_update_at).slice(0, 19).replace("T", " ") : "UNAVAILABLE";
-    sub.textContent = `Model: ${modVer} • News Collected: ${newsTs} • Quant Updated: ${quantTs} • Pilot Universe: ${(data.pilot_universe || []).join(", ") || "UNAVAILABLE"}`;
+    const predTs = data.latest_prediction_at ? String(data.latest_prediction_at).slice(0, 19).replace("T", " ") + " IST" : "UNAVAILABLE";
+    sub.textContent = `Model: ${modVer} • News Collected: ${newsTs} • Quant Cutoff: ${quantTs} • Latest Pred: ${predTs} • Pilot Universe: ${(data.pilot_universe || []).join(", ") || "UNAVAILABLE"}`;
   }
 
   const warnEl = document.getElementById("p5-warnings-banner");
@@ -5841,31 +5870,31 @@ function renderPhase5Intelligence(data) {
       .filter((h) => hm[h])
       .map((h) => {
         const m = hm[h];
-        const accTxt = m.directional_accuracy_pct != null ? fmtPct(m.directional_accuracy_pct, 1) : "Pending";
-        const aucTxt = m.roc_auc != null ? fmtNum(m.roc_auc, 3) : "—";
-        const icTxt = m.rank_ic != null ? fmtNum(m.rank_ic, 3) : "—";
-        const covTxt = m.prediction_coverage_pct != null ? fmtPct(m.prediction_coverage_pct, 0) : "—";
-        const benchTxt = m.model_vs_benchmark_accuracy_diff_pct != null ? `${m.model_vs_benchmark_accuracy_diff_pct >= 0 ? "+" : ""}${m.model_vs_benchmark_accuracy_diff_pct}%` : "—";
-        return `<span class="badge-neutral mono" style="font-size: 0.7rem;"><strong>${h}</strong>: ${m.status || "INSUFFICIENT_DATA"} (n=${m.evaluated_outcomes_count ?? 0}) • Cov ${covTxt} • Acc ${accTxt} • AUC ${aucTxt} • IC ${icTxt} • vsBench ${benchTxt} • ${m.data_freshness || "—"}</span>`;
+        const accTxt = m.directional_accuracy_pct != null ? fmtPct(m.directional_accuracy_pct, 1) : "UNAVAILABLE";
+        const aucTxt = m.roc_auc != null ? fmtNum(m.roc_auc, 3) : "UNAVAILABLE";
+        const icTxt = m.rank_ic != null ? fmtNum(m.rank_ic, 3) : "UNAVAILABLE";
+        const covTxt = m.prediction_coverage_pct != null ? fmtPct(m.prediction_coverage_pct, 0) : "UNAVAILABLE";
+        const benchTxt = m.model_vs_benchmark_accuracy_diff_pct != null ? `${m.model_vs_benchmark_accuracy_diff_pct >= 0 ? "+" : ""}${m.model_vs_benchmark_accuracy_diff_pct}%` : "UNAVAILABLE";
+        return `<span class="badge-neutral mono" style="font-size: 0.7rem;"><strong>${h}</strong>: ${m.status || "INSUFFICIENT_DATA"} (n=${m.evaluated_outcomes_count ?? 0}) • Cov ${covTxt} • Acc ${accTxt} • AUC ${aucTxt} • IC ${icTxt} • vsBench ${benchTxt} • ${m.data_freshness || "UNAVAILABLE"}</span>`;
       })
       .join(" ");
     const monEvalAt = mon.evaluated_at ? String(mon.evaluated_at).slice(0, 19).replace("T", " ") : "UNAVAILABLE";
     monKpi.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">Logged Predictions (All-Universe Log)</span>
-        <span class="kpi-value">${mon.total_logged_predictions ?? 0}</span>
+        <span class="kpi-value">${mon.total_logged_predictions ?? "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Evaluated Outcomes (Rolling 1D Log)</span>
-        <span class="kpi-value">${mon.evaluated_outcomes_count ?? 0}</span>
+        <span class="kpi-value">${mon.evaluated_outcomes_count ?? "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Rolling 1D Accuracy (Log)</span>
-        <span class="kpi-value">${mon.rolling_directional_accuracy_pct != null ? fmtPct(mon.rolling_directional_accuracy_pct, 1) : "Pending"}</span>
+        <span class="kpi-value">${mon.rolling_directional_accuracy_pct != null ? fmtPct(mon.rolling_directional_accuracy_pct, 1) : "UNAVAILABLE"}</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Recent Brier / Drift (${monEvalAt})</span>
-        <span class="kpi-value">${mon.brier_score_recent != null ? fmtNum(mon.brier_score_recent, 4) : "—"} (${mon.drift_status || "INSUFFICIENT_DATA"})</span>
+        <span class="kpi-value">${mon.brier_score_recent != null ? fmtNum(mon.brier_score_recent, 4) : "UNAVAILABLE"} (${mon.drift_status || "INSUFFICIENT_DATA"})</span>
       </div>
       ${hmBadges ? `<div style="grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem;">${hmBadges}</div>` : ""}
     `;
@@ -5883,20 +5912,20 @@ function renderPhase5Intelligence(data) {
             const o = outlooks[h];
             const isGen = Boolean(o.is_model_generated);
             const decCls = o.decision === "BUY" ? "text-bull" : (o.decision === "NO TRADE" || o.decision === "UNAVAILABLE") ? "text-bear" : "text-hold";
-            const qProbTxt = o.quant_prob_positive != null ? fmtPct(o.quant_prob_positive * 100, 1) : "Unavailable";
+            const qProbTxt = o.quant_prob_positive != null ? fmtPct(o.quant_prob_positive * 100, 1) : "UNAVAILABLE";
             const retTxt = (o.expected_gross_return_pct != null && o.expected_net_return_pct != null)
               ? `${fmtPct(o.expected_gross_return_pct, 2, true)} / ${fmtPct(o.expected_net_return_pct, 2, true)}`
-              : "Unavailable";
-            const decTxt = o.prob_positive != null ? `${o.decision} (${fmtPct(o.prob_positive * 100, 1)})` : o.decision;
-            const srcTag = isGen ? `<span class="text-bull">Model</span>` : `<span class="text-bear">Unavailable</span>`;
-            const metaTxt = `${o.model_prediction_date || s.observation_date || "—"} • ${o.data_freshness || "—"}`;
+              : "UNAVAILABLE";
+            const decTxt = o.prob_positive != null ? `${o.decision} (${fmtPct(o.prob_positive * 100, 1)})` : (o.decision || "UNAVAILABLE");
+            const srcTag = isGen ? `<span class="text-bull">Model</span>` : `<span class="text-bear">UNAVAILABLE</span>`;
+            const metaTxt = `${o.model_prediction_date || s.observation_date || "UNAVAILABLE"} • ${o.data_freshness || "UNAVAILABLE"}`;
             return `
               <tr title="${o.status_reason || ""}">
                 <td><strong>${h}</strong><div style="font-size:0.65rem;">${srcTag}</div></td>
                 <td>${qProbTxt}<div style="font-size:0.65rem;color:var(--text-muted);">${metaTxt}</div></td>
                 <td>${o.news_signal}</td>
                 <td>${o.cross_stock_signal}</td>
-                <td>${isGen ? fmtPct(o.confidence, 0) : "—"}</td>
+                <td>${isGen && o.confidence != null ? fmtPct(o.confidence, 0) : "UNAVAILABLE"}</td>
                 <td class="${decCls}" style="font-weight: 700;">${decTxt}</td>
                 <td class="${(o.expected_net_return_pct ?? 0) >= 0 ? "text-bull" : "text-bear"}">${retTxt}</td>
               </tr>
@@ -5923,10 +5952,10 @@ function renderPhase5Intelligence(data) {
               </table>
             </div>
             <div style="font-size: 0.75rem; line-height: 1.45;">
-              <div><strong>Promoter/Insider:</strong> ${(s.promoter_intelligence || [])[0] || "—"}</div>
-              <div><strong>Competitors:</strong> ${(s.competitor_developments || [])[0] || "—"}</div>
-              <div><strong>Regulatory:</strong> ${(s.regulatory_developments || [])[0] || "—"}</div>
-              <div><strong>Global Macro:</strong> ${(s.global_exposure || [])[0] || "—"}</div>
+              <div><strong>Promoter/Insider:</strong> ${(s.promoter_intelligence || [])[0] || "UNAVAILABLE"}</div>
+              <div><strong>Competitors:</strong> ${(s.competitor_developments || [])[0] || "UNAVAILABLE"}</div>
+              <div><strong>Regulatory:</strong> ${(s.regulatory_developments || [])[0] || "UNAVAILABLE"}</div>
+              <div><strong>Global Macro:</strong> ${(s.global_exposure || [])[0] || "UNAVAILABLE"}</div>
               ${crossTxt ? `<ul class="agent-reasons" style="margin-top: 0.35rem;">${crossTxt}</ul>` : ""}
             </div>
           </div>
@@ -5950,7 +5979,7 @@ function renderPhase5Intelligence(data) {
                 <td><strong>${e.ticker}</strong></td>
                 <td><span class="badge-neutral">${e.event_category}</span></td>
                 <td style="text-align: left;">${linkHtml} <span style="font-size: 0.72rem; color: var(--text-muted);">(${e.original_source})</span></td>
-                <td class="mono">${e.effective_trading_date || "—"}</td>
+                <td class="mono">${e.effective_trading_date || "UNAVAILABLE"}</td>
                 <td class="${sCls}" style="font-weight: 700;">${e.sentiment.toUpperCase()}</td>
                 <td class="mono">${e.impact_magnitude.toUpperCase()}</td>
               </tr>
@@ -5966,8 +5995,9 @@ function renderPhase5ExperimentsTable(expData) {
   if (noteEl && expData) {
     const latestDt = expData.latest_feature_date || "UNAVAILABLE";
     const execMode = expData.execution_mode || "UNAVAILABLE";
+    const genStr = expData.generated_at ? String(expData.generated_at).slice(0, 19).replace("T", " ") + " IST" : "UNAVAILABLE";
     const pitNote = expData.historical_pit_note || "Historical walk-forward proxy ablation using point-in-time reconstructed features (not live forward news).";
-    noteEl.innerHTML = `<span class="evidence-pill evidence-pill-proxy" style="margin-right: 0.45rem;">HISTORICAL PROXY</span> <strong>Latest Feature Date:</strong> ${latestDt} • <strong>Execution:</strong> ${execMode} — ${pitNote}`;
+    noteEl.innerHTML = `<span class="evidence-pill evidence-pill-proxy" style="margin-right: 0.45rem;">HISTORICAL PROXY</span> <strong>Feature Cutoff:</strong> ${latestDt} • <strong>Generated:</strong> ${genStr} • <strong>Execution:</strong> ${execMode} — ${pitNote}`;
   }
 
   const tbody = document.getElementById("tbody-p5-experiments");
@@ -5976,17 +6006,19 @@ function renderPhase5ExperimentsTable(expData) {
     const d1 = r["1D"] || {};
     const d5 = r["5D"] || {};
     const d10 = r["10D"] || {};
+    const foldsTxt = r.folds != null ? `${r.folds} folds` : "UNAVAILABLE";
+    const n1d = d1.active_trades != null ? ` (n=${d1.active_trades})` : "";
     return `
       <tr>
-        <td style="text-align: left;"><strong>${name}</strong> <span class="badge-neutral" style="font-size: 0.64rem;">PROXY</span></td>
-        <td>${r.feature_count ?? "—"}</td>
-        <td>${d1.roc_auc != null ? fmtNum(d1.roc_auc, 4) : "—"}</td>
-        <td class="${(d1.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${d1.net_return_pct != null ? fmtPct(d1.net_return_pct, 2, true) : "—"}</td>
-        <td>${d1.net_sharpe != null ? fmtNum(d1.net_sharpe, 3) : "—"}</td>
-        <td>${d5.roc_auc != null ? fmtNum(d5.roc_auc, 4) : "—"}</td>
-        <td>${d5.rank_ic != null ? fmtNum(d5.rank_ic, 4) : "—"}</td>
-        <td>${d10.roc_auc != null ? fmtNum(d10.roc_auc, 4) : "—"}</td>
-        <td>${d10.rank_ic != null ? fmtNum(d10.rank_ic, 4) : "—"}</td>
+        <td style="text-align: left;"><strong>${name}</strong> <span class="badge-neutral" style="font-size: 0.64rem;">PROXY • ${foldsTxt}${n1d}</span></td>
+        <td>${r.feature_count ?? "UNAVAILABLE"}</td>
+        <td>${d1.roc_auc != null ? fmtNum(d1.roc_auc, 4) : "UNAVAILABLE"}</td>
+        <td class="${(d1.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${d1.net_return_pct != null ? fmtPct(d1.net_return_pct, 2, true) : "UNAVAILABLE"}</td>
+        <td>${d1.net_sharpe != null ? fmtNum(d1.net_sharpe, 3) : "UNAVAILABLE"}</td>
+        <td>${d5.roc_auc != null ? fmtNum(d5.roc_auc, 4) : "UNAVAILABLE"}</td>
+        <td>${d5.rank_ic != null ? fmtNum(d5.rank_ic, 4) : "UNAVAILABLE"}</td>
+        <td>${d10.roc_auc != null ? fmtNum(d10.roc_auc, 4) : "UNAVAILABLE"}</td>
+        <td>${d10.rank_ic != null ? fmtNum(d10.rank_ic, 4) : "UNAVAILABLE"}</td>
       </tr>
     `;
   });
@@ -5996,13 +6028,13 @@ function renderPhase5ExperimentsTable(expData) {
       <tr style="background: rgba(56, 189, 248, 0.08);">
         <td style="text-align: left;"><strong>Benchmark: naive_momentum</strong></td>
         <td>Rule</td>
-        <td>${fmtNum(nm["1D"].roc_auc, 4)}</td>
-        <td class="${(nm["1D"].net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${fmtPct(nm["1D"].net_return_pct, 2, true)}</td>
-        <td>${fmtNum(nm["1D"].net_sharpe, 3)}</td>
-        <td>${nm["5D"] ? fmtNum(nm["5D"].roc_auc, 4) : "—"}</td>
-        <td>${nm["5D"] ? fmtNum(nm["5D"].rank_ic, 4) : "—"}</td>
-        <td>${nm["10D"] ? fmtNum(nm["10D"].roc_auc, 4) : "—"}</td>
-        <td>${nm["10D"] ? fmtNum(nm["10D"].rank_ic, 4) : "—"}</td>
+        <td>${nm["1D"].roc_auc != null ? fmtNum(nm["1D"].roc_auc, 4) : "UNAVAILABLE"}</td>
+        <td class="${(nm["1D"].net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${nm["1D"].net_return_pct != null ? fmtPct(nm["1D"].net_return_pct, 2, true) : "UNAVAILABLE"}</td>
+        <td>${nm["1D"].net_sharpe != null ? fmtNum(nm["1D"].net_sharpe, 3) : "UNAVAILABLE"}</td>
+        <td>${nm["5D"] && nm["5D"].roc_auc != null ? fmtNum(nm["5D"].roc_auc, 4) : "UNAVAILABLE"}</td>
+        <td>${nm["5D"] && nm["5D"].rank_ic != null ? fmtNum(nm["5D"].rank_ic, 4) : "UNAVAILABLE"}</td>
+        <td>${nm["10D"] && nm["10D"].roc_auc != null ? fmtNum(nm["10D"].roc_auc, 4) : "UNAVAILABLE"}</td>
+        <td>${nm["10D"] && nm["10D"].rank_ic != null ? fmtNum(nm["10D"].rank_ic, 4) : "UNAVAILABLE"}</td>
       </tr>
     `);
   }
@@ -6013,10 +6045,11 @@ function renderForwardValidation(fv) {
   if (!fv) return;
   const sub = document.getElementById("fv-subtitle");
   if (sub) {
-    const ts = fv.last_news_collection_at ? String(fv.last_news_collection_at).slice(0, 19).replace("T", " ") + " IST" : "Not collected yet";
+    const ts = fv.last_news_collection_at ? String(fv.last_news_collection_at).slice(0, 19).replace("T", " ") + " IST" : "UNAVAILABLE";
+    const genTs = fv.generated_at ? String(fv.generated_at).slice(0, 19).replace("T", " ") + " IST" : "UNAVAILABLE";
     const modVer = fv.model_version || "UNAVAILABLE";
     const featVer = fv.feature_set_version || "UNAVAILABLE";
-    sub.textContent = `Model ${modVer} (${featVer}) • Pilot Universe: ${(fv.pilot_universe || []).join(", ") || "UNAVAILABLE"} • Last Forward News: ${ts}`;
+    sub.textContent = `Model ${modVer} (${featVer}) • Snapshot Cutoff: ${genTs} • Pilot Universe: ${(fv.pilot_universe || []).join(", ") || "UNAVAILABLE"} • Last Forward News: ${ts}`;
   }
   const distEl = document.getElementById("fv-distinction-note");
   if (distEl && fv.distinction_note) {
@@ -6080,15 +6113,15 @@ function renderForwardValidation(fv) {
           <tr>
             <td style="text-align: left;"><strong>${h}</strong></td>
             <td>${m.model_version || fv.model_version || "UNAVAILABLE"}</td>
-            <td>${fmtPct(m.prediction_coverage_pct ?? 0, 1)}</td>
-            <td>${m.matured_count ?? 0} / ${m.pending_count ?? 0}</td>
-            <td class="${stCls}" style="font-weight: 700;">${m.status}</td>
-            <td>${m.directional_accuracy_pct != null ? fmtPct(m.directional_accuracy_pct, 1) : "—"}</td>
-            <td>${m.roc_auc != null ? fmtNum(m.roc_auc, 4) : "—"}</td>
-            <td>${m.brier_score != null ? fmtNum(m.brier_score, 4) : "—"}</td>
-            <td>${m.rank_ic != null ? fmtNum(m.rank_ic, 4) : "—"}</td>
-            <td class="${(m.net_return_pct ?? 0) >= 0 ? "text-bull" : "text-bear"}">${m.net_return_pct != null ? fmtPct(m.net_return_pct, 2, true) : "—"}</td>
-            <td>${m.vs_naive_momentum_net_diff_pct != null ? fmtPct(m.vs_naive_momentum_net_diff_pct, 2, true) : "—"}</td>
+            <td>${m.prediction_coverage_pct != null ? fmtPct(m.prediction_coverage_pct, 1) : "UNAVAILABLE"}</td>
+            <td>${m.matured_count ?? 0} / ${m.pending_count ?? 0} (min ${m.min_sample_threshold ?? "UNAVAILABLE"})</td>
+            <td class="${stCls}" style="font-weight: 700;">${m.status || "UNAVAILABLE"}</td>
+            <td>${m.directional_accuracy_pct != null ? fmtPct(m.directional_accuracy_pct, 1) : "UNAVAILABLE"}</td>
+            <td>${m.roc_auc != null ? fmtNum(m.roc_auc, 4) : "UNAVAILABLE"}</td>
+            <td>${m.brier_score != null ? fmtNum(m.brier_score, 4) : "UNAVAILABLE"}</td>
+            <td>${m.rank_ic != null ? fmtNum(m.rank_ic, 4) : "UNAVAILABLE"}</td>
+            <td class="${m.net_return_pct != null ? (m.net_return_pct >= 0 ? "text-bull" : "text-bear") : ""}">${m.net_return_pct != null ? fmtPct(m.net_return_pct, 2, true) : "UNAVAILABLE"}</td>
+            <td>${m.vs_naive_momentum_net_diff_pct != null ? fmtPct(m.vs_naive_momentum_net_diff_pct, 2, true) : "UNAVAILABLE"}</td>
           </tr>
         `;
       })
@@ -6096,6 +6129,7 @@ function renderForwardValidation(fv) {
   }
 
   const pBody = document.getElementById("tbody-fv-paper");
+  const rejEl = document.getElementById("fv-rejection-summary");
   if (pBody && fv.paper_portfolio) {
     const pp = fv.paper_portfolio;
     const rows = ["1D", "5D", "10D"]
@@ -6106,15 +6140,15 @@ function renderForwardValidation(fv) {
         return `
           <tr>
             <td style="text-align: left;"><strong>Paper ML ${h}</strong></td>
-            <td>${s.status}</td>
-            <td>₹${Number(s.ending_capital_inr || 1000000).toLocaleString("en-IN")}</td>
-            <td>₹${Number(s.cash_inr ?? 1000000).toLocaleString("en-IN")} / ₹${Number(s.invested_capital_inr ?? 0).toLocaleString("en-IN")}</td>
-            <td>₹${Number(s.realized_pnl_inr ?? 0).toLocaleString("en-IN")} / ₹${Number(s.unrealized_pnl_inr ?? 0).toLocaleString("en-IN")}</td>
-            <td class="${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}">${netRet !== null ? fmtPct(netRet, 2, true) : "—"}</td>
-            <td class="text-bear">${fmtPct(s.max_drawdown_pct ?? 0, 2)}</td>
-            <td>${fmtPct(s.peak_exposure_pct ?? 0, 1)}</td>
+            <td>${s.status || "UNAVAILABLE"}</td>
+            <td>${s.ending_capital_inr != null ? `₹${Number(s.ending_capital_inr).toLocaleString("en-IN")}` : "UNAVAILABLE"}</td>
+            <td>${s.cash_inr != null && s.invested_capital_inr != null ? `₹${Number(s.cash_inr).toLocaleString("en-IN")} / ₹${Number(s.invested_capital_inr).toLocaleString("en-IN")}` : "UNAVAILABLE"}</td>
+            <td>${s.realized_pnl_inr != null && s.unrealized_pnl_inr != null ? `₹${Number(s.realized_pnl_inr).toLocaleString("en-IN")} / ₹${Number(s.unrealized_pnl_inr).toLocaleString("en-IN")}` : "UNAVAILABLE"}</td>
+            <td class="${netRet !== null ? (netRet >= 0 ? "text-bull" : "text-bear") : ""}">${netRet !== null ? fmtPct(netRet, 2, true) : "UNAVAILABLE"}</td>
+            <td class="text-bear">${s.max_drawdown_pct != null ? fmtPct(s.max_drawdown_pct, 2) : "UNAVAILABLE"}</td>
+            <td>${s.peak_exposure_pct != null ? fmtPct(s.peak_exposure_pct, 1) : "UNAVAILABLE"}</td>
             <td>${s.signals_received ?? 0} / ${s.entries_executed ?? 0} / ${s.open_positions_count ?? 0} / ${s.matured_positions_count ?? 0} / ${s.rejected_signals ?? 0}</td>
-            <td>${s.win_rate_pct != null ? fmtPct(s.win_rate_pct, 1) : "—"}</td>
+            <td>${s.win_rate_pct != null ? fmtPct(s.win_rate_pct, 1) : "UNAVAILABLE"}</td>
           </tr>
         `;
       });
@@ -6123,27 +6157,53 @@ function renderForwardValidation(fv) {
       const bRet = bVal.net_return_pct;
       const bDD = bVal.max_drawdown_pct;
       const bEnd = bVal.ending_capital_inr;
-      const retStr = bRet !== null && bRet !== undefined ? fmtPct(bRet, 2, true) : "—";
+      const retStr = bRet !== null && bRet !== undefined ? fmtPct(bRet, 2, true) : "UNAVAILABLE";
       const retCls = bRet !== null && bRet !== undefined ? (bRet >= 0 ? "text-bull" : "text-bear") : "";
       rows.push(`
         <tr style="background: rgba(56, 189, 248, 0.06);">
           <td style="text-align: left;"><strong>Benchmark: ${bName}</strong></td>
-          <td>${bVal.status || "ACTIVE"}</td>
-          <td>${bEnd !== null && bEnd !== undefined ? `₹${Number(bEnd).toLocaleString("en-IN")}` : "—"}</td>
-          <td>—</td>
-          <td>—</td>
+          <td>${bVal.status || "UNAVAILABLE"}</td>
+          <td>${bEnd !== null && bEnd !== undefined ? `₹${Number(bEnd).toLocaleString("en-IN")}` : "UNAVAILABLE"}</td>
+          <td>UNAVAILABLE</td>
+          <td>UNAVAILABLE</td>
           <td class="${retCls}">${retStr}</td>
-          <td>${bDD !== null && bDD !== undefined ? fmtPct(bDD, 2) : "—"}</td>
-          <td>—</td>
-          <td>—</td>
-          <td>—</td>
+          <td>${bDD !== null && bDD !== undefined ? fmtPct(bDD, 2) : "UNAVAILABLE"}</td>
+          <td>UNAVAILABLE</td>
+          <td>UNAVAILABLE</td>
+          <td>UNAVAILABLE</td>
         </tr>
       `);
     }
     pBody.innerHTML = rows.join("");
 
-    const aBody = document.getElementById("tbody-fv-audit");
     const trades = pp.recent_trades || [];
+    if (rejEl) {
+      const totalRej = ["1D", "5D", "10D"].reduce(
+        (acc, h) => acc + Number(pp.strategies?.[h]?.rejected_signals || 0),
+        0
+      );
+      const reasonCounts = {};
+      let recentRejCount = 0;
+      trades.forEach((t) => {
+        if (t.action === "SIGNAL_REJECTED" || t.action === "REJECTED") {
+          recentRejCount += 1;
+          const rsn = String(t.reason || "UNSPECIFIED");
+          reasonCounts[rsn] = (reasonCounts[rsn] || 0) + 1;
+        }
+      });
+      const reasonParts = Object.entries(reasonCounts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([rsn, cnt]) => `<span class="badge-neutral mono">${rsn}: ${cnt}</span>`);
+      const truncNote =
+        totalRej > recentRejCount
+          ? ` (showing ${recentRejCount} in recent_trades window; ${totalRej - recentRejCount} earlier rejections truncated in upstream JSON)`
+          : "";
+      rejEl.innerHTML = totalRej > 0
+        ? `<strong>Rejected Signals Breakdown (${totalRej} total across 1D/5D/10D${truncNote}):</strong> ${reasonParts.length ? reasonParts.join(" ") : "Reason breakdown UNAVAILABLE in truncated window."}`
+        : `<strong>Rejected Signals Breakdown:</strong> 0 rejected signals recorded.`;
+    }
+
+    const aBody = document.getElementById("tbody-fv-audit");
     if (aBody && trades.length) {
       aBody.innerHTML = trades
         .slice(-20)
@@ -6154,7 +6214,7 @@ function renderForwardValidation(fv) {
               ? "text-bull"
               : t.action === "POSITION_EXITED"
               ? "text-hold"
-              : t.action === "SIGNAL_REJECTED"
+              : t.action === "SIGNAL_REJECTED" || t.action === "REJECTED"
               ? "text-bear"
               : "";
           const pxStr =
@@ -6162,19 +6222,19 @@ function renderForwardValidation(fv) {
               ? `₹${fmtNum(t.entry_price, 1)} → ₹${fmtNum(t.exit_price, 1)}`
               : t.entry_price != null
               ? `₹${fmtNum(t.entry_price, 1)}`
-              : "—";
+              : "UNAVAILABLE";
           return `
             <tr>
-              <td style="text-align: left;">${t.event_date || t.signal_date || "—"}</td>
-              <td>${t.strategy_horizon}</td>
-              <td><strong>${t.symbol}</strong></td>
-              <td class="${actCls}" style="font-weight: 700;">${t.action}</td>
-              <td style="font-size: 0.70rem; color: var(--text-muted);">${t.reason || "—"}</td>
+              <td style="text-align: left;">${t.event_date || t.signal_date || "UNAVAILABLE"}</td>
+              <td>${t.strategy_horizon || "UNAVAILABLE"}</td>
+              <td><strong>${t.symbol || "UNAVAILABLE"}</strong></td>
+              <td class="${actCls}" style="font-weight: 700;">${t.action || "UNAVAILABLE"}</td>
+              <td style="font-size: 0.70rem; color: var(--text-muted);">${t.reason || "UNAVAILABLE"}</td>
               <td>${pxStr}</td>
-              <td>${t.allocated_capital_inr ? `₹${Number(t.allocated_capital_inr).toLocaleString("en-IN")}` : "—"}</td>
-              <td class="${t.net_pnl_inr > 0 ? "text-bull" : t.net_pnl_inr < 0 ? "text-bear" : ""}">${t.net_pnl_inr ? `₹${fmtNum(t.net_pnl_inr, 2)}` : "—"}</td>
-              <td>${t.cash_after_inr != null ? `₹${Number(t.cash_after_inr).toLocaleString("en-IN")}` : "—"}</td>
-              <td>${t.equity_after_inr != null ? `₹${Number(t.equity_after_inr).toLocaleString("en-IN")}` : "—"}</td>
+              <td>${t.allocated_capital_inr ? `₹${Number(t.allocated_capital_inr).toLocaleString("en-IN")}` : "UNAVAILABLE"}</td>
+              <td class="${t.net_pnl_inr > 0 ? "text-bull" : t.net_pnl_inr < 0 ? "text-bear" : ""}">${t.net_pnl_inr != null && t.net_pnl_inr !== 0 ? `₹${fmtNum(t.net_pnl_inr, 2)}` : "UNAVAILABLE"}</td>
+              <td>${t.cash_after_inr != null ? `₹${Number(t.cash_after_inr).toLocaleString("en-IN")}` : "UNAVAILABLE"}</td>
+              <td>${t.equity_after_inr != null ? `₹${Number(t.equity_after_inr).toLocaleString("en-IN")}` : "UNAVAILABLE"}</td>
             </tr>
           `;
         })
