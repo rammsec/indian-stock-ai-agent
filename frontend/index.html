@@ -290,11 +290,11 @@
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                 <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-                  <strong class="text-bull" style="font-size: 0.74rem; text-transform: uppercase;">Top Bullish TreeSHAP Drivers (+bps)</strong>
+                  <strong class="text-bull" style="font-size: 0.74rem; text-transform: uppercase;">Top Bullish TreeSHAP Drivers (+Δ)</strong>
                   <ul id="qp-bull-drivers" class="agent-reasons mono" style="margin-top: 0.45rem; font-size: 0.76rem;"></ul>
                 </div>
                 <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem;">
-                  <strong class="text-bear" style="font-size: 0.74rem; text-transform: uppercase;">Top Bearish TreeSHAP Drivers (-bps)</strong>
+                  <strong class="text-bear" style="font-size: 0.74rem; text-transform: uppercase;">Top Bearish TreeSHAP Drivers (-Δ)</strong>
                   <ul id="qp-bear-drivers" class="agent-reasons mono" style="margin-top: 0.45rem; font-size: 0.76rem;"></ul>
                 </div>
               </div>
@@ -594,7 +594,7 @@
           <div class="header-left">
             <span class="sec-num" style="background: rgba(56, 189, 248, 0.14); color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">WF</span>
             <div>
-              <h2 class="sec-heading-title">Walk-Forward Out-of-Sample Backtest (7 Expanding Folds • Indian CNC Transaction Costs)</h2>
+              <h2 id="quant-bt-heading" class="sec-heading-title">Walk-Forward Out-of-Sample Backtest (Expanding Folds • Indian CNC Transaction Costs)</h2>
               <p id="quant-bt-subtitle" class="sec-heading-sub">Zero Look-Ahead Leakage (`0.00e+00`) • Comparing Calibrated ML Ensemble vs Baselines &amp; Nifty 50 Benchmark</p>
             </div>
           </div>
@@ -631,7 +631,7 @@
       <div class="collapsible-section open">
         <div class="collapsible-header">
           <div class="header-left">
-            <span class="sec-num" style="background: var(--signal-bull-bg); color: var(--signal-bull); border-color: var(--signal-bull);">27</span>
+            <span id="quant-pred-count-badge" class="sec-num" style="background: var(--signal-bull-bg); color: var(--signal-bull); border-color: var(--signal-bull);">ML</span>
             <div>
               <h2 class="sec-heading-title">All-Stock Calibrated Next-Day Signal Matrix, TreeSHAP Drivers &amp; NSE Delivery</h2>
               <p id="quant-pred-freshness" class="sec-heading-sub">Liquid NSE Equities Ranked by Calibrated P(Up 1D) &amp; Net Expected Return after Indian CNC Costs</p>
@@ -798,6 +798,10 @@
         </div>
         <div class="collapsible-body">
           <div id="p5-warnings-banner" style="margin-bottom: 0.85rem; font-size: 0.78rem; color: var(--text-muted);"></div>
+          <div class="evidence-scope-header">
+            <span class="evidence-pill evidence-pill-monitor">ROLLING MODEL MONITOR</span>
+            <span style="font-size: 0.78rem; color: var(--text-secondary);">All-universe prediction log (`prediction_log.parquet` across tracked NSE stocks) — separate from the 5-stock prospective forward validation below.</span>
+          </div>
           <div id="p5-monitoring-kpis" class="kpi-strip" style="margin-bottom: 1rem;"></div>
           <div class="sub-panel" style="margin-bottom: 1rem; font-size: 0.78rem; color: var(--text-secondary);">
             <strong>Epistemic Separation:</strong> <em>Facts</em> (OHLCV prices, exchange filings, raw headlines with source links) are strictly separated from <em>Interpretations</em> (event category, sentiment, cross-stock read-across) and <em>Model Predictions</em> (1D/5D/10D signals). Paper-trading &amp; research only.
@@ -806,7 +810,13 @@
             <div class="sub-panel">Loading 5-stock intelligence cards...</div>
           </div>
 
-          <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem;">Controlled Walk-Forward Experiments (A–E across 1D, 5D, 10D)</h3>
+          <div class="evidence-scope-header" style="margin-top: 0.25rem;">
+            <h3 style="font-size: 0.95rem; font-weight: 700;">Controlled Walk-Forward Experiments (A–E across 1D, 5D, 10D)</h3>
+            <span class="evidence-pill evidence-pill-proxy">HISTORICAL PROXY — NOT LIVE FORWARD RESULTS</span>
+          </div>
+          <div id="p5-experiments-pit-note" class="evidence-note-box" style="margin-bottom: 0.65rem; font-size: 0.77rem; color: var(--text-secondary);">
+            Loading historical proxy experiment metadata...
+          </div>
           <div class="table-wrap" style="margin-bottom: 1.25rem;">
             <table class="fin-table mono">
               <thead>
@@ -855,15 +865,18 @@
           <div class="header-left">
             <span class="sec-num" style="background: rgba(16, 185, 129, 0.14); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">5.3</span>
             <div>
-              <h2 class="sec-heading-title">Forward Validation &amp; Paper Research Portfolio (Prospective Evidence Only)</h2>
+              <h2 class="sec-heading-title">Forward Validation &amp; Paper Research Portfolio (5-Stock Prospective Pilot Only)</h2>
               <p id="fv-subtitle" class="sec-heading-sub">Loading immutable prediction snapshots, matured outcomes, forward news counts &amp; ₹10,00,000 paper portfolio...</p>
             </div>
           </div>
           <span class="chevron-btn">Expand / Collapse <span class="chevron-icon">▼</span></span>
         </div>
         <div class="collapsible-body">
-          <div id="fv-distinction-note" style="margin-bottom: 0.75rem; padding: 0.6rem 0.85rem; border-radius: 6px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); font-size: 0.78rem;">
+          <div id="fv-distinction-note" style="margin-bottom: 0.65rem; padding: 0.6rem 0.85rem; border-radius: 6px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); font-size: 0.78rem;">
             <strong>Evidence Separation:</strong> Historical proxy experiments &amp; walk-forward backtests are strictly separated from genuine forward-only news observations and forward paper portfolio performance.
+          </div>
+          <div id="fv-news-provenance-banner" class="evidence-note-box" style="margin-bottom: 0.65rem; font-size: 0.77rem;">
+            Checking forward news provenance...
           </div>
           <div id="fv-warnings-banner" style="margin-bottom: 0.85rem; font-size: 0.78rem; color: var(--text-muted);"></div>
           <div id="fv-kpis" class="kpi-strip" style="margin-bottom: 1rem;"></div>

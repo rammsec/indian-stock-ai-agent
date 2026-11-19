@@ -863,9 +863,13 @@ function rrAppendixHtml(ctx) {
       return [h, e.total_snapshots, e.matured_count, e.pending_count, e.min_sample_threshold, rrHtml(thin || e.status === "INSUFFICIENT_DATA" ? rrBadge("INSUFFICIENT DATA", "rr-warn") : rrBadge(e.status || RR_NA, "rr-neutral")), rrPct(e.directional_accuracy_pct, 1), rrNum(e.roc_auc, 3), rrPct(e.net_return_pct, 2, true)];
     });
     const canonTxt = rrIsNum(fv.canonical_snapshots_count) ? `${fv.canonical_snapshots_count} canonical (${fv.total_immutable_snapshots} stored)` : fv.total_immutable_snapshots;
+    const np = fv.news_provenance || null;
+    const npTxt = np
+      ? ` Prospective news active: ${np.is_genuinely_forward_collected ? "Yes" : "No"} (${np.events_after_prediction_cutoff ?? 0} post-cutoff events; ${np.valid_events ?? 0} valid / ${np.quarantined_events ?? 0} quarantined).`
+      : "";
     parts.push(
       `<h4 class="rr-sub">Live forward validation <span class="rr-tag">PROSPECTIVE \u2013 real predictions made before outcomes</span></h4>` +
-        `<p class="rr-muted">Generated ${rrEsc(fv.generated_at || RR_NA)}. Snapshots ${rrEsc(canonTxt)}; matured outcomes ${rrEsc(fv.matured_outcomes_total)}; pending ${rrEsc(fv.pending_outcomes_total)}. Metrics are not meaningful until the minimum sample is reached.</p>` +
+        `<p class="rr-muted">Generated ${rrEsc(fv.generated_at || RR_NA)}. Snapshots ${rrEsc(canonTxt)}; matured outcomes ${rrEsc(fv.matured_outcomes_total)}; pending ${rrEsc(fv.pending_outcomes_total)}.${rrEsc(npTxt)} Metrics are not meaningful until the minimum sample is reached.</p>` +
         rrTable(["Horizon", "Snapshots", "Matured (sample size)", "Pending", "Minimum sample", "Status", "Directional accuracy", "ROC AUC", "Net return"], rows)
     );
     if (fv.paper_portfolio && fv.paper_portfolio.strategies) {

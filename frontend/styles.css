@@ -1098,3 +1098,52 @@ span.rr-pos { color: var(--signal-bull); } span.rr-neg { color: var(--signal-bea
   .rr-assess { width: 100%; }
   .rr-company { font-size: 1.2rem; }
 }
+
+/* Evidence Separation Pills & Provenance Boxes */
+.evidence-scope-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+
+.evidence-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.16rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.evidence-pill-proxy {
+  background: var(--signal-hold-bg);
+  color: var(--signal-hold);
+  border-color: hsla(38, 94%, 56%, 0.4);
+}
+
+.evidence-pill-monitor {
+  background: var(--accent-brand-soft);
+  color: var(--accent-brand);
+  border-color: hsla(210, 92%, 58%, 0.4);
+}
+
+.evidence-pill-prospective {
+  background: var(--signal-bull-bg);
+  color: var(--signal-bull);
+  border-color: hsla(152, 72%, 46%, 0.4);
+}
+
+.evidence-note-box {
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+

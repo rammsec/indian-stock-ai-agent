@@ -232,12 +232,12 @@ async function liveBrowserResearch(symbol) {
     };
   });
   const latestShp = shpQuarters[shpQuarters.length - 1] || {
-    period: "Latest",
-    promoters_pct: 50,
-    fii_pct: 15,
-    dii_pct: 15,
-    government_pct: 0,
-    public_pct: 20,
+    period: "UNAVAILABLE",
+    promoters_pct: null,
+    fii_pct: null,
+    dii_pct: null,
+    government_pct: null,
+    public_pct: null,
   };
 
   // Fetch 365-day chart from Screener
@@ -268,28 +268,28 @@ async function liveBrowserResearch(symbol) {
 
   const latestPt = priceSeries[priceSeries.length - 1] || {
     close: curPrice,
-    dma50: curPrice * 0.98,
-    dma200: curPrice * 0.94,
+    dma50: null,
+    dma200: null,
   };
-  const prevPt = priceSeries[priceSeries.length - 2] || latestPt;
-  const dayChg = prevPt.close ? Number((((latestPt.close - prevPt.close) / prevPt.close) * 100).toFixed(2)) : 0;
-  const atr = Number((curPrice * 0.018).toFixed(2));
+  const prevPt = priceSeries[priceSeries.length - 2] || null;
+  const dayChg = prevPt && prevPt.close && latestPt.close != null
+    ? Number((((latestPt.close - prevPt.close) / prevPt.close) * 100).toFixed(2))
+    : null;
 
   const rdHistory = annual5.map((r) => ({
     period: r.period,
-    revenue_cr: r.revenue_cr || 0,
-    rd_spend_cr: Number(((r.revenue_cr || 0) * 0.015).toFixed(1)),
-    rd_pct_of_sales: 1.5,
-    intangible_assets_cr: 0,
-    cwip_cr: 0,
-    employee_cost_pct: 12.0,
+    revenue_cr: r.revenue_cr ?? null,
+    rd_spend_cr: null,
+    rd_pct_of_sales: null,
+    intangible_assets_cr: null,
+    cwip_cr: null,
+    employee_cost_pct: null,
   }));
-  const latestRd = rdHistory[rdHistory.length - 1] || { rd_spend_cr: 0, rd_pct_of_sales: 1.5 };
 
-  const fundScore = roePct >= 15 ? 76.0 : 62.0;
-  const techScore = curPrice >= (latestPt.dma50 || curPrice) ? 72.0 : 54.0;
-  const convScore = Number((fundScore * 0.8 + techScore * 0.2).toFixed(1));
-  const action = convScore >= 72 ? "STRONG BUY" : convScore >= 58 ? "BUY" : "HOLD / ACCUMULATE";
+  const fundScore = roePct != null ? (roePct >= 15 ? 76.0 : 62.0) : null;
+  const techScore = curPrice != null && latestPt.dma50 != null ? (curPrice >= latestPt.dma50 ? 72.0 : 54.0) : null;
+  const convScore = fundScore != null && techScore != null ? Number((fundScore * 0.8 + techScore * 0.2).toFixed(1)) : null;
+  const action = convScore == null ? "NO TRADE" : convScore >= 72 ? "STRONG BUY" : convScore >= 58 ? "BUY" : "HOLD / ACCUMULATE";
 
   return {
     fetched_at: new Date().toISOString().slice(0, 19).replace("T", " ") + " (Live Browser Scrape)",
@@ -303,8 +303,8 @@ async function liveBrowserResearch(symbol) {
       stock_pe: stockPe,
       roe_pct: roePct,
       roce_pct: rocePct,
-      profit_cagr_5y_pct: 14.2,
-      piotroski_score: 7,
+      profit_cagr_5y_pct: null,
+      piotroski_score: null,
     },
     last_5_annual_reports: annual5,
     last_5_quarterly_reports: quarterly5,
@@ -315,8 +315,8 @@ async function liveBrowserResearch(symbol) {
       total_cash_in_hand_cr: latestCb.total_cash_in_hand_cr,
       total_borrowings_cr: latestCb.total_borrowings_cr,
       net_cash_position_cr: latestCb.net_cash_cr,
-      debt_to_equity: latestCb.total_equity_cr > 0 ? Number((latestCb.total_borrowings_cr / latestCb.total_equity_cr).toFixed(2)) : 0,
-      cash_pct_of_mcap: mcapCr > 0 ? Number(((latestCb.total_cash_in_hand_cr / mcapCr) * 100).toFixed(1)) : 0,
+      debt_to_equity: latestCb.total_equity_cr > 0 ? Number((latestCb.total_borrowings_cr / latestCb.total_equity_cr).toFixed(2)) : null,
+      cash_pct_of_mcap: mcapCr > 0 ? Number(((latestCb.total_cash_in_hand_cr / mcapCr) * 100).toFixed(1)) : null,
       cumulative_5y_ocf_cr: cashHist5y.reduce((a, b) => a + (b.operating_cash_flow_cr || 0), 0),
       roce_5y_series: [],
       history_5y: cashHist5y,
@@ -328,39 +328,43 @@ async function liveBrowserResearch(symbol) {
       dii_pct: latestShp.dii_pct,
       government_pct: latestShp.government_pct,
       public_pct: latestShp.public_pct,
-      institutional_total_pct: Number((latestShp.fii_pct + latestShp.dii_pct).toFixed(2)),
-      promoter_change_4q_pct: 0,
-      fii_change_4q_pct: 0,
-      dii_change_4q_pct: 0,
+      institutional_total_pct: latestShp.fii_pct != null && latestShp.dii_pct != null
+        ? Number((latestShp.fii_pct + latestShp.dii_pct).toFixed(2))
+        : null,
+      promoter_change_4q_pct: null,
+      fii_change_4q_pct: null,
+      dii_change_4q_pct: null,
       quarterly_history: shpQuarters,
       named_stockholders: [],
     },
     rd_and_innovation: {
-      latest_rd_spend_cr: latestRd.rd_spend_cr,
-      latest_rd_pct_of_sales: latestRd.rd_pct_of_sales,
-      cumulative_5y_rd_cr: Number(rdHistory.reduce((a, b) => a + b.rd_spend_cr, 0).toFixed(1)),
-      intangible_assets_cr: 0,
-      cwip_cr: 0,
-      innovation_focus: `Product engineering, digital automation, and R&D in ${companyName}`,
-      rd_data_source: "Live Browser Screener.in Extraction",
+      latest_rd_spend_cr: null,
+      latest_rd_pct_of_sales: null,
+      cumulative_5y_rd_cr: null,
+      intangible_assets_cr: null,
+      cwip_cr: null,
+      innovation_focus: "R&D expenditure breakdown unavailable in live browser scrape (refer to statutory Annual Report PDFs).",
+      rd_data_source: "UNAVAILABLE (Live Browser Scrape)",
       history_5y: rdHistory,
       annual_reports_5y: [],
     },
     technicals: {
       current_price: curPrice,
-      prev_close: prevPt.close || curPrice,
+      prev_close: prevPt ? prevPt.close : null,
       day_change_pct: dayChg,
-      return_1y_pct: 12.4,
-      rsi_14: 58.5,
-      macd_hist: 1.2,
-      dma_50: latestPt.dma50 || curPrice,
-      dma_200: latestPt.dma200 || curPrice,
-      atr_14: atr,
-      atr_pct: 1.8,
-      volume_Surge_ratio: 1.15,
-      support_1: Number((curPrice - atr).toFixed(2)),
-      resistance_1: Number((curPrice + 1.3 * atr).toFixed(2)),
-      trend_regime: curPrice >= (latestPt.dma50 || curPrice) ? "BULLISH UPTREND (Above 50-DMA)" : "CONSOLIDATION",
+      return_1y_pct: null,
+      rsi_14: null,
+      macd_hist: null,
+      dma_50: latestPt.dma50 ?? null,
+      dma_200: latestPt.dma200 ?? null,
+      atr_14: null,
+      atr_pct: null,
+      volume_Surge_ratio: null,
+      support_1: null,
+      resistance_1: null,
+      trend_regime: curPrice != null && latestPt.dma50 != null
+        ? (curPrice >= latestPt.dma50 ? "BULLISH UPTREND (Above 50-DMA)" : "CONSOLIDATION")
+        : "UNAVAILABLE",
       price_series: priceSeries,
     },
     agent_committee: [
@@ -368,10 +372,10 @@ async function liveBrowserResearch(symbol) {
         agent_id: "five_reports_agent",
         agent_name: "5-Report Earnings & Performance Agent",
         persona_inspiration: "Peter Lynch / Growth Analyst",
-        signal: "BULLISH",
-        score: fundScore,
+        signal: fundScore != null && fundScore >= 70 ? "BULLISH" : "NEUTRAL",
+        score: fundScore ?? 0,
         weight_pct: 25,
-        key_metrics: { "ROE / ROCE": `${roePct}% / ${rocePct}%`, "Stock P/E": `${stockPe || "—"}x` },
+        key_metrics: { "ROE / ROCE": `${roePct ?? "UNAVAILABLE"}% / ${rocePct ?? "UNAVAILABLE"}%`, "Stock P/E": `${stockPe || "—"}x` },
         reasoning: [`Analyzed ${annual5.length} annual reports and ${quarterly5.length} quarterly reports live.`],
       },
       {
@@ -388,31 +392,37 @@ async function liveBrowserResearch(symbol) {
         agent_id: "stockholders_agent",
         agent_name: "Stockholders & Institutional Agent",
         persona_inspiration: "Smart-Money Tracker",
-        signal: "BULLISH",
-        score: 70,
+        signal: "NEUTRAL",
+        score: 50,
         weight_pct: 20,
-        key_metrics: { "Promoters": `${latestShp.promoters_pct}%`, "FII + DII": `${(latestShp.fii_pct + latestShp.dii_pct).toFixed(1)}%` },
-        reasoning: [`Promoters hold ${latestShp.promoters_pct}%, Institutions hold ${(latestShp.fii_pct + latestShp.dii_pct).toFixed(1)}%.`],
+        key_metrics: {
+          "Promoters": latestShp.promoters_pct != null ? `${latestShp.promoters_pct}%` : "UNAVAILABLE",
+          "FII + DII": latestShp.fii_pct != null && latestShp.dii_pct != null ? `${(latestShp.fii_pct + latestShp.dii_pct).toFixed(1)}%` : "UNAVAILABLE",
+        },
+        reasoning: [`Promoters hold ${latestShp.promoters_pct ?? "UNAVAILABLE"}%.`],
       },
       {
         agent_id: "rd_innovation_agent",
         agent_name: "R&D & Innovation Moat Agent",
         persona_inspiration: "Charlie Munger / Moat Analyst",
-        signal: "BULLISH",
-        score: 68,
+        signal: "NEUTRAL",
+        score: 50,
         weight_pct: 15,
-        key_metrics: { "Latest R&D": `₹${latestRd.rd_spend_cr} Cr`, "R&D % Sales": `${latestRd.rd_pct_of_sales}%` },
-        reasoning: [`Estimated annual R&D investment of ₹${latestRd.rd_spend_cr} Cr.`],
+        key_metrics: { "Latest R&D": "UNAVAILABLE", "R&D % Sales": "UNAVAILABLE" },
+        reasoning: ["R&D expenditure figures are not available in live browser scrape."],
       },
       {
         agent_id: "technical_catalyst_agent",
         agent_name: "Next-Day Technical Trigger Agent",
         persona_inspiration: "Stanley Druckenmiller / Price Action",
-        signal: techScore >= 60 ? "BULLISH" : "NEUTRAL",
-        score: techScore,
+        signal: techScore != null && techScore >= 60 ? "BULLISH" : "NEUTRAL",
+        score: techScore ?? 50,
         weight_pct: 20,
-        key_metrics: { "50-DMA": `₹${latestPt.dma50 || curPrice}`, "200-DMA": `₹${latestPt.dma200 || curPrice}` },
-        reasoning: [`Trading at ₹${curPrice} with 50-DMA at ₹${latestPt.dma50 || curPrice}.`],
+        key_metrics: {
+          "50-DMA": latestPt.dma50 != null ? `₹${latestPt.dma50}` : "UNAVAILABLE",
+          "200-DMA": latestPt.dma200 != null ? `₹${latestPt.dma200}` : "UNAVAILABLE",
+        },
+        reasoning: [`Trading at ₹${curPrice ?? "UNAVAILABLE"} with 50-DMA at ${latestPt.dma50 != null ? `₹${latestPt.dma50}` : "UNAVAILABLE"}.`],
       },
     ],
     next_day_guidance: {
@@ -421,20 +431,20 @@ async function liveBrowserResearch(symbol) {
       fundamental_score: fundScore,
       technical_score: techScore,
       current_price: curPrice,
-      entry_zone_low: Number((curPrice - 0.3 * atr).toFixed(2)),
-      entry_zone_high: Number((curPrice + 0.1 * atr).toFixed(2)),
-      target_1_next_day: Number((curPrice + 1.3 * atr).toFixed(2)),
-      target_2_swing: Number((curPrice + 2.4 * atr).toFixed(2)),
-      stop_loss: Number((curPrice - 0.95 * atr).toFixed(2)),
-      risk_reward_ratio: 1.4,
-      position_size_suggestion_pct: 5.0,
-      executive_summary: `${companyName} (${sym}) analyzed live in browser from Screener.in: Conviction ${convScore}/100 (${action}). Cash & Investments stand at ₹${latestCb.total_cash_in_hand_cr.toLocaleString("en-IN")} Cr vs Borrowings of ₹${latestCb.total_borrowings_cr.toLocaleString("en-IN")} Cr, ROE ${roePct}%, and Promoter+Institutional holding of ${(latestShp.promoters_pct + latestShp.fii_pct + latestShp.dii_pct).toFixed(1)}%.`,
-      key_catalysts: ["Live 5-Report earnings trajectory", `ROE ${roePct}% & ROCE ${rocePct}%`],
-      key_risks: [`Strict Stop-Loss at ₹${(curPrice - 0.95 * atr).toFixed(2)}`],
-      llm_model_used: "GitHub Pages Serverless + Live Browser Engine",
+      entry_zone_low: null,
+      entry_zone_high: null,
+      target_1_next_day: null,
+      target_2_swing: null,
+      stop_loss: null,
+      risk_reward_ratio: null,
+      position_size_suggestion_pct: null,
+      executive_summary: `${companyName} (${sym}) analyzed live in browser from Screener.in: Cash & Investments stand at ₹${latestCb.total_cash_in_hand_cr.toLocaleString("en-IN")} Cr vs Borrowings of ₹${latestCb.total_borrowings_cr.toLocaleString("en-IN")} Cr, ROE ${roePct ?? "UNAVAILABLE"}%. Quantitative ML predictions and ATR targets are unavailable in serverless browser-only fallback.`,
+      key_catalysts: ["Live 5-Report earnings trajectory", `ROE ${roePct ?? "UNAVAILABLE"}% & ROCE ${rocePct ?? "UNAVAILABLE"}%`],
+      key_risks: ["Serverless browser scrape omits ML predictions, ATR levels, and R&D disclosures."],
+      llm_model_used: "GitHub Pages Serverless + Live Browser Scrape (No ML)",
     },
     promoter_and_competitor_intel: {
-      promoter_group: `${companyName} Promoter & Insider Group (${latestShp.promoters_pct}% Stake)`,
+      promoter_group: `${companyName} Promoter & Insider Group (${latestShp.promoters_pct ?? "UNAVAILABLE"}% Stake)`,
       key_leaders: [
         {
           name: `${companyName} Managing Director & Board`,
@@ -444,15 +454,15 @@ async function liveBrowserResearch(symbol) {
         },
       ],
       key_stakeholders_watch: [
-        `Promoters hold ${latestShp.promoters_pct}% | FIIs hold ${latestShp.fii_pct}% | DIIs hold ${latestShp.dii_pct}%`,
+        `Promoters hold ${latestShp.promoters_pct ?? "UNAVAILABLE"}% | FIIs hold ${latestShp.fii_pct ?? "UNAVAILABLE"}% | DIIs hold ${latestShp.dii_pct ?? "UNAVAILABLE"}%`,
       ],
       promoter_statements_and_articles: [
         {
           speaker_or_source: `${companyName} Exchange & Earnings Filing`,
           published: "Latest Quarter",
-          headline: `${companyName} (${sym}) reports ROE of ${roePct}% and Cash & Investments of ₹${latestCb.total_cash_in_hand_cr.toLocaleString("en-IN")} Cr`,
+          headline: `${companyName} (${sym}) reports ROE of ${roePct ?? "UNAVAILABLE"}% and Cash & Investments of ₹${latestCb.total_cash_in_hand_cr.toLocaleString("en-IN")} Cr`,
           url: `https://www.screener.in/company/${encodeURIComponent(sym)}/`,
-          share_price_impact: roePct >= 15 ? "BULLISH" : "NEUTRAL",
+          share_price_impact: roePct != null && roePct >= 15 ? "BULLISH" : "NEUTRAL",
           why_it_affects_share_value: "Return on equity and balance sheet liquidity directly drive institutional valuation multiples.",
         },
       ],
