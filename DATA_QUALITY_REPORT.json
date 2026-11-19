@@ -1,0 +1,204 @@
+{
+  "audit_generated_at": "2026-11-19T20:14:34.279577+05:30",
+  "prospective_cutoff": "2026-11-17",
+  "read_only_guarantee": true,
+  "sections": {
+    "metadata_version_drift": {
+      "has_version_drift": true,
+      "unique_versions_detected": [
+        "5.0.0-pilot",
+        "5.3.0-pilot"
+      ],
+      "json_versions": {
+        "data_phase5_intelligence": "5.0.0-pilot",
+        "docs_phase5_intelligence": "5.0.0-pilot",
+        "data_forward_validation": "5.3.0-pilot",
+        "docs_forward_validation": "5.3.0-pilot"
+      },
+      "json_generated_at": {
+        "data_phase5_intelligence": "2026-11-19T17:28:47.626097+05:30",
+        "docs_phase5_intelligence": "2026-11-19T17:28:47.626097+05:30",
+        "data_forward_validation": "2026-11-19T17:29:00.758793+05:30",
+        "docs_forward_validation": "2026-11-19T17:29:00.758793+05:30"
+      },
+      "forward_predictions_parquet_versions": [
+        "5.3.0-pilot"
+      ],
+      "severity": "HIGH"
+    },
+    "forward_predictions_and_outcomes": {
+      "total_snapshots": 65,
+      "duplicate_prediction_ids": 0,
+      "canonical_snapshots": 30,
+      "duplicate_run_snapshots": 35,
+      "prospective_cutoff": "2026-11-17",
+      "prospective_snapshots": 20,
+      "historical_snapshots": 45,
+      "prospective_canonical_snapshots": 20,
+      "historical_canonical_snapshots": 10,
+      "total_outcomes": 195,
+      "raw_horizon_status_counts": {
+        "10D_PENDING": 65,
+        "1D_MATURED": 55,
+        "1D_PENDING": 10,
+        "5D_PENDING": 65
+      },
+      "derived_audit_status_counts_all": {
+        "INVALID_LOOKAHEAD": 150,
+        "PENDING": 35,
+        "MATURED": 10
+      },
+      "derived_audit_status_counts_canonical_1d": {
+        "INVALID_LOOKAHEAD": 15,
+        "MATURED": 10,
+        "PENDING": 5
+      },
+      "canonical_lookahead_runs": [
+        {
+          "prediction_timestamp": "2026-11-17T10:25:29.884689+05:30",
+          "observation_date": "2026-11-16",
+          "nse_session": "INTRADAY",
+          "entry_date": "2026-11-17",
+          "outcome_status": "MATURED",
+          "lookahead_delta_minutes": 70.5,
+          "affected_symbols": 5
+        },
+        {
+          "prediction_timestamp": "2026-11-18T17:32:47.787090+05:30",
+          "observation_date": "2026-11-17",
+          "nse_session": "POST_MARKET",
+          "entry_date": "2026-11-18",
+          "outcome_status": "MATURED",
+          "lookahead_delta_minutes": 497.8,
+          "affected_symbols": 5
+        },
+        {
+          "prediction_timestamp": "2026-11-19T17:28:47.626097+05:30",
+          "observation_date": "2026-11-18",
+          "nse_session": "POST_MARKET",
+          "entry_date": null,
+          "outcome_status": "PENDING",
+          "lookahead_delta_minutes": 493.79,
+          "affected_symbols": 5
+        }
+      ],
+      "benchmark_return_pct_non_null": 0,
+      "severity": "CRITICAL"
+    },
+    "prediction_log": {
+      "total_rows": 90,
+      "unique_symbols": 15,
+      "duplicate_prediction_ids": 0,
+      "duplicate_symbol_observation_date": 45,
+      "prospective_rows": 30,
+      "historical_rows": 60,
+      "evaluated_1d_count": 75,
+      "evaluated_5d_count": 0,
+      "evaluated_10d_count": 0,
+      "generated_at_utc_count": 90,
+      "by_observation_date": [
+        {
+          "observation_date": "2026-11-16",
+          "rows": 60,
+          "unique_symbols": 15,
+          "evaluated_1d": 60
+        },
+        {
+          "observation_date": "2026-11-17",
+          "rows": 15,
+          "unique_symbols": 15,
+          "evaluated_1d": 15
+        },
+        {
+          "observation_date": "2026-11-18",
+          "rows": 15,
+          "unique_symbols": 15,
+          "evaluated_1d": 0
+        }
+      ],
+      "severity": "HIGH"
+    },
+    "equities_and_indices": {
+      "equities": {
+        "rows": 7440,
+        "symbols": 15,
+        "date_min": "2024-11-18",
+        "date_max": "2026-11-18",
+        "duplicate_symbol_date": 0,
+        "non_positive_or_null_prices": {
+          "open": 0,
+          "high": 0,
+          "low": 0,
+          "close": 0,
+          "adj_close": 0
+        },
+        "ohlc_envelope_violations": 0,
+        "zero_volume_rows": 29,
+        "zero_volume_by_date": {
+          "2025-03-18": 14,
+          "2026-01-15": 15
+        },
+        "delivery_pct_missing_rows": 7384,
+        "delivery_pct_present_rows": 56,
+        "delivery_pct_coverage_pct": 0.75,
+        "dividends_positive_rows": 44,
+        "stock_splits_positive_rows": 2,
+        "adj_close_differs_from_close_rows": 6164,
+        "stale_symbols": {}
+      },
+      "indices": {
+        "rows": 4936,
+        "index_count": 12,
+        "date_min": "2024-11-18",
+        "date_max": "2026-11-18",
+        "duplicate_index_date": 0,
+        "non_positive_or_null_prices": {
+          "open": 0,
+          "high": 0,
+          "low": 0,
+          "close": 0
+        },
+        "volume_null_by_index": {
+          "INDIA_VIX": 492,
+          "NIFTY_MIDCAP_100": 1,
+          "NIFTY_PHARMA": 1,
+          "NIFTY_SMALLCAP_100": 1
+        },
+        "has_NIFTY_50_underscore": true,
+        "has_NIFTY_50_space": false,
+        "nifty_naming_mismatch_bug": true
+      },
+      "severity": "HIGH"
+    },
+    "structured_events": {
+      "valid_events": 254,
+      "quarantined_events": 32,
+      "null_collection_timestamp_rows": 156,
+      "non_null_collection_timestamp_rows": 98,
+      "is_genuinely_forward_collected": false,
+      "duplicate_reports_count": 7,
+      "publication_after_collection_count": 0,
+      "events_at_0700_ist_count": 107,
+      "prospective_by_publication_date": 20,
+      "prospective_by_collection_date": 98,
+      "severity": "HIGH"
+    },
+    "paper_trades": {
+      "total_rows": 219,
+      "action_counts": {
+        "SIGNAL_RECEIVED": 159,
+        "SIGNAL_REJECTED": 42,
+        "REJECTED": 15,
+        "POSITION_OPEN": 2,
+        "ENTRY_EXECUTED": 1
+      },
+      "legacy_rejected_action_rows": 15,
+      "entry_executed_count": 1,
+      "lookahead_entry_executed_count": 1,
+      "non_null_entry_date_rows": 3,
+      "non_null_exit_date_rows": 0,
+      "severity": "HIGH"
+    }
+  },
+  "overall_status": "CRITICAL"
+}
