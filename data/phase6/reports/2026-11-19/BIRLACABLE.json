@@ -1,0 +1,2526 @@
+{
+  "agent_name": "research_manager",
+  "agent_version": "1.0.0",
+  "prompt_version": "v1",
+  "symbol": "BIRLACABLE",
+  "analysis_timestamp": "2026-11-19T23:11:22.514758Z",
+  "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+  "evidence_refs": [
+    {
+      "source_id": "competitor:BIRLACABLE:competitors",
+      "dataset": "relationship_map",
+      "path": "backend/news_intel/relationships.py",
+      "record_key": "RELATIONSHIP_MAP[BIRLACABLE].competitors",
+      "published_at": null,
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fd847b2908c669754333e659cfe125b53d3a172557efd8f9f0910c8d37b12be1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:064977d17bd27eb2",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "064977d17bd27eb2",
+      "published_at": "2026-11-11T05:05:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:0fffb08d582259f2",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "0fffb08d582259f2",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:14b674b509078854",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "14b674b509078854",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:1bdb35b4e525c9cf",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1bdb35b4e525c9cf",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:1d9db32805a69063",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1d9db32805a69063",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:1eaaf089fe67869e",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1eaaf089fe67869e",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:1f0c175ba4660f07",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1f0c175ba4660f07",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:2c9db019a26d62fa",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "2c9db019a26d62fa",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:398605b4fe1c98c4",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "398605b4fe1c98c4",
+      "published_at": "2026-11-02T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:3bc5046ca574d076",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "3bc5046ca574d076",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:3d520ffe68c707f0",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "3d520ffe68c707f0",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:43b241352a0478aa",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "43b241352a0478aa",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:4996208578422a84",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "4996208578422a84",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:5dc6e7bb6223fac5",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "5dc6e7bb6223fac5",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:66b6bc31d2b1a3ed",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "66b6bc31d2b1a3ed",
+      "published_at": "2026-11-13T20:47:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:68723c6619115fa3",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "68723c6619115fa3",
+      "published_at": "2026-11-11T22:14:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:6a15880b8832e0f6",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "6a15880b8832e0f6",
+      "published_at": "2026-11-11T21:01:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:6e6e590a413b15da",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "6e6e590a413b15da",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:6ed4244e2f8fb690",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "6ed4244e2f8fb690",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:7158f9bcf3f299ee",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "7158f9bcf3f299ee",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:74b07a3ef1eb5ef3",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "74b07a3ef1eb5ef3",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:7f2b395da8337dc4",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "7f2b395da8337dc4",
+      "published_at": "2026-11-12T00:00:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:8093991dacfc843c",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "8093991dacfc843c",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:8a2d350137410022",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "8a2d350137410022",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:9d3ddf40b267cc40",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "9d3ddf40b267cc40",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:9d9da120a6193a84",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "9d9da120a6193a84",
+      "published_at": "2026-11-04T11:53:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:a40ab9817f79e466",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "a40ab9817f79e466",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:a7802dd51feea141",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "a7802dd51feea141",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:c04cb326c8071a40",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "c04cb326c8071a40",
+      "published_at": "2026-11-05T06:28:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:cdd568c28a84ad78",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "cdd568c28a84ad78",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:effbc43838afd930",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "effbc43838afd930",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impact:f7a9c3d76996e828",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "f7a9c3d76996e828",
+      "published_at": "2026-11-07T01:31:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:cross_stock_impacts",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "affected_company=BIRLACABLE",
+      "published_at": "2026-11-13T20:47:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:BIRLACABLE:peer_metrics",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "promoter_and_competitor_intel.competitors",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:debt_to_equity",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "cash_and_balance_sheet.debt_to_equity",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:interest_coverage",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "computed operating_profit/interest quarter Sep 2026",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:net_margin_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "computed net_profit/revenue quarter Sep 2026",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:opm_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "quarter Sep 2026.opm_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:pb",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "computed overview.current_price/book_value",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:pe",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "overview.stock_pe",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:piotroski_score",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "overview.piotroski_score",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:profit_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "last_5_quarterly_reports[Sep 2026].net_profit_cr",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:profit_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "quarter Sep 2026.net_profit_growth_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:revenue_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "last_5_quarterly_reports[Sep 2026].revenue_cr",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:revenue_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "quarter Sep 2026.revenue_growth_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:roce_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "overview.roce_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "fundamental:BIRLACABLE:roe_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "overview.roe_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "market_regime:BIRLACABLE:india_vix_close",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:BIRLACABLE:nifty_50_day_change_pct",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:BIRLACABLE:observation_date",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:BIRLACABLE:regime",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "news:BIRLACABLE:064977d17bd27eb2",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "064977d17bd27eb2",
+      "published_at": "2026-11-11T05:05:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:0fffb08d582259f2",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0fffb08d582259f2",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:1bdb35b4e525c9cf",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1bdb35b4e525c9cf",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:1ee31b1748fd9a09",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1ee31b1748fd9a09",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:30aa20be877b15d5",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "30aa20be877b15d5",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:3d11197240429494",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3d11197240429494",
+      "published_at": "2026-11-05T03:00:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:3d520ffe68c707f0",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3d520ffe68c707f0",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:43b241352a0478aa",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "43b241352a0478aa",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:50601b74e5e0d245",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "50601b74e5e0d245",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:5d9731396ec5587f",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5d9731396ec5587f",
+      "published_at": "2026-11-09T22:36:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:66b6bc31d2b1a3ed",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "66b6bc31d2b1a3ed",
+      "published_at": "2026-11-13T20:47:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:68723c6619115fa3",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "68723c6619115fa3",
+      "published_at": "2026-11-11T22:14:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:6a15880b8832e0f6",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "6a15880b8832e0f6",
+      "published_at": "2026-11-11T21:01:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:6e6e590a413b15da",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "6e6e590a413b15da",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:6ed4244e2f8fb690",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "6ed4244e2f8fb690",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:7158f9bcf3f299ee",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "7158f9bcf3f299ee",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:74b07a3ef1eb5ef3",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "74b07a3ef1eb5ef3",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:74bd10263d203455",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "74bd10263d203455",
+      "published_at": "2026-11-12T22:48:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:78e9d415b3b22dad",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "78e9d415b3b22dad",
+      "published_at": "2026-11-06T01:07:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:7e552ae27b41eb0a",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "7e552ae27b41eb0a",
+      "published_at": "2026-11-05T07:25:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:7f2b395da8337dc4",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "7f2b395da8337dc4",
+      "published_at": "2026-11-12T00:00:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:9d9da120a6193a84",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "9d9da120a6193a84",
+      "published_at": "2026-11-04T11:53:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:a50686fc38785ca3",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "a50686fc38785ca3",
+      "published_at": "2026-11-11T22:14:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:b82786ebc0c1835b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "b82786ebc0c1835b",
+      "published_at": "2026-11-07T08:26:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:c04cb326c8071a40",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c04cb326c8071a40",
+      "published_at": "2026-11-05T06:28:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:c378197f3aa255ca",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c378197f3aa255ca",
+      "published_at": "2026-11-15T22:42:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:de9808caae062711",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "de9808caae062711",
+      "published_at": "2026-11-11T05:05:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:events",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "BIRLACABLE:29 events",
+      "published_at": "2026-11-15T22:42:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:f7a9c3d76996e828",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f7a9c3d76996e828",
+      "published_at": "2026-11-07T01:31:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:fee07a3332d15abe",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "fee07a3332d15abe",
+      "published_at": "2026-11-04T22:51:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:BIRLACABLE:quarantined_count",
+      "dataset": "quarantined_events",
+      "path": "data/predictions/quarantined_events.parquet",
+      "record_key": "BIRLACABLE:4 quarantined",
+      "published_at": "2026-11-18T12:03:01.749391Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+    },
+    {
+      "source_id": "price_risk:BIRLACABLE:beta",
+      "dataset": "equities_daily+indices_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+    },
+    {
+      "source_id": "price_risk:BIRLACABLE:max_drawdown_1y_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "price_risk:BIRLACABLE:volatility_20d_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "promoter:BIRLACABLE:dii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "stockholders.dii_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "promoter:BIRLACABLE:fii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "stockholders.fii_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "promoter:BIRLACABLE:management_commentary",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "promoter:BIRLACABLE:promoter_change_qoq_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "corporate_intelligence.promoter_chg_1q",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "promoter:BIRLACABLE:promoters_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/BIRLACABLE.json",
+      "record_key": "stockholders.promoters_pct",
+      "published_at": "2026-11-18T21:03:44Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:confidence_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:expected_10d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:expected_next_day_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:generated_at",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:market_regime",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:model_agreement_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:model_name",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:model_version",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:net_expected_1d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:net_expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:observation_date",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:prediction_id",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:prob_10d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:prob_5d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:prob_next_day_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:recommended_action",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:top_bearish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:top_bullish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "BIRLACABLE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:validation",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:validation_generated_at",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:BIRLACABLE:validation_model_version",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:adx",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:atr_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:close",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:macd_hist",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:resistance",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:return_1m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:return_3m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:rsi_14",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:sma_20",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:sma_200",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:sma_50",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:support",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:trend",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:BIRLACABLE:volume_surge_ratio",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    }
+  ],
+  "findings": [
+    "Manager summary"
+  ],
+  "positive_factors": [
+    "Growth"
+  ],
+  "negative_factors": [],
+  "confidence": 0.75,
+  "missing_information": [
+    "fundamental.operating_cash_flow_cr",
+    "fundamental.free_cash_flow_cr",
+    "fundamental.current_ratio",
+    "promoter.pledged_pct",
+    "promoter.insider_transactions",
+    "promoter.leadership_changes",
+    "promoter.governance_flags",
+    "competitor.industry_growth_pct"
+  ],
+  "warnings": [
+    "conclusion guardrail: LLM proposed '', enforced 'FAVOURABLE' (no valid LLM proposal; derived from Bull/Bear confidence)",
+    "generic price-page style headline not treated as company event: 'Sterlite Technologies Limited (STLTECH.NS) Stock Price, News, Quote & History - Yahoo! Finance Canada'",
+    "competitor-category news: a competitor's win is NOT positive for the target",
+    "5D validation evidence has insufficient matured samples (matured=0)",
+    "10D validation evidence has insufficient matured samples (matured=0)"
+  ],
+  "numeric_claims": [],
+  "investment_thesis": "Balanced accumulation thesis",
+  "bull_case": "Operating leverage",
+  "bear_case": "Multiple contraction",
+  "fundamental_assessment": "Healthy",
+  "technical_assessment": "Constructive",
+  "news_assessment": "Neutral",
+  "promoter_assessment": "Strong",
+  "competitor_assessment": "Dominant",
+  "quantitative_model_predictions": {
+    "prediction_id": "BIRLACABLE_2026-11-18_ml_ensemble_3.2.0_20261118T210426Z",
+    "symbol": "BIRLACABLE",
+    "observation_date": "2026-11-18",
+    "generated_at": "2026-11-18T21:04:26.591210+00:00",
+    "model_name": "ml_ensemble",
+    "model_version": "3.2.0",
+    "market_regime": "Weak Bull",
+    "prob_next_day_up": 0.4681,
+    "prob_5d_up": 0.4987,
+    "prob_10d_up": 0.5219,
+    "prob_lgbm_up": 0.4621,
+    "prob_xgb_up": 0.4650000035762787,
+    "prob_linear_up": 0.4985,
+    "expected_next_day_return_pct": -0.4444,
+    "expected_5d_return_pct": -0.0572,
+    "expected_10d_return_pct": -0.0044,
+    "downside_risk_mae_pct": -1.4977,
+    "expected_upside_mfe_pct": 1.672,
+    "reward_to_risk_ratio": 1.116,
+    "model_agreement_score": 0.9511,
+    "confidence_score": 71.55,
+    "roundtrip_delivery_cost_pct": 0.5155,
+    "roundtrip_intraday_cost_pct": 0.3643,
+    "net_expected_1d_return_pct": -0.8087,
+    "net_expected_5d_return_pct": -0.5727,
+    "recommended_action": "HOLD / WATCH",
+    "abstention_reason": null,
+    "top_bullish_drivers": [
+      {
+        "feature": "pm_ret_180d_pct",
+        "family": "1. Price & Technical Momentum",
+        "value": 119.5299,
+        "contribution": 0.01701,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "pm_atr_14_pct",
+        "family": "1. Price & Technical Momentum",
+        "value": 6.2147,
+        "contribution": 0.00676,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "vd_rel_vol_100d",
+        "family": "2. Volume & Delivery",
+        "value": 1.6125,
+        "contribution": 0.0067,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "ms_india_vix_zscore_20d",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6452,
+        "contribution": 0.00589,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "fq_roe_pct",
+        "family": "6. Financial Quality",
+        "value": 6.0498,
+        "contribution": 0.00443,
+        "direction": "BULLISH"
+      }
+    ],
+    "top_bearish_drivers": [
+      {
+        "feature": "ms_nifty_ret_1d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6281,
+        "contribution": -0.03827,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_20d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.2199,
+        "contribution": -0.02926,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "inst_retail_dilution_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": -0.92,
+        "contribution": -0.01382,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 1.6616,
+        "contribution": -0.01347,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_60d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.1371,
+        "contribution": -0.00928,
+        "direction": "BEARISH"
+      }
+    ],
+    "target_session_date": "2026-11-19",
+    "last_close": 302.6,
+    "atr_14_pct": 6.215,
+    "momentum_prob_up": 0.4132,
+    "momentum_5d_return_pct": -2.7123,
+    "momentum_prob_5d_up": 0.404,
+    "momentum_prob_10d_up": 0.4082,
+    "momentum_1d_return_pct": -0.8067,
+    "momentum_10d_return_pct": -3.5907,
+    "feature_snapshot": {
+      "ne_is_earnings_window": 1.0,
+      "ms_corr_nifty_20d": 0.21994,
+      "fq_asset_turnover": 1.66164,
+      "inst_dii_chg_4q": 0.05,
+      "fq_debt_to_equity": 0.47331,
+      "eg_qtr_np_qoq_pct": 22.58,
+      "inst_named_holders_count": 9.0,
+      "pm_ret_180d_pct": 119.52989,
+      "ms_india_vix_zscore_20d": -0.64524,
+      "fq_roce_pct": 11.35266
+    },
+    "outcome_evaluated_at": null,
+    "realized_next_day_return_pct": null,
+    "realized_5d_return_pct": null
+  },
+  "risk_assessment": {
+    "agent_name": "risk_manager",
+    "agent_version": "1.0.0",
+    "prompt_version": "v1",
+    "symbol": "BIRLACABLE",
+    "analysis_timestamp": "2026-11-19T23:11:22.514758Z",
+    "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+    "evidence_refs": [
+      {
+        "source_id": "competitor:BIRLACABLE:competitors",
+        "dataset": "relationship_map",
+        "path": "backend/news_intel/relationships.py",
+        "record_key": "RELATIONSHIP_MAP[BIRLACABLE].competitors",
+        "published_at": null,
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fd847b2908c669754333e659cfe125b53d3a172557efd8f9f0910c8d37b12be1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:064977d17bd27eb2",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "064977d17bd27eb2",
+        "published_at": "2026-11-11T05:05:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:0fffb08d582259f2",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "0fffb08d582259f2",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:14b674b509078854",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "14b674b509078854",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:1bdb35b4e525c9cf",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1bdb35b4e525c9cf",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:1d9db32805a69063",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1d9db32805a69063",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:1eaaf089fe67869e",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1eaaf089fe67869e",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:1f0c175ba4660f07",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1f0c175ba4660f07",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:2c9db019a26d62fa",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "2c9db019a26d62fa",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:398605b4fe1c98c4",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "398605b4fe1c98c4",
+        "published_at": "2026-11-02T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:3bc5046ca574d076",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "3bc5046ca574d076",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:3d520ffe68c707f0",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "3d520ffe68c707f0",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:43b241352a0478aa",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "43b241352a0478aa",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:4996208578422a84",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "4996208578422a84",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:5dc6e7bb6223fac5",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "5dc6e7bb6223fac5",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:66b6bc31d2b1a3ed",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "66b6bc31d2b1a3ed",
+        "published_at": "2026-11-13T20:47:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:68723c6619115fa3",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "68723c6619115fa3",
+        "published_at": "2026-11-11T22:14:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:6a15880b8832e0f6",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "6a15880b8832e0f6",
+        "published_at": "2026-11-11T21:01:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:6e6e590a413b15da",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "6e6e590a413b15da",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:6ed4244e2f8fb690",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "6ed4244e2f8fb690",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:7158f9bcf3f299ee",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "7158f9bcf3f299ee",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:74b07a3ef1eb5ef3",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "74b07a3ef1eb5ef3",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:7f2b395da8337dc4",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "7f2b395da8337dc4",
+        "published_at": "2026-11-12T00:00:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:8093991dacfc843c",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "8093991dacfc843c",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:8a2d350137410022",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "8a2d350137410022",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:9d3ddf40b267cc40",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "9d3ddf40b267cc40",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:9d9da120a6193a84",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "9d9da120a6193a84",
+        "published_at": "2026-11-04T11:53:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:a40ab9817f79e466",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "a40ab9817f79e466",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:a7802dd51feea141",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "a7802dd51feea141",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:c04cb326c8071a40",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "c04cb326c8071a40",
+        "published_at": "2026-11-05T06:28:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:cdd568c28a84ad78",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "cdd568c28a84ad78",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:effbc43838afd930",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "effbc43838afd930",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impact:f7a9c3d76996e828",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "f7a9c3d76996e828",
+        "published_at": "2026-11-07T01:31:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:cross_stock_impacts",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "affected_company=BIRLACABLE",
+        "published_at": "2026-11-13T20:47:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:BIRLACABLE:peer_metrics",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "promoter_and_competitor_intel.competitors",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:debt_to_equity",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "cash_and_balance_sheet.debt_to_equity",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:interest_coverage",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "computed operating_profit/interest quarter Sep 2026",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:net_margin_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "computed net_profit/revenue quarter Sep 2026",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:opm_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "quarter Sep 2026.opm_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:pb",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "computed overview.current_price/book_value",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:pe",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "overview.stock_pe",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:piotroski_score",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "overview.piotroski_score",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:profit_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "last_5_quarterly_reports[Sep 2026].net_profit_cr",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:profit_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "quarter Sep 2026.net_profit_growth_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:revenue_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "last_5_quarterly_reports[Sep 2026].revenue_cr",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:revenue_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "quarter Sep 2026.revenue_growth_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:roce_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "overview.roce_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "fundamental:BIRLACABLE:roe_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "overview.roe_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "market_regime:BIRLACABLE:india_vix_close",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:BIRLACABLE:nifty_50_day_change_pct",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:BIRLACABLE:observation_date",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:BIRLACABLE:regime",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "news:BIRLACABLE:064977d17bd27eb2",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "064977d17bd27eb2",
+        "published_at": "2026-11-11T05:05:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:0fffb08d582259f2",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0fffb08d582259f2",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:1bdb35b4e525c9cf",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1bdb35b4e525c9cf",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:1ee31b1748fd9a09",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1ee31b1748fd9a09",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:30aa20be877b15d5",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "30aa20be877b15d5",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:3d11197240429494",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3d11197240429494",
+        "published_at": "2026-11-05T03:00:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:3d520ffe68c707f0",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3d520ffe68c707f0",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:43b241352a0478aa",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "43b241352a0478aa",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:50601b74e5e0d245",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "50601b74e5e0d245",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:5d9731396ec5587f",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5d9731396ec5587f",
+        "published_at": "2026-11-09T22:36:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:66b6bc31d2b1a3ed",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "66b6bc31d2b1a3ed",
+        "published_at": "2026-11-13T20:47:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:68723c6619115fa3",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "68723c6619115fa3",
+        "published_at": "2026-11-11T22:14:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:6a15880b8832e0f6",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "6a15880b8832e0f6",
+        "published_at": "2026-11-11T21:01:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:6e6e590a413b15da",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "6e6e590a413b15da",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:6ed4244e2f8fb690",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "6ed4244e2f8fb690",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:7158f9bcf3f299ee",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "7158f9bcf3f299ee",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:74b07a3ef1eb5ef3",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "74b07a3ef1eb5ef3",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:74bd10263d203455",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "74bd10263d203455",
+        "published_at": "2026-11-12T22:48:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:78e9d415b3b22dad",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "78e9d415b3b22dad",
+        "published_at": "2026-11-06T01:07:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:7e552ae27b41eb0a",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "7e552ae27b41eb0a",
+        "published_at": "2026-11-05T07:25:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:7f2b395da8337dc4",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "7f2b395da8337dc4",
+        "published_at": "2026-11-12T00:00:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:9d9da120a6193a84",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "9d9da120a6193a84",
+        "published_at": "2026-11-04T11:53:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:a50686fc38785ca3",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "a50686fc38785ca3",
+        "published_at": "2026-11-11T22:14:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:b82786ebc0c1835b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "b82786ebc0c1835b",
+        "published_at": "2026-11-07T08:26:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:c04cb326c8071a40",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c04cb326c8071a40",
+        "published_at": "2026-11-05T06:28:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:c378197f3aa255ca",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c378197f3aa255ca",
+        "published_at": "2026-11-15T22:42:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:de9808caae062711",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "de9808caae062711",
+        "published_at": "2026-11-11T05:05:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:events",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "BIRLACABLE:29 events",
+        "published_at": "2026-11-15T22:42:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:f7a9c3d76996e828",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f7a9c3d76996e828",
+        "published_at": "2026-11-07T01:31:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:fee07a3332d15abe",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "fee07a3332d15abe",
+        "published_at": "2026-11-04T22:51:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:BIRLACABLE:quarantined_count",
+        "dataset": "quarantined_events",
+        "path": "data/predictions/quarantined_events.parquet",
+        "record_key": "BIRLACABLE:4 quarantined",
+        "published_at": "2026-11-18T12:03:01.749391Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+      },
+      {
+        "source_id": "price_risk:BIRLACABLE:beta",
+        "dataset": "equities_daily+indices_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+      },
+      {
+        "source_id": "price_risk:BIRLACABLE:max_drawdown_1y_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "price_risk:BIRLACABLE:volatility_20d_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "promoter:BIRLACABLE:dii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "stockholders.dii_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "promoter:BIRLACABLE:fii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "stockholders.fii_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "promoter:BIRLACABLE:management_commentary",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "promoter:BIRLACABLE:promoter_change_qoq_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "corporate_intelligence.promoter_chg_1q",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "promoter:BIRLACABLE:promoters_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/BIRLACABLE.json",
+        "record_key": "stockholders.promoters_pct",
+        "published_at": "2026-11-18T21:03:44Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "aad204a032b495867eedf8090d40dcc7598b5d83ba6a538d6e3e16bc970b7150"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:confidence_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:expected_10d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:expected_next_day_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:generated_at",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:market_regime",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:model_agreement_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:model_name",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:model_version",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:net_expected_1d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:net_expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:observation_date",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:prediction_id",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:prob_10d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:prob_5d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:prob_next_day_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:recommended_action",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:top_bearish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:top_bullish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "BIRLACABLE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:validation",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:validation_generated_at",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:BIRLACABLE:validation_model_version",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:adx",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:atr_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:close",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:macd_hist",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:resistance",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:return_1m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:return_3m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:rsi_14",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:sma_20",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:sma_200",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:sma_50",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:support",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:trend",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:BIRLACABLE:volume_surge_ratio",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "BIRLACABLE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      }
+    ],
+    "findings": [
+      "downside_risk: UNKNOWN - var_95_1d_pct missing",
+      "volatility_risk: UNKNOWN - volatility_ann_pct missing",
+      "liquidity_risk: UNKNOWN - avg_daily_turnover_cr missing",
+      "concentration_risk: UNKNOWN - position_weight_pct missing",
+      "event_risk: UNKNOWN - news_events missing",
+      "drawdown_risk: UNKNOWN - max_drawdown_pct missing",
+      "risk_reward: UNKNOWN - reward/risk missing",
+      "suggested position weight 0% [ASSUMPTION - not from user portfolio data]"
+    ],
+    "positive_factors": [],
+    "negative_factors": [],
+    "confidence": 0.0,
+    "missing_information": [
+      "downside_risk: var_95_1d_pct missing",
+      "volatility_risk: volatility_ann_pct missing",
+      "liquidity_risk: avg_daily_turnover_cr missing",
+      "concentration_risk: position_weight_pct missing",
+      "event_risk: news_events missing",
+      "drawdown_risk: max_drawdown_pct missing",
+      "risk_reward: reward/risk missing"
+    ],
+    "warnings": [],
+    "numeric_claims": [],
+    "verdict": "REJECT",
+    "downside_risk": {
+      "level": "UNKNOWN",
+      "note": "var_95_1d_pct missing"
+    },
+    "volatility_risk": {
+      "level": "UNKNOWN",
+      "note": "volatility_ann_pct missing"
+    },
+    "liquidity_risk": {
+      "level": "UNKNOWN",
+      "note": "avg_daily_turnover_cr missing"
+    },
+    "concentration_risk": {
+      "level": "UNKNOWN",
+      "note": "position_weight_pct missing"
+    },
+    "event_risk": {
+      "level": "UNKNOWN",
+      "note": "news_events missing"
+    },
+    "drawdown_risk": {
+      "level": "UNKNOWN",
+      "note": "max_drawdown_pct missing"
+    },
+    "risk_reward": {
+      "level": "UNKNOWN",
+      "note": "reward/risk missing"
+    },
+    "rationale": "Deterministic verdict REJECT. Reasons: 7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward. Manageable across dimensions",
+    "rejection_reasons": [
+      "7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward"
+    ]
+  },
+  "agent_disagreements": [],
+  "overall_conclusion": "REJECTED_BY_RISK"
+}

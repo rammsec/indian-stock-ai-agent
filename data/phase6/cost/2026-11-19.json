@@ -1,0 +1,63 @@
+{
+  "per_agent": {
+    "news": {
+      "prompt_tokens": 28168,
+      "completion_tokens": 205,
+      "calls": 5,
+      "usd": 0.004348199999999999
+    },
+    "promoter": {
+      "prompt_tokens": 5129,
+      "completion_tokens": 230,
+      "calls": 5,
+      "usd": 0.0009073499999999999
+    },
+    "fundamental": {
+      "prompt_tokens": 5789,
+      "completion_tokens": 215,
+      "calls": 5,
+      "usd": 0.00099735
+    },
+    "competitor": {
+      "prompt_tokens": 21725,
+      "completion_tokens": 240,
+      "calls": 5,
+      "usd": 0.0034027499999999995
+    },
+    "technical": {
+      "prompt_tokens": 6860,
+      "completion_tokens": 220,
+      "calls": 5,
+      "usd": 0.0011610000000000001
+    },
+    "bull": {
+      "prompt_tokens": 131623,
+      "completion_tokens": 375,
+      "calls": 5,
+      "usd": 0.01996845
+    },
+    "bear": {
+      "prompt_tokens": 131631,
+      "completion_tokens": 385,
+      "calls": 5,
+      "usd": 0.019975649999999998
+    },
+    "research_manager": {
+      "prompt_tokens": 133412,
+      "completion_tokens": 750,
+      "calls": 5,
+      "usd": 0.34103
+    },
+    "risk_manager": {
+      "prompt_tokens": 4581,
+      "completion_tokens": 730,
+      "calls": 5,
+      "usd": 0.0187525
+    }
+  },
+  "total_prompt_tokens": 468918,
+  "total_completion_tokens": 3350,
+  "total_estimated_usd": 0.41054324999999997,
+  "unpriced_models": [],
+  "note": "USD figures are estimates from a user-editable price table."
+}
