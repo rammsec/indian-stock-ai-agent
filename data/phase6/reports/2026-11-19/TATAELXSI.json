@@ -1,0 +1,2818 @@
+{
+  "agent_name": "research_manager",
+  "agent_version": "1.0.0",
+  "prompt_version": "v1",
+  "symbol": "TATAELXSI",
+  "analysis_timestamp": "2026-11-19T23:11:22.292389Z",
+  "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+  "evidence_refs": [
+    {
+      "source_id": "competitor:TATAELXSI:competitors",
+      "dataset": "relationship_map",
+      "path": "backend/news_intel/relationships.py",
+      "record_key": "RELATIONSHIP_MAP[TATAELXSI].competitors",
+      "published_at": null,
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "d43fca53ff081f34a9d3d04c5aa131cb1dbe0b546603ce943bfb2f3a4f03d9ec"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:03a029f4348b83eb",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "03a029f4348b83eb",
+      "published_at": "2026-10-30T06:41:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:062781c2d5499969",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "062781c2d5499969",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:0a78bf890ecacba5",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "0a78bf890ecacba5",
+      "published_at": "2026-10-26T13:36:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:1111975ae71643a1",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1111975ae71643a1",
+      "published_at": "2026-10-20T13:54:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:116dabc590982177",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "116dabc590982177",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:14f8dc88e2bd5378",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "14f8dc88e2bd5378",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:1f0c32b3a17214c9",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1f0c32b3a17214c9",
+      "published_at": "2026-11-16T23:29:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:22b25ac836e99827",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "22b25ac836e99827",
+      "published_at": "2026-11-17T04:25:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:2356b1896be1de85",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "2356b1896be1de85",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:24a7da9586a367a4",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "24a7da9586a367a4",
+      "published_at": "2026-11-08T06:12:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:2709d4d01ea38af4",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "2709d4d01ea38af4",
+      "published_at": "2026-10-22T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:3017d515f1ea28f1",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "3017d515f1ea28f1",
+      "published_at": "2026-11-16T05:03:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:335b38382215d484",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "335b38382215d484",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:36f62a32188dd6f7",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "36f62a32188dd6f7",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:375b0cf1a255e6ad",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "375b0cf1a255e6ad",
+      "published_at": "2026-11-17T05:31:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:3ad5527e7d51f64c",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "3ad5527e7d51f64c",
+      "published_at": "2026-10-27T07:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:4533dd98cf82b850",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "4533dd98cf82b850",
+      "published_at": "2026-11-17T08:32:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:5525da857ab78353",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "5525da857ab78353",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:5614ba86ab870132",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "5614ba86ab870132",
+      "published_at": "2026-11-19T02:32:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:587e14960f478338",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "587e14960f478338",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:61d65b04b601e6f8",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "61d65b04b601e6f8",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:62774c9bbe971440",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "62774c9bbe971440",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:643b5b09ffef99d8",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "643b5b09ffef99d8",
+      "published_at": "2026-11-16T22:43:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:660d3bb29c9b5eff",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "660d3bb29c9b5eff",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:70b6babb3fa15ede",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "70b6babb3fa15ede",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:79c6288f717f8f33",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "79c6288f717f8f33",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:7d42f0fe401adc58",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "7d42f0fe401adc58",
+      "published_at": "2026-11-13T11:09:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:80be765327e09148",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "80be765327e09148",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:854e8c52e7e8aeaf",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "854e8c52e7e8aeaf",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:90004917168ea87c",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "90004917168ea87c",
+      "published_at": "2026-11-11T05:03:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:92e1b730d38fce3c",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "92e1b730d38fce3c",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:94309066afb9da77",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "94309066afb9da77",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:9ac8b4add749902e",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "9ac8b4add749902e",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:a4809008753befee",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "a4809008753befee",
+      "published_at": "2026-11-05T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:ac24a14a89803323",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "ac24a14a89803323",
+      "published_at": "2026-11-16T10:05:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:bcb64aadc51cef20",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "bcb64aadc51cef20",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:be55ece87c974542",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "be55ece87c974542",
+      "published_at": "2026-11-12T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:c0befe7c1b0f1707",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "c0befe7c1b0f1707",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:c2c71c7049bcc65b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "c2c71c7049bcc65b",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:cdc1e93237db886f",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "cdc1e93237db886f",
+      "published_at": "2026-11-16T00:23:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:d9a9667f6733d61b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "d9a9667f6733d61b",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:d9b0dda51a4efc18",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "d9b0dda51a4efc18",
+      "published_at": "2026-11-09T06:16:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:e019e878ec485c74",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "e019e878ec485c74",
+      "published_at": "2026-11-18T07:26:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:e59dedfb065cf6be",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "e59dedfb065cf6be",
+      "published_at": "2026-11-10T23:33:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:e8ef095f7d2ec171",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "e8ef095f7d2ec171",
+      "published_at": "2026-10-24T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:ec77b38451845211",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "ec77b38451845211",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impact:f73f4efa5188229f",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "f73f4efa5188229f",
+      "published_at": "2026-11-16T15:33:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:cross_stock_impacts",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "affected_company=TATAELXSI",
+      "published_at": "2026-11-19T02:32:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TATAELXSI:peer_metrics",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "promoter_and_competitor_intel.competitors",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:debt_to_equity",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "cash_and_balance_sheet.debt_to_equity",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:free_cash_flow_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "cash_and_balance_sheet.latest_fcf_cr (0 treated as missing)",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:net_margin_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "computed net_profit/revenue quarter Mar 2015",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:operating_cash_flow_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "cash_and_balance_sheet.latest_ocf_cr (0 treated as missing)",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:opm_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "quarter Mar 2015.opm_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:pb",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "computed overview.current_price/book_value",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:pe",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "overview.stock_pe",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:piotroski_score",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "overview.piotroski_score",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:profit_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "last_5_quarterly_reports[Mar 2015].net_profit_cr",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:profit_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "quarter Mar 2015.net_profit_growth_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:revenue_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "last_5_quarterly_reports[Mar 2015].revenue_cr",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:revenue_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "quarter Mar 2015.revenue_growth_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:roce_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "overview.roce_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "fundamental:TATAELXSI:roe_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "overview.roe_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "market_regime:TATAELXSI:india_vix_close",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:TATAELXSI:nifty_50_day_change_pct",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:TATAELXSI:observation_date",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:TATAELXSI:regime",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "news:TATAELXSI:03a029f4348b83eb",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "03a029f4348b83eb",
+      "published_at": "2026-10-30T06:41:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:0523d73e686ad374",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0523d73e686ad374",
+      "published_at": "2026-11-13T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:062781c2d5499969",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "062781c2d5499969",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:0a78bf890ecacba5",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0a78bf890ecacba5",
+      "published_at": "2026-10-26T13:36:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:0f6f95d76eeab2bf",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0f6f95d76eeab2bf",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:1111975ae71643a1",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1111975ae71643a1",
+      "published_at": "2026-10-20T13:54:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:1f0c32b3a17214c9",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1f0c32b3a17214c9",
+      "published_at": "2026-11-16T23:29:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:2709d4d01ea38af4",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "2709d4d01ea38af4",
+      "published_at": "2026-10-22T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:335b38382215d484",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "335b38382215d484",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:36f62a32188dd6f7",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "36f62a32188dd6f7",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:3ad5527e7d51f64c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3ad5527e7d51f64c",
+      "published_at": "2026-10-27T07:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:49516c0dee247c12",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "49516c0dee247c12",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:5614ba86ab870132",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5614ba86ab870132",
+      "published_at": "2026-11-19T02:32:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:61d65b04b601e6f8",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "61d65b04b601e6f8",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:62774c9bbe971440",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "62774c9bbe971440",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:660d3bb29c9b5eff",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "660d3bb29c9b5eff",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:6fdca47cea367f9c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "6fdca47cea367f9c",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:79c6288f717f8f33",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "79c6288f717f8f33",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:7d42f0fe401adc58",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "7d42f0fe401adc58",
+      "published_at": "2026-11-13T11:09:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:80be765327e09148",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "80be765327e09148",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:92e1b730d38fce3c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "92e1b730d38fce3c",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:a4809008753befee",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "a4809008753befee",
+      "published_at": "2026-11-05T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:b8e2001afa10551c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "b8e2001afa10551c",
+      "published_at": "2026-11-15T01:21:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:c0befe7c1b0f1707",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c0befe7c1b0f1707",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:c2c71c7049bcc65b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c2c71c7049bcc65b",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:cdc1e93237db886f",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "cdc1e93237db886f",
+      "published_at": "2026-11-16T00:23:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:e2d3d397de3d2043",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "e2d3d397de3d2043",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:ec77b38451845211",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "ec77b38451845211",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:events",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "TATAELXSI:29 events",
+      "published_at": "2026-11-19T02:32:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:f4981435c6f0f119",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f4981435c6f0f119",
+      "published_at": "2026-11-09T23:49:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TATAELXSI:quarantined_count",
+      "dataset": "quarantined_events",
+      "path": "data/predictions/quarantined_events.parquet",
+      "record_key": "TATAELXSI:3 quarantined",
+      "published_at": "2026-11-18T12:03:01.651070Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+    },
+    {
+      "source_id": "price_risk:TATAELXSI:beta",
+      "dataset": "equities_daily+indices_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+    },
+    {
+      "source_id": "price_risk:TATAELXSI:max_drawdown_1y_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "price_risk:TATAELXSI:volatility_20d_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "promoter:TATAELXSI:dii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "stockholders.dii_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "promoter:TATAELXSI:fii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "stockholders.fii_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "promoter:TATAELXSI:management_commentary",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "promoter:TATAELXSI:promoter_change_qoq_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "corporate_intelligence.promoter_chg_1q",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "promoter:TATAELXSI:promoters_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TATAELXSI.json",
+      "record_key": "stockholders.promoters_pct",
+      "published_at": "2026-11-18T21:03:35Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:confidence_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:expected_10d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:expected_next_day_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:generated_at",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:market_regime",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:model_agreement_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:model_name",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:model_version",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:net_expected_1d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:net_expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:observation_date",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:prediction_id",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:prob_10d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:prob_5d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:prob_next_day_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:recommended_action",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:top_bearish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:top_bullish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TATAELXSI",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:validation",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:validation_generated_at",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:TATAELXSI:validation_model_version",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "technical:TATAELXSI:adx",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:atr_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:close",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:macd_hist",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:resistance",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:return_1m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:return_3m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:rsi_14",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:sma_20",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:sma_200",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:sma_50",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:support",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:trend",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TATAELXSI:volume_surge_ratio",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    }
+  ],
+  "findings": [
+    "Manager summary"
+  ],
+  "positive_factors": [
+    "Growth"
+  ],
+  "negative_factors": [],
+  "confidence": 0.75,
+  "missing_information": [
+    "fundamental.current_ratio",
+    "fundamental.interest_coverage",
+    "promoter.pledged_pct",
+    "promoter.insider_transactions",
+    "promoter.leadership_changes",
+    "promoter.governance_flags",
+    "competitor.industry_growth_pct"
+  ],
+  "warnings": [
+    "conclusion guardrail: LLM proposed '', enforced 'FAVOURABLE' (no valid LLM proposal; derived from Bull/Bear confidence)",
+    "generic price-page style headline not treated as company event: 'Tata Elxsi Share Price - Live NSE: TATAELXSI Stock Price & Chart - Upstox'",
+    "competitor-category news: a competitor's win is NOT positive for the target",
+    "5D validation evidence has insufficient matured samples (matured=0)",
+    "10D validation evidence has insufficient matured samples (matured=0)"
+  ],
+  "numeric_claims": [],
+  "investment_thesis": "Balanced accumulation thesis",
+  "bull_case": "Operating leverage",
+  "bear_case": "Multiple contraction",
+  "fundamental_assessment": "Healthy",
+  "technical_assessment": "Constructive",
+  "news_assessment": "Neutral",
+  "promoter_assessment": "Strong",
+  "competitor_assessment": "Dominant",
+  "quantitative_model_predictions": {
+    "prediction_id": "TATAELXSI_2026-11-18_ml_ensemble_3.2.0_20261118T210426Z",
+    "symbol": "TATAELXSI",
+    "observation_date": "2026-11-18",
+    "generated_at": "2026-11-18T21:04:26.591210+00:00",
+    "model_name": "ml_ensemble",
+    "model_version": "3.2.0",
+    "market_regime": "Weak Bull",
+    "prob_next_day_up": 0.4681,
+    "prob_5d_up": 0.4635,
+    "prob_10d_up": 0.4476,
+    "prob_lgbm_up": 0.4283,
+    "prob_xgb_up": 0.43779999017715454,
+    "prob_linear_up": 0.4762,
+    "expected_next_day_return_pct": -0.1595,
+    "expected_5d_return_pct": -0.3404,
+    "expected_10d_return_pct": -0.5389,
+    "downside_risk_mae_pct": -1.2293,
+    "expected_upside_mfe_pct": 1.0873,
+    "reward_to_risk_ratio": 0.884,
+    "model_agreement_score": 0.9615,
+    "confidence_score": 71.78,
+    "roundtrip_delivery_cost_pct": 0.3721,
+    "roundtrip_intraday_cost_pct": 0.2209,
+    "net_expected_1d_return_pct": -0.3804,
+    "net_expected_5d_return_pct": -0.7125,
+    "recommended_action": "HOLD / WATCH",
+    "abstention_reason": null,
+    "top_bullish_drivers": [
+      {
+        "feature": "ms_india_vix_zscore_20d",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6452,
+        "contribution": 0.00567,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "inst_dii_chg_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": -0.39,
+        "contribution": 0.00507,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "pm_macd_hist_chg_1d",
+        "family": "1. Price & Technical Momentum",
+        "value": -0.219,
+        "contribution": 0.0029,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "eg_qtr_np_yoy_pct",
+        "family": "7. Earnings & Management Guidance",
+        "value": 36.3636,
+        "contribution": 0.0025,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "inst_dii_chg_1q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": -1.05,
+        "contribution": 0.00235,
+        "direction": "BULLISH"
+      }
+    ],
+    "top_bearish_drivers": [
+      {
+        "feature": "vd_rel_vol_100d",
+        "family": "2. Volume & Delivery",
+        "value": 0.2691,
+        "contribution": -0.05472,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_20d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.2634,
+        "contribution": -0.0446,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_nifty_ret_1d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6281,
+        "contribution": -0.03731,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 1.8219,
+        "contribution": -0.01256,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_60d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.3143,
+        "contribution": -0.00928,
+        "direction": "BEARISH"
+      }
+    ],
+    "target_session_date": "2026-11-19",
+    "last_close": 3670.0,
+    "atr_14_pct": 2.934,
+    "momentum_prob_up": 0.4542,
+    "momentum_5d_return_pct": -1.302,
+    "momentum_prob_5d_up": 0.4397,
+    "momentum_prob_10d_up": 0.4412,
+    "momentum_1d_return_pct": -0.3378,
+    "momentum_10d_return_pct": -1.6127,
+    "feature_snapshot": {
+      "ne_is_earnings_window": 0.0,
+      "ms_corr_nifty_20d": 0.26339,
+      "fq_asset_turnover": 1.82189,
+      "inst_dii_chg_4q": -0.39,
+      "fq_debt_to_equity": 0.0,
+      "eg_qtr_np_qoq_pct": 7.14,
+      "inst_named_holders_count": 14.0,
+      "pm_ret_180d_pct": -22.1468,
+      "ms_india_vix_zscore_20d": -0.64524,
+      "fq_roce_pct": 62.89753
+    },
+    "outcome_evaluated_at": null,
+    "realized_next_day_return_pct": null,
+    "realized_5d_return_pct": null
+  },
+  "risk_assessment": {
+    "agent_name": "risk_manager",
+    "agent_version": "1.0.0",
+    "prompt_version": "v1",
+    "symbol": "TATAELXSI",
+    "analysis_timestamp": "2026-11-19T23:11:22.292389Z",
+    "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+    "evidence_refs": [
+      {
+        "source_id": "competitor:TATAELXSI:competitors",
+        "dataset": "relationship_map",
+        "path": "backend/news_intel/relationships.py",
+        "record_key": "RELATIONSHIP_MAP[TATAELXSI].competitors",
+        "published_at": null,
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "d43fca53ff081f34a9d3d04c5aa131cb1dbe0b546603ce943bfb2f3a4f03d9ec"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:03a029f4348b83eb",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "03a029f4348b83eb",
+        "published_at": "2026-10-30T06:41:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:062781c2d5499969",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "062781c2d5499969",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:0a78bf890ecacba5",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "0a78bf890ecacba5",
+        "published_at": "2026-10-26T13:36:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:1111975ae71643a1",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1111975ae71643a1",
+        "published_at": "2026-10-20T13:54:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:116dabc590982177",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "116dabc590982177",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:14f8dc88e2bd5378",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "14f8dc88e2bd5378",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:1f0c32b3a17214c9",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1f0c32b3a17214c9",
+        "published_at": "2026-11-16T23:29:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:22b25ac836e99827",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "22b25ac836e99827",
+        "published_at": "2026-11-17T04:25:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:2356b1896be1de85",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "2356b1896be1de85",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:24a7da9586a367a4",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "24a7da9586a367a4",
+        "published_at": "2026-11-08T06:12:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:2709d4d01ea38af4",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "2709d4d01ea38af4",
+        "published_at": "2026-10-22T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:3017d515f1ea28f1",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "3017d515f1ea28f1",
+        "published_at": "2026-11-16T05:03:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:335b38382215d484",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "335b38382215d484",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:36f62a32188dd6f7",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "36f62a32188dd6f7",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:375b0cf1a255e6ad",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "375b0cf1a255e6ad",
+        "published_at": "2026-11-17T05:31:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:3ad5527e7d51f64c",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "3ad5527e7d51f64c",
+        "published_at": "2026-10-27T07:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:4533dd98cf82b850",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "4533dd98cf82b850",
+        "published_at": "2026-11-17T08:32:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:5525da857ab78353",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "5525da857ab78353",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:5614ba86ab870132",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "5614ba86ab870132",
+        "published_at": "2026-11-19T02:32:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:587e14960f478338",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "587e14960f478338",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:61d65b04b601e6f8",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "61d65b04b601e6f8",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:62774c9bbe971440",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "62774c9bbe971440",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:643b5b09ffef99d8",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "643b5b09ffef99d8",
+        "published_at": "2026-11-16T22:43:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:660d3bb29c9b5eff",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "660d3bb29c9b5eff",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:70b6babb3fa15ede",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "70b6babb3fa15ede",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:79c6288f717f8f33",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "79c6288f717f8f33",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:7d42f0fe401adc58",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "7d42f0fe401adc58",
+        "published_at": "2026-11-13T11:09:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:80be765327e09148",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "80be765327e09148",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:854e8c52e7e8aeaf",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "854e8c52e7e8aeaf",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:90004917168ea87c",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "90004917168ea87c",
+        "published_at": "2026-11-11T05:03:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:92e1b730d38fce3c",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "92e1b730d38fce3c",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:94309066afb9da77",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "94309066afb9da77",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:9ac8b4add749902e",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "9ac8b4add749902e",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:a4809008753befee",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "a4809008753befee",
+        "published_at": "2026-11-05T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:ac24a14a89803323",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "ac24a14a89803323",
+        "published_at": "2026-11-16T10:05:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:bcb64aadc51cef20",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "bcb64aadc51cef20",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:be55ece87c974542",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "be55ece87c974542",
+        "published_at": "2026-11-12T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:c0befe7c1b0f1707",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "c0befe7c1b0f1707",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:c2c71c7049bcc65b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "c2c71c7049bcc65b",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:cdc1e93237db886f",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "cdc1e93237db886f",
+        "published_at": "2026-11-16T00:23:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:d9a9667f6733d61b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "d9a9667f6733d61b",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:d9b0dda51a4efc18",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "d9b0dda51a4efc18",
+        "published_at": "2026-11-09T06:16:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:e019e878ec485c74",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "e019e878ec485c74",
+        "published_at": "2026-11-18T07:26:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:e59dedfb065cf6be",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "e59dedfb065cf6be",
+        "published_at": "2026-11-10T23:33:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:e8ef095f7d2ec171",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "e8ef095f7d2ec171",
+        "published_at": "2026-10-24T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:ec77b38451845211",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "ec77b38451845211",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impact:f73f4efa5188229f",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "f73f4efa5188229f",
+        "published_at": "2026-11-16T15:33:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:cross_stock_impacts",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "affected_company=TATAELXSI",
+        "published_at": "2026-11-19T02:32:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TATAELXSI:peer_metrics",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "promoter_and_competitor_intel.competitors",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:debt_to_equity",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "cash_and_balance_sheet.debt_to_equity",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:free_cash_flow_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "cash_and_balance_sheet.latest_fcf_cr (0 treated as missing)",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:net_margin_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "computed net_profit/revenue quarter Mar 2015",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:operating_cash_flow_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "cash_and_balance_sheet.latest_ocf_cr (0 treated as missing)",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:opm_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "quarter Mar 2015.opm_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:pb",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "computed overview.current_price/book_value",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:pe",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "overview.stock_pe",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:piotroski_score",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "overview.piotroski_score",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:profit_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "last_5_quarterly_reports[Mar 2015].net_profit_cr",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:profit_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "quarter Mar 2015.net_profit_growth_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:revenue_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "last_5_quarterly_reports[Mar 2015].revenue_cr",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:revenue_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "quarter Mar 2015.revenue_growth_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:roce_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "overview.roce_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "fundamental:TATAELXSI:roe_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "overview.roe_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "market_regime:TATAELXSI:india_vix_close",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:TATAELXSI:nifty_50_day_change_pct",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:TATAELXSI:observation_date",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:TATAELXSI:regime",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "news:TATAELXSI:03a029f4348b83eb",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "03a029f4348b83eb",
+        "published_at": "2026-10-30T06:41:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:0523d73e686ad374",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0523d73e686ad374",
+        "published_at": "2026-11-13T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:062781c2d5499969",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "062781c2d5499969",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:0a78bf890ecacba5",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0a78bf890ecacba5",
+        "published_at": "2026-10-26T13:36:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:0f6f95d76eeab2bf",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0f6f95d76eeab2bf",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:1111975ae71643a1",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1111975ae71643a1",
+        "published_at": "2026-10-20T13:54:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:1f0c32b3a17214c9",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1f0c32b3a17214c9",
+        "published_at": "2026-11-16T23:29:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:2709d4d01ea38af4",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "2709d4d01ea38af4",
+        "published_at": "2026-10-22T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:335b38382215d484",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "335b38382215d484",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:36f62a32188dd6f7",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "36f62a32188dd6f7",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:3ad5527e7d51f64c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3ad5527e7d51f64c",
+        "published_at": "2026-10-27T07:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:49516c0dee247c12",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "49516c0dee247c12",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:5614ba86ab870132",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5614ba86ab870132",
+        "published_at": "2026-11-19T02:32:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:61d65b04b601e6f8",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "61d65b04b601e6f8",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:62774c9bbe971440",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "62774c9bbe971440",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:660d3bb29c9b5eff",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "660d3bb29c9b5eff",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:6fdca47cea367f9c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "6fdca47cea367f9c",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:79c6288f717f8f33",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "79c6288f717f8f33",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:7d42f0fe401adc58",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "7d42f0fe401adc58",
+        "published_at": "2026-11-13T11:09:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:80be765327e09148",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "80be765327e09148",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:92e1b730d38fce3c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "92e1b730d38fce3c",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:a4809008753befee",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "a4809008753befee",
+        "published_at": "2026-11-05T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:b8e2001afa10551c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "b8e2001afa10551c",
+        "published_at": "2026-11-15T01:21:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:c0befe7c1b0f1707",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c0befe7c1b0f1707",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:c2c71c7049bcc65b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c2c71c7049bcc65b",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:cdc1e93237db886f",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "cdc1e93237db886f",
+        "published_at": "2026-11-16T00:23:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:e2d3d397de3d2043",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "e2d3d397de3d2043",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:ec77b38451845211",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "ec77b38451845211",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:events",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "TATAELXSI:29 events",
+        "published_at": "2026-11-19T02:32:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:f4981435c6f0f119",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f4981435c6f0f119",
+        "published_at": "2026-11-09T23:49:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TATAELXSI:quarantined_count",
+        "dataset": "quarantined_events",
+        "path": "data/predictions/quarantined_events.parquet",
+        "record_key": "TATAELXSI:3 quarantined",
+        "published_at": "2026-11-18T12:03:01.651070Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+      },
+      {
+        "source_id": "price_risk:TATAELXSI:beta",
+        "dataset": "equities_daily+indices_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+      },
+      {
+        "source_id": "price_risk:TATAELXSI:max_drawdown_1y_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "price_risk:TATAELXSI:volatility_20d_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "promoter:TATAELXSI:dii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "stockholders.dii_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "promoter:TATAELXSI:fii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "stockholders.fii_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "promoter:TATAELXSI:management_commentary",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "promoter:TATAELXSI:promoter_change_qoq_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "corporate_intelligence.promoter_chg_1q",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "promoter:TATAELXSI:promoters_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TATAELXSI.json",
+        "record_key": "stockholders.promoters_pct",
+        "published_at": "2026-11-18T21:03:35Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9aa0c762743d751e0da2a7eed9206f419360b747ba9ed86fdb5a7ab1084722e1"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:confidence_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:expected_10d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:expected_next_day_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:generated_at",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:market_regime",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:model_agreement_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:model_name",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:model_version",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:net_expected_1d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:net_expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:observation_date",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:prediction_id",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:prob_10d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:prob_5d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:prob_next_day_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:recommended_action",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:top_bearish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:top_bullish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TATAELXSI",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:validation",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:validation_generated_at",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:TATAELXSI:validation_model_version",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "technical:TATAELXSI:adx",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:atr_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:close",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:macd_hist",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:resistance",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:return_1m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:return_3m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:rsi_14",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:sma_20",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:sma_200",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:sma_50",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:support",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:trend",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TATAELXSI:volume_surge_ratio",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TATAELXSI:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      }
+    ],
+    "findings": [
+      "downside_risk: UNKNOWN - var_95_1d_pct missing",
+      "volatility_risk: UNKNOWN - volatility_ann_pct missing",
+      "liquidity_risk: UNKNOWN - avg_daily_turnover_cr missing",
+      "concentration_risk: UNKNOWN - position_weight_pct missing",
+      "event_risk: UNKNOWN - news_events missing",
+      "drawdown_risk: UNKNOWN - max_drawdown_pct missing",
+      "risk_reward: UNKNOWN - reward/risk missing",
+      "suggested position weight 0% [ASSUMPTION - not from user portfolio data]"
+    ],
+    "positive_factors": [],
+    "negative_factors": [],
+    "confidence": 0.0,
+    "missing_information": [
+      "downside_risk: var_95_1d_pct missing",
+      "volatility_risk: volatility_ann_pct missing",
+      "liquidity_risk: avg_daily_turnover_cr missing",
+      "concentration_risk: position_weight_pct missing",
+      "event_risk: news_events missing",
+      "drawdown_risk: max_drawdown_pct missing",
+      "risk_reward: reward/risk missing"
+    ],
+    "warnings": [],
+    "numeric_claims": [],
+    "verdict": "REJECT",
+    "downside_risk": {
+      "level": "UNKNOWN",
+      "note": "var_95_1d_pct missing"
+    },
+    "volatility_risk": {
+      "level": "UNKNOWN",
+      "note": "volatility_ann_pct missing"
+    },
+    "liquidity_risk": {
+      "level": "UNKNOWN",
+      "note": "avg_daily_turnover_cr missing"
+    },
+    "concentration_risk": {
+      "level": "UNKNOWN",
+      "note": "position_weight_pct missing"
+    },
+    "event_risk": {
+      "level": "UNKNOWN",
+      "note": "news_events missing"
+    },
+    "drawdown_risk": {
+      "level": "UNKNOWN",
+      "note": "max_drawdown_pct missing"
+    },
+    "risk_reward": {
+      "level": "UNKNOWN",
+      "note": "reward/risk missing"
+    },
+    "rationale": "Deterministic verdict REJECT. Reasons: 7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward. Manageable across dimensions",
+    "rejection_reasons": [
+      "7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward"
+    ]
+  },
+  "agent_disagreements": [
+    "competitor (BULLISH) vs quantitative (BEARISH) analysts disagree",
+    "fundamental (BULLISH) vs quantitative (BEARISH) analysts disagree",
+    "promoter (BULLISH) vs quantitative (BEARISH) analysts disagree",
+    "quantitative (BEARISH) vs technical (BULLISH) analysts disagree"
+  ],
+  "overall_conclusion": "REJECTED_BY_RISK"
+}

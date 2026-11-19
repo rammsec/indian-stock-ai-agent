@@ -1,0 +1,2983 @@
+{
+  "agent_name": "research_manager",
+  "agent_version": "1.0.0",
+  "prompt_version": "v1",
+  "symbol": "RELIANCE",
+  "analysis_timestamp": "2026-11-19T23:11:21.501477Z",
+  "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+  "evidence_refs": [
+    {
+      "source_id": "competitor:RELIANCE:competitors",
+      "dataset": "relationship_map",
+      "path": "backend/news_intel/relationships.py",
+      "record_key": "RELATIONSHIP_MAP[RELIANCE].competitors",
+      "published_at": null,
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "9e47ec365576ad70807560fa726d29aa544560ae76fa7bca82469958933d3d15"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:0f61503391f5f0c0",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "0f61503391f5f0c0",
+      "published_at": "2026-11-03T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:1971c54b1a35cdc6",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1971c54b1a35cdc6",
+      "published_at": "2026-11-15T04:57:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:1d37282a0759ed6a",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "1d37282a0759ed6a",
+      "published_at": "2026-10-27T23:20:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:377c406d34ef6d2b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "377c406d34ef6d2b",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:4ae79d6707086594",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "4ae79d6707086594",
+      "published_at": "2026-11-08T05:18:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:50f90c8edbcac6ad",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "50f90c8edbcac6ad",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:5dc527bd0b6f0d42",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "5dc527bd0b6f0d42",
+      "published_at": "2026-11-05T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:692620bd37478f89",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "692620bd37478f89",
+      "published_at": "2026-11-10T04:33:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:6986de2de40dbf17",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "6986de2de40dbf17",
+      "published_at": "2026-11-01T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:7384f3e248e2dd13",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "7384f3e248e2dd13",
+      "published_at": "2026-11-10T20:43:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:7cc6ac59b63465b2",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "7cc6ac59b63465b2",
+      "published_at": "2026-11-10T20:43:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:82688e993527158e",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "82688e993527158e",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:9805705dfdf50fa6",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "9805705dfdf50fa6",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:ad064d90dc5d9f21",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "ad064d90dc5d9f21",
+      "published_at": "2026-11-13T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:b99aa61aed3f9df2",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "b99aa61aed3f9df2",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:c9736016bddb2935",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "c9736016bddb2935",
+      "published_at": "2026-11-01T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:d53540d6a16a4f4e",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "d53540d6a16a4f4e",
+      "published_at": "2026-11-02T23:09:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:d891ffccac8e4bc7",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "d891ffccac8e4bc7",
+      "published_at": "2026-10-22T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:d8a60aca43c649be",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "d8a60aca43c649be",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:e02cdda86c8ec202",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "e02cdda86c8ec202",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:eb0a2490330be19b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "eb0a2490330be19b",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:ed53689e9c4ee8c0",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "ed53689e9c4ee8c0",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:f5f832976b491b1b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "f5f832976b491b1b",
+      "published_at": "2026-11-16T20:35:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impact:f78cc2eb5792c173",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "f78cc2eb5792c173",
+      "published_at": "2026-11-09T12:09:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:cross_stock_impacts",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "affected_company=RELIANCE",
+      "published_at": "2026-11-16T20:35:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:RELIANCE:peer_metrics",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "promoter_and_competitor_intel.competitors",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:debt_to_equity",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "cash_and_balance_sheet.debt_to_equity",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:interest_coverage",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "computed operating_profit/interest quarter Sep 2026",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:net_margin_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "computed net_profit/revenue quarter Sep 2026",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:opm_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "quarter Sep 2026.opm_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:pb",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "computed overview.current_price/book_value",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:pe",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "overview.stock_pe",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:piotroski_score",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "overview.piotroski_score",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:profit_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "last_5_quarterly_reports[Sep 2026].net_profit_cr",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:profit_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "quarter Sep 2026.net_profit_growth_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:revenue_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "last_5_quarterly_reports[Sep 2026].revenue_cr",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:revenue_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "quarter Sep 2026.revenue_growth_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:roce_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "overview.roce_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "fundamental:RELIANCE:roe_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "overview.roe_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "market_regime:RELIANCE:india_vix_close",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:RELIANCE:nifty_50_day_change_pct",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:RELIANCE:observation_date",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:RELIANCE:regime",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "news:RELIANCE:0bb29965f073f617",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0bb29965f073f617",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:0f61503391f5f0c0",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0f61503391f5f0c0",
+      "published_at": "2026-11-03T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:14b674b509078854",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "14b674b509078854",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:1971c54b1a35cdc6",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1971c54b1a35cdc6",
+      "published_at": "2026-11-15T04:57:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:1cef1b95e3b8a04a",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1cef1b95e3b8a04a",
+      "published_at": "2026-11-07T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:1d37282a0759ed6a",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1d37282a0759ed6a",
+      "published_at": "2026-10-27T23:20:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:1d9db32805a69063",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1d9db32805a69063",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:1dd456c4aa90ca33",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1dd456c4aa90ca33",
+      "published_at": "2026-11-01T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:1eaaf089fe67869e",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1eaaf089fe67869e",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:1f0c175ba4660f07",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1f0c175ba4660f07",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:213251e44f98de6e",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "213251e44f98de6e",
+      "published_at": "2026-11-10T03:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:223a85ef1d87f031",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "223a85ef1d87f031",
+      "published_at": "2026-11-10T03:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:22c77ded98ed3e5c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "22c77ded98ed3e5c",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:2c9db019a26d62fa",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "2c9db019a26d62fa",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:373d54a27038c64e",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "373d54a27038c64e",
+      "published_at": "2026-11-11T10:25:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:377c406d34ef6d2b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "377c406d34ef6d2b",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:398605b4fe1c98c4",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "398605b4fe1c98c4",
+      "published_at": "2026-11-02T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:3bc5046ca574d076",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3bc5046ca574d076",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:4106f4c5b39e3778",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4106f4c5b39e3778",
+      "published_at": "2026-11-02T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:46095df056cd17c4",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "46095df056cd17c4",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:4996208578422a84",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4996208578422a84",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:4ae79d6707086594",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4ae79d6707086594",
+      "published_at": "2026-11-08T05:18:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:4d6bf112e24b67c6",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4d6bf112e24b67c6",
+      "published_at": "2026-11-11T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:50f90c8edbcac6ad",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "50f90c8edbcac6ad",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:5801ec610e8ac17c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5801ec610e8ac17c",
+      "published_at": "2026-11-01T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:5dc527bd0b6f0d42",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5dc527bd0b6f0d42",
+      "published_at": "2026-11-05T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:5dc6e7bb6223fac5",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5dc6e7bb6223fac5",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:692620bd37478f89",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "692620bd37478f89",
+      "published_at": "2026-11-10T04:33:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:6986de2de40dbf17",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "6986de2de40dbf17",
+      "published_at": "2026-11-01T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:7384f3e248e2dd13",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "7384f3e248e2dd13",
+      "published_at": "2026-11-10T20:43:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:7a354420c2afb865",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "7a354420c2afb865",
+      "published_at": "2026-10-31T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:7cc6ac59b63465b2",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "7cc6ac59b63465b2",
+      "published_at": "2026-11-10T20:43:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:8093991dacfc843c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "8093991dacfc843c",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:8146e0397f15e2a7",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "8146e0397f15e2a7",
+      "published_at": "2026-11-13T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:82688e993527158e",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "82688e993527158e",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:865b951a3e3db3fb",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "865b951a3e3db3fb",
+      "published_at": "2026-10-31T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:8a2d350137410022",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "8a2d350137410022",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:8b1b5bc6ab4d1d9c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "8b1b5bc6ab4d1d9c",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:9148205df2dbaa09",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "9148205df2dbaa09",
+      "published_at": "2026-11-08T05:18:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:9805705dfdf50fa6",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "9805705dfdf50fa6",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:9d3ddf40b267cc40",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "9d3ddf40b267cc40",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:a1b6c7ff86fcf699",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "a1b6c7ff86fcf699",
+      "published_at": "2026-11-02T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:a40ab9817f79e466",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "a40ab9817f79e466",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:a7802dd51feea141",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "a7802dd51feea141",
+      "published_at": "2026-10-30T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:ad064d90dc5d9f21",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "ad064d90dc5d9f21",
+      "published_at": "2026-11-13T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:adbf41182a115e55",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "adbf41182a115e55",
+      "published_at": "2026-11-10T01:02:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:b2d12a7a9119922a",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "b2d12a7a9119922a",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:b99aa61aed3f9df2",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "b99aa61aed3f9df2",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:c9736016bddb2935",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c9736016bddb2935",
+      "published_at": "2026-11-01T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:cdd568c28a84ad78",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "cdd568c28a84ad78",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:d46a1204c7b94dc2",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d46a1204c7b94dc2",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:d53540d6a16a4f4e",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d53540d6a16a4f4e",
+      "published_at": "2026-11-02T23:09:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:d891ffccac8e4bc7",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d891ffccac8e4bc7",
+      "published_at": "2026-10-22T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:d8a60aca43c649be",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d8a60aca43c649be",
+      "published_at": "2026-10-20T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:e02cdda86c8ec202",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "e02cdda86c8ec202",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:eb0a2490330be19b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "eb0a2490330be19b",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:ed53689e9c4ee8c0",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "ed53689e9c4ee8c0",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:effbc43838afd930",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "effbc43838afd930",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:events",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "RELIANCE:62 events",
+      "published_at": "2026-11-16T20:35:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:f55261ecb43eee89",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f55261ecb43eee89",
+      "published_at": "2026-10-31T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:f5f832976b491b1b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f5f832976b491b1b",
+      "published_at": "2026-11-16T20:35:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:f660019354006ec0",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f660019354006ec0",
+      "published_at": "2026-11-02T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:f78cc2eb5792c173",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f78cc2eb5792c173",
+      "published_at": "2026-11-09T12:09:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:RELIANCE:quarantined_count",
+      "dataset": "quarantined_events",
+      "path": "data/predictions/quarantined_events.parquet",
+      "record_key": "RELIANCE:5 quarantined",
+      "published_at": "2026-11-18T21:04:53.604412Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+    },
+    {
+      "source_id": "price_risk:RELIANCE:beta",
+      "dataset": "equities_daily+indices_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+    },
+    {
+      "source_id": "price_risk:RELIANCE:max_drawdown_1y_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "price_risk:RELIANCE:volatility_20d_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "promoter:RELIANCE:dii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "stockholders.dii_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "promoter:RELIANCE:fii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "stockholders.fii_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "promoter:RELIANCE:management_commentary",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "promoter:RELIANCE:promoter_change_qoq_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "corporate_intelligence.promoter_chg_1q",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "promoter:RELIANCE:promoters_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/RELIANCE.json",
+      "record_key": "stockholders.promoters_pct",
+      "published_at": "2026-11-18T21:03:29Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:confidence_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:expected_10d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:expected_next_day_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:generated_at",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:market_regime",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:model_agreement_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:model_name",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:model_version",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:net_expected_1d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:net_expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:observation_date",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:prediction_id",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:prob_10d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:prob_5d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:prob_next_day_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:recommended_action",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:top_bearish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:top_bullish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "RELIANCE",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:validation",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:validation_generated_at",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:RELIANCE:validation_model_version",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "technical:RELIANCE:adx",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:atr_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:close",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:macd_hist",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:resistance",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:return_1m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:return_3m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:rsi_14",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:sma_20",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:sma_200",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:sma_50",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:support",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:trend",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:RELIANCE:volume_surge_ratio",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    }
+  ],
+  "findings": [
+    "Manager summary"
+  ],
+  "positive_factors": [
+    "Growth"
+  ],
+  "negative_factors": [],
+  "confidence": 0.75,
+  "missing_information": [
+    "fundamental.operating_cash_flow_cr",
+    "fundamental.free_cash_flow_cr",
+    "fundamental.current_ratio",
+    "promoter.pledged_pct",
+    "promoter.insider_transactions",
+    "promoter.leadership_changes",
+    "promoter.governance_flags",
+    "competitor.industry_growth_pct"
+  ],
+  "warnings": [
+    "conclusion guardrail: LLM proposed '', enforced 'FAVOURABLE' (no valid LLM proposal; derived from Bull/Bear confidence)",
+    "generic price-page style headline not treated as company event: 'Avenue Supermarts Share Price - Live NSE: DMART Stock Price & Chart - Upstox'",
+    "generic price-page style headline not treated as company event: 'Reliance Industries Ltd Share/Stock Price Live Today | The HinduBusinessLine - BusinessLine'",
+    "generic price-page style headline not treated as company event: 'RELIANCE Share Price \u2014 NSE:RELIANCE - TradingView'",
+    "competitor-category news: a competitor's win is NOT positive for the target",
+    "5D validation evidence has insufficient matured samples (matured=0)",
+    "10D validation evidence has insufficient matured samples (matured=0)"
+  ],
+  "numeric_claims": [],
+  "investment_thesis": "Balanced accumulation thesis",
+  "bull_case": "Operating leverage",
+  "bear_case": "Multiple contraction",
+  "fundamental_assessment": "Healthy",
+  "technical_assessment": "Constructive",
+  "news_assessment": "Neutral",
+  "promoter_assessment": "Strong",
+  "competitor_assessment": "Dominant",
+  "quantitative_model_predictions": {
+    "prediction_id": "RELIANCE_2026-11-18_ml_ensemble_3.2.0_20261118T210426Z",
+    "symbol": "RELIANCE",
+    "observation_date": "2026-11-18",
+    "generated_at": "2026-11-18T21:04:26.591210+00:00",
+    "model_name": "ml_ensemble",
+    "model_version": "3.2.0",
+    "market_regime": "Weak Bull",
+    "prob_next_day_up": 0.5049,
+    "prob_5d_up": 0.4525,
+    "prob_10d_up": 0.4394,
+    "prob_lgbm_up": 0.4688,
+    "prob_xgb_up": 0.4677000045776367,
+    "prob_linear_up": 0.4759,
+    "expected_next_day_return_pct": 0.0226,
+    "expected_5d_return_pct": -0.364,
+    "expected_10d_return_pct": -0.5525,
+    "downside_risk_mae_pct": -0.9933,
+    "expected_upside_mfe_pct": 0.9925,
+    "reward_to_risk_ratio": 0.999,
+    "model_agreement_score": 0.9544,
+    "confidence_score": 67.71,
+    "roundtrip_delivery_cost_pct": 0.3538,
+    "roundtrip_intraday_cost_pct": 0.2026,
+    "net_expected_1d_return_pct": -0.1799,
+    "net_expected_5d_return_pct": -0.7178,
+    "recommended_action": "HOLD / WATCH",
+    "abstention_reason": null,
+    "top_bullish_drivers": [
+      {
+        "feature": "vd_rel_vol_100d",
+        "family": "2. Volume & Delivery",
+        "value": 1.2978,
+        "contribution": 0.00943,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "pm_ret_20d_pct",
+        "family": "1. Price & Technical Momentum",
+        "value": 13.3943,
+        "contribution": 0.00905,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 0.4848,
+        "contribution": 0.00828,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "ms_india_vix_zscore_20d",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6452,
+        "contribution": 0.00666,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "fq_roe_pct",
+        "family": "6. Financial Quality",
+        "value": 10.5919,
+        "contribution": 0.00589,
+        "direction": "BULLISH"
+      }
+    ],
+    "top_bearish_drivers": [
+      {
+        "feature": "ms_nifty_ret_1d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6281,
+        "contribution": -0.0374,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_20d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.4281,
+        "contribution": -0.03662,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "pm_atr_ratio_7_21",
+        "family": "1. Price & Technical Momentum",
+        "value": 0.9887,
+        "contribution": -0.00735,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "pm_rsi_14_chg_3d",
+        "family": "1. Price & Technical Momentum",
+        "value": 2.3099,
+        "contribution": -0.00615,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "inst_named_holders_count",
+        "family": "4. Institutional & Promoter Activity",
+        "value": 14.0,
+        "contribution": -0.00425,
+        "direction": "BEARISH"
+      }
+    ],
+    "target_session_date": "2026-11-19",
+    "last_close": 1363.0,
+    "atr_14_pct": 2.089,
+    "momentum_prob_up": 0.518,
+    "momentum_5d_return_pct": 3.1948,
+    "momentum_prob_5d_up": 0.5362,
+    "momentum_prob_10d_up": 0.5542,
+    "momentum_1d_return_pct": 0.1829,
+    "momentum_10d_return_pct": 4.8947,
+    "feature_snapshot": {
+      "ne_is_earnings_window": 1.0,
+      "ms_corr_nifty_20d": 0.42813,
+      "fq_asset_turnover": 0.48485,
+      "inst_dii_chg_4q": 1.37,
+      "fq_debt_to_equity": 0.44574,
+      "eg_qtr_np_qoq_pct": 27.39,
+      "inst_named_holders_count": 14.0,
+      "pm_ret_180d_pct": -4.55182,
+      "ms_india_vix_zscore_20d": -0.64524,
+      "fq_roce_pct": 13.70054
+    },
+    "outcome_evaluated_at": null,
+    "realized_next_day_return_pct": null,
+    "realized_5d_return_pct": null
+  },
+  "risk_assessment": {
+    "agent_name": "risk_manager",
+    "agent_version": "1.0.0",
+    "prompt_version": "v1",
+    "symbol": "RELIANCE",
+    "analysis_timestamp": "2026-11-19T23:11:21.501477Z",
+    "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+    "evidence_refs": [
+      {
+        "source_id": "competitor:RELIANCE:competitors",
+        "dataset": "relationship_map",
+        "path": "backend/news_intel/relationships.py",
+        "record_key": "RELATIONSHIP_MAP[RELIANCE].competitors",
+        "published_at": null,
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "9e47ec365576ad70807560fa726d29aa544560ae76fa7bca82469958933d3d15"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:0f61503391f5f0c0",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "0f61503391f5f0c0",
+        "published_at": "2026-11-03T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:1971c54b1a35cdc6",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1971c54b1a35cdc6",
+        "published_at": "2026-11-15T04:57:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:1d37282a0759ed6a",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "1d37282a0759ed6a",
+        "published_at": "2026-10-27T23:20:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:377c406d34ef6d2b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "377c406d34ef6d2b",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:4ae79d6707086594",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "4ae79d6707086594",
+        "published_at": "2026-11-08T05:18:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:50f90c8edbcac6ad",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "50f90c8edbcac6ad",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:5dc527bd0b6f0d42",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "5dc527bd0b6f0d42",
+        "published_at": "2026-11-05T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:692620bd37478f89",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "692620bd37478f89",
+        "published_at": "2026-11-10T04:33:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:6986de2de40dbf17",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "6986de2de40dbf17",
+        "published_at": "2026-11-01T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:7384f3e248e2dd13",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "7384f3e248e2dd13",
+        "published_at": "2026-11-10T20:43:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:7cc6ac59b63465b2",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "7cc6ac59b63465b2",
+        "published_at": "2026-11-10T20:43:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:82688e993527158e",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "82688e993527158e",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:9805705dfdf50fa6",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "9805705dfdf50fa6",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:ad064d90dc5d9f21",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "ad064d90dc5d9f21",
+        "published_at": "2026-11-13T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:b99aa61aed3f9df2",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "b99aa61aed3f9df2",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:c9736016bddb2935",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "c9736016bddb2935",
+        "published_at": "2026-11-01T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:d53540d6a16a4f4e",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "d53540d6a16a4f4e",
+        "published_at": "2026-11-02T23:09:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:d891ffccac8e4bc7",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "d891ffccac8e4bc7",
+        "published_at": "2026-10-22T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:d8a60aca43c649be",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "d8a60aca43c649be",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:e02cdda86c8ec202",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "e02cdda86c8ec202",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:eb0a2490330be19b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "eb0a2490330be19b",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:ed53689e9c4ee8c0",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "ed53689e9c4ee8c0",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:f5f832976b491b1b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "f5f832976b491b1b",
+        "published_at": "2026-11-16T20:35:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impact:f78cc2eb5792c173",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "f78cc2eb5792c173",
+        "published_at": "2026-11-09T12:09:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:cross_stock_impacts",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "affected_company=RELIANCE",
+        "published_at": "2026-11-16T20:35:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:RELIANCE:peer_metrics",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "promoter_and_competitor_intel.competitors",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:debt_to_equity",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "cash_and_balance_sheet.debt_to_equity",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:interest_coverage",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "computed operating_profit/interest quarter Sep 2026",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:net_margin_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "computed net_profit/revenue quarter Sep 2026",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:opm_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "quarter Sep 2026.opm_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:pb",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "computed overview.current_price/book_value",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:pe",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "overview.stock_pe",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:piotroski_score",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "overview.piotroski_score",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:profit_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "last_5_quarterly_reports[Sep 2026].net_profit_cr",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:profit_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "quarter Sep 2026.net_profit_growth_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:revenue_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "last_5_quarterly_reports[Sep 2026].revenue_cr",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:revenue_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "quarter Sep 2026.revenue_growth_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:roce_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "overview.roce_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "fundamental:RELIANCE:roe_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "overview.roe_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "market_regime:RELIANCE:india_vix_close",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:RELIANCE:nifty_50_day_change_pct",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:RELIANCE:observation_date",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:RELIANCE:regime",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "news:RELIANCE:0bb29965f073f617",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0bb29965f073f617",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:0f61503391f5f0c0",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0f61503391f5f0c0",
+        "published_at": "2026-11-03T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:14b674b509078854",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "14b674b509078854",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:1971c54b1a35cdc6",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1971c54b1a35cdc6",
+        "published_at": "2026-11-15T04:57:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:1cef1b95e3b8a04a",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1cef1b95e3b8a04a",
+        "published_at": "2026-11-07T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:1d37282a0759ed6a",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1d37282a0759ed6a",
+        "published_at": "2026-10-27T23:20:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:1d9db32805a69063",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1d9db32805a69063",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:1dd456c4aa90ca33",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1dd456c4aa90ca33",
+        "published_at": "2026-11-01T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:1eaaf089fe67869e",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1eaaf089fe67869e",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:1f0c175ba4660f07",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1f0c175ba4660f07",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:213251e44f98de6e",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "213251e44f98de6e",
+        "published_at": "2026-11-10T03:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:223a85ef1d87f031",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "223a85ef1d87f031",
+        "published_at": "2026-11-10T03:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:22c77ded98ed3e5c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "22c77ded98ed3e5c",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:2c9db019a26d62fa",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "2c9db019a26d62fa",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:373d54a27038c64e",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "373d54a27038c64e",
+        "published_at": "2026-11-11T10:25:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:377c406d34ef6d2b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "377c406d34ef6d2b",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:398605b4fe1c98c4",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "398605b4fe1c98c4",
+        "published_at": "2026-11-02T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:3bc5046ca574d076",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3bc5046ca574d076",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:4106f4c5b39e3778",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4106f4c5b39e3778",
+        "published_at": "2026-11-02T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:46095df056cd17c4",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "46095df056cd17c4",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:4996208578422a84",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4996208578422a84",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:4ae79d6707086594",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4ae79d6707086594",
+        "published_at": "2026-11-08T05:18:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:4d6bf112e24b67c6",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4d6bf112e24b67c6",
+        "published_at": "2026-11-11T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:50f90c8edbcac6ad",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "50f90c8edbcac6ad",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:5801ec610e8ac17c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5801ec610e8ac17c",
+        "published_at": "2026-11-01T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:5dc527bd0b6f0d42",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5dc527bd0b6f0d42",
+        "published_at": "2026-11-05T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:5dc6e7bb6223fac5",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5dc6e7bb6223fac5",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:692620bd37478f89",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "692620bd37478f89",
+        "published_at": "2026-11-10T04:33:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:6986de2de40dbf17",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "6986de2de40dbf17",
+        "published_at": "2026-11-01T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:7384f3e248e2dd13",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "7384f3e248e2dd13",
+        "published_at": "2026-11-10T20:43:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:7a354420c2afb865",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "7a354420c2afb865",
+        "published_at": "2026-10-31T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:7cc6ac59b63465b2",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "7cc6ac59b63465b2",
+        "published_at": "2026-11-10T20:43:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:8093991dacfc843c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "8093991dacfc843c",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:8146e0397f15e2a7",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "8146e0397f15e2a7",
+        "published_at": "2026-11-13T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:82688e993527158e",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "82688e993527158e",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:865b951a3e3db3fb",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "865b951a3e3db3fb",
+        "published_at": "2026-10-31T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:8a2d350137410022",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "8a2d350137410022",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:8b1b5bc6ab4d1d9c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "8b1b5bc6ab4d1d9c",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:9148205df2dbaa09",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "9148205df2dbaa09",
+        "published_at": "2026-11-08T05:18:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:9805705dfdf50fa6",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "9805705dfdf50fa6",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:9d3ddf40b267cc40",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "9d3ddf40b267cc40",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:a1b6c7ff86fcf699",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "a1b6c7ff86fcf699",
+        "published_at": "2026-11-02T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:a40ab9817f79e466",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "a40ab9817f79e466",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:a7802dd51feea141",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "a7802dd51feea141",
+        "published_at": "2026-10-30T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:ad064d90dc5d9f21",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "ad064d90dc5d9f21",
+        "published_at": "2026-11-13T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:adbf41182a115e55",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "adbf41182a115e55",
+        "published_at": "2026-11-10T01:02:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:b2d12a7a9119922a",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "b2d12a7a9119922a",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:b99aa61aed3f9df2",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "b99aa61aed3f9df2",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:c9736016bddb2935",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c9736016bddb2935",
+        "published_at": "2026-11-01T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:cdd568c28a84ad78",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "cdd568c28a84ad78",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:d46a1204c7b94dc2",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d46a1204c7b94dc2",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:d53540d6a16a4f4e",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d53540d6a16a4f4e",
+        "published_at": "2026-11-02T23:09:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:d891ffccac8e4bc7",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d891ffccac8e4bc7",
+        "published_at": "2026-10-22T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:d8a60aca43c649be",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d8a60aca43c649be",
+        "published_at": "2026-10-20T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:e02cdda86c8ec202",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "e02cdda86c8ec202",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:eb0a2490330be19b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "eb0a2490330be19b",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:ed53689e9c4ee8c0",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "ed53689e9c4ee8c0",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:effbc43838afd930",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "effbc43838afd930",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:events",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "RELIANCE:62 events",
+        "published_at": "2026-11-16T20:35:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:f55261ecb43eee89",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f55261ecb43eee89",
+        "published_at": "2026-10-31T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:f5f832976b491b1b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f5f832976b491b1b",
+        "published_at": "2026-11-16T20:35:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:f660019354006ec0",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f660019354006ec0",
+        "published_at": "2026-11-02T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:f78cc2eb5792c173",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f78cc2eb5792c173",
+        "published_at": "2026-11-09T12:09:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:RELIANCE:quarantined_count",
+        "dataset": "quarantined_events",
+        "path": "data/predictions/quarantined_events.parquet",
+        "record_key": "RELIANCE:5 quarantined",
+        "published_at": "2026-11-18T21:04:53.604412Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+      },
+      {
+        "source_id": "price_risk:RELIANCE:beta",
+        "dataset": "equities_daily+indices_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+      },
+      {
+        "source_id": "price_risk:RELIANCE:max_drawdown_1y_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "price_risk:RELIANCE:volatility_20d_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "promoter:RELIANCE:dii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "stockholders.dii_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "promoter:RELIANCE:fii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "stockholders.fii_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "promoter:RELIANCE:management_commentary",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "promoter:RELIANCE:promoter_change_qoq_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "corporate_intelligence.promoter_chg_1q",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "promoter:RELIANCE:promoters_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/RELIANCE.json",
+        "record_key": "stockholders.promoters_pct",
+        "published_at": "2026-11-18T21:03:29Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "87eec3202557104c58bbd47694c8cc758df29e84cb215ba4a7f4ec8a45a6063f"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:confidence_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:expected_10d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:expected_next_day_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:generated_at",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:market_regime",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:model_agreement_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:model_name",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:model_version",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:net_expected_1d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:net_expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:observation_date",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:prediction_id",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:prob_10d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:prob_5d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:prob_next_day_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:recommended_action",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:top_bearish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:top_bullish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "RELIANCE",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:validation",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:validation_generated_at",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:RELIANCE:validation_model_version",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "technical:RELIANCE:adx",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:atr_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:close",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:macd_hist",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:resistance",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:return_1m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:return_3m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:rsi_14",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:sma_20",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:sma_200",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:sma_50",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:support",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:trend",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:RELIANCE:volume_surge_ratio",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "RELIANCE:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      }
+    ],
+    "findings": [
+      "downside_risk: UNKNOWN - var_95_1d_pct missing",
+      "volatility_risk: UNKNOWN - volatility_ann_pct missing",
+      "liquidity_risk: UNKNOWN - avg_daily_turnover_cr missing",
+      "concentration_risk: UNKNOWN - position_weight_pct missing",
+      "event_risk: UNKNOWN - news_events missing",
+      "drawdown_risk: UNKNOWN - max_drawdown_pct missing",
+      "risk_reward: UNKNOWN - reward/risk missing",
+      "suggested position weight 0% [ASSUMPTION - not from user portfolio data]"
+    ],
+    "positive_factors": [],
+    "negative_factors": [],
+    "confidence": 0.0,
+    "missing_information": [
+      "downside_risk: var_95_1d_pct missing",
+      "volatility_risk: volatility_ann_pct missing",
+      "liquidity_risk: avg_daily_turnover_cr missing",
+      "concentration_risk: position_weight_pct missing",
+      "event_risk: news_events missing",
+      "drawdown_risk: max_drawdown_pct missing",
+      "risk_reward: reward/risk missing"
+    ],
+    "warnings": [],
+    "numeric_claims": [],
+    "verdict": "REJECT",
+    "downside_risk": {
+      "level": "UNKNOWN",
+      "note": "var_95_1d_pct missing"
+    },
+    "volatility_risk": {
+      "level": "UNKNOWN",
+      "note": "volatility_ann_pct missing"
+    },
+    "liquidity_risk": {
+      "level": "UNKNOWN",
+      "note": "avg_daily_turnover_cr missing"
+    },
+    "concentration_risk": {
+      "level": "UNKNOWN",
+      "note": "position_weight_pct missing"
+    },
+    "event_risk": {
+      "level": "UNKNOWN",
+      "note": "news_events missing"
+    },
+    "drawdown_risk": {
+      "level": "UNKNOWN",
+      "note": "max_drawdown_pct missing"
+    },
+    "risk_reward": {
+      "level": "UNKNOWN",
+      "note": "reward/risk missing"
+    },
+    "rationale": "Deterministic verdict REJECT. Reasons: 7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward. Manageable across dimensions",
+    "rejection_reasons": [
+      "7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward"
+    ]
+  },
+  "agent_disagreements": [
+    "competitor (BULLISH) vs quantitative (BEARISH) analysts disagree",
+    "fundamental (BULLISH) vs quantitative (BEARISH) analysts disagree",
+    "promoter (BULLISH) vs quantitative (BEARISH) analysts disagree",
+    "quantitative (BEARISH) vs technical (BULLISH) analysts disagree"
+  ],
+  "overall_conclusion": "REJECTED_BY_RISK"
+}

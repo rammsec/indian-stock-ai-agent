@@ -1,0 +1,3162 @@
+{
+  "agent_name": "research_manager",
+  "agent_version": "1.0.0",
+  "prompt_version": "v1",
+  "symbol": "TCS",
+  "analysis_timestamp": "2026-11-19T23:11:22.163902Z",
+  "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+  "evidence_refs": [
+    {
+      "source_id": "competitor:TCS:competitors",
+      "dataset": "relationship_map",
+      "path": "backend/news_intel/relationships.py",
+      "record_key": "RELATIONSHIP_MAP[TCS].competitors",
+      "published_at": null,
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "83ae24404fb102a94d0cadb2bea89a66793f8af1cba2c164d2d3c8aee28b8b5a"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:0d5f0ff0db4f3820",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "0d5f0ff0db4f3820",
+      "published_at": "2026-11-12T21:48:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:222e07d042e1a78b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "222e07d042e1a78b",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:28d7b2ff3c0e2f81",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "28d7b2ff3c0e2f81",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:2dd13bd1caca4a38",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "2dd13bd1caca4a38",
+      "published_at": "2026-10-22T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:3f18e4761b97aa43",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "3f18e4761b97aa43",
+      "published_at": "2026-11-12T03:39:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:3fd6d0de011dc494",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "3fd6d0de011dc494",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:4628ff748f0e852b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "4628ff748f0e852b",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:4ca0a7dc75c16259",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "4ca0a7dc75c16259",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:512176d8e6e1ba62",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "512176d8e6e1ba62",
+      "published_at": "2026-11-12T22:34:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:66852dea5b348ab8",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "66852dea5b348ab8",
+      "published_at": "2026-10-24T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:6867ef54bbfe4333",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "6867ef54bbfe4333",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:792b4f09d6c1194b",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "792b4f09d6c1194b",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:872c39cba7b682c7",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "872c39cba7b682c7",
+      "published_at": "2026-11-16T05:20:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:8dc7c3654a6d4bc7",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "8dc7c3654a6d4bc7",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:918787c21d24d471",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "918787c21d24d471",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:a9a6ca6e9d9da425",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "a9a6ca6e9d9da425",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:aa203b10037881ff",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "aa203b10037881ff",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:b0490ab2b04c03fc",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "b0490ab2b04c03fc",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:c09b2b5ebd894426",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "c09b2b5ebd894426",
+      "published_at": "2026-11-10T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:c1f4b25325da2c15",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "c1f4b25325da2c15",
+      "published_at": "2026-11-16T21:19:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:c86036d6f7fa94dd",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "c86036d6f7fa94dd",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:db1a9a4cf9f4ec72",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "db1a9a4cf9f4ec72",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:df1dd733c4a3f46d",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "df1dd733c4a3f46d",
+      "published_at": "2026-11-16T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:e965d2d09c6b4abe",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "e965d2d09c6b4abe",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impact:edbf37409926e8d1",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "edbf37409926e8d1",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:cross_stock_impacts",
+      "dataset": "cross_stock_impacts",
+      "path": "data/predictions/cross_stock_impacts.parquet",
+      "record_key": "affected_company=TCS",
+      "published_at": "2026-11-16T21:19:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+    },
+    {
+      "source_id": "competitor:TCS:peer_metrics",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "promoter_and_competitor_intel.competitors",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:debt_to_equity",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "cash_and_balance_sheet.debt_to_equity",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:interest_coverage",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "computed operating_profit/interest quarter Sep 2026",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:net_margin_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "computed net_profit/revenue quarter Sep 2026",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:opm_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "quarter Sep 2026.opm_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:pb",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "computed overview.current_price/book_value",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:pe",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "overview.stock_pe",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:piotroski_score",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "overview.piotroski_score",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:profit_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "last_5_quarterly_reports[Sep 2026].net_profit_cr",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:profit_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "quarter Sep 2026.net_profit_growth_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:revenue_cr",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "last_5_quarterly_reports[Sep 2026].revenue_cr",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:revenue_growth_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "quarter Sep 2026.revenue_growth_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:roce_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "overview.roce_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "fundamental:TCS:roe_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "overview.roe_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "market_regime:TCS:india_vix_close",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:TCS:nifty_50_day_change_pct",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:TCS:observation_date",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "market_regime:TCS:regime",
+      "dataset": "market_regime",
+      "path": "docs/data/regime.json",
+      "record_key": "observation_date=2026-11-18",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+    },
+    {
+      "source_id": "news:TCS:0a86c05602058b65",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0a86c05602058b65",
+      "published_at": "2026-11-09T06:16:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:0d5f0ff0db4f3820",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "0d5f0ff0db4f3820",
+      "published_at": "2026-11-12T21:48:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:116dabc590982177",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "116dabc590982177",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:14f8dc88e2bd5378",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "14f8dc88e2bd5378",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:1ef7d89b0b80c848",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "1ef7d89b0b80c848",
+      "published_at": "2026-11-18T05:45:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:221d643ddc5dd410",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "221d643ddc5dd410",
+      "published_at": "2026-11-17T06:01:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:222e07d042e1a78b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "222e07d042e1a78b",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:22b25ac836e99827",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "22b25ac836e99827",
+      "published_at": "2026-11-17T04:25:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:2356b1896be1de85",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "2356b1896be1de85",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:24a7da9586a367a4",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "24a7da9586a367a4",
+      "published_at": "2026-11-08T06:12:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:28d7b2ff3c0e2f81",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "28d7b2ff3c0e2f81",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:2dd13bd1caca4a38",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "2dd13bd1caca4a38",
+      "published_at": "2026-10-22T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:3017d515f1ea28f1",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3017d515f1ea28f1",
+      "published_at": "2026-11-16T05:03:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:3256d2ef8500a645",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3256d2ef8500a645",
+      "published_at": "2026-11-05T04:33:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:375b0cf1a255e6ad",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "375b0cf1a255e6ad",
+      "published_at": "2026-11-17T05:31:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:3f18e4761b97aa43",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3f18e4761b97aa43",
+      "published_at": "2026-11-12T03:39:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:3fd6d0de011dc494",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "3fd6d0de011dc494",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:4533dd98cf82b850",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4533dd98cf82b850",
+      "published_at": "2026-11-17T08:32:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:4628ff748f0e852b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4628ff748f0e852b",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:4a603560f2771b4c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4a603560f2771b4c",
+      "published_at": "2026-11-18T05:03:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:4ca0a7dc75c16259",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4ca0a7dc75c16259",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:4ed690601bbebad3",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "4ed690601bbebad3",
+      "published_at": "2026-11-18T06:05:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:512176d8e6e1ba62",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "512176d8e6e1ba62",
+      "published_at": "2026-11-12T22:34:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:5525da857ab78353",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5525da857ab78353",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:587e14960f478338",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "587e14960f478338",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:597152e10109e9b0",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "597152e10109e9b0",
+      "published_at": "2026-11-17T11:48:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:5c12ca8b4bb9de28",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5c12ca8b4bb9de28",
+      "published_at": "2026-11-16T09:11:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:5e513762d6bc9cca",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "5e513762d6bc9cca",
+      "published_at": "2026-11-16T04:34:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:643b5b09ffef99d8",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "643b5b09ffef99d8",
+      "published_at": "2026-11-16T22:43:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:66852dea5b348ab8",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "66852dea5b348ab8",
+      "published_at": "2026-10-24T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:6867ef54bbfe4333",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "6867ef54bbfe4333",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:70b6babb3fa15ede",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "70b6babb3fa15ede",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:792b4f09d6c1194b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "792b4f09d6c1194b",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:854e8c52e7e8aeaf",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "854e8c52e7e8aeaf",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:872c39cba7b682c7",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "872c39cba7b682c7",
+      "published_at": "2026-11-16T05:20:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:8944e15762247adb",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "8944e15762247adb",
+      "published_at": "2026-11-13T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:8dc7c3654a6d4bc7",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "8dc7c3654a6d4bc7",
+      "published_at": "2026-10-27T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:8e467b666d103a94",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "8e467b666d103a94",
+      "published_at": "2026-11-17T11:56:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:90004917168ea87c",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "90004917168ea87c",
+      "published_at": "2026-11-11T05:03:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:90346966c04e2364",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "90346966c04e2364",
+      "published_at": "2026-11-16T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:918787c21d24d471",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "918787c21d24d471",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:94309066afb9da77",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "94309066afb9da77",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:9ac8b4add749902e",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "9ac8b4add749902e",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:a9a6ca6e9d9da425",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "a9a6ca6e9d9da425",
+      "published_at": "2026-11-04T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:aa203b10037881ff",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "aa203b10037881ff",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:ac24a14a89803323",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "ac24a14a89803323",
+      "published_at": "2026-11-16T10:05:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:b0490ab2b04c03fc",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "b0490ab2b04c03fc",
+      "published_at": "2026-11-06T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:bc11bf19172dc293",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "bc11bf19172dc293",
+      "published_at": "2026-11-05T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:bcb64aadc51cef20",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "bcb64aadc51cef20",
+      "published_at": "2026-10-23T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:be55ece87c974542",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "be55ece87c974542",
+      "published_at": "2026-11-12T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:c09b2b5ebd894426",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c09b2b5ebd894426",
+      "published_at": "2026-11-10T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:c1f4b25325da2c15",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c1f4b25325da2c15",
+      "published_at": "2026-11-16T21:19:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:c86036d6f7fa94dd",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "c86036d6f7fa94dd",
+      "published_at": "2026-10-28T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:d7c19ff63bcc1400",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d7c19ff63bcc1400",
+      "published_at": "2026-11-02T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:d8df2f7ec36c5e16",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d8df2f7ec36c5e16",
+      "published_at": "2026-10-21T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:d9a9667f6733d61b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d9a9667f6733d61b",
+      "published_at": "2026-10-19T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:d9b0dda51a4efc18",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "d9b0dda51a4efc18",
+      "published_at": "2026-11-09T06:16:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:db1a9a4cf9f4ec72",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "db1a9a4cf9f4ec72",
+      "published_at": "2026-10-26T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:df1dd733c4a3f46d",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "df1dd733c4a3f46d",
+      "published_at": "2026-11-16T02:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:e019e878ec485c74",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "e019e878ec485c74",
+      "published_at": "2026-11-18T07:26:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:e56c241eebf74f31",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "e56c241eebf74f31",
+      "published_at": "2026-11-13T05:03:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:e59dedfb065cf6be",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "e59dedfb065cf6be",
+      "published_at": "2026-11-10T23:33:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:e8ef095f7d2ec171",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "e8ef095f7d2ec171",
+      "published_at": "2026-10-24T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:e965d2d09c6b4abe",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "e965d2d09c6b4abe",
+      "published_at": "2026-10-25T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:edbf37409926e8d1",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "edbf37409926e8d1",
+      "published_at": "2026-10-29T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:events",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "TCS:70 events",
+      "published_at": "2026-11-18T07:26:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:f1e7910d9d53ef1b",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f1e7910d9d53ef1b",
+      "published_at": "2026-10-24T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:f73f4efa5188229f",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "f73f4efa5188229f",
+      "published_at": "2026-11-16T15:33:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:fc1d0bb200a04e17",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "fc1d0bb200a04e17",
+      "published_at": "2026-11-16T10:04:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:fe3c597538d49651",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "fe3c597538d49651",
+      "published_at": "2026-10-22T01:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:fe411d7721d49639",
+      "dataset": "structured_events",
+      "path": "data/predictions/structured_events.parquet",
+      "record_key": "fe411d7721d49639",
+      "published_at": "2026-11-16T06:17:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+    },
+    {
+      "source_id": "news:TCS:quarantined_count",
+      "dataset": "quarantined_events",
+      "path": "data/predictions/quarantined_events.parquet",
+      "record_key": "TCS:16 quarantined",
+      "published_at": "2026-11-19T11:59:00.543965Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+    },
+    {
+      "source_id": "price_risk:TCS:beta",
+      "dataset": "equities_daily+indices_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+    },
+    {
+      "source_id": "price_risk:TCS:max_drawdown_1y_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "price_risk:TCS:volatility_20d_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "promoter:TCS:dii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "stockholders.dii_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "promoter:TCS:fii_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "stockholders.fii_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "promoter:TCS:management_commentary",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "promoter:TCS:promoter_change_qoq_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "corporate_intelligence.promoter_chg_1q",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "promoter:TCS:promoters_pct",
+      "dataset": "docs_symbol_snapshot",
+      "path": "docs/data/TCS.json",
+      "record_key": "stockholders.promoters_pct",
+      "published_at": "2026-11-18T21:03:32Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+    },
+    {
+      "source_id": "quantitative:TCS:abstention_reason",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:confidence_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:expected_10d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:expected_next_day_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:generated_at",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:market_regime",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:model_agreement_score",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:model_name",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:model_version",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:net_expected_1d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:net_expected_5d_return_pct",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:observation_date",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:prediction_id",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:prob_10d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:prob_5d_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:prob_next_day_up",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:recommended_action",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:top_bearish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:top_bullish_drivers",
+      "dataset": "latest_predictions",
+      "path": "data/predictions/latest_predictions.json",
+      "record_key": "TCS",
+      "published_at": "2026-11-18T21:04:26.591210Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+    },
+    {
+      "source_id": "quantitative:TCS:validation",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:TCS:validation_generated_at",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "quantitative:TCS:validation_model_version",
+      "dataset": "forward_validation",
+      "path": "data/predictions/forward_validation.json",
+      "record_key": "horizon_evaluations",
+      "published_at": "2026-11-19T11:59:00.758793Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+    },
+    {
+      "source_id": "technical:TCS:adx",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:atr_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:close",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:macd_hist",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:resistance",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:return_1m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:return_3m_pct",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:rsi_14",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:sma_20",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:sma_200",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:sma_50",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:support",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:trend",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    },
+    {
+      "source_id": "technical:TCS:volume_surge_ratio",
+      "dataset": "equities_daily",
+      "path": "data/processed/equities_daily.parquet",
+      "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+      "published_at": "2026-11-18T12:30:00Z",
+      "retrieved_at": "2026-11-19T18:29:59Z",
+      "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+    }
+  ],
+  "findings": [
+    "Manager summary"
+  ],
+  "positive_factors": [
+    "Growth"
+  ],
+  "negative_factors": [],
+  "confidence": 0.75,
+  "missing_information": [
+    "fundamental.operating_cash_flow_cr",
+    "fundamental.free_cash_flow_cr",
+    "fundamental.current_ratio",
+    "promoter.pledged_pct",
+    "promoter.insider_transactions",
+    "promoter.leadership_changes",
+    "promoter.governance_flags",
+    "competitor.industry_growth_pct"
+  ],
+  "warnings": [
+    "conclusion guardrail: LLM proposed '', enforced 'FAVOURABLE' (no valid LLM proposal; derived from Bull/Bear confidence)",
+    "generic price-page style headline not treated as company event: 'TCS Share Price - Upstox'",
+    "generic price-page style headline not treated as company event: 'Tata Consultancy Services Limited (TCS.NS) Stock Price, News, Quote & History - Yahoo! Finance Canada'",
+    "generic price-page style headline not treated as company event: 'Tata Consultancy Services Limited (TCS.NS) stock price, news, quote and history - Yahoo Finance UK'",
+    "generic price-page style headline not treated as company event: 'Tata Consultancy Services (TCS) Share Price Today (NSE), Market News - TechGraph'",
+    "generic price-page style headline not treated as company event: 'Tata Consultancy Services Limited (TCS.NS) stock price, news, quote and history - Yahoo Finance Singapore'",
+    "generic price-page style headline not treated as company event: \"TCS share price surges 28% in October, hits over 7-month high; here's why - Business Standard\"",
+    "generic price-page style headline not treated as company event: 'Tata Consultancy Services Share Price Today Gains 2.47% - Univest'",
+    "competitor-category news: a competitor's win is NOT positive for the target",
+    "5D validation evidence has insufficient matured samples (matured=0)",
+    "10D validation evidence has insufficient matured samples (matured=0)"
+  ],
+  "numeric_claims": [],
+  "investment_thesis": "Balanced accumulation thesis",
+  "bull_case": "Operating leverage",
+  "bear_case": "Multiple contraction",
+  "fundamental_assessment": "Healthy",
+  "technical_assessment": "Constructive",
+  "news_assessment": "Neutral",
+  "promoter_assessment": "Strong",
+  "competitor_assessment": "Dominant",
+  "quantitative_model_predictions": {
+    "prediction_id": "TCS_2026-11-18_ml_ensemble_3.2.0_20261118T210426Z",
+    "symbol": "TCS",
+    "observation_date": "2026-11-18",
+    "generated_at": "2026-11-18T21:04:26.591210+00:00",
+    "model_name": "ml_ensemble",
+    "model_version": "3.2.0",
+    "market_regime": "Weak Bull",
+    "prob_next_day_up": 0.4618,
+    "prob_5d_up": 0.4779,
+    "prob_10d_up": 0.4694,
+    "prob_lgbm_up": 0.4344,
+    "prob_xgb_up": 0.42820000648498535,
+    "prob_linear_up": 0.4417,
+    "expected_next_day_return_pct": -0.1679,
+    "expected_5d_return_pct": -0.2212,
+    "expected_10d_return_pct": -0.4595,
+    "downside_risk_mae_pct": -1.0918,
+    "expected_upside_mfe_pct": 1.0797,
+    "reward_to_risk_ratio": 0.989,
+    "model_agreement_score": 0.9618,
+    "confidence_score": 72.69,
+    "roundtrip_delivery_cost_pct": 0.3628,
+    "roundtrip_intraday_cost_pct": 0.2116,
+    "net_expected_1d_return_pct": -0.3795,
+    "net_expected_5d_return_pct": -0.584,
+    "recommended_action": "NO TRADE",
+    "abstention_reason": "Expected move (1D -0.17%, 5D -0.34%) does not clear Indian round-trip transaction costs (0.21% intraday / 0.36% delivery).",
+    "top_bullish_drivers": [
+      {
+        "feature": "ms_india_vix_zscore_20d",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6452,
+        "contribution": 0.00688,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "inst_fii_chg_4q",
+        "family": "4. Institutional & Promoter Activity",
+        "value": -1.32,
+        "contribution": 0.00304,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "pm_ret_180d_pct",
+        "family": "1. Price & Technical Momentum",
+        "value": -11.0899,
+        "contribution": 0.00286,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "pm_macd_hist_chg_1d",
+        "family": "1. Price & Technical Momentum",
+        "value": -0.0863,
+        "contribution": 0.00273,
+        "direction": "BULLISH"
+      },
+      {
+        "feature": "eg_qtr_np_yoy_pct",
+        "family": "7. Earnings & Management Guidance",
+        "value": 14.8627,
+        "contribution": 0.0025,
+        "direction": "BULLISH"
+      }
+    ],
+    "top_bearish_drivers": [
+      {
+        "feature": "vd_rel_vol_100d",
+        "family": "2. Volume & Delivery",
+        "value": 0.3338,
+        "contribution": -0.05233,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_20d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.3584,
+        "contribution": -0.03937,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_nifty_ret_1d_pct",
+        "family": "3. Market & Sector Strength",
+        "value": -0.6281,
+        "contribution": -0.03625,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "fq_asset_turnover",
+        "family": "6. Financial Quality",
+        "value": 1.4739,
+        "contribution": -0.01256,
+        "direction": "BEARISH"
+      },
+      {
+        "feature": "ms_corr_nifty_60d",
+        "family": "3. Market & Sector Strength",
+        "value": 0.3256,
+        "contribution": -0.00835,
+        "direction": "BEARISH"
+      }
+    ],
+    "target_session_date": "2026-11-19",
+    "last_close": 2379.5,
+    "atr_14_pct": 2.674,
+    "momentum_prob_up": 0.4603,
+    "momentum_5d_return_pct": -1.1772,
+    "momentum_prob_5d_up": 0.447,
+    "momentum_prob_10d_up": 0.4456,
+    "momentum_1d_return_pct": -0.2321,
+    "momentum_10d_return_pct": -1.5323,
+    "feature_snapshot": {
+      "ne_is_earnings_window": 1.0,
+      "ms_corr_nifty_20d": 0.35837,
+      "fq_asset_turnover": 1.47389,
+      "inst_dii_chg_4q": 0.93,
+      "fq_debt_to_equity": 0.10521,
+      "eg_qtr_np_qoq_pct": 3.83,
+      "inst_named_holders_count": 12.0,
+      "pm_ret_180d_pct": -11.08994,
+      "ms_india_vix_zscore_20d": -0.64524,
+      "fq_roce_pct": 61.0835
+    },
+    "outcome_evaluated_at": null,
+    "realized_next_day_return_pct": null,
+    "realized_5d_return_pct": null
+  },
+  "risk_assessment": {
+    "agent_name": "risk_manager",
+    "agent_version": "1.0.0",
+    "prompt_version": "v1",
+    "symbol": "TCS",
+    "analysis_timestamp": "2026-11-19T23:11:22.163902Z",
+    "data_cutoff_timestamp": "2026-11-19T18:29:59Z",
+    "evidence_refs": [
+      {
+        "source_id": "competitor:TCS:competitors",
+        "dataset": "relationship_map",
+        "path": "backend/news_intel/relationships.py",
+        "record_key": "RELATIONSHIP_MAP[TCS].competitors",
+        "published_at": null,
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "83ae24404fb102a94d0cadb2bea89a66793f8af1cba2c164d2d3c8aee28b8b5a"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:0d5f0ff0db4f3820",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "0d5f0ff0db4f3820",
+        "published_at": "2026-11-12T21:48:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:222e07d042e1a78b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "222e07d042e1a78b",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:28d7b2ff3c0e2f81",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "28d7b2ff3c0e2f81",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:2dd13bd1caca4a38",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "2dd13bd1caca4a38",
+        "published_at": "2026-10-22T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:3f18e4761b97aa43",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "3f18e4761b97aa43",
+        "published_at": "2026-11-12T03:39:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:3fd6d0de011dc494",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "3fd6d0de011dc494",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:4628ff748f0e852b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "4628ff748f0e852b",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:4ca0a7dc75c16259",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "4ca0a7dc75c16259",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:512176d8e6e1ba62",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "512176d8e6e1ba62",
+        "published_at": "2026-11-12T22:34:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:66852dea5b348ab8",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "66852dea5b348ab8",
+        "published_at": "2026-10-24T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:6867ef54bbfe4333",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "6867ef54bbfe4333",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:792b4f09d6c1194b",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "792b4f09d6c1194b",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:872c39cba7b682c7",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "872c39cba7b682c7",
+        "published_at": "2026-11-16T05:20:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:8dc7c3654a6d4bc7",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "8dc7c3654a6d4bc7",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:918787c21d24d471",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "918787c21d24d471",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:a9a6ca6e9d9da425",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "a9a6ca6e9d9da425",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:aa203b10037881ff",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "aa203b10037881ff",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:b0490ab2b04c03fc",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "b0490ab2b04c03fc",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:c09b2b5ebd894426",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "c09b2b5ebd894426",
+        "published_at": "2026-11-10T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:c1f4b25325da2c15",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "c1f4b25325da2c15",
+        "published_at": "2026-11-16T21:19:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:c86036d6f7fa94dd",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "c86036d6f7fa94dd",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:db1a9a4cf9f4ec72",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "db1a9a4cf9f4ec72",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:df1dd733c4a3f46d",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "df1dd733c4a3f46d",
+        "published_at": "2026-11-16T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:e965d2d09c6b4abe",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "e965d2d09c6b4abe",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impact:edbf37409926e8d1",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "edbf37409926e8d1",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:cross_stock_impacts",
+        "dataset": "cross_stock_impacts",
+        "path": "data/predictions/cross_stock_impacts.parquet",
+        "record_key": "affected_company=TCS",
+        "published_at": "2026-11-16T21:19:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a94aaaa3b11f4448f14e5d8ad20a1adb428413de289db8c2d12560251c037db1"
+      },
+      {
+        "source_id": "competitor:TCS:peer_metrics",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "promoter_and_competitor_intel.competitors",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:debt_to_equity",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "cash_and_balance_sheet.debt_to_equity",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:interest_coverage",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "computed operating_profit/interest quarter Sep 2026",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:net_margin_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "computed net_profit/revenue quarter Sep 2026",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:opm_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "quarter Sep 2026.opm_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:pb",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "computed overview.current_price/book_value",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:pe",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "overview.stock_pe",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:piotroski_score",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "overview.piotroski_score",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:profit_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "last_5_quarterly_reports[Sep 2026].net_profit_cr",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:profit_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "quarter Sep 2026.net_profit_growth_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:revenue_cr",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "last_5_quarterly_reports[Sep 2026].revenue_cr",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:revenue_growth_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "quarter Sep 2026.revenue_growth_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:roce_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "overview.roce_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "fundamental:TCS:roe_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "overview.roe_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "market_regime:TCS:india_vix_close",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:TCS:nifty_50_day_change_pct",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:TCS:observation_date",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "market_regime:TCS:regime",
+        "dataset": "market_regime",
+        "path": "docs/data/regime.json",
+        "record_key": "observation_date=2026-11-18",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263"
+      },
+      {
+        "source_id": "news:TCS:0a86c05602058b65",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0a86c05602058b65",
+        "published_at": "2026-11-09T06:16:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:0d5f0ff0db4f3820",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "0d5f0ff0db4f3820",
+        "published_at": "2026-11-12T21:48:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:116dabc590982177",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "116dabc590982177",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:14f8dc88e2bd5378",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "14f8dc88e2bd5378",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:1ef7d89b0b80c848",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "1ef7d89b0b80c848",
+        "published_at": "2026-11-18T05:45:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:221d643ddc5dd410",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "221d643ddc5dd410",
+        "published_at": "2026-11-17T06:01:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:222e07d042e1a78b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "222e07d042e1a78b",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:22b25ac836e99827",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "22b25ac836e99827",
+        "published_at": "2026-11-17T04:25:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:2356b1896be1de85",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "2356b1896be1de85",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:24a7da9586a367a4",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "24a7da9586a367a4",
+        "published_at": "2026-11-08T06:12:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:28d7b2ff3c0e2f81",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "28d7b2ff3c0e2f81",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:2dd13bd1caca4a38",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "2dd13bd1caca4a38",
+        "published_at": "2026-10-22T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:3017d515f1ea28f1",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3017d515f1ea28f1",
+        "published_at": "2026-11-16T05:03:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:3256d2ef8500a645",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3256d2ef8500a645",
+        "published_at": "2026-11-05T04:33:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:375b0cf1a255e6ad",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "375b0cf1a255e6ad",
+        "published_at": "2026-11-17T05:31:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:3f18e4761b97aa43",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3f18e4761b97aa43",
+        "published_at": "2026-11-12T03:39:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:3fd6d0de011dc494",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "3fd6d0de011dc494",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:4533dd98cf82b850",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4533dd98cf82b850",
+        "published_at": "2026-11-17T08:32:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:4628ff748f0e852b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4628ff748f0e852b",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:4a603560f2771b4c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4a603560f2771b4c",
+        "published_at": "2026-11-18T05:03:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:4ca0a7dc75c16259",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4ca0a7dc75c16259",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:4ed690601bbebad3",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "4ed690601bbebad3",
+        "published_at": "2026-11-18T06:05:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:512176d8e6e1ba62",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "512176d8e6e1ba62",
+        "published_at": "2026-11-12T22:34:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:5525da857ab78353",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5525da857ab78353",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:587e14960f478338",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "587e14960f478338",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:597152e10109e9b0",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "597152e10109e9b0",
+        "published_at": "2026-11-17T11:48:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:5c12ca8b4bb9de28",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5c12ca8b4bb9de28",
+        "published_at": "2026-11-16T09:11:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:5e513762d6bc9cca",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "5e513762d6bc9cca",
+        "published_at": "2026-11-16T04:34:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:643b5b09ffef99d8",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "643b5b09ffef99d8",
+        "published_at": "2026-11-16T22:43:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:66852dea5b348ab8",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "66852dea5b348ab8",
+        "published_at": "2026-10-24T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:6867ef54bbfe4333",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "6867ef54bbfe4333",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:70b6babb3fa15ede",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "70b6babb3fa15ede",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:792b4f09d6c1194b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "792b4f09d6c1194b",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:854e8c52e7e8aeaf",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "854e8c52e7e8aeaf",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:872c39cba7b682c7",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "872c39cba7b682c7",
+        "published_at": "2026-11-16T05:20:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:8944e15762247adb",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "8944e15762247adb",
+        "published_at": "2026-11-13T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:8dc7c3654a6d4bc7",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "8dc7c3654a6d4bc7",
+        "published_at": "2026-10-27T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:8e467b666d103a94",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "8e467b666d103a94",
+        "published_at": "2026-11-17T11:56:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:90004917168ea87c",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "90004917168ea87c",
+        "published_at": "2026-11-11T05:03:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:90346966c04e2364",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "90346966c04e2364",
+        "published_at": "2026-11-16T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:918787c21d24d471",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "918787c21d24d471",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:94309066afb9da77",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "94309066afb9da77",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:9ac8b4add749902e",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "9ac8b4add749902e",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:a9a6ca6e9d9da425",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "a9a6ca6e9d9da425",
+        "published_at": "2026-11-04T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:aa203b10037881ff",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "aa203b10037881ff",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:ac24a14a89803323",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "ac24a14a89803323",
+        "published_at": "2026-11-16T10:05:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:b0490ab2b04c03fc",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "b0490ab2b04c03fc",
+        "published_at": "2026-11-06T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:bc11bf19172dc293",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "bc11bf19172dc293",
+        "published_at": "2026-11-05T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:bcb64aadc51cef20",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "bcb64aadc51cef20",
+        "published_at": "2026-10-23T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:be55ece87c974542",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "be55ece87c974542",
+        "published_at": "2026-11-12T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:c09b2b5ebd894426",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c09b2b5ebd894426",
+        "published_at": "2026-11-10T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:c1f4b25325da2c15",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c1f4b25325da2c15",
+        "published_at": "2026-11-16T21:19:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:c86036d6f7fa94dd",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "c86036d6f7fa94dd",
+        "published_at": "2026-10-28T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:d7c19ff63bcc1400",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d7c19ff63bcc1400",
+        "published_at": "2026-11-02T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:d8df2f7ec36c5e16",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d8df2f7ec36c5e16",
+        "published_at": "2026-10-21T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:d9a9667f6733d61b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d9a9667f6733d61b",
+        "published_at": "2026-10-19T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:d9b0dda51a4efc18",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "d9b0dda51a4efc18",
+        "published_at": "2026-11-09T06:16:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:db1a9a4cf9f4ec72",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "db1a9a4cf9f4ec72",
+        "published_at": "2026-10-26T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:df1dd733c4a3f46d",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "df1dd733c4a3f46d",
+        "published_at": "2026-11-16T02:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:e019e878ec485c74",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "e019e878ec485c74",
+        "published_at": "2026-11-18T07:26:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:e56c241eebf74f31",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "e56c241eebf74f31",
+        "published_at": "2026-11-13T05:03:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:e59dedfb065cf6be",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "e59dedfb065cf6be",
+        "published_at": "2026-11-10T23:33:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:e8ef095f7d2ec171",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "e8ef095f7d2ec171",
+        "published_at": "2026-10-24T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:e965d2d09c6b4abe",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "e965d2d09c6b4abe",
+        "published_at": "2026-10-25T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:edbf37409926e8d1",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "edbf37409926e8d1",
+        "published_at": "2026-10-29T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:events",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "TCS:70 events",
+        "published_at": "2026-11-18T07:26:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:f1e7910d9d53ef1b",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f1e7910d9d53ef1b",
+        "published_at": "2026-10-24T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:f73f4efa5188229f",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "f73f4efa5188229f",
+        "published_at": "2026-11-16T15:33:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:fc1d0bb200a04e17",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "fc1d0bb200a04e17",
+        "published_at": "2026-11-16T10:04:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:fe3c597538d49651",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "fe3c597538d49651",
+        "published_at": "2026-10-22T01:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:fe411d7721d49639",
+        "dataset": "structured_events",
+        "path": "data/predictions/structured_events.parquet",
+        "record_key": "fe411d7721d49639",
+        "published_at": "2026-11-16T06:17:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a16f2642ef82703ae1171499b25eb939e8f686992bdf2bed527923d63054131c"
+      },
+      {
+        "source_id": "news:TCS:quarantined_count",
+        "dataset": "quarantined_events",
+        "path": "data/predictions/quarantined_events.parquet",
+        "record_key": "TCS:16 quarantined",
+        "published_at": "2026-11-19T11:59:00.543965Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "e2bc2c6b08a71bd6e83b8bf21965f5e76caeaa753d87a8cf555aafeadf61169c"
+      },
+      {
+        "source_id": "price_risk:TCS:beta",
+        "dataset": "equities_daily+indices_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "5c56dc546c52974e9e1b3234e70d3a3c4387c02494e3a36ff6a048187c4428fd"
+      },
+      {
+        "source_id": "price_risk:TCS:max_drawdown_1y_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "price_risk:TCS:volatility_20d_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "promoter:TCS:dii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "stockholders.dii_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "promoter:TCS:fii_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "stockholders.fii_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "promoter:TCS:management_commentary",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "promoter_and_competitor_intel.promoter_statements_and_articles",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "promoter:TCS:promoter_change_qoq_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "corporate_intelligence.promoter_chg_1q",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "promoter:TCS:promoters_pct",
+        "dataset": "docs_symbol_snapshot",
+        "path": "docs/data/TCS.json",
+        "record_key": "stockholders.promoters_pct",
+        "published_at": "2026-11-18T21:03:32Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ff15b9b32cacc399b5f78d1719a56d6ea473555da3aa0f0029cb2eda79b1cd74"
+      },
+      {
+        "source_id": "quantitative:TCS:abstention_reason",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:confidence_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:expected_10d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:expected_next_day_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:generated_at",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:market_regime",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:model_agreement_score",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:model_name",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:model_version",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:net_expected_1d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:net_expected_5d_return_pct",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:observation_date",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:prediction_id",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:prob_10d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:prob_5d_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:prob_next_day_up",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:recommended_action",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:top_bearish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:top_bullish_drivers",
+        "dataset": "latest_predictions",
+        "path": "data/predictions/latest_predictions.json",
+        "record_key": "TCS",
+        "published_at": "2026-11-18T21:04:26.591210Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8"
+      },
+      {
+        "source_id": "quantitative:TCS:validation",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:TCS:validation_generated_at",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "quantitative:TCS:validation_model_version",
+        "dataset": "forward_validation",
+        "path": "data/predictions/forward_validation.json",
+        "record_key": "horizon_evaluations",
+        "published_at": "2026-11-19T11:59:00.758793Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "a083f5768e47adfb0aaa121182497b2a7773fde142692a6c9e8f52ad2d23fe8d"
+      },
+      {
+        "source_id": "technical:TCS:adx",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:atr_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:close",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:macd_hist",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:resistance",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:return_1m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:return_3m_pct",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:rsi_14",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:sma_20",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:sma_200",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:sma_50",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:support",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:trend",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      },
+      {
+        "source_id": "technical:TCS:volume_surge_ratio",
+        "dataset": "equities_daily",
+        "path": "data/processed/equities_daily.parquet",
+        "record_key": "TCS:2026-11-18 (computed from bars <= 2026-11-18)",
+        "published_at": "2026-11-18T12:30:00Z",
+        "retrieved_at": "2026-11-19T18:29:59Z",
+        "sha256": "dc2dd94f04e061f64e79ca9205b0edc83d73e5e5a5495c5f8f09a6c8ce9f7f8b"
+      }
+    ],
+    "findings": [
+      "downside_risk: UNKNOWN - var_95_1d_pct missing",
+      "volatility_risk: UNKNOWN - volatility_ann_pct missing",
+      "liquidity_risk: UNKNOWN - avg_daily_turnover_cr missing",
+      "concentration_risk: UNKNOWN - position_weight_pct missing",
+      "event_risk: UNKNOWN - news_events missing",
+      "drawdown_risk: UNKNOWN - max_drawdown_pct missing",
+      "risk_reward: UNKNOWN - reward/risk missing",
+      "suggested position weight 0% [ASSUMPTION - not from user portfolio data]"
+    ],
+    "positive_factors": [],
+    "negative_factors": [],
+    "confidence": 0.0,
+    "missing_information": [
+      "downside_risk: var_95_1d_pct missing",
+      "volatility_risk: volatility_ann_pct missing",
+      "liquidity_risk: avg_daily_turnover_cr missing",
+      "concentration_risk: position_weight_pct missing",
+      "event_risk: news_events missing",
+      "drawdown_risk: max_drawdown_pct missing",
+      "risk_reward: reward/risk missing"
+    ],
+    "warnings": [],
+    "numeric_claims": [],
+    "verdict": "REJECT",
+    "downside_risk": {
+      "level": "UNKNOWN",
+      "note": "var_95_1d_pct missing"
+    },
+    "volatility_risk": {
+      "level": "UNKNOWN",
+      "note": "volatility_ann_pct missing"
+    },
+    "liquidity_risk": {
+      "level": "UNKNOWN",
+      "note": "avg_daily_turnover_cr missing"
+    },
+    "concentration_risk": {
+      "level": "UNKNOWN",
+      "note": "position_weight_pct missing"
+    },
+    "event_risk": {
+      "level": "UNKNOWN",
+      "note": "news_events missing"
+    },
+    "drawdown_risk": {
+      "level": "UNKNOWN",
+      "note": "max_drawdown_pct missing"
+    },
+    "risk_reward": {
+      "level": "UNKNOWN",
+      "note": "reward/risk missing"
+    },
+    "rationale": "Deterministic verdict REJECT. Reasons: 7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward. Manageable across dimensions",
+    "rejection_reasons": [
+      "7 UNKNOWN risk dimensions (insufficient risk data): downside_risk, volatility_risk, liquidity_risk, concentration_risk, event_risk, drawdown_risk, risk_reward"
+    ]
+  },
+  "agent_disagreements": [],
+  "overall_conclusion": "REJECTED_BY_RISK"
+}
