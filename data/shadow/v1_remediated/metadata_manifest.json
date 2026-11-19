@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0.0",
+  "remediation_version": "rem-1.0.0",
+  "canonical_model_version": "5.3.0-pilot",
+  "canonical_feature_set_version": "237+17",
+  "drift_detected_in_raw": true,
+  "raw_unique_versions": [
+    "5.0.0-pilot",
+    "5.3.0-pilot"
+  ],
+  "raw_json_versions": {
+    "data_phase5_intelligence": "5.0.0-pilot",
+    "docs_phase5_intelligence": "5.0.0-pilot",
+    "data_forward_validation": "5.3.0-pilot",
+    "docs_forward_validation": "5.3.0-pilot"
+  },
+  "raw_forward_predictions_versions": [
+    "5.3.0-pilot"
+  ],
+  "shadow_resolved_versions": {
+    "data_phase5_intelligence": "5.3.0-pilot",
+    "docs_phase5_intelligence": "5.3.0-pilot",
+    "data_forward_validation": "5.3.0-pilot",
+    "docs_forward_validation": "5.3.0-pilot"
+  },
+  "drift_resolved": true
+}

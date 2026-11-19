@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0.0",
+  "remediation_version": "rem-1.0.0",
+  "prospective_cutoff": "2026-11-17",
+  "output_dir": "/home/antigravity/worktrees/rem-data-integrity/data/shadow/v1_remediated",
+  "datasets": {
+    "forward_predictions": {
+      "raw_rows": 65,
+      "shadow_rows": 65,
+      "status_counts": {
+        "DUPLICATE": 35,
+        "INVALID_LOOKAHEAD": 15,
+        "PROSPECTIVE": 10,
+        "HISTORICAL": 5
+      },
+      "provenance": {
+        "is_complete": true,
+        "missing_columns": [],
+        "null_counts": {
+          "schema_version": 0,
+          "remediation_version": 0,
+          "source_dataset": 0,
+          "model_version": 0,
+          "feature_set_version": 0,
+          "collection_timestamp": 0,
+          "prediction_timestamp": 0,
+          "validation_status": 0,
+          "rejection_reason": 15
+        },
+        "invalid_validation_statuses": [],
+        "row_count": 65
+      },
+      "output_path": "/home/antigravity/worktrees/rem-data-integrity/data/shadow/v1_remediated/forward_predictions_remediated.parquet"
+    },
+    "prediction_log": {
+      "raw_rows": 90,
+      "shadow_rows": 90,
+      "deduplicated_rows": 45,
+      "duplicate_rows_filtered": 45,
+      "status_counts": {
+        "DUPLICATE": 45,
+        "PROSPECTIVE": 30,
+        "HISTORICAL": 15
+      },
+      "provenance": {
+        "is_complete": true,
+        "missing_columns": [],
+        "null_counts": {
+          "schema_version": 0,
+          "remediation_version": 0,
+          "source_dataset": 0,
+          "model_version": 0,
+          "feature_set_version": 0,
+          "collection_timestamp": 0,
+          "prediction_timestamp": 0,
+          "validation_status": 0,
+          "rejection_reason": 45
+        },
+        "invalid_validation_statuses": [],
+        "row_count": 90
+      },
+      "output_path": "/home/antigravity/worktrees/rem-data-integrity/data/shadow/v1_remediated/prediction_log_remediated.parquet",
+      "deduplicated_output_path": "/home/antigravity/worktrees/rem-data-integrity/data/shadow/v1_remediated/prediction_log_deduplicated.parquet"
+    },
+    "structured_events": {
+      "raw_rows": 254,
+      "shadow_rows": 254,
+      "status_counts": {
+        "QUARANTINED": 156,
+        "PROSPECTIVE": 96,
+        "DUPLICATE": 2
+      },
+      "provenance": {
+        "is_complete": true,
+        "missing_columns": [],
+        "null_counts": {
+          "schema_version": 0,
+          "remediation_version": 0,
+          "source_dataset": 0,
+          "model_version": 0,
+          "feature_set_version": 0,
+          "collection_timestamp": 156,
+          "prediction_timestamp": 254,
+          "validation_status": 0,
+          "rejection_reason": 96
+        },
+        "invalid_validation_statuses": [],
+        "row_count": 254
+      },
+      "output_path": "/home/antigravity/worktrees/rem-data-integrity/data/shadow/v1_remediated/structured_events_remediated.parquet"
+    }
+  },
+  "metadata_manifest": {
+    "schema_version": "1.0.0",
+    "remediation_version": "rem-1.0.0",
+    "canonical_model_version": "5.3.0-pilot",
+    "canonical_feature_set_version": "237+17",
+    "drift_detected_in_raw": true,
+    "raw_unique_versions": [
+      "5.0.0-pilot",
+      "5.3.0-pilot"
+    ],
+    "raw_json_versions": {
+      "data_phase5_intelligence": "5.0.0-pilot",
+      "docs_phase5_intelligence": "5.0.0-pilot",
+      "data_forward_validation": "5.3.0-pilot",
+      "docs_forward_validation": "5.3.0-pilot"
+    },
+    "raw_forward_predictions_versions": [
+      "5.3.0-pilot"
+    ],
+    "shadow_resolved_versions": {
+      "data_phase5_intelligence": "5.3.0-pilot",
+      "docs_phase5_intelligence": "5.3.0-pilot",
+      "data_forward_validation": "5.3.0-pilot",
+      "docs_forward_validation": "5.3.0-pilot"
+    },
+    "drift_resolved": true
+  }
+}
