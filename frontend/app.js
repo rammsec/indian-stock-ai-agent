@@ -16,9 +16,27 @@ const DEFAULT_5_WATCHLIST = [
 
 const MAX_WATCHLIST_SIZE = 10;
 
+function safeStorageGet(key, fallback = "") {
+  try {
+    if (typeof localStorage !== "undefined") {
+      const v = localStorage.getItem(key);
+      return v !== null ? v : fallback;
+    }
+  } catch (e) {}
+  return fallback;
+}
+
+function safeStorageSet(key, val) {
+  try {
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(key, val);
+    }
+  } catch (e) {}
+}
+
 function loadSavedWatchlist() {
   try {
-    const raw = localStorage.getItem("ba_watchlist_v3");
+    const raw = safeStorageGet("ba_watchlist_v3", "");
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
@@ -30,9 +48,11 @@ function loadSavedWatchlist() {
 }
 
 function saveWatchlist(list) {
-  try {
-    localStorage.setItem("ba_watchlist_v3", JSON.stringify(list.slice(0, MAX_WATCHLIST_SIZE)));
-  } catch (e) {}
+  saveWatchlistRaw(list);
+}
+
+function saveWatchlistRaw(list) {
+  safeStorageSet("ba_watchlist_v3", JSON.stringify(list.slice(0, MAX_WATCHLIST_SIZE)));
 }
 
 const state = {
@@ -42,9 +62,9 @@ const state = {
   moversData: null,
   allExpanded: true,
   llmConfig: {
-    provider: localStorage.getItem("ba_llm_provider") || "quant",
-    model: localStorage.getItem("ba_llm_model") || "",
-    api_key: localStorage.getItem("ba_llm_key") || "",
+    provider: safeStorageGet("ba_llm_provider", "quant") || "quant",
+    model: safeStorageGet("ba_llm_model", ""),
+    api_key: safeStorageGet("ba_llm_key", ""),
   },
 };
 
@@ -409,48 +429,56 @@ function renderBundle(b) {
   document.getElementById("ov-company-name").textContent = ov.name;
   document.getElementById("ov-symbol-badge").textContent = `NSE: ${ov.symbol}`;
   document.getElementById("ov-sector-badge").textContent = `${ov.sector} • ${ov.industry}`;
-  document.getElementById("ov-piotroski-badge").textContent = `Piotroski F-Score: ${ov.piotroski_score}/9`;
+  document.getElementById("ov-piotroski-badge").textContent =
+    ov.piotroski_score != null ? `Piotroski F-Score: ${ov.piotroski_score}/9` : "Piotroski F-Score: UNAVAILABLE";
   document.getElementById("ov-timestamp").textContent = `Updated: ${b.fetched_at}`;
 
-  document.getElementById("ov-current-price").textContent = `₹${fmtNum(tech.current_price)}`;
+  document.getElementById("ov-current-price").textContent = tech.current_price != null ? `₹${fmtNum(tech.current_price)}` : "UNAVAILABLE";
   const chgEl = document.getElementById("ov-day-change");
-  const isUp = tech.day_change_pct >= 0;
+  const isUp = (tech.day_change_pct ?? 0) >= 0;
   chgEl.textContent = `${isUp ? "▲" : "▼"} ${fmtPct(tech.day_change_pct, 2, true)} (1D) | 1Y: ${fmtPct(tech.return_1y_pct, 1, true)}`;
   chgEl.className = `price-change ${isUp ? "text-bull" : "text-bear"}`;
 
   document.getElementById("kpi-mcap").textContent = fmtCr(ov.market_cap_cr);
   document.getElementById("kpi-cash").textContent = fmtCr(cb.total_cash_in_hand_cr);
   document.getElementById("kpi-debt").textContent = fmtCr(cb.total_borrowings_cr);
-  document.getElementById("kpi-rd").textContent = `${fmtCr(rd.latest_rd_spend_cr)} (${fmtPct(rd.latest_rd_pct_of_sales, 2)})`;
+  document.getElementById("kpi-rd").textContent =
+    rd.latest_rd_spend_cr != null ? `${fmtCr(rd.latest_rd_spend_cr)} (${fmtPct(rd.latest_rd_pct_of_sales, 2)})` : "UNAVAILABLE";
   document.getElementById("kpi-roe-roce").textContent = `${fmtPct(ov.roe_pct, 1)} / ${fmtPct(ov.roce_pct, 1)}`;
   document.getElementById("kpi-pe").textContent = ov.stock_pe ? `${fmtNum(ov.stock_pe, 1)}x` : "—";
   document.getElementById("kpi-ownership").textContent = `${fmtPct(shp.promoters_pct, 1)} / ${fmtPct(shp.institutional_total_pct, 1)}`;
   document.getElementById("kpi-profit-cagr").textContent = fmtPct(ov.profit_cagr_5y_pct, 1, true);
 
-  document.getElementById("ov-model-used").textContent = gd.llm_model_used;
-  document.getElementById("ov-exec-summary").textContent = gd.executive_summary;
+  document.getElementById("ov-model-used").textContent = gd.llm_model_used || "UNAVAILABLE";
+  document.getElementById("ov-exec-summary").textContent = gd.executive_summary || "UNAVAILABLE";
 
   const banner = document.getElementById("gd-action-banner");
-  banner.textContent = gd.action;
-  banner.className = gd.action.includes("BUY")
+  const gdAct = gd.action || "UNAVAILABLE";
+  banner.textContent = gdAct;
+  banner.className = gdAct.includes("BUY")
     ? "signal-banner bull"
-    : gd.action.includes("SELL") || gd.action.includes("AVOID")
+    : gdAct.includes("SELL") || gdAct.includes("AVOID")
     ? "signal-banner bear"
     : "signal-banner hold";
 
-  document.getElementById("gd-conviction-score").textContent = `${gd.conviction_score.toFixed(1)} / 100`;
-  document.getElementById("gd-entry-zone").textContent = `₹${fmtNum(gd.entry_zone_low)} – ₹${fmtNum(gd.entry_zone_high)}`;
-  document.getElementById("gd-stop-loss").textContent = `₹${fmtNum(gd.stop_loss)}`;
-  document.getElementById("gd-target-1").textContent = `₹${fmtNum(gd.target_1_next_day)}`;
-  document.getElementById("gd-target-2").textContent = `₹${fmtNum(gd.target_2_swing)}`;
+  document.getElementById("gd-conviction-score").textContent =
+    gd.conviction_score != null ? `${Number(gd.conviction_score).toFixed(1)} / 100` : "UNAVAILABLE";
+  document.getElementById("gd-entry-zone").textContent =
+    gd.entry_zone_low != null && gd.entry_zone_high != null ? `₹${fmtNum(gd.entry_zone_low)} – ₹${fmtNum(gd.entry_zone_high)}` : "UNAVAILABLE";
+  document.getElementById("gd-stop-loss").textContent = gd.stop_loss != null ? `₹${fmtNum(gd.stop_loss)}` : "UNAVAILABLE";
+  document.getElementById("gd-target-1").textContent = gd.target_1_next_day != null ? `₹${fmtNum(gd.target_1_next_day)}` : "UNAVAILABLE";
+  document.getElementById("gd-target-2").textContent = gd.target_2_swing != null ? `₹${fmtNum(gd.target_2_swing)}` : "UNAVAILABLE";
 
-  document.getElementById("bar-fund-score").style.width = `${gd.fundamental_score}%`;
-  document.getElementById("txt-fund-score").textContent = `${gd.fundamental_score}/100`;
-  document.getElementById("bar-tech-score").style.width = `${gd.technical_score}%`;
-  document.getElementById("txt-tech-score").textContent = `${gd.technical_score}/100`;
-  document.getElementById("gd-rr").textContent = `1 : ${gd.risk_reward_ratio}`;
-  document.getElementById("gd-pos-size").textContent = `${gd.position_size_suggestion_pct}% Capital`;
-  document.getElementById("gd-atr-range").textContent = `±₹${fmtNum(tech.atr_14)} (${fmtPct(tech.atr_pct, 2)})`;
+  const fundPct = gd.fundamental_score != null ? gd.fundamental_score : 0;
+  const techPct = gd.technical_score != null ? gd.technical_score : 0;
+  document.getElementById("bar-fund-score").style.width = `${fundPct}%`;
+  document.getElementById("txt-fund-score").textContent = gd.fundamental_score != null ? `${gd.fundamental_score}/100` : "UNAVAILABLE";
+  document.getElementById("bar-tech-score").style.width = `${techPct}%`;
+  document.getElementById("txt-tech-score").textContent = gd.technical_score != null ? `${gd.technical_score}/100` : "UNAVAILABLE";
+  document.getElementById("gd-rr").textContent = gd.risk_reward_ratio != null ? `1 : ${gd.risk_reward_ratio}` : "UNAVAILABLE";
+  document.getElementById("gd-pos-size").textContent = gd.position_size_suggestion_pct != null ? `${gd.position_size_suggestion_pct}% Capital` : "UNAVAILABLE";
+  document.getElementById("gd-atr-range").textContent =
+    tech.atr_14 != null ? `±₹${fmtNum(tech.atr_14)} (${fmtPct(tech.atr_pct, 2)})` : "UNAVAILABLE";
 
   renderQuantAndCorporateIntelSection(b);
   renderAgentCommittee(b.agent_committee);
@@ -503,8 +531,10 @@ function renderAgentCommittee(committee) {
 }
 
 function renderCatalystsRisksNews(gd, news, tech) {
-  document.getElementById("chart-regime-sub").textContent = tech.trend_regime;
-  document.getElementById("rsi-badge").textContent = `RSI(14): ${tech.rsi_14.toFixed(1)} | Vol: ${tech.volume_Surge_ratio}x`;
+  document.getElementById("chart-regime-sub").textContent = tech.trend_regime || "UNAVAILABLE";
+  const rsiTxt = tech.rsi_14 != null ? Number(tech.rsi_14).toFixed(1) : "UNAVAILABLE";
+  const volTxt = tech.volume_Surge_ratio != null ? `${tech.volume_Surge_ratio}x` : "UNAVAILABLE";
+  document.getElementById("rsi-badge").textContent = `RSI(14): ${rsiTxt} | Vol: ${volTxt}`;
 
   document.getElementById("list-catalysts").innerHTML = (gd.key_catalysts || [])
     .map((c) => `<li>${c}</li>`)
@@ -1010,7 +1040,7 @@ async function loadMarketRegimeBanner() {
     ]);
     if (regRes.status === "fulfilled" && regRes.value.ok) {
       const reg = await regRes.value.json();
-      updateRegimeBannerDOM(reg, null);
+      updateRegimeBannerDOM(reg);
     }
     if (btRes.status === "fulfilled" && btRes.value.ok) {
       const bt = await btRes.value.json();
@@ -1035,23 +1065,34 @@ function updateRegimeBannerDOM(reg, quality) {
         : "var(--accent-brand)";
     }
     const niftyEl = document.getElementById("mr-nifty-metric");
-    if (niftyEl && reg.nifty_50_close) {
-      niftyEl.innerHTML = `Nifty 50: <strong>${fmtNum(reg.nifty_50_close, 1)}</strong> (${fmtPct(reg.nifty_50_return_1d_pct, 2, true)} 1D | ${fmtPct(reg.nifty_50_return_20d_pct, 2, true)} 20D)`;
+    const nifty1d = reg.nifty_50_day_change_pct ?? reg.nifty_50_return_1d_pct;
+    if (niftyEl && reg.nifty_50_close != null) {
+      niftyEl.innerHTML = `Nifty 50: <strong>${fmtNum(reg.nifty_50_close, 1)}</strong> (${fmtPct(nifty1d, 2, true)} 1D | ${fmtPct(reg.nifty_50_return_20d_pct, 2, true)} 20D)`;
     }
     const vixEl = document.getElementById("mr-vix-metric");
-    if (vixEl && reg.india_vix !== undefined && reg.india_vix !== null) {
-      vixEl.innerHTML = `India VIX: <strong>${fmtNum(reg.india_vix, 2)}</strong>`;
+    const vixVal = reg.india_vix_close ?? reg.india_vix;
+    if (vixEl) {
+      vixEl.innerHTML = vixVal !== undefined && vixVal !== null
+        ? `India VIX: <strong>${fmtNum(vixVal, 2)}</strong>`
+        : "India VIX: —";
     }
     const brEl = document.getElementById("mr-breadth-metric");
-    if (brEl && reg.advance_decline_ratio !== undefined) {
-      brEl.innerHTML = `NSE Breadth A/D: <strong>${fmtNum(reg.advance_decline_ratio, 2)}x</strong> (${reg.advances_count || 0}▲ / ${reg.declines_count || 0}▼)`;
+    const adv = reg.advance_count ?? reg.advances_count;
+    const dec = reg.decline_count ?? reg.declines_count;
+    if (brEl && reg.advance_decline_ratio !== undefined && reg.advance_decline_ratio !== null) {
+      brEl.innerHTML = `NSE Breadth A/D: <strong>${fmtNum(reg.advance_decline_ratio, 2)}x</strong> (${adv ?? 0}▲ / ${dec ?? 0}▼)`;
     }
   }
-  if (quality) {
+  if (quality !== undefined) {
     const gateEl = document.getElementById("mr-gate-badge");
     if (gateEl) {
-      gateEl.textContent = `Data Quality: ${fmtNum(quality.quality_score, 0)}/100 (${quality.trade_eligible ? "ELIGIBLE" : "NO TRADE"})`;
-      gateEl.style.color = quality.trade_eligible ? "var(--signal-bull)" : "var(--signal-bear)";
+      if (quality && quality.quality_score !== undefined && quality.quality_score !== null) {
+        gateEl.textContent = `Data Quality: ${fmtNum(quality.quality_score, 0)}/100 (${quality.trade_eligible ? "ELIGIBLE" : "NO TRADE"})`;
+        gateEl.style.color = quality.trade_eligible ? "var(--signal-bull)" : "var(--signal-bear)";
+      } else {
+        gateEl.textContent = "Data Quality: UNAVAILABLE";
+        gateEl.style.color = "var(--text-muted)";
+      }
     }
   }
 }
@@ -1062,12 +1103,15 @@ function formatShapDriverItem(d) {
   const feat = d.feature || "feature";
   const fam = d.family ? ` (${String(d.family).replace(/^\d+\.\s*/, "")})` : "";
   const val = d.value !== null && d.value !== undefined ? ` = ${fmtNum(d.value, 2)}` : "";
-  const bps = d.contribution !== undefined ? ` [${d.contribution >= 0 ? "+" : ""}${(d.contribution * 100).toFixed(1)} bps]` : "";
-  return `<strong>${feat}</strong>${val}${fam} <span style="opacity:0.85;">${bps}</span>`;
+  const contrib =
+    d.contribution !== undefined && d.contribution !== null
+      ? ` [${d.contribution >= 0 ? "+" : ""}${Number(d.contribution).toFixed(4)} SHAP]`
+      : "";
+  return `<strong>${feat}</strong>${val}${fam} <span style="opacity:0.85;">${contrib}</span>`;
 }
 
 function renderQuantAndCorporateIntelSection(b) {
-  updateRegimeBannerDOM(b.market_regime, b.data_quality);
+  updateRegimeBannerDOM(b.market_regime, b.data_quality ?? null);
 
   const rawQp = b.quantitative_prediction || null;
   const hasQp = Boolean(rawQp && rawQp.prob_next_day_up !== undefined && rawQp.prob_next_day_up !== null);
@@ -1272,6 +1316,10 @@ async function loadQuantAndBulkDealsPage() {
 }
 
 function renderWalkForwardBacktestTable(bt) {
+  const headingEl = document.getElementById("quant-bt-heading");
+  if (headingEl && bt && bt.total_walk_forward_folds != null) {
+    headingEl.textContent = `Walk-Forward Out-of-Sample Backtest (${bt.total_walk_forward_folds} Expanding Folds • Indian CNC Transaction Costs)`;
+  }
   const kpiEl = document.getElementById("quant-bt-kpis");
   const ens = bt.models?.ml_ensemble || null;
   const niftyRet = bt.nifty_50_buy_hold_return_pct ?? null;
@@ -1379,7 +1427,11 @@ function renderWalkForwardBacktestTable(bt) {
 
 function renderAllStockPredictionsMatrix(predData) {
   const freshEl = document.getElementById("quant-pred-freshness");
+  const countBadgeEl = document.getElementById("quant-pred-count-badge");
   const items = predData.predictions || [];
+  if (countBadgeEl) {
+    countBadgeEl.textContent = String(items.length || 0);
+  }
   if (freshEl) {
     const genStr = predData.generated_at ? String(predData.generated_at).slice(0, 19).replace("T", " ") + " UTC" : "N/A";
     const targetStr = items[0]?.target_session_date || "N/A";
@@ -1885,7 +1937,7 @@ function drawRDCanvas(rdHist) {
     ctx.font = "10px 'JetBrains Mono', monospace";
     ctx.textAlign = "center";
     ctx.fillText(r.period, cx, h - 8);
-    ctx.fillText(`₹${Math.round(r.rd_spend_cr)}Cr`, cx, y - 5);
+    ctx.fillText(r.rd_spend_cr != null ? `₹${Math.round(r.rd_spend_cr)}Cr` : "N/A", cx, y - 5);
   });
 
   ctx.strokeStyle = "#22c55e";
@@ -1944,7 +1996,10 @@ async function loadPhase5StockIntelligence(refresh = false) {
 function renderPhase5Intelligence(data) {
   const sub = document.getElementById("p5-freshness-sub");
   if (sub) {
-    sub.textContent = `Model: ${data.model_version || "5.0.0-pilot"} • News Collected: ${String(data.last_news_collection_at || "").slice(0, 19).replace("T", " ")} IST • Quant Updated: ${String(data.last_quant_update_at || "").slice(0, 19).replace("T", " ")} • Pilot Universe: ${(data.pilot_universe || []).join(", ")}`;
+    const modVer = data.model_version || "UNAVAILABLE";
+    const newsTs = data.last_news_collection_at ? String(data.last_news_collection_at).slice(0, 19).replace("T", " ") + " IST" : "UNAVAILABLE";
+    const quantTs = data.last_quant_update_at ? String(data.last_quant_update_at).slice(0, 19).replace("T", " ") : "UNAVAILABLE";
+    sub.textContent = `Model: ${modVer} • News Collected: ${newsTs} • Quant Updated: ${quantTs} • Pilot Universe: ${(data.pilot_universe || []).join(", ") || "UNAVAILABLE"}`;
   }
 
   const warnEl = document.getElementById("p5-warnings-banner");
@@ -1968,24 +2023,25 @@ function renderPhase5Intelligence(data) {
         const icTxt = m.rank_ic != null ? fmtNum(m.rank_ic, 3) : "—";
         const covTxt = m.prediction_coverage_pct != null ? fmtPct(m.prediction_coverage_pct, 0) : "—";
         const benchTxt = m.model_vs_benchmark_accuracy_diff_pct != null ? `${m.model_vs_benchmark_accuracy_diff_pct >= 0 ? "+" : ""}${m.model_vs_benchmark_accuracy_diff_pct}%` : "—";
-        return `<span class="badge-neutral mono" style="font-size: 0.7rem;"><strong>${h}</strong>: ${m.status || "INSUFFICIENT_DATA"} • Cov ${covTxt} • Acc ${accTxt} • AUC ${aucTxt} • IC ${icTxt} • vsBench ${benchTxt} • ${m.data_freshness || "—"}</span>`;
+        return `<span class="badge-neutral mono" style="font-size: 0.7rem;"><strong>${h}</strong>: ${m.status || "INSUFFICIENT_DATA"} (n=${m.evaluated_outcomes_count ?? 0}) • Cov ${covTxt} • Acc ${accTxt} • AUC ${aucTxt} • IC ${icTxt} • vsBench ${benchTxt} • ${m.data_freshness || "—"}</span>`;
       })
       .join(" ");
+    const monEvalAt = mon.evaluated_at ? String(mon.evaluated_at).slice(0, 19).replace("T", " ") : "UNAVAILABLE";
     monKpi.innerHTML = `
       <div class="kpi-box">
-        <span class="kpi-label">Logged Predictions</span>
+        <span class="kpi-label">Logged Predictions (All-Universe Log)</span>
         <span class="kpi-value">${mon.total_logged_predictions ?? 0}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Evaluated Outcomes</span>
+        <span class="kpi-label">Evaluated Outcomes (Rolling 1D Log)</span>
         <span class="kpi-value">${mon.evaluated_outcomes_count ?? 0}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Rolling 1D Accuracy</span>
+        <span class="kpi-label">Rolling 1D Accuracy (Log)</span>
         <span class="kpi-value">${mon.rolling_directional_accuracy_pct != null ? fmtPct(mon.rolling_directional_accuracy_pct, 1) : "Pending"}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Recent Brier / Drift</span>
+        <span class="kpi-label">Recent Brier / Drift (${monEvalAt})</span>
         <span class="kpi-value">${mon.brier_score_recent != null ? fmtNum(mon.brier_score_recent, 4) : "—"} (${mon.drift_status || "INSUFFICIENT_DATA"})</span>
       </div>
       ${hmBadges ? `<div style="grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem;">${hmBadges}</div>` : ""}
@@ -2083,6 +2139,14 @@ function renderPhase5Intelligence(data) {
 }
 
 function renderPhase5ExperimentsTable(expData) {
+  const noteEl = document.getElementById("p5-experiments-pit-note");
+  if (noteEl && expData) {
+    const latestDt = expData.latest_feature_date || "UNAVAILABLE";
+    const execMode = expData.execution_mode || "UNAVAILABLE";
+    const pitNote = expData.historical_pit_note || "Historical walk-forward proxy ablation using point-in-time reconstructed features (not live forward news).";
+    noteEl.innerHTML = `<span class="evidence-pill evidence-pill-proxy" style="margin-right: 0.45rem;">HISTORICAL PROXY</span> <strong>Latest Feature Date:</strong> ${latestDt} • <strong>Execution:</strong> ${execMode} — ${pitNote}`;
+  }
+
   const tbody = document.getElementById("tbody-p5-experiments");
   if (!tbody || !expData?.experiments) return;
   const rows = Object.entries(expData.experiments).map(([name, r]) => {
@@ -2091,7 +2155,7 @@ function renderPhase5ExperimentsTable(expData) {
     const d10 = r["10D"] || {};
     return `
       <tr>
-        <td style="text-align: left;"><strong>${name}</strong></td>
+        <td style="text-align: left;"><strong>${name}</strong> <span class="badge-neutral" style="font-size: 0.64rem;">PROXY</span></td>
         <td>${r.feature_count ?? "—"}</td>
         <td>${d1.roc_auc != null ? fmtNum(d1.roc_auc, 4) : "—"}</td>
         <td class="${(d1.net_return_pct || 0) >= 0 ? "text-bull" : "text-bear"}">${d1.net_return_pct != null ? fmtPct(d1.net_return_pct, 2, true) : "—"}</td>
@@ -2127,11 +2191,29 @@ function renderForwardValidation(fv) {
   const sub = document.getElementById("fv-subtitle");
   if (sub) {
     const ts = fv.last_news_collection_at ? String(fv.last_news_collection_at).slice(0, 19).replace("T", " ") + " IST" : "Not collected yet";
-    sub.textContent = `Model ${fv.model_version || "5.3.0-pilot"} (${fv.feature_set_version || "237+17"}) • Last Forward News: ${ts}`;
+    const modVer = fv.model_version || "UNAVAILABLE";
+    const featVer = fv.feature_set_version || "UNAVAILABLE";
+    sub.textContent = `Model ${modVer} (${featVer}) • Pilot Universe: ${(fv.pilot_universe || []).join(", ") || "UNAVAILABLE"} • Last Forward News: ${ts}`;
   }
   const distEl = document.getElementById("fv-distinction-note");
   if (distEl && fv.distinction_note) {
-    distEl.innerHTML = `<strong>Evidence Separation:</strong> ${fv.distinction_note}`;
+    distEl.innerHTML = `<span class="evidence-pill evidence-pill-prospective" style="margin-right: 0.45rem;">PROSPECTIVE PILOT</span> <strong>Evidence Separation:</strong> ${fv.distinction_note}`;
+  }
+  const provEl = document.getElementById("fv-news-provenance-banner");
+  if (provEl) {
+    const np = fv.news_provenance || null;
+    if (np) {
+      const isFwd = Boolean(np.is_genuinely_forward_collected);
+      const pillCls = isFwd ? "evidence-pill-prospective" : "evidence-pill-proxy";
+      const pillTxt = isFwd ? "PROSPECTIVE NEWS ACTIVE" : "PRE-BASELINE NEWS ARCHIVE";
+      const postCutoff = np.events_after_prediction_cutoff ?? 0;
+      const pubRange = np.publication_date_min && np.publication_date_max
+        ? `${String(np.publication_date_min).slice(0, 10)} → ${String(np.publication_date_max).slice(0, 10)}`
+        : "UNAVAILABLE";
+      provEl.innerHTML = `<span class="evidence-pill ${pillCls}" style="margin-right: 0.45rem;">${pillTxt}</span> <strong>News Provenance:</strong> Forward-collected post-cutoff events: <strong>${postCutoff}</strong> • Valid/Quarantined: ${np.valid_events ?? 0}/${np.quarantined_events ?? 0} • Window: ${pubRange}. ${np.provenance_note || ""}`;
+    } else {
+      provEl.innerHTML = `<strong>News Provenance:</strong> UNAVAILABLE`;
+    }
   }
   const warnEl = document.getElementById("fv-warnings-banner");
   const notices = [...(fv.data_quality_warnings || []), ...(fv.monitoring_alerts || [])];
@@ -2142,22 +2224,24 @@ function renderForwardValidation(fv) {
   }
   const kpiEl = document.getElementById("fv-kpis");
   if (kpiEl) {
+    const canonCount = fv.canonical_snapshots_count ?? fv.total_immutable_snapshots ?? 0;
+    const storedCount = fv.total_immutable_snapshots ?? 0;
     kpiEl.innerHTML = `
       <div class="kpi-box">
         <span class="kpi-label">Real News (Valid / Quarantined)</span>
         <span class="kpi-value">${fv.total_real_news_events ?? 0} (${fv.valid_news_events ?? 0} / ${fv.quarantined_news_events ?? 0})</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Immutable Snapshots</span>
-        <span class="kpi-value">${fv.total_immutable_snapshots ?? 0}</span>
+        <span class="kpi-label">Canonical Snapshots (Stored)</span>
+        <span class="kpi-value">${canonCount} (${storedCount})</span>
       </div>
       <div class="kpi-box">
         <span class="kpi-label">Matured / Pending Outcomes</span>
         <span class="kpi-value">${fv.matured_outcomes_total ?? 0} / ${fv.pending_outcomes_total ?? 0}</span>
       </div>
       <div class="kpi-box">
-        <span class="kpi-label">Last News Collection</span>
-        <span class="kpi-value" style="font-size: 0.8rem;">${fv.last_news_collection_at ? String(fv.last_news_collection_at).slice(0, 16).replace("T", " ") : "Pending"}</span>
+        <span class="kpi-label">Post-Cutoff Forward News</span>
+        <span class="kpi-value">${fv.news_provenance?.events_after_prediction_cutoff ?? 0} (${fv.news_provenance?.is_genuinely_forward_collected ? "Forward" : "Pre-Baseline"})</span>
       </div>
     `;
   }
@@ -2172,7 +2256,7 @@ function renderForwardValidation(fv) {
         return `
           <tr>
             <td style="text-align: left;"><strong>${h}</strong></td>
-            <td>${m.model_version || "5.3.0-pilot"}</td>
+            <td>${m.model_version || fv.model_version || "UNAVAILABLE"}</td>
             <td>${fmtPct(m.prediction_coverage_pct ?? 0, 1)}</td>
             <td>${m.matured_count ?? 0} / ${m.pending_count ?? 0}</td>
             <td class="${stCls}" style="font-weight: 700;">${m.status}</td>
@@ -2483,4 +2567,23 @@ function initBeginnerHelpTooltips() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", initApp);
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", initApp);
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    updateRegimeBannerDOM,
+    formatShapDriverItem,
+    renderQuantAndCorporateIntelSection,
+    renderWalkForwardBacktestTable,
+    renderAllStockPredictionsMatrix,
+    renderFiveDayOutlookAndConditions,
+    renderPhase5Intelligence,
+    renderPhase5ExperimentsTable,
+    renderForwardValidation,
+    renderBundle,
+    renderCatalystsRisksNews,
+  };
+}
+
