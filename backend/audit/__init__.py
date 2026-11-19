@@ -4,6 +4,15 @@ Produces derived audit classifications and structured quality reports without
 mutating any original Parquet, JSON, or model/feature artifacts.
 """
 
+from .dashboard_reconciler import (
+    reconcile_backtest_summary,
+    reconcile_dashboard_artifacts,
+    reconcile_forward_validation,
+    reconcile_phase5_experiments,
+    reconcile_phase5_intelligence,
+    reconcile_regime,
+    reconcile_stock_jsons,
+)
 from .data_integrity import (
     DEFAULT_PROSPECTIVE_CUTOFF,
     audit_equities_and_indices,
@@ -50,6 +59,13 @@ __all__ = [
     "classify_forward_snapshot_record",
     "daily_canonical_key",
     "enforce_provenance",
+    "reconcile_backtest_summary",
+    "reconcile_dashboard_artifacts",
+    "reconcile_forward_validation",
+    "reconcile_phase5_experiments",
+    "reconcile_phase5_intelligence",
+    "reconcile_regime",
+    "reconcile_stock_jsons",
     "resolve_metadata_version_drift",
     "run_full_data_integrity_audit",
     "validate_event_records",

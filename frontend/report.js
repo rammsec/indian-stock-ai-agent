@@ -845,7 +845,7 @@ function rrAppendixHtml(ctx) {
     });
     parts.push(
       `<h4 class="rr-sub">Historical walk-forward backtest <span class="rr-tag">HISTORICAL \u2013 not live results</span></h4>` +
-        `<p class="rr-muted">Test window ${rrEsc(bt.test_start_date || RR_NA)} to ${rrEsc(bt.test_end_date || RR_NA)}, ${rrEsc(bt.total_walk_forward_folds || RR_NA)} folds, ${rrEsc(bt.execution_mode || RR_NA)}. Nifty 50 buy-and-hold over the window: ${rrPct(bt.nifty_50_buy_hold_return_pct, 2, true)}. ROC AUC at or below 0.50 means no demonstrated ranking skill.</p>` +
+        `<p class="rr-muted">Test window ${rrEsc(bt.test_start_date || RR_NA)} to ${rrEsc(bt.test_end_date || RR_NA)}, ${rrEsc(bt.total_walk_forward_folds || RR_NA)} folds, ${rrEsc(bt.execution_mode || RR_NA)} (cutoff/generated ${rrEsc(bt.generated_at || RR_NA)}). Nifty 50 buy-and-hold over the window: ${rrPct(bt.nifty_50_buy_hold_return_pct, 2, true)}. ROC AUC at or below 0.50 means no demonstrated ranking skill.</p>` +
         rrTable(["Model", "Predictions", "Directional accuracy", "ROC AUC", "Brier", "Net return", "Net Sharpe", "Max drawdown", "Trades"], rows)
     );
     const feats = (bt.top_global_features || []).slice(0, 10).map((f) => [f.feature, rrNum(f.importance, 4)]);
@@ -869,7 +869,7 @@ function rrAppendixHtml(ctx) {
       : "";
     parts.push(
       `<h4 class="rr-sub">Live forward validation <span class="rr-tag">PROSPECTIVE \u2013 real predictions made before outcomes</span></h4>` +
-        `<p class="rr-muted">Generated ${rrEsc(fv.generated_at || RR_NA)}. Snapshots ${rrEsc(canonTxt)}; matured outcomes ${rrEsc(fv.matured_outcomes_total)}; pending ${rrEsc(fv.pending_outcomes_total)}.${rrEsc(npTxt)} Metrics are not meaningful until the minimum sample is reached.</p>` +
+        `<p class="rr-muted">Model ${rrEsc(fv.model_version || RR_NA)} (${rrEsc(fv.feature_set_version || RR_NA)}) \u2022 Generated ${rrEsc(fv.generated_at || RR_NA)}. Snapshots ${rrEsc(canonTxt)}; matured outcomes ${rrEsc(fv.matured_outcomes_total)}; pending ${rrEsc(fv.pending_outcomes_total)}.${rrEsc(npTxt)} Metrics are not meaningful until the minimum sample is reached.</p>` +
         rrTable(["Horizon", "Snapshots", "Matured (sample size)", "Pending", "Minimum sample", "Status", "Directional accuracy", "ROC AUC", "Net return"], rows)
     );
     if (fv.paper_portfolio && fv.paper_portfolio.strategies) {
@@ -883,6 +883,7 @@ function rrAppendixHtml(ctx) {
           rrPct(s.max_drawdown_pct, 2),
           rrIsNum(s.entries_executed) ? s.entries_executed : RR_NA,
           rrIsNum(s.open_positions_count) ? s.open_positions_count : RR_NA,
+          rrIsNum(s.rejected_signals) ? s.rejected_signals : RR_NA,
           s.status || RR_NA,
         ];
       });
@@ -902,12 +903,34 @@ function rrAppendixHtml(ctx) {
           rrPct(bm.max_drawdown_pct, 2),
           RR_NA,
           RR_NA,
+          RR_NA,
           bm.status || RR_NA,
         ]);
       });
+
+      const rejMap = {};
+      let recentRej = 0;
+      (Array.isArray(pp.recent_trades) ? pp.recent_trades : []).forEach((t) => {
+        if (t && (t.action === "SIGNAL_REJECTED" || t.action === "REJECTED")) {
+          recentRej += 1;
+          const rsn = String(t.reason || "UNSPECIFIED");
+          rejMap[rsn] = (rejMap[rsn] || 0) + 1;
+        }
+      });
+      const totalRej = ["1D", "5D", "10D"].reduce((a, h) => a + Number((pp.strategies[h] || {}).rejected_signals || 0), 0);
+      const rejText = Object.entries(rejMap)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(", ");
+      const rejLine =
+        totalRej > 0
+          ? `<p class="rr-muted">Rejected signals (${rrEsc(totalRej)} total across 1D/5D/10D; ${rrEsc(recentRej)} in recent_trades window): ${rrEsc(rejText || RR_NA)}${totalRej > recentRej ? ` (${rrEsc(totalRej - recentRej)} earlier rejections truncated in JSON)` : ""}.</p>`
+          : "";
+
       parts.push(
         `<h4 class="rr-sub">Paper portfolio &amp; benchmark comparisons <span class="rr-tag">HYPOTHETICAL \u2013 max ${rrEsc(pp.max_position_pct || 10)}% pos / ${rrEsc(pp.max_total_exposure_pct || 80)}% exposure</span></h4>` +
-          rrTable(["Portfolio / Benchmark", "Ending capital (\u20b9)", "Net return", "Max drawdown", "Entries", "Open", "Status"], pRows)
+          rrTable(["Portfolio / Benchmark", "Ending capital (\u20b9)", "Net return", "Max drawdown", "Entries", "Open", "Rejected", "Status"], pRows) +
+          rejLine
       );
     }
   } else {
