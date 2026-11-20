@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T17:29:00.758793+05:30",
+  "generated_at": "2026-11-20T17:30:04.732350+05:30",
   "model_version": "5.3.0-pilot",
   "feature_set_version": "237+17",
   "pilot_universe": [
@@ -9,13 +9,13 @@
     "ITC",
     "BIRLACABLE"
   ],
-  "total_real_news_events": 286,
-  "valid_news_events": 254,
-  "quarantined_news_events": 32,
-  "last_news_collection_at": "2026-11-19T17:29:00.646758+05:30",
-  "total_immutable_snapshots": 65,
+  "total_real_news_events": 314,
+  "valid_news_events": 280,
+  "quarantined_news_events": 34,
+  "last_news_collection_at": "2026-11-20T17:30:04.585753+05:30",
+  "total_immutable_snapshots": 70,
   "canonical_snapshots_count": 30,
-  "duplicate_snapshots_count": 35,
+  "duplicate_snapshots_count": 40,
   "matured_outcomes_total": 20,
   "pending_outcomes_total": 70,
   "horizon_evaluations": {
@@ -1710,18 +1710,18 @@
     "disclaimer": "Hypothetical paper research portfolio only \u2014 not connected to any broker and does not place real-money orders."
   },
   "news_provenance": {
-    "total_events": 286,
-    "valid_events": 254,
-    "quarantined_events": 32,
-    "unique_source_urls": 216,
-    "duplicate_reports_count": 7,
+    "total_events": 314,
+    "valid_events": 280,
+    "quarantined_events": 34,
+    "unique_source_urls": 241,
+    "duplicate_reports_count": 8,
     "publication_date_min": "2026-10-18T07:00:00+05:30",
-    "publication_date_max": "2026-11-19T08:02:00+05:30",
+    "publication_date_max": "2026-11-20T08:28:00+05:30",
     "collection_date_min": "2026-11-17T10:19:12.473490+05:30",
-    "collection_date_max": "2026-11-19T17:29:00.646758+05:30",
-    "events_after_prediction_cutoff": 0,
+    "collection_date_max": "2026-11-20T17:30:04.585753+05:30",
+    "events_after_prediction_cutoff": 4,
     "is_genuinely_forward_collected": false,
-    "provenance_note": "Pre-baseline RSS archive (2026-10-18 to 2026-11-19) collected retroactively before Phase 5.3 snapshot logging began; only newly collected events with collection_timestamp >= prediction_timestamp are prospective."
+    "provenance_note": "Pre-baseline RSS archive (2026-10-18 to 2026-11-20) collected retroactively before Phase 5.3 snapshot logging began; only newly collected events with collection_timestamp >= prediction_timestamp are prospective."
   },
   "recent_snapshots": [
     {
@@ -3753,8 +3753,8 @@
     }
   ],
   "data_quality_warnings": [
-    "Preserved 35 historical retry/duplicate snapshots in storage; aggregate metrics and paper portfolio evaluate 30 canonical snapshots.",
-    "Pre-baseline RSS archive (2026-10-18 to 2026-11-19) collected retroactively before Phase 5.3 snapshot logging began; only newly collected events with collection_timestamp >= prediction_timestamp are prospective."
+    "Preserved 40 historical retry/duplicate snapshots in storage; aggregate metrics and paper portfolio evaluate 30 canonical snapshots.",
+    "Pre-baseline RSS archive (2026-10-18 to 2026-11-20) collected retroactively before Phase 5.3 snapshot logging began; only newly collected events with collection_timestamp >= prediction_timestamp are prospective."
   ],
   "monitoring_alerts": [
     "Forward 1D model accuracy/calibration warning (Acc=45.0%, Brier=0.2537)."
