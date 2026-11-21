@@ -18,6 +18,7 @@
 
     <nav class="top-nav">
       <button class="nav-tab active" data-view="view-lab">Historical Trading Lab</button>
+      <button class="nav-tab" data-view="view-qualification">Research &amp; Qualification</button>
       <button class="nav-tab" data-view="view-data-quality">Data Quality</button>
       <a class="nav-tab" href="../trader/">Live Paper Trading</a>
       <button class="nav-tab" data-view="view-research">Strategy Research</button>
@@ -341,6 +342,61 @@
             <tbody id="phase10-study-tbody"></tbody>
           </table>
         </div>
+      </section>
+    </div>
+
+    <!-- VIEW: RESEARCH & QUALIFICATION (PHASE 11) -->
+    <div id="view-qualification" class="section-view">
+      <section class="card">
+        <h3 style="font-size: 15px; color: #fff; margin-bottom: 12px;">A. Research Command Centre</h3>
+        <div class="metrics-grid" id="p11-command-grid"></div>
+      </section>
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">B. 7-Gate Strategy Qualification Board</h3>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Status</th>
+                <th>Gates</th>
+                <th>Sessions</th>
+                <th>Trades</th>
+                <th>Net %</th>
+                <th>Alpha vs B&amp;H</th>
+                <th>Max DD</th>
+                <th>Sharpe</th>
+                <th>PF</th>
+                <th>Unseen %</th>
+                <th>Stat Val</th>
+                <th>Red Team</th>
+              </tr>
+            </thead>
+            <tbody id="p11-qual-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">C. 9-Agent Research Architecture Activity</h3>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Role</th>
+                <th>Type</th>
+                <th>Assigned Task</th>
+                <th>Latest Finding</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="p11-agents-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">D. Session Reconciliation &amp; Excluded Dates</h3>
+        <div id="p11-excluded-dates" style="font-size: 12px; color: var(--text-muted);"></div>
       </section>
     </div>
 

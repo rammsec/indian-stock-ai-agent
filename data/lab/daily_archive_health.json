@@ -1,0 +1,59 @@
+{
+  "last_successful_run_ist": "2026-11-21T11:53:11.431782+05:30",
+  "latest_trading_timestamp_ist": "2026-11-20T15:25:00+05:30",
+  "total_new_bars_added": 0,
+  "failed_symbols": [],
+  "provider_status": "HEALTHY",
+  "symbols": [
+    {
+      "symbol": "RELIANCE",
+      "status": "OK",
+      "provider": "YahooFinanceAPI:RELIANCE.NS",
+      "retrieved_at_ist": "2026-11-21T11:53:10.505188+05:30",
+      "total_bars": 4325,
+      "net_added": 0,
+      "duplicates_removed": 0,
+      "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+    },
+    {
+      "symbol": "TCS",
+      "status": "OK",
+      "provider": "YahooFinanceAPI:TCS.NS",
+      "retrieved_at_ist": "2026-11-21T11:53:10.777091+05:30",
+      "total_bars": 4315,
+      "net_added": 0,
+      "duplicates_removed": 0,
+      "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+    },
+    {
+      "symbol": "BIRLACABLE",
+      "status": "OK",
+      "provider": "YahooFinanceAPI:BIRLACABLE.NS",
+      "retrieved_at_ist": "2026-11-21T11:53:10.979440+05:30",
+      "total_bars": 4354,
+      "net_added": 0,
+      "duplicates_removed": 0,
+      "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+    },
+    {
+      "symbol": "ITC",
+      "status": "OK",
+      "provider": "YahooFinanceAPI:ITC.NS",
+      "retrieved_at_ist": "2026-11-21T11:53:11.209822+05:30",
+      "total_bars": 4326,
+      "net_added": 0,
+      "duplicates_removed": 0,
+      "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+    },
+    {
+      "symbol": "TATAELXSI",
+      "status": "OK",
+      "provider": "YahooFinanceAPI:TATAELXSI.NS",
+      "retrieved_at_ist": "2026-11-21T11:53:11.417208+05:30",
+      "total_bars": 4310,
+      "net_added": 0,
+      "duplicates_removed": 0,
+      "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+    }
+  ]
+}
