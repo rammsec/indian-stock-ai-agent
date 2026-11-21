@@ -108,6 +108,7 @@ class CouncilPostureMessage(_StrictMessage):
     bull_arguments: list[str] = Field(default_factory=list)
     bear_arguments: list[str] = Field(default_factory=list)
     reassessment_triggers: list[str] = Field(default_factory=list)
+    model_used: str = "deterministic_python"
 
 
 class TradingAgentActionMessage(_StrictMessage):

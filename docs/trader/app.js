@@ -46,6 +46,7 @@ async function loadTraderState() {
 }
 
 function renderDashboard(data) {
+  renderDataProvenance(data.meta, data.data_provenance, data.cost_monitoring);
   renderMarketOverview(data.market_overview);
   renderCouncilDebate(data.council_debate, data.market_overview.central_posture);
   renderStockScanner(data.stock_scanner);
@@ -53,6 +54,29 @@ function renderDashboard(data) {
   renderPaperPortfolio(data.paper_portfolio);
   renderStrategyPerformance(data.strategy_performance);
   renderCostMonitoring(data.cost_monitoring);
+}
+
+function renderDataProvenance(meta, prov, cost) {
+  const el = document.getElementById("data-provenance-banner");
+  if (!el || !prov) return;
+
+  const isSynthetic = prov.source_mode === "SYNTHETIC_TEST";
+  const badgeClass = isSynthetic ? "badge-amber" : "badge-green";
+  const firstHash = prov.datasets && prov.datasets.length > 0 ? prov.datasets[0].sha256_hash.slice(0, 12) : "N/A";
+  const llmCalls = cost ? (cost.llm_calls_count || 0) : 0;
+  const fallbackCalls = cost ? (cost.fallback_calls_count || 0) : 0;
+
+  el.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <span class="badge ${badgeClass}">DATA MODE: ${prov.source_mode}</span>
+      <span style="color: var(--text-muted);">Timestamp: <strong>${meta ? meta.last_updated_ist : prov.generated_at_ist}</strong></span>
+      <span style="color: var(--text-muted);">SHA-256: <code>${firstHash}...</code> (${prov.datasets_count} datasets)</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span class="badge badge-blue">LLM Calls: ${llmCalls} | Deterministic: ${fallbackCalls}</span>
+      <span style="color: var(--text-dim);">Broker Orders: DISABLED</span>
+    </div>
+  `;
 }
 
 function renderMarketOverview(mo) {

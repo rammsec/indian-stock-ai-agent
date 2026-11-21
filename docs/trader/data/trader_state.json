@@ -4,8 +4,65 @@
     "market": "NSE & BSE, India",
     "timeframe": "5-Minute Candles",
     "execution_mode": "Historical Replay & Paper Simulation Only",
-    "last_updated_ist": "2026-11-21 05:41:15 IST",
-    "data_mode": "SIMULATED_AND_HISTORICAL_REPLAY"
+    "last_updated_ist": "2026-11-21 08:17:43 IST",
+    "data_mode": "SYNTHETIC_TEST"
+  },
+  "data_provenance": {
+    "source_mode": "SYNTHETIC_TEST",
+    "datasets_count": 5,
+    "generated_at_ist": "2026-11-21T08:17:43.673583+05:30",
+    "datasets": [
+      {
+        "symbol": "RELIANCE",
+        "exchange": "NSE",
+        "source_mode": "SYNTHETIC_TEST",
+        "source_name": "SyntheticGeneratorDeterministic",
+        "bars_count": 75,
+        "start_timestamp": "2026-11-20T09:15:00+05:30",
+        "end_timestamp": "2026-11-20T15:25:00+05:30",
+        "sha256_hash": "87fbf5b688fe828f5bf6c0817fc6be07b4e90abc616e3b203f48eef596d32306"
+      },
+      {
+        "symbol": "TCS",
+        "exchange": "NSE",
+        "source_mode": "SYNTHETIC_TEST",
+        "source_name": "SyntheticGeneratorDeterministic",
+        "bars_count": 75,
+        "start_timestamp": "2026-11-20T09:15:00+05:30",
+        "end_timestamp": "2026-11-20T15:25:00+05:30",
+        "sha256_hash": "76f08c4211c527996eba4149bc6c44d73f5f77df3a4f58b85b621b9f23e85706"
+      },
+      {
+        "symbol": "HDFCBANK",
+        "exchange": "NSE",
+        "source_mode": "SYNTHETIC_TEST",
+        "source_name": "SyntheticGeneratorDeterministic",
+        "bars_count": 75,
+        "start_timestamp": "2026-11-20T09:15:00+05:30",
+        "end_timestamp": "2026-11-20T15:25:00+05:30",
+        "sha256_hash": "a6399ebace8420cefadd368f8ea6dd4ebb44cf7d9b60ae8d5f48a9e256bba32f"
+      },
+      {
+        "symbol": "INFY",
+        "exchange": "NSE",
+        "source_mode": "SYNTHETIC_TEST",
+        "source_name": "SyntheticGeneratorDeterministic",
+        "bars_count": 75,
+        "start_timestamp": "2026-11-20T09:15:00+05:30",
+        "end_timestamp": "2026-11-20T15:25:00+05:30",
+        "sha256_hash": "a94e1a7a35c47e4f6d47c2dc924ebe32f14bd3cbd4d5df9e1edab91b08e63ac7"
+      },
+      {
+        "symbol": "ITC",
+        "exchange": "NSE",
+        "source_mode": "SYNTHETIC_TEST",
+        "source_name": "SyntheticGeneratorDeterministic",
+        "bars_count": 75,
+        "start_timestamp": "2026-11-20T09:15:00+05:30",
+        "end_timestamp": "2026-11-20T15:25:00+05:30",
+        "sha256_hash": "9ac1a5a06a23e92b6e6909b132ae558086d6e878851eb51231057f7adba95832"
+      }
+    ]
   },
   "market_overview": {
     "nifty_50": {
@@ -36,6 +93,7 @@
       "posture": "BUY_BULLISH",
       "confidence_pct": 75,
       "summary": "Broader market breadth and index momentum favor long opportunities in leading sectors.",
+      "model_used": "deterministic_fallback (DETERMINISTIC_FALLBACK)",
       "favored_sectors": [
         "Banking / Financials"
       ],
@@ -58,6 +116,7 @@
   },
   "council_debate": {
     "session_id": "council_session_001",
+    "model_used": "deterministic_fallback (DETERMINISTIC_FALLBACK)",
     "bull_arguments": [
       "Nifty 50 upward momentum supported by breadth ratio 2.27",
       "Bank Nifty leading market with strong relative strength"
@@ -281,7 +340,9 @@
           "close": 2604.1,
           "volume": 21165
         }
-      ]
+      ],
+      "data_mode": "SYNTHETIC_TEST",
+      "data_sha256": "87fbf5b688fe828f"
     },
     {
       "symbol": "TCS",
@@ -496,7 +557,9 @@
           "close": 3658.2,
           "volume": 21165
         }
-      ]
+      ],
+      "data_mode": "SYNTHETIC_TEST",
+      "data_sha256": "76f08c4211c52799"
     },
     {
       "symbol": "HDFCBANK",
@@ -711,7 +774,9 @@
           "close": 1679.27,
           "volume": 21165
         }
-      ]
+      ],
+      "data_mode": "SYNTHETIC_TEST",
+      "data_sha256": "a6399ebace8420ce"
     },
     {
       "symbol": "INFY",
@@ -926,7 +991,9 @@
           "close": 1880.76,
           "volume": 21165
         }
-      ]
+      ],
+      "data_mode": "SYNTHETIC_TEST",
+      "data_sha256": "a94e1a7a35c47e4f"
     },
     {
       "symbol": "ITC",
@@ -1141,7 +1208,9 @@
           "close": 449.51,
           "volume": 21165
         }
-      ]
+      ],
+      "data_mode": "SYNTHETIC_TEST",
+      "data_sha256": "9ac1a5a06a23e92b"
     }
   ],
   "cross_exchange_arbitrage": [
@@ -1317,18 +1386,22 @@
     "budget_exhausted": false,
     "total_tokens_consumed": 570,
     "total_calls_count": 1,
+    "llm_calls_count": 1,
+    "fallback_calls_count": 0,
     "model_routing_map": {
-      "Agent 1 (Market Intelligence)": "Gemini 2.5 Flash / Level 1",
+      "Agent 1 (Market Intelligence)": "Deterministic Python + Gemini 2.5 Flash",
       "Agent 2 (Technical Analysis)": "Deterministic Python + Gemini Flash",
-      "Agent 3 (News Intelligence)": "Gemini 2.5 Flash / Level 1",
-      "Agent 4 (Microstructure)": "Deterministic Python / Level 0",
+      "Agent 3 (News Intelligence)": "Deterministic PIT + Gemini 2.5 Flash",
+      "Agent 4 (Microstructure)": "Deterministic Python / Level 0 ($0.00)",
       "Agent 6 (Risk Management)": "Strict Python Gatekeeper / Level 0 ($0.00)",
-      "Agent 7 (Central Council)": "Gemini 2.5 Pro / Level 2",
+      "Agent 7 (Central Council)": "deterministic_fallback (DETERMINISTIC_FALLBACK)",
       "Agent 8 (Autonomous Trader)": "Deterministic Python Execution Engine"
     },
     "agent_costs": {
       "market_intelligence": {
         "calls": 1,
+        "llm_calls": 1,
+        "fallback_calls": 0,
         "input_tokens": 450,
         "output_tokens": 120,
         "cost_usd": 0.0001

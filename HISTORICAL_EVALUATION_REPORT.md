@@ -1,6 +1,6 @@
 # Historical Evaluation Report — AI Multi-Agent Intraday Platform
 
-Generated: 2026-11-21 00:11:06  
+Generated: 2026-11-21 02:48:09  
 Branch: `feature/personal-ai-trading-desk`  
 Execution Horizon: 5-Minute Candles (09:15 - 15:30 IST)  
 Mode: Deterministic Historical Replay Simulation  
@@ -17,7 +17,19 @@ Mode: Deterministic Historical Replay Simulation
 
 ---
 
-## 2. Key Observations & Attribution
+## 2. Out-of-Sample Baseline Comparison (Unseen Test Split)
+
+All strategies are evaluated on the strictly isolated final 20% chronological unseen test split using `NEXT_BAR_OPEN` execution with 5 bps slippage and full Indian statutory friction, compared against a Buy & Hold benchmark.
+
+| Strategy | Symbol | Strategy Return % | Buy & Hold Baseline % | Alpha vs Baseline % | Win Rate % | Profit Factor |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **STRAT-001-VWAP-PULLBACK** | RELIANCE | +0.23% | +2.92% | -2.69% | 100.0% | 10.00 |
+| **STRAT-002-ORB-BREAKOUT** | RELIANCE | +0.22% | +2.92% | -2.70% | 100.0% | 10.00 |
+| **STRAT-003-EMA-CROSS** | RELIANCE | +0.00% | +2.92% | -2.92% | 0.0% | 0.00 |
+
+---
+
+## 3. Key Observations & Attribution
 
 1. **Bullish Trending Regime**:
    - Central Council posture: `BUY_BULLISH` (High conviction).
@@ -38,7 +50,7 @@ Mode: Deterministic Historical Replay Simulation
 
 ---
 
-## 3. Cryptographic Provenance & Conservation of Capital
+## 4. Cryptographic Provenance & Conservation of Capital
 Across all simulated sessions, every single order, fill, MTM mark, and square-off was recorded with monotonic sequence numbers and SHA-256 hash chaining. At every bar index:
 $$\text{Cash} + \text{Invested MTM} = \text{Total Equity}$$
 $$\text{Total Equity} = \text{Starting Capital} + \text{Realized P\&L} + \text{Unrealized P\&L}$$

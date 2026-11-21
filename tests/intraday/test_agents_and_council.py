@@ -224,3 +224,98 @@ def test_autonomous_trader_5m_order_execution():
     assert "RELIANCE" in portfolio.positions
     assert portfolio.positions["RELIANCE"].stop_loss == 2480.0  # Entry 2500 - 1.0*ATR (20)
     assert portfolio.positions["RELIANCE"].target == 2540.0     # Entry 2500 + 2.0*ATR (40)
+
+
+def test_gemini_provider_invocation_and_deterministic_fallback(monkeypatch):
+    """Verify genuine Gemini REST invocation (mocked HTTP) records real tokens/cost and falls back deterministically when unavailable."""
+    from trader.agents.router import GeminiProvider, ModelRouter, TokenBudgetManager
+    import httpx
+
+    class DummyResp:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {
+                "candidates": [{"content": {"parts": [{"text": "Nifty breadth bullish; favor banking."}]}}],
+                "usageMetadata": {"promptTokenCount": 420, "candidatesTokenCount": 80},
+            }
+
+    class DummyClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def post(self, url, json):
+            assert "gemini-2.5-pro:generateContent" in url
+            return DummyResp()
+
+    monkeypatch.setattr(httpx, "Client", DummyClient)
+
+    provider = GeminiProvider(api_key="test-fake-key-for-mock")
+    router = ModelRouter(budget_manager=TokenBudgetManager(daily_budget_usd=0.50), provider=provider)
+
+    res = router.invoke_agent(
+        task_level=2,
+        agent_name="central_council",
+        prompt="Analyze Nifty",
+        deterministic_fn=lambda: "Deterministic fallback",
+    )
+    assert res.execution_mode == "LLM"
+    assert res.model_used == "gemini-2.5-pro"
+    assert res.input_tokens == 420
+    assert res.output_tokens == 80
+    assert res.cost_usd > 0.0
+    assert "Nifty breadth bullish" in res.text
+
+    # Test deterministic fallback when API key missing
+    router_no_key = ModelRouter(provider=GeminiProvider(api_key=""))
+    res_fb = router_no_key.invoke_agent(
+        task_level=2,
+        agent_name="central_council",
+        prompt="Analyze Nifty",
+        deterministic_fn=lambda: "Deterministic fallback",
+    )
+    assert res_fb.execution_mode == "DETERMINISTIC_FALLBACK"
+    assert res_fb.text == "Deterministic fallback"
+    assert res_fb.cost_usd == 0.0
+
+
+def test_council_hourly_and_event_reassessment():
+    """Verify Central Council reassesses hourly and immediately upon material VIX shock."""
+    from datetime import timedelta
+
+    mi_agent = MarketIntelligenceAgent()
+    council = CentralMarketCouncil()
+
+    t0 = datetime(2026, 11, 20, 9, 30, tzinfo=IST_TZ)
+    intel_bull = mi_agent.analyze_market(1.0, 1.2, india_vix=13.5, advances=1700, declines=600, timestamp=t0)
+
+    should, reason = council.should_reassess(t0, intel_bull)
+    assert should is True
+    assert "INITIAL" in reason
+    council.evaluate_council(intel_bull)
+
+    # 20 minutes later, no material change -> should NOT reassess
+    t1 = t0 + timedelta(minutes=20)
+    should_1, _ = council.should_reassess(t1, intel_bull)
+    assert should_1 is False
+
+    # 25 minutes later, VIX spikes to 24.5 -> MATERIAL EVENT triggers immediate reassessment
+    t2 = t0 + timedelta(minutes=25)
+    intel_shock = mi_agent.analyze_market(-1.5, -2.0, india_vix=24.5, advances=300, declines=1900, timestamp=t2)
+    should_2, reason_2 = council.should_reassess(t2, intel_shock)
+    assert should_2 is True
+    assert "MATERIAL_EVENT" in reason_2
+
+    # 65 minutes later -> SCHEDULED_HOURLY_REASSESSMENT
+    t3 = council.last_assessment.timestamp + timedelta(minutes=65)
+    should_3, reason_3 = council.should_reassess(t3, intel_bull)
+    assert should_3 is True
+    assert "SCHEDULED_HOURLY_REASSESSMENT" in reason_3
+

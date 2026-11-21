@@ -185,3 +185,37 @@ def test_quote_freshness_and_order_book_depth():
     assert opp_low_depth.status == "INSUFFICIENT_LIQUIDITY"
     assert "less than required execution quantity" in opp_low_depth.notes[0]
 
+
+def test_chronological_split_purged_kfold_and_baseline():
+    """Verify chronological train/val/unseen split, PurgedKFold embargo gaps, and baseline comparison."""
+    from trader.strategies.validation import (
+        create_chronological_split,
+        PurgedKFold,
+        compare_strategy_vs_baseline,
+    )
+
+    candles = generate_synthetic_5m_session(symbol="RELIANCE", base_price=2500.0, num_bars=100)
+    split = create_chronological_split(candles, train_ratio=0.60, val_ratio=0.20)
+    assert len(split.train_candles) == 60
+    assert len(split.validation_candles) == 20
+    assert len(split.unseen_test_candles) == 20
+    assert split.train_candles[-1].timestamp < split.validation_candles[0].timestamp
+    assert split.validation_candles[-1].timestamp < split.unseen_test_candles[0].timestamp
+
+    pkf = PurgedKFold(n_splits=5, purge_bars=3, embargo_bars=3)
+    splits = list(pkf.split(100))
+    assert len(splits) == 5
+    for train_idx, test_idx in splits:
+        # Ensure zero overlap and purge/embargo gap respected
+        assert set(train_idx).isdisjoint(set(test_idx))
+        min_test, max_test = min(test_idx), max(test_idx)
+        for ti in train_idx:
+            assert ti < min_test - 3 or ti > max_test + 3
+
+    strat = VWAPPullbackStrategy()
+    comp = compare_strategy_vs_baseline(strat, candles, initial_capital=1_000_000.0)
+    assert comp.baseline.symbol == "RELIANCE"
+    assert isinstance(comp.alpha_vs_baseline_pct, float)
+    assert comp.strategy_result.total_candles == 100
+
+

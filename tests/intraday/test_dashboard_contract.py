@@ -28,6 +28,7 @@ def test_dashboard_html_sections():
     assert "Strategy Research Library & Backtests" in html
     assert "AI Model Allocation & Token Budget" in html
     assert "HISTORICAL REPLAY & SIMULATION ONLY" in html
+    assert "data-provenance-banner" in html
 
 
 def test_trader_state_json_contract():
@@ -37,6 +38,7 @@ def test_trader_state_json_contract():
     # Root keys
     for k in [
         "metadata",
+        "data_provenance",
         "market_overview",
         "council_debate",
         "stock_scanner",
@@ -46,6 +48,12 @@ def test_trader_state_json_contract():
         "cost_monitoring",
     ]:
         assert k in data, f"Missing key: {k}"
+
+    # Data Provenance
+    prov = data["data_provenance"]
+    assert prov["source_mode"] in ["SYNTHETIC_TEST", "HISTORICAL_REAL"]
+    assert prov["datasets_count"] >= 5
+    assert len(prov["datasets"][0]["sha256_hash"]) == 64
 
     # Market Overview
     mo = data["market_overview"]
@@ -83,3 +91,5 @@ def test_trader_state_json_contract():
     cm = data["cost_monitoring"]
     assert cm["daily_budget_usd"] == 0.50
     assert "model_routing_map" in cm
+    assert "llm_calls_count" in cm
+    assert "fallback_calls_count" in cm

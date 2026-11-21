@@ -13,7 +13,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from trader.config import IST_TZ
 from trader.data.instruments import INSTRUMENT_MASTER
-from trader.data.loader import generate_synthetic_5m_session
+from trader.data.loader import load_historical_5m_candles, generate_synthetic_5m_session
+from trader.data.schema import DataSourceMode
 from trader.features.indicators import compute_all_features
 from trader.portfolio.ledger import IntradayPaperPortfolio, OrderSide
 from trader.risk.engine import DeterministicRiskEngine
@@ -34,7 +35,7 @@ from trader.arbitrage.spread_calculator import calculate_executable_arbitrage_sp
 OUTPUT_DIR = Path("docs/trader/data")
 
 
-def build_trader_dataset() -> dict:
+def build_trader_dataset(data_mode: DataSourceMode = DataSourceMode.SYNTHETIC_TEST) -> dict:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     now_ist = datetime.now(tz=IST_TZ)
 
@@ -57,7 +58,7 @@ def build_trader_dataset() -> dict:
     # 2. Portfolio & Risk Engine Simulation
     portfolio = IntradayPaperPortfolio(initial_capital=1_000_000.0)
     risk_engine = DeterministicRiskEngine()
-    auto_trader = AutonomousTradingAgent(portfolio=portfolio, risk_engine=risk_engine)
+    auto_trader = AutonomousTradingAgent(portfolio=portfolio, risk_engine=risk_engine, router=council.router)
     auto_trader.on_council_posture_update(council_msg)
 
     tech_agent = TechnicalAnalysisAgent()
@@ -66,11 +67,29 @@ def build_trader_dataset() -> dict:
     # 3. Stock Scanner Generation across 5 Core Watchlist Equities
     watchlist = ["RELIANCE", "TCS", "HDFCBANK", "INFY", "ITC"]
     scanner_results = []
+    provenance_records = []
     base_prices = {"RELIANCE": 2520.0, "TCS": 3540.0, "HDFCBANK": 1625.0, "INFY": 1820.0, "ITC": 435.0}
 
     for sym in watchlist:
         bp = base_prices.get(sym, 2000.0)
-        candles = generate_synthetic_5m_session(symbol=sym, base_price=bp, daily_trend_pct=0.8)
+        if data_mode == DataSourceMode.SYNTHETIC_TEST:
+            candles, prov = generate_synthetic_5m_session(
+                symbol=sym, base_price=bp, daily_trend_pct=0.8, return_provenance=True
+            )
+        else:
+            candles, prov = load_historical_5m_candles(symbol=sym, exchange="NSE", mode=data_mode)
+
+        provenance_records.append({
+            "symbol": prov.symbol,
+            "exchange": prov.exchange,
+            "source_mode": prov.source_mode.value,
+            "source_name": prov.source_name,
+            "bars_count": prov.bars_count,
+            "start_timestamp": prov.start_timestamp.isoformat(),
+            "end_timestamp": prov.end_timestamp.isoformat(),
+            "sha256_hash": prov.sha256_hash,
+        })
+
         df_feat = compute_all_features(candles)
         last_bar = df_feat.iloc[-1]
 
@@ -113,6 +132,8 @@ def build_trader_dataset() -> dict:
             "stop_loss": action_msg.stop_loss,
             "target": action_msg.target,
             "recent_candles": recent_bars,
+            "data_mode": prov.source_mode.value,
+            "data_sha256": prov.sha256_hash[:16],
         })
 
     # 4. Cross-Exchange Opportunities
@@ -200,7 +221,13 @@ def build_trader_dataset() -> dict:
             "timeframe": "5-Minute Candles",
             "execution_mode": "Historical Replay & Paper Simulation Only",
             "last_updated_ist": now_ist.strftime("%Y-%m-%d %H:%M:%S IST"),
-            "data_mode": "SIMULATED_AND_HISTORICAL_REPLAY",
+            "data_mode": data_mode.value,
+        },
+        "data_provenance": {
+            "source_mode": data_mode.value,
+            "datasets_count": len(provenance_records),
+            "generated_at_ist": now_ist.isoformat(),
+            "datasets": provenance_records,
         },
         "market_overview": {
             "nifty_50": {"ltp": 24385.50, "change_pct": 0.74, "trend": market_msg.nifty_trend},
@@ -220,6 +247,7 @@ def build_trader_dataset() -> dict:
                 "posture": council_msg.posture.value,
                 "confidence_pct": int(council_msg.confidence * 100),
                 "summary": council_msg.summary_verdict,
+                "model_used": council_msg.model_used,
                 "favored_sectors": council_msg.favored_sectors,
                 "avoid_sectors": council_msg.avoid_sectors,
                 "restrictions": council_msg.trading_restrictions,
@@ -229,6 +257,7 @@ def build_trader_dataset() -> dict:
         },
         "council_debate": {
             "session_id": council_msg.council_session_id,
+            "model_used": council_msg.model_used,
             "bull_arguments": council_msg.bull_arguments,
             "bear_arguments": council_msg.bear_arguments,
             "consensus_verdict": council_msg.summary_verdict,
@@ -259,13 +288,15 @@ def build_trader_dataset() -> dict:
             "budget_exhausted": cost_summary["budget_exhausted"],
             "total_tokens_consumed": cost_summary["total_tokens_consumed"],
             "total_calls_count": cost_summary["total_calls_count"],
+            "llm_calls_count": cost_summary.get("llm_calls_count", 0),
+            "fallback_calls_count": cost_summary.get("fallback_calls_count", 0),
             "model_routing_map": {
-                "Agent 1 (Market Intelligence)": "Gemini 2.5 Flash / Level 1",
+                "Agent 1 (Market Intelligence)": "Deterministic Python + Gemini 2.5 Flash",
                 "Agent 2 (Technical Analysis)": "Deterministic Python + Gemini Flash",
-                "Agent 3 (News Intelligence)": "Gemini 2.5 Flash / Level 1",
-                "Agent 4 (Microstructure)": "Deterministic Python / Level 0",
+                "Agent 3 (News Intelligence)": "Deterministic PIT + Gemini 2.5 Flash",
+                "Agent 4 (Microstructure)": "Deterministic Python / Level 0 ($0.00)",
                 "Agent 6 (Risk Management)": "Strict Python Gatekeeper / Level 0 ($0.00)",
-                "Agent 7 (Central Council)": "Gemini 2.5 Pro / Level 2",
+                "Agent 7 (Central Council)": council_msg.model_used,
                 "Agent 8 (Autonomous Trader)": "Deterministic Python Execution Engine",
             },
             "agent_costs": cost_summary["agents"],

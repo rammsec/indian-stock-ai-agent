@@ -72,7 +72,42 @@ Mode: Deterministic Historical Replay Simulation
     report_content += """
 ---
 
-## 2. Key Observations & Attribution
+## 2. Out-of-Sample Baseline Comparison (Unseen Test Split)
+
+All strategies are evaluated on the strictly isolated final 20% chronological unseen test split using `NEXT_BAR_OPEN` execution with 5 bps slippage and full Indian statutory friction, compared against a Buy & Hold benchmark.
+
+| Strategy | Symbol | Strategy Return % | Buy & Hold Baseline % | Alpha vs Baseline % | Win Rate % | Profit Factor |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+"""
+    from trader.data.loader import generate_synthetic_5m_session
+    from trader.strategies.vwap_pullback import VWAPPullbackStrategy
+    from trader.strategies.orb_breakout import ORBBreakoutStrategy
+    from trader.strategies.ema_cross import EMACrossStrategy
+    from trader.strategies.validation import create_chronological_split, compare_strategy_vs_baseline
+
+    # Generate 5 days of chronological 5m data for out-of-sample split
+    multi_day_candles = []
+    for d_offset, d in enumerate([date(2026, 11, 16), date(2026, 11, 17), date(2026, 11, 18), date(2026, 11, 19), date(2026, 11, 20)]):
+        multi_day_candles.extend(
+            generate_synthetic_5m_session(symbol="RELIANCE", session_date=d, base_price=2500.0 + d_offset * 10, daily_trend_pct=0.4)
+        )
+    split = create_chronological_split(multi_day_candles, train_ratio=0.60, val_ratio=0.20)
+    unseen = split.unseen_test_candles
+
+    for strat in [VWAPPullbackStrategy(), ORBBreakoutStrategy(), EMACrossStrategy()]:
+        comp = compare_strategy_vs_baseline(strat, unseen, initial_capital=1_000_000.0)
+        sr = comp.strategy_result
+        bl = comp.baseline
+        report_content += (
+            f"| **{strat.metadata.strategy_id}** | {sr.symbol} | {sr.total_return_pct:+.2f}% | "
+            f"{bl.total_return_pct:+.2f}% | {comp.alpha_vs_baseline_pct:+.2f}% | "
+            f"{sr.win_rate_pct:.1f}% | {sr.profit_factor:.2f} |\n"
+        )
+
+    report_content += """
+---
+
+## 3. Key Observations & Attribution
 
 1. **Bullish Trending Regime**:
    - Central Council posture: `BUY_BULLISH` (High conviction).
@@ -93,7 +128,7 @@ Mode: Deterministic Historical Replay Simulation
 
 ---
 
-## 3. Cryptographic Provenance & Conservation of Capital
+## 4. Cryptographic Provenance & Conservation of Capital
 Across all simulated sessions, every single order, fill, MTM mark, and square-off was recorded with monotonic sequence numbers and SHA-256 hash chaining. At every bar index:
 $$\\text{Cash} + \\text{Invested MTM} = \\text{Total Equity}$$
 $$\\text{Total Equity} = \\text{Starting Capital} + \\text{Realized P\\&L} + \\text{Unrealized P\\&L}$$
@@ -106,3 +141,4 @@ Zero lookahead bias and zero mathematical drift were observed.
 
 if __name__ == "__main__":
     run_historical_regime_evaluation()
+
