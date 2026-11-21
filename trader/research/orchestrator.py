@@ -1206,6 +1206,8 @@ class ChiefResearchOrchestrator:
         # Step 5: Transition SEALED -> EXPOSED for ANY evaluation (formal or exploratory) that consumed unseen dates
         evaluation_completed_at = datetime.now(tz=IST_TZ).isoformat()
         strategy_ids_evaluated = [q["strategy_id"] for q in qualification_board]
+        recovery_failed = False
+        recovery_failure_reasons: list[str] = []
         if consumed_dates:
             exposure_status = holdout_guard.complete_evaluation(
                 "CYCLE-004",
@@ -1217,13 +1219,72 @@ class ChiefResearchOrchestrator:
                 evaluation_ref=str(output_path),
             )
             completion_ok = bool(exposure_status.get("ok"))
-            holdout_consumed = completion_ok
-            holdout_state = exposure_status.get("holdout_state", "EXPOSED" if completion_ok else "SEALED")
-            eval_status = (
-                ("COMPLETED_FORMAL" if qualification_allowed else "COMPLETED_EXPLORATORY_WITH_UNSEEN")
-                if completion_ok
-                else "COMPLETION_FAILED"
-            )
+            if completion_ok:
+                holdout_consumed = True
+                holdout_state = exposure_status.get("holdout_state", "EXPOSED")
+                eval_status = "COMPLETED_FORMAL" if qualification_allowed else "COMPLETED_EXPLORATORY_WITH_UNSEEN"
+            else:
+                # Inspect actual persisted registry state; only invoke fallback recovery if owned accessed dates remain SEALED.
+                try:
+                    reg_after = holdout_guard.load_registry()
+                    reg_records = reg_after.get("records", {})
+                    unrecovered_accessed = [
+                        d
+                        for d in consumed_dates
+                        if reg_records.get(d.isoformat(), {}).get("state") == "SEALED"
+                        and reg_records.get(d.isoformat(), {}).get("owning_cycle_id") == "CYCLE-004"
+                        and (
+                            bool(reg_records.get(d.isoformat(), {}).get("data_accessed"))
+                            or reg_records.get(d.isoformat(), {}).get("reservation_status") == "EVALUATION_IN_PROGRESS"
+                        )
+                    ]
+                    if unrecovered_accessed:
+                        holdout_guard.mark_evaluation_failed(
+                            "CYCLE-004",
+                            unrecovered_accessed,
+                            reason="; ".join(exposure_status.get("failure_reasons", ["complete_evaluation failed"])),
+                            data_accessed=True,
+                        )
+                        reg_after = holdout_guard.load_registry()
+                        reg_records = reg_after.get("records", {})
+
+                    still_sealed_accessed = [
+                        d.isoformat()
+                        for d in consumed_dates
+                        if reg_records.get(d.isoformat(), {}).get("state") == "SEALED"
+                        and reg_records.get(d.isoformat(), {}).get("owning_cycle_id") == "CYCLE-004"
+                        and (
+                            bool(reg_records.get(d.isoformat(), {}).get("data_accessed"))
+                            or reg_records.get(d.isoformat(), {}).get("reservation_status") == "EVALUATION_IN_PROGRESS"
+                        )
+                    ]
+                    any_owned_exposed = any(
+                        reg_records.get(d.isoformat(), {}).get("state") == "EXPOSED"
+                        and reg_records.get(d.isoformat(), {}).get("owning_cycle_id") == "CYCLE-004"
+                        for d in consumed_dates
+                    )
+                    if still_sealed_accessed:
+                        recovery_failed = True
+                        holdout_consumed = any_owned_exposed
+                        holdout_state = "SEALED"
+                        eval_status = "COMPLETION_FAILED_RECOVERY_FAILED"
+                        recovery_failure_reasons.append(
+                            f"Recovery failed: accessed dates remained SEALED: {still_sealed_accessed}"
+                        )
+                    elif any_owned_exposed or bool(exposure_status.get("holdout_consumed")):
+                        holdout_consumed = True
+                        holdout_state = "EXPOSED"
+                        eval_status = "COMPLETION_FAILED"
+                    else:
+                        holdout_consumed = False
+                        holdout_state = exposure_status.get("holdout_state", "SEALED")
+                        eval_status = "COMPLETION_FAILED"
+                except Exception as rec_exc:
+                    recovery_failed = True
+                    holdout_consumed = bool(exposure_status.get("holdout_consumed", False))
+                    holdout_state = "RECOVERY_FAILED"
+                    eval_status = "COMPLETION_FAILED_RECOVERY_FAILED"
+                    recovery_failure_reasons.append(f"Recovery failed: {rec_exc}")
         else:
             exposure_status = {
                 "status": guard_res["holdout_status"],
@@ -1247,6 +1308,7 @@ class ChiefResearchOrchestrator:
         cycle_failure_reasons = list(guard_res.get("failure_reasons", []))
         if consumed_dates and not exposure_status.get("ok"):
             cycle_failure_reasons.extend(exposure_status.get("failure_reasons", ["complete_evaluation failed"]))
+        cycle_failure_reasons.extend(recovery_failure_reasons)
 
         cycle_004_out = {
             "cycle_id": "CYCLE-004",
@@ -1261,6 +1323,7 @@ class ChiefResearchOrchestrator:
             "exploratory_only": not qualification_allowed,
             "holdout_consumed": holdout_consumed,
             "holdout_state": holdout_state,
+            "recovery_failed": recovery_failed,
             "evaluation_status": eval_status,
             "evaluation_type": eval_type,
             "evaluation_started_at": evaluation_started_at,

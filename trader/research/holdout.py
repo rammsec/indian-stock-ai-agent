@@ -605,18 +605,43 @@ class SealedHoldoutGuard:
                     failure_reasons.append(msg)
                     fingerprint_mismatches.append(d_str)
 
-            # All-or-nothing: if ANY date fails validation, reject without partial update
+            # All-or-nothing: if ANY date fails validation, reject completion without partial EVALUATION_COMPLETED.
+            # However, if owned dates already entered EVALUATION_IN_PROGRESS / data_accessed=True, conservatively
+            # transition those accessed owned dates to EXPOSED (FAILED_EVALUATION) so they can never be reused.
             if invalid_dates:
-                # Determine actual final lifecycle state from existing records
-                existing_states = {records[d_str].get("state") for d_str in iso_dates if d_str in records}
-                if "SEALED" in existing_states:
-                    final_state = "SEALED"
-                elif "EXPOSED" in existing_states:
+                newly_exposed_on_fail: list[str] = []
+                for d_str in iso_dates:
+                    rec = records.get(d_str)
+                    if (
+                        rec is not None
+                        and rec.get("state") == "SEALED"
+                        and rec.get("owning_cycle_id") == cycle_id
+                        and (bool(rec.get("data_accessed")) or rec.get("reservation_status") == "EVALUATION_IN_PROGRESS")
+                    ):
+                        rec["state"] = "EXPOSED"
+                        rec["reservation_status"] = "FAILED_EVALUATION"
+                        rec["data_accessed"] = True
+                        rec["first_exposed_cycle"] = rec.get("first_exposed_cycle") or cycle_id
+                        rec["exposure_timestamp"] = rec.get("exposure_timestamp") or now_ist
+                        rec["previous_exposure_count"] = int(rec.get("previous_exposure_count", 0)) + 1
+                        existing_strats = set(rec.get("strategy_ids_evaluated", []))
+                        rec["strategy_ids_evaluated"] = sorted(existing_strats | set(strat_list))
+                        rec["registry_version"] = REGISTRY_VERSION
+                        newly_exposed_on_fail.append(d_str)
+
+                # Determine actual final lifecycle state from persisted records
+                if newly_exposed_on_fail:
                     final_state = "EXPOSED"
-                elif "RETIRED" in existing_states:
-                    final_state = "RETIRED"
                 else:
-                    final_state = "AVAILABLE"
+                    existing_states = {records[d_str].get("state") for d_str in iso_dates if d_str in records}
+                    if "SEALED" in existing_states:
+                        final_state = "SEALED"
+                    elif "EXPOSED" in existing_states:
+                        final_state = "EXPOSED"
+                    elif "RETIRED" in existing_states:
+                        final_state = "RETIRED"
+                    else:
+                        final_state = "AVAILABLE"
 
                 # Extract started_at from reservation record if available
                 started_at = now_ist
@@ -624,6 +649,17 @@ class SealedHoldoutGuard:
                     if d_str in records and records[d_str].get("evaluation_started_at"):
                         started_at = records[d_str]["evaluation_started_at"]
                         break
+
+                if newly_exposed_on_fail:
+                    reg.setdefault("recovery_log", []).append({
+                        "action": "FAILED_COMPLETION_CONSERVATIVE_EXPOSURE",
+                        "cycle_id": cycle_id,
+                        "evaluation_id": evaluation_id,
+                        "dates": iso_dates,
+                        "exposed_due_to_data_access": newly_exposed_on_fail,
+                        "reason": "; ".join(failure_reasons),
+                        "timestamp": now_ist,
+                    })
 
                 # Append failed evaluation history record reflecting ACTUAL registry state
                 reg.setdefault("evaluation_history", []).append({
@@ -639,6 +675,7 @@ class SealedHoldoutGuard:
                     "final_lifecycle_state": final_state,
                     "completion_success": False,
                     "failure_reasons": failure_reasons,
+                    "exposed_dates": newly_exposed_on_fail,
                     "ok": False,
                 })
                 self.save_registry(reg)
@@ -659,8 +696,10 @@ class SealedHoldoutGuard:
                     "evaluation_id": evaluation_id,
                     "cycle_id": cycle_id,
                     "evaluation_type": evaluation_type,
-                    "holdout_consumed": False,
+                    "holdout_consumed": bool(newly_exposed_on_fail),
                     "holdout_state": final_state,
+                    "exposed_dates": newly_exposed_on_fail,
+                    "newly_exposed_dates": len(newly_exposed_on_fail),
                     "completed_at": now_ist,
                     "invalid_dates": invalid_dates,
                     "failure_reasons": failure_reasons,

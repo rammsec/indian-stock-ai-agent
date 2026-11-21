@@ -154,7 +154,8 @@ def test_04_wrong_dataset_fingerprint_prevents_completion(tmp_path: Path) -> Non
     assert "2026-06-04" in comp["fingerprint_mismatches"]
 
     reg = guard.load_registry()
-    assert reg["records"]["2026-06-04"]["state"] == "SEALED"
+    assert reg["records"]["2026-06-04"]["state"] == "EXPOSED"
+    assert reg["records"]["2026-06-04"]["reservation_status"] == "FAILED_EVALUATION"
 
 
 def test_05_completion_of_exposed_dates_is_rejected(tmp_path: Path) -> None:
@@ -250,9 +251,12 @@ def test_08_multi_date_completion_is_atomic_when_one_date_is_invalid(tmp_path: P
     assert comp["completion_success"] is False
 
     reg = guard.load_registry()
-    # Confirm NO dates transitioned to EXPOSED
-    for d in (d1, d2, d3):
-        assert reg["records"][d.isoformat()]["state"] == "SEALED"
+    # Accessed dates d1, d2 are conservatively exposed as FAILED_EVALUATION; unaccessed d3 stays SEALED
+    for d in (d1, d2):
+        assert reg["records"][d.isoformat()]["state"] == "EXPOSED"
+        assert reg["records"][d.isoformat()]["reservation_status"] == "FAILED_EVALUATION"
+    assert reg["records"][d3.isoformat()]["state"] == "SEALED"
+    assert reg["records"][d3.isoformat()]["reservation_status"] == "ACTIVE_RESERVATION"
 
 
 def test_09_failed_completion_does_not_append_successful_history(tmp_path: Path) -> None:
@@ -319,8 +323,9 @@ def test_10_history_reflects_actual_final_registry_state(tmp_path: Path) -> None
         assert field in h, f"Missing field: {field}"
 
     assert h["completion_success"] is False
-    assert h["final_lifecycle_state"] == "SEALED"
-    assert reg["records"]["2026-06-12"]["state"] == "SEALED"
+    assert h["final_lifecycle_state"] == "EXPOSED"
+    assert reg["records"]["2026-06-12"]["state"] == "EXPOSED"
+    assert reg["records"]["2026-06-12"]["reservation_status"] == "FAILED_EVALUATION"
 
 
 def test_11_successful_completion_updates_all_dates_and_history_together(tmp_path: Path) -> None:
@@ -535,17 +540,18 @@ def test_17_fingerprint_mismatch_does_not_create_misleading_exposure_metadata(tm
     )
     assert comp["ok"] is False
     assert comp["completion_success"] is False
-    assert comp["holdout_state"] == "SEALED"
+    assert comp["holdout_state"] == "EXPOSED"
 
     reg = guard.load_registry()
-    assert reg["records"]["2026-06-22"]["state"] == "SEALED"
+    assert reg["records"]["2026-06-22"]["state"] == "EXPOSED"
+    assert reg["records"]["2026-06-22"]["reservation_status"] == "FAILED_EVALUATION"
     # sealed_exposures must NOT have a record for this failed attempt
     assert len(reg.get("sealed_exposures", [])) == 0
     # evaluation_history must clearly reflect failure
     hist = reg.get("evaluation_history", [])
     assert len(hist) == 1
     assert hist[0]["completion_success"] is False
-    assert hist[0]["final_lifecycle_state"] == "SEALED"
+    assert hist[0]["final_lifecycle_state"] == "EXPOSED"
 
 
 def test_18_failure_after_data_access_still_consumes_holdout(tmp_path: Path) -> None:
