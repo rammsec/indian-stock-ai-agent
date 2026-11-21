@@ -695,7 +695,7 @@ function renderPhase10Study(rows) {
     .join("");
 }
 
-function renderPhase11Qualification(p11) {
+function renderPhase11Qualification(p11, weeklyStatus) {
   if (!p11) return;
   const cc = p11.command_centre || {};
   const cmdGrid = document.getElementById("p11-command-grid");
@@ -711,23 +711,53 @@ function renderPhase11Qualification(p11) {
     `;
   }
 
+  const opsEl = document.getElementById("p11-ops-status");
+  if (opsEl) {
+    const provBadge = p11.provenance_verified ? `<span class="badge badge-green">PROVENANCE VERIFIED</span>` : `<span class="badge badge-red">PROVENANCE UNVERIFIED</span>`;
+    const tm = p11.dynamic_test_metrics || {};
+    const testBadge = `<span class="badge ${tm.tests_failed === 0 && tm.tests_executed > 0 ? "badge-green" : "badge-amber"}">PYTEST: ${tm.tests_passed || 0}/${tm.tests_executed || 0}</span>`;
+    const wkBadge = weeklyStatus ? `<span class="badge badge-blue">WEEKLY RUN: ${weeklyStatus.status || "--"}</span>` : "";
+    opsEl.innerHTML = `${provBadge} ${testBadge} ${wkBadge} <span style="margin-left:8px;">Generated: ${p11.generated_at_ist || "--"}</span>`;
+  }
+
+  const tfBody = document.getElementById("p11-timeframe-tbody");
+  if (tfBody && p11.timeframe_comparison) {
+    tfBody.innerHTML = p11.timeframe_comparison
+      .map((t) => `
+        <tr>
+          <td><span class="badge badge-blue">${t.timeframe}</span></td>
+          <td>${t.strategies_count}</td>
+          <td>${t.avg_trades}</td>
+          <td class="${t.avg_net_return_pct >= 0 ? "text-green" : "text-red"}">${t.avg_net_return_pct >= 0 ? "+" : ""}${t.avg_net_return_pct}%</td>
+          <td style="font-weight:700; color:#fff;">${t.best_strategy_id}</td>
+          <td class="${t.best_net_return_pct >= 0 ? "text-green" : "text-red"}">${t.best_net_return_pct >= 0 ? "+" : ""}${t.best_net_return_pct}%</td>
+          <td style="color:var(--accent-red);">₹${Number(t.avg_total_fees_inr || 0).toFixed(2)}</td>
+        </tr>
+      `)
+      .join("");
+  }
+
   const qualBody = document.getElementById("p11-qual-tbody");
   if (qualBody && p11.qualification_board) {
     qualBody.innerHTML = p11.qualification_board
       .map((q) => {
         const stCls = q.final_status === "QUALIFIED" ? "badge-green" : (q.final_status === "REJECTED" ? "badge-red" : "badge-amber");
+        const tfLabel = q.strategy_id.startsWith("BENCHMARK-") ? "CASH" : `${q.timeframe_minutes || 5}m`;
         return `
           <tr>
             <td style="font-weight:700; color:#fff;">${q.strategy_name}</td>
+            <td><span class="badge badge-gray">${tfLabel}</span></td>
             <td><span class="badge ${stCls}">${q.final_status}</span></td>
             <td>${q.passed_gates}</td>
-            <td>${q.sessions}</td>
             <td>${q.trades}</td>
+            <td class="${(q.gross_return_pct || 0) >= 0 ? "text-green" : "text-red"}">${(q.gross_return_pct || 0) >= 0 ? "+" : ""}${q.gross_return_pct || 0}%</td>
+            <td>₹${Number(q.total_brokerage_inr || 0).toFixed(2)}</td>
+            <td>₹${Number(q.total_statutory_inr || 0).toFixed(2)}</td>
+            <td>₹${Number(q.total_slippage_inr || 0).toFixed(2)}</td>
             <td class="${q.net_return_pct >= 0 ? "text-green" : "text-red"}">${q.net_return_pct >= 0 ? "+" : ""}${q.net_return_pct}%</td>
+            <td class="${(q.conservative_10bps_net_pct || 0) >= 0 ? "text-green" : "text-red"}">${(q.conservative_10bps_net_pct || 0) >= 0 ? "+" : ""}${q.conservative_10bps_net_pct || 0}%</td>
             <td class="${q.alpha_vs_bh_pct >= 0 ? "text-green" : "text-red"}">${q.alpha_vs_bh_pct >= 0 ? "+" : ""}${q.alpha_vs_bh_pct}%</td>
             <td>${q.max_drawdown_pct}%</td>
-            <td>${q.sharpe_ratio}</td>
-            <td>${q.profit_factor}</td>
             <td class="${q.unseen_return_pct >= 0 ? "text-green" : "text-red"}">${q.unseen_return_pct >= 0 ? "+" : ""}${q.unseen_return_pct}%</td>
             <td>${q.statistical_verdict}</td>
             <td>${q.red_team_verdict}</td>
@@ -747,10 +777,22 @@ function renderPhase11Qualification(p11) {
           <td><span class="badge badge-blue">${a.execution_type}</span></td>
           <td style="color:var(--text-muted);">${a.assigned_task}</td>
           <td>${a.latest_finding}</td>
-          <td><span class="badge ${a.status === "PASS" ? "badge-green" : "badge-amber"}">${a.status}</span></td>
+          <td><span class="badge ${a.status === "PASS" ? "badge-green" : (a.status === "FAIL" ? "badge-red" : "badge-amber")}">${a.status}</span></td>
         </tr>
       `)
       .join("");
+  }
+
+  const archEl = document.getElementById("p11-archive-health");
+  if (archEl && p11.archive_health) {
+    const ah = p11.archive_health;
+    archEl.innerHTML = `
+      <strong>Archive Status:</strong> <span class="badge badge-blue">${ah.archive_status || "UNKNOWN"}</span>
+      &nbsp;|&nbsp; <strong>Freshness:</strong> ${ah.archive_freshness_status || "--"}
+      &nbsp;|&nbsp; <strong>New Sessions:</strong> ${ah.new_sessions_added || 0}
+      &nbsp;|&nbsp; <strong>Missing Intervals:</strong> ${ah.missing_interval_count || 0}
+      &nbsp;|&nbsp; <strong>Last Successful Run:</strong> ${ah.last_successful_run_ist || "--"}
+    `;
   }
 
   const exEl = document.getElementById("p11-excluded-dates");

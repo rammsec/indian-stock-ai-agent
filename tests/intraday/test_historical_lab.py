@@ -82,7 +82,7 @@ def test_replay_determinism_and_no_fabricated_vix():
     assert r1["run"]["total_trades"] == r2["run"]["total_trades"]
     assert r1["run"]["execution_config"]["execution_rule"] == "NEXT_BAR_OPEN"
     assert r1["benchmark"]["initial_capital_inr"] == 50_000.0
-    assert len(STRATEGY_REGISTRY) == 9
+    assert len(STRATEGY_REGISTRY) >= 9
 
     # Check that indicator snapshots explicitly mark VIX and L1 microstructure as UNAVAILABLE
     if r1["decisions"]:

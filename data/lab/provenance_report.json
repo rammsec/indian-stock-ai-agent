@@ -1,0 +1,140 @@
+{
+  "verified": true,
+  "verified_at_ist": "2026-11-21T13:09:13.489793+05:30",
+  "sessions_verified": 56,
+  "total_missing_candles": 115,
+  "total_duplicate_candles": 0,
+  "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+  "symbols": {
+    "RELIANCE": {
+      "symbol": "RELIANCE",
+      "exchange": "NSE",
+      "providers": [
+        "ParquetCache:RELIANCE_NSE_5m.parquet"
+      ],
+      "candle_interval": "5m",
+      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "sessions_checked": 56,
+      "total_5m_candles": 4103,
+      "missing_candles": 25,
+      "duplicate_candles": 0,
+      "latest_retrieval_timestamp": "2026-11-21T13:09:12.267087+05:30",
+      "exchange_date_range": "2026-08-25 -> 2026-11-20",
+      "source_files": [
+        "data/intraday/RELIANCE_5m.parquet"
+      ],
+      "dataset_sha256_samples": [
+        "0187d6704e1eb5c4",
+        "02f551ecbd81995e",
+        "0941d07bdcf6ee91",
+        "09fe2617c9d724a9",
+        "0c4cf1679e053d78"
+      ],
+      "bad_sessions": []
+    },
+    "TCS": {
+      "symbol": "TCS",
+      "exchange": "NSE",
+      "providers": [
+        "ParquetCache:TCS_NSE_5m.parquet"
+      ],
+      "candle_interval": "5m",
+      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "sessions_checked": 56,
+      "total_5m_candles": 4093,
+      "missing_candles": 25,
+      "duplicate_candles": 0,
+      "latest_retrieval_timestamp": "2026-11-21T13:09:12.543552+05:30",
+      "exchange_date_range": "2026-08-25 -> 2026-11-20",
+      "source_files": [
+        "data/intraday/TCS_5m.parquet"
+      ],
+      "dataset_sha256_samples": [
+        "0ed5b773615fc78c",
+        "1289d82ca145ae58",
+        "131e4cd0873ff3ae",
+        "162f554962c0ef0d",
+        "17bd92e09b1c3ed5"
+      ],
+      "bad_sessions": []
+    },
+    "BIRLACABLE": {
+      "symbol": "BIRLACABLE",
+      "exchange": "NSE",
+      "providers": [
+        "ParquetCache:BIRLACABLE_NSE_5m.parquet"
+      ],
+      "candle_interval": "5m",
+      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "sessions_checked": 56,
+      "total_5m_candles": 4183,
+      "missing_candles": 15,
+      "duplicate_candles": 0,
+      "latest_retrieval_timestamp": "2026-11-21T13:09:12.822787+05:30",
+      "exchange_date_range": "2026-08-25 -> 2026-11-20",
+      "source_files": [
+        "data/intraday/BIRLACABLE_5m.parquet"
+      ],
+      "dataset_sha256_samples": [
+        "04f8d9c91272eb79",
+        "0b3052fe4d02b0e8",
+        "120ebeb7848b1c45",
+        "13b7356dd235245a",
+        "14ece8db8be9d9ea"
+      ],
+      "bad_sessions": []
+    },
+    "ITC": {
+      "symbol": "ITC",
+      "exchange": "NSE",
+      "providers": [
+        "ParquetCache:ITC_NSE_5m.parquet"
+      ],
+      "candle_interval": "5m",
+      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "sessions_checked": 56,
+      "total_5m_candles": 4104,
+      "missing_candles": 25,
+      "duplicate_candles": 0,
+      "latest_retrieval_timestamp": "2026-11-21T13:09:13.099223+05:30",
+      "exchange_date_range": "2026-08-25 -> 2026-11-20",
+      "source_files": [
+        "data/intraday/ITC_5m.parquet"
+      ],
+      "dataset_sha256_samples": [
+        "036f89aaf4036e8c",
+        "045fdee7e12d9c90",
+        "04d32e13dc0bc69e",
+        "07e2a16434437d43",
+        "08cfe592e50e2d35"
+      ],
+      "bad_sessions": []
+    },
+    "TATAELXSI": {
+      "symbol": "TATAELXSI",
+      "exchange": "NSE",
+      "providers": [
+        "ParquetCache:TATAELXSI_NSE_5m.parquet"
+      ],
+      "candle_interval": "5m",
+      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "sessions_checked": 56,
+      "total_5m_candles": 4089,
+      "missing_candles": 25,
+      "duplicate_candles": 0,
+      "latest_retrieval_timestamp": "2026-11-21T13:09:13.377161+05:30",
+      "exchange_date_range": "2026-08-25 -> 2026-11-20",
+      "source_files": [
+        "data/intraday/TATAELXSI_5m.parquet"
+      ],
+      "dataset_sha256_samples": [
+        "06e0734df9e51529",
+        "0f7b8a221adb7f0c",
+        "1297dd09c0b49325",
+        "16294357efbae137",
+        "17a35af247c40a6f"
+      ],
+      "bad_sessions": []
+    }
+  }
+}

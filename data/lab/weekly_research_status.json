@@ -1,0 +1,21 @@
+{
+  "last_run_ist": "2026-11-21T13:06:54.443585+05:30",
+  "status": "COMPLETED",
+  "cycle_id": "CYCLE-002",
+  "reconciled_eligible_sessions": 56,
+  "qualified_strategies": 0,
+  "best_strategy": "BENCHMARK-CASH-NO-TRADE",
+  "best_net_return_pct": 0.0,
+  "provenance_verified": true,
+  "test_metrics": {
+    "tests_executed": 159,
+    "tests_passed": 159,
+    "tests_failed": 0,
+    "tests_skipped": 0,
+    "execution_timestamp": "2026-11-21T13:06:54.443625+05:30",
+    "commit_sha": "3a4157cc307459f27ea04b706114819d30240cde",
+    "returncode": 0,
+    "mode": "LIVE_PYTEST"
+  },
+  "history_snapshot": "data/lab/history/CYCLE-002_20261121_130654.json"
+}
