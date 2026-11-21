@@ -7,7 +7,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: daily-5m-archive-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   archive-5m:
@@ -30,14 +34,10 @@ jobs:
         run: |
           python scripts/archive_daily_5m.py
 
-      - name: Commit updated Parquet archive if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/intraday/ data/lab/daily_archive_health.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(data): archive daily 5m NSE candles [skip ci]"
-            git push
-          else
-            echo "No new 5m candles to commit."
-          fi
+      - name: Upload 5m Archive Artifacts (No Direct Push to Main)
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-5m-archive
+          path: |
+            data/intraday/
+            data/lab/daily_archive_health.json

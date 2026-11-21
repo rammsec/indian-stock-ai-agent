@@ -18,7 +18,11 @@ on:
         default: "false"
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: daily-nse-research-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   TZ: Asia/Kolkata
@@ -95,15 +99,14 @@ jobs:
             pytest -v
           fi
 
-      - name: Commit & Push Updated Parquet Store & GitHub Pages Data
+      - name: Upload Daily Research Artifacts (No Direct Push to Main)
         if: steps.calendar_check.outputs.should_run == 'true'
-        run: |
-          git config user.name "BharatAlpha Quant Bot"
-          git config user.email "actions@github.com"
-          git add data/processed/ data/features/ data/predictions/ data/backtests/ docs/
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore(quant): update daily NSE Parquet store, ML predictions, bulk deals & GitHub Pages [skip ci]"
-            git push origin main
-          fi
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-nse-research-artifacts
+          path: |
+            data/processed/
+            data/features/
+            data/predictions/
+            data/backtests/
+            docs/data/
