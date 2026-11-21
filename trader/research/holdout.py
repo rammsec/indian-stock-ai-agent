@@ -107,15 +107,24 @@ class SealedHoldoutGuard:
                     rec["registry_version"] = REGISTRY_VERSION
 
     def save_registry(self, reg: dict[str, Any]) -> None:
+        import threading
+
         reg["registry_version"] = REGISTRY_VERSION
         records = reg.get("records", {})
         reg["sealed_dates"] = sorted(
             d for d, rec in records.items() if rec.get("state") in ("SEALED", "EXPOSED", "RETIRED")
         )
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
-        tmp_path = self.registry_path.with_suffix(".tmp")
-        tmp_path.write_text(json.dumps(reg, indent=2), encoding="utf-8")
-        os.replace(tmp_path, self.registry_path)
+        tmp_path = self.registry_path.with_name(
+            f"{self.registry_path.name}.{os.getpid()}.{threading.get_ident()}.tmp"
+        )
+        try:
+            tmp_path.write_text(json.dumps(reg, indent=2), encoding="utf-8")
+            os.replace(tmp_path, self.registry_path)
+        except Exception:
+            if tmp_path.exists():
+                tmp_path.unlink(missing_ok=True)
+            raise
 
     def get_date_state(self, d: date | str) -> HoldoutState:
         d_str = d.isoformat() if isinstance(d, date) else str(d)
@@ -273,49 +282,49 @@ class SealedHoldoutGuard:
                     rec["strategy_ids_evaluated"] = sorted(existing_strats | set(strat_list))
                     rec["registry_version"] = REGISTRY_VERSION
 
-        leakage = len(reused_exposed) > 0 or len(fingerprint_mismatches) > 0 or len(ownership_violations) > 0
-        independent_valid = (len(iso_dates) > 0) and not leakage
+            leakage = len(reused_exposed) > 0 or len(fingerprint_mismatches) > 0 or len(ownership_violations) > 0
+            independent_valid = (len(iso_dates) > 0) and not leakage
 
-        reg["sealed_exposures"].append({
-            "cycle_id": cycle_id,
-            "recorded_at_ist": now_ist,
-            "commit_sha": _get_git_commit_sha(),
-            "unseen_dates": iso_dates,
-            "newly_sealed_count": len(newly_exposed),
-            "previously_sealed_count": len(reused_exposed),
-            "ownership_violations": ownership_violations,
-            "leakage_detected": leakage,
-            "independent_holdout_valid": independent_valid,
-            "fingerprint_mismatches": fingerprint_mismatches,
-            "dataset_fingerprint": dataset_fingerprint,
-            "strategy_ids_evaluated": strat_list,
-            "notes": notes,
-        })
-        self.save_registry(reg)
+            reg["sealed_exposures"].append({
+                "cycle_id": cycle_id,
+                "recorded_at_ist": now_ist,
+                "commit_sha": _get_git_commit_sha(),
+                "unseen_dates": iso_dates,
+                "newly_sealed_count": len(newly_exposed),
+                "previously_sealed_count": len(reused_exposed),
+                "ownership_violations": ownership_violations,
+                "leakage_detected": leakage,
+                "independent_holdout_valid": independent_valid,
+                "fingerprint_mismatches": fingerprint_mismatches,
+                "dataset_fingerprint": dataset_fingerprint,
+                "strategy_ids_evaluated": strat_list,
+                "notes": notes,
+            })
+            self.save_registry(reg)
 
-        status = "VALID_UNSEEN"
-        if ownership_violations:
-            status = "HOLDOUT_OWNERSHIP_VIOLATION"
-        elif reused_exposed:
-            status = "EXPOSED_HOLDOUT_REUSED"
-        elif fingerprint_mismatches:
-            status = "DATASET_FINGERPRINT_MISMATCH"
-        elif not iso_dates:
-            status = "INSUFFICIENT_UNSEEN_DATA"
+            status = "VALID_UNSEEN"
+            if ownership_violations:
+                status = "HOLDOUT_OWNERSHIP_VIOLATION"
+            elif reused_exposed:
+                status = "EXPOSED_HOLDOUT_REUSED"
+            elif fingerprint_mismatches:
+                status = "DATASET_FINGERPRINT_MISMATCH"
+            elif not iso_dates:
+                status = "INSUFFICIENT_UNSEEN_DATA"
 
-        return {
-            "total_sealed_dates": len(reg["sealed_dates"]),
-            "current_unseen_dates": len(iso_dates),
-            "newly_exposed_dates": len(newly_exposed),
-            "previously_exposed_dates": len(reused_exposed),
-            "reused_dates": reused_exposed,
-            "ownership_violations": ownership_violations,
-            "fingerprint_mismatches": fingerprint_mismatches,
-            "ownership_valid": len(ownership_violations) == 0,
-            "leakage_detected": leakage,
-            "independent_holdout_valid": independent_valid,
-            "status": status,
-        }
+            return {
+                "total_sealed_dates": len(reg["sealed_dates"]),
+                "current_unseen_dates": len(iso_dates),
+                "newly_exposed_dates": len(newly_exposed),
+                "previously_exposed_dates": len(reused_exposed),
+                "reused_dates": reused_exposed,
+                "ownership_violations": ownership_violations,
+                "fingerprint_mismatches": fingerprint_mismatches,
+                "ownership_valid": len(ownership_violations) == 0,
+                "leakage_detected": leakage,
+                "independent_holdout_valid": independent_valid,
+                "status": status,
+            }
 
     def check_tuning_leakage(self, tuning_dates: list[date]) -> list[str]:
         """Return any dates in tuning_dates that are SEALED, EXPOSED, or RETIRED."""
@@ -426,34 +435,35 @@ class SealedHoldoutGuard:
 
     def retire_dates(self, dates: list[date], reason: str) -> int:
         """Mark dates as RETIRED so they cannot be used for future independent validation."""
-        reg = self.load_registry()
-        records = reg["records"]
-        count = 0
-        for d in dates:
-            d_str = d.isoformat()
-            rec = records.setdefault(
-                d_str,
-                {
-                    "date": d_str,
-                    "state": "RETIRED",
-                    "owning_cycle_id": None,
-                    "reservation_timestamp": None,
-                    "first_sealed_cycle": None,
-                    "first_exposed_cycle": None,
-                    "exposure_timestamp": None,
-                    "dataset_fingerprint": "",
-                    "strategy_ids_evaluated": [],
-                    "previous_exposure_count": 0,
-                    "reason_for_retirement": reason,
-                    "registry_version": REGISTRY_VERSION,
-                },
-            )
-            rec["state"] = "RETIRED"
-            rec["reason_for_retirement"] = reason
-            rec["registry_version"] = REGISTRY_VERSION
-            count += 1
-        self.save_registry(reg)
-        return count
+        with self._locked_registry():
+            reg = self.load_registry()
+            records = reg["records"]
+            count = 0
+            for d in dates:
+                d_str = d.isoformat()
+                rec = records.setdefault(
+                    d_str,
+                    {
+                        "date": d_str,
+                        "state": "RETIRED",
+                        "owning_cycle_id": None,
+                        "reservation_timestamp": None,
+                        "first_sealed_cycle": None,
+                        "first_exposed_cycle": None,
+                        "exposure_timestamp": None,
+                        "dataset_fingerprint": "",
+                        "strategy_ids_evaluated": [],
+                        "previous_exposure_count": 0,
+                        "reason_for_retirement": reason,
+                        "registry_version": REGISTRY_VERSION,
+                    },
+                )
+                rec["state"] = "RETIRED"
+                rec["reason_for_retirement"] = reason
+                rec["registry_version"] = REGISTRY_VERSION
+                count += 1
+            self.save_registry(reg)
+            return count
 
     def mark_evaluation_in_progress(
         self,
