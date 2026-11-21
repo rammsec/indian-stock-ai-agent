@@ -1,14 +1,44 @@
-"""Typed data models and schemas for 5-minute candles and instruments."""
+"""Typed data models and schemas for 5-minute candles, instruments, and provenance."""
 
 from __future__ import annotations
 
 from datetime import datetime
+from enum import Enum
 from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
+class DataSourceMode(str, Enum):
+    """Explicit data mode distinguishing verified real data from synthetic fixtures."""
+
+    HISTORICAL_REAL = "HISTORICAL_REAL"
+    SYNTHETIC_TEST = "SYNTHETIC_TEST"
+
+
 class _StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+class DataProvenance(_StrictModel):
+    """Cryptographic and operational provenance metadata for a candle dataset."""
+
+    source_mode: DataSourceMode
+    source_name: str
+    ingested_at: datetime
+    symbol: str
+    exchange: Literal["NSE", "BSE"]
+    bars_count: int
+    start_timestamp: datetime
+    end_timestamp: datetime
+    sha256_hash: str
+    notes: list[str] = Field(default_factory=list)
+
+    @field_validator("ingested_at", "start_timestamp", "end_timestamp")
+    @classmethod
+    def require_tz_aware(cls, v: datetime) -> datetime:
+        if v.tzinfo is None or v.tzinfo.utcoffset(v) is None:
+            raise ValueError("Timestamp must be timezone-aware")
+        return v
 
 
 class Candle5M(_StrictModel):
@@ -71,3 +101,4 @@ class CandleValidationResult(_StrictModel):
     is_valid: bool
     issues: list[str] = Field(default_factory=list)
     missing_intervals: list[str] = Field(default_factory=list)
+    holiday_rejections: list[str] = Field(default_factory=list)

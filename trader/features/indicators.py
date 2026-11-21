@@ -11,6 +11,7 @@ from ..data.schema import Candle5M
 def compute_intraday_vwap(df: pd.DataFrame) -> pd.Series:
     """Calculate cumulative Volume Weighted Average Price (VWAP), resetting daily at 09:15 IST.
 
+    Strictly zero-lookahead: Uses only closed bars t <= current. No backward filling.
     Typical Price = (High + Low + Close) / 3
     VWAP = cumsum(Typical Price * Volume) / cumsum(Volume)
     """
@@ -24,9 +25,10 @@ def compute_intraday_vwap(df: pd.DataFrame) -> pd.Series:
     cum_tp_vol = tp_vol.groupby(dates).cumsum()
     cum_vol = df["volume"].groupby(dates).cumsum()
 
-    # Prevent division by zero
+    # If cumulative volume is 0 at start of session, fall back to typical price for that bar
     vwap = cum_tp_vol / cum_vol.replace(0, np.nan)
-    return vwap.ffill().bfill()
+    # Forward-fill ONLY (never look forward via bfill)
+    return vwap.fillna(typical_price).ffill()
 
 
 def compute_ema(series: pd.Series, span: int) -> pd.Series:
@@ -74,15 +76,19 @@ def compute_atr(
     close: pd.Series,
     period: int = 14,
 ) -> pd.Series:
-    """Calculate Average True Range (ATR-14) using Wilder's smoothing."""
+    """Calculate Average True Range (ATR-14) using Wilder's smoothing with zero backward filling."""
     prev_close = close.shift(1)
     tr1 = high - low
     tr2 = (high - prev_close).abs()
     tr3 = (low - prev_close).abs()
     true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
 
-    atr = true_range.ewm(alpha=1.0 / period, min_periods=period, adjust=False).mean()
-    return atr.bfill()
+    # For bar 0 where prev_close is NaN, true range is strictly high - low
+    true_range.iloc[0] = high.iloc[0] - low.iloc[0]
+
+    # Wilder's exponential smoothing strictly forward without bfill
+    atr = true_range.ewm(alpha=1.0 / period, adjust=False).mean()
+    return atr
 
 
 def compute_cpr_pivots(
@@ -120,7 +126,7 @@ def compute_cpr_pivots(
 
 
 def compute_all_features(candles: list[Candle5M]) -> pd.DataFrame:
-    """Convert candle list into feature DataFrame with zero lookahead."""
+    """Convert candle list into feature DataFrame with strict zero lookahead."""
     if not candles:
         return pd.DataFrame()
 
@@ -138,7 +144,7 @@ def compute_all_features(candles: list[Candle5M]) -> pd.DataFrame:
     df = pd.DataFrame(records)
     df["timestamp"] = pd.to_datetime(df["timestamp"])
 
-    # Vectorized indicators
+    # Vectorized indicators with zero lookahead
     df["vwap"] = compute_intraday_vwap(df)
     df["ema_9"] = compute_ema(df["close"], span=9)
     df["ema_21"] = compute_ema(df["close"], span=21)

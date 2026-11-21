@@ -1,18 +1,35 @@
-"""Historical 5-minute candle data loader with Parquet caching and offline fixtures."""
+"""Historical 5-minute candle data loader with explicit mode separation and provenance."""
 
 from __future__ import annotations
 
+import hashlib
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import yfinance as yf
 
-from ..config import IST_TZ
-from .schema import Candle5M
+from ..config import IST_TZ, is_nse_trading_day
+from .schema import Candle5M, DataProvenance, DataSourceMode
 from .validator import validate_candle_series
 
 CACHE_DIR = Path("data/intraday")
+
+
+class DataUnavailableError(Exception):
+    """Raised when real historical data cannot be obtained and silent synthetic substitution is blocked."""
+
+
+def _compute_candle_series_hash(candles: list[Candle5M]) -> str:
+    """Compute deterministic SHA-256 checksum across candle timestamps, OHLCV."""
+    if not candles:
+        return "EMPTY_DATASET_HASH_0000000000000000"
+    raw_str = ";".join(
+        f"{c.timestamp.isoformat()},{c.open},{c.high},{c.low},{c.close},{c.volume}"
+        for c in candles
+    )
+    return hashlib.sha256(raw_str.encode()).hexdigest()
 
 
 def generate_synthetic_5m_session(
@@ -23,13 +40,16 @@ def generate_synthetic_5m_session(
     daily_trend_pct: float = 0.5,
     volatility_pct: float = 0.2,
     num_bars: int = 75,
-) -> list[Candle5M]:
-    """Generate realistic, deterministic 75 5-minute bars (09:15 to 15:30 IST) for testing.
+    return_provenance: bool = False,
+) -> list[Candle5M] | tuple[list[Candle5M], DataProvenance]:
+    """Explicitly generate a deterministic synthetic 5-minute session for testing purposes.
 
-    A full standard NSE/BSE session consists of exactly 75 5-minute intervals.
+    Strictly tagged with `DataSourceMode.SYNTHETIC_TEST`.
     """
     if session_date is None:
         session_date = datetime.now(tz=IST_TZ).date()
+        while not is_nse_trading_day(session_date):
+            session_date -= timedelta(days=1)
 
     candles: list[Candle5M] = []
     current_time = datetime(
@@ -66,6 +86,22 @@ def generate_synthetic_5m_session(
         current_price = close_price
         current_time += timedelta(minutes=5)
 
+    sha = _compute_candle_series_hash(candles)
+    provenance = DataProvenance(
+        source_mode=DataSourceMode.SYNTHETIC_TEST,
+        source_name="SyntheticGeneratorDeterministic",
+        ingested_at=datetime.now(tz=IST_TZ),
+        symbol=symbol,
+        exchange=exchange,  # type: ignore[arg-type]
+        bars_count=len(candles),
+        start_timestamp=candles[0].timestamp,
+        end_timestamp=candles[-1].timestamp,
+        sha256_hash=sha,
+        notes=["Synthetic fixture generated for offline deterministic unit testing"],
+    )
+
+    if return_provenance:
+        return candles, provenance
     return candles
 
 
@@ -73,13 +109,25 @@ def load_historical_5m_candles(
     symbol: str,
     exchange: str = "NSE",
     days: int = 5,
+    mode: DataSourceMode = DataSourceMode.HISTORICAL_REAL,
     use_cache: bool = True,
-    fallback_synthetic: bool = True,
-) -> list[Candle5M]:
-    """Load 5-minute candles from Parquet cache or yfinance, with fallback to synthetic data.
+) -> tuple[list[Candle5M], DataProvenance]:
+    """Load 5-minute candles with explicit mode discipline and provenance.
 
-    Yahoo Finance suffix: `.NS` for NSE, `.BO` for BSE.
+    In `HISTORICAL_REAL` mode:
+    - Queries Parquet cache and yfinance.
+    - If real data cannot be fetched, RAISES `DataUnavailableError`.
+    - NEVER silently substitutes synthetic data.
+
+    In `SYNTHETIC_TEST` mode:
+    - Generates synthetic test fixtures explicitly marked as such.
     """
+    if mode == DataSourceMode.SYNTHETIC_TEST:
+        res = generate_synthetic_5m_session(symbol=symbol, exchange=exchange, return_provenance=True)
+        assert isinstance(res, tuple)
+        return res
+
+    # --- Mode is HISTORICAL_REAL ---
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     cache_file = CACHE_DIR / f"{symbol}_{exchange}_5m.parquet"
 
@@ -107,13 +155,26 @@ def load_historical_5m_candles(
                         volume=float(row["volume"]),
                     )
                 )
-            sanitized, _ = validate_candle_series(candles)
+            sanitized, rep = validate_candle_series(candles)
             if sanitized:
-                return sanitized
+                sha = _compute_candle_series_hash(sanitized)
+                prov = DataProvenance(
+                    source_mode=DataSourceMode.HISTORICAL_REAL,
+                    source_name=f"ParquetCache:{cache_file.name}",
+                    ingested_at=datetime.now(tz=IST_TZ),
+                    symbol=symbol,
+                    exchange=exchange,  # type: ignore[arg-type]
+                    bars_count=len(sanitized),
+                    start_timestamp=sanitized[0].timestamp,
+                    end_timestamp=sanitized[-1].timestamp,
+                    sha256_hash=sha,
+                    notes=["Loaded from verified historical local Parquet store"],
+                )
+                return sanitized, prov
         except Exception:
             pass
 
-    # Attempt fetch from yfinance
+    # Attempt fetch from yfinance for real historical data
     ticker_suffix = ".NS" if exchange.upper() == "NSE" else ".BO"
     ticker_sym = f"{symbol.upper()}{ticker_suffix}"
 
@@ -141,27 +202,44 @@ def load_historical_5m_candles(
                 )
                 candles.append(c)
 
-            sanitized, _ = validate_candle_series(candles)
-            if sanitized and use_cache:
+            sanitized, rep = validate_candle_series(candles)
+            if sanitized:
                 # Save sanitized to cache
-                records = [
-                    {
-                        "timestamp": c.timestamp,
-                        "open": c.open,
-                        "high": c.high,
-                        "low": c.low,
-                        "close": c.close,
-                        "volume": c.volume,
-                    }
-                    for c in sanitized
-                ]
-                pd.DataFrame(records).to_parquet(cache_file, index=False)
-            return sanitized
-    except Exception:
-        pass
+                if use_cache:
+                    records = [
+                        {
+                            "timestamp": c.timestamp,
+                            "open": c.open,
+                            "high": c.high,
+                            "low": c.low,
+                            "close": c.close,
+                            "volume": c.volume,
+                        }
+                        for c in sanitized
+                    ]
+                    pd.DataFrame(records).to_parquet(cache_file, index=False)
 
-    # Fallback to deterministic synthetic fixture if allowed
-    if fallback_synthetic:
-        return generate_synthetic_5m_session(symbol=symbol, exchange=exchange)
+                sha = _compute_candle_series_hash(sanitized)
+                prov = DataProvenance(
+                    source_mode=DataSourceMode.HISTORICAL_REAL,
+                    source_name=f"YahooFinanceAPI:{ticker_sym}",
+                    ingested_at=datetime.now(tz=IST_TZ),
+                    symbol=symbol,
+                    exchange=exchange,  # type: ignore[arg-type]
+                    bars_count=len(sanitized),
+                    start_timestamp=sanitized[0].timestamp,
+                    end_timestamp=sanitized[-1].timestamp,
+                    sha256_hash=sha,
+                    notes=[f"Fetched {len(sanitized)} live/historical 5m bars from Yahoo Finance"],
+                )
+                return sanitized, prov
+    except Exception as exc:
+        raise DataUnavailableError(
+            f"Failed to fetch verified historical market data for {symbol} ({exchange}) from Yahoo Finance: {exc}. "
+            f"Silent fallback to synthetic data is blocked under strict HISTORICAL_REAL mode."
+        ) from exc
 
-    return []
+    raise DataUnavailableError(
+        f"No market data returned for {symbol} ({exchange}). "
+        f"Silent fallback to synthetic data is blocked under strict HISTORICAL_REAL mode."
+    )

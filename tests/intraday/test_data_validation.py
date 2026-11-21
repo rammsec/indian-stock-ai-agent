@@ -120,3 +120,57 @@ def test_instrument_master_mappings():
     bse_inst = get_instrument_by_bse_code("500180")
     assert bse_inst is not None
     assert bse_inst.symbol == "HDFCBANK"
+
+
+def test_holiday_and_weekend_candle_rejection():
+    """Verify that candles dated on exchange holidays or weekends are strictly rejected."""
+    # 2026-01-26 is Republic Day (official NSE trading holiday)
+    holiday_ts = datetime(2026, 1, 26, 10, 0, tzinfo=IST_TZ)
+    # 2026-11-21 is Saturday (weekend)
+    weekend_ts = datetime(2026, 11, 21, 10, 0, tzinfo=IST_TZ)
+
+    candles = [
+        Candle5M(symbol="SBIN", exchange="NSE", timestamp=holiday_ts, open=800.0, high=805.0, low=795.0, close=800.0, volume=1000.0),
+        Candle5M(symbol="SBIN", exchange="NSE", timestamp=weekend_ts, open=800.0, high=805.0, low=795.0, close=800.0, volume=1000.0),
+    ]
+
+    valid, report = validate_candle_series(candles)
+    assert len(valid) == 0
+    assert report.is_valid is False
+    assert len(report.holiday_rejections) == 2
+    assert "2026-01-26 is an official exchange holiday" in report.holiday_rejections[0]
+    assert "2026-11-21 is an official exchange holiday or weekend" in report.holiday_rejections[1]
+
+
+def test_data_unavailable_error_on_real_mode_failure():
+    """Verify that HISTORICAL_REAL mode NEVER silently substitutes synthetic data upon failure."""
+    from trader.data.loader import load_historical_5m_candles, DataUnavailableError, DataSourceMode
+
+    # Query an invalid symbol with cache disabled to trigger fetch error
+    with pytest.raises(DataUnavailableError, match="Silent fallback to synthetic data is blocked under strict HISTORICAL_REAL mode"):
+        load_historical_5m_candles(
+            symbol="NONEXISTENT_TICKER_XYZ99",
+            exchange="NSE",
+            days=1,
+            mode=DataSourceMode.HISTORICAL_REAL,
+            use_cache=False,
+        )
+
+
+def test_data_provenance_sha256_verification():
+    """Verify dataset provenance tracking and deterministic SHA-256 integrity."""
+    from trader.data.loader import load_historical_5m_candles, DataSourceMode
+
+    candles, prov = load_historical_5m_candles(
+        symbol="TCS",
+        exchange="NSE",
+        mode=DataSourceMode.SYNTHETIC_TEST,
+    )
+
+    assert prov.source_mode == DataSourceMode.SYNTHETIC_TEST
+    assert prov.symbol == "TCS"
+    assert prov.bars_count == 75
+    assert len(prov.sha256_hash) == 64
+    assert prov.start_timestamp == candles[0].timestamp
+    assert prov.end_timestamp == candles[-1].timestamp
+

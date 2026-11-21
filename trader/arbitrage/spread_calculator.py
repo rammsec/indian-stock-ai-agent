@@ -26,7 +26,7 @@ class CrossExchangeOpportunity:
     net_profit_inr: float
     net_return_pct: float
     is_actionable: bool
-    status: Literal["ACTIONABLE_OPPORTUNITY", "UNECONOMIC_SPREAD", "INSUFFICIENT_LIQUIDITY"]
+    status: Literal["ACTIONABLE_OPPORTUNITY", "UNECONOMIC_SPREAD", "INSUFFICIENT_LIQUIDITY", "STALE_QUOTE"]
     notes: list[str]
 
 
@@ -38,14 +38,82 @@ def calculate_executable_arbitrage_spread(
     bse_ask: float,
     quantity: int = 100,
     min_net_profit_margin_pct: float = 0.15,
+    quote_timestamp: datetime | None = None,
+    current_time: datetime | None = None,
+    max_quote_age_seconds: float = 15.0,
+    available_buy_depth_qty: int | None = None,
+    available_sell_depth_qty: int | None = None,
 ) -> CrossExchangeOpportunity:
     """Evaluate whether price differences between NSE and BSE yield a genuine net arbitrage.
 
     Crucial: Uses executable prices (Buy at Ask, Sell at Bid), NOT closing LTPs.
     Deducts all Indian statutory taxes (STT, Stamp Duty, Brokerage, Turnover fee, GST, slippage) on BOTH legs.
+    Validates quote freshness (max 15s) and order book depth availability.
     """
     inst = get_instrument_by_symbol(symbol)
     isin = inst.isin if inst else "UNKNOWN_ISIN"
+
+    # 1. Validate Quote Freshness
+    if quote_timestamp is not None:
+        curr_t = current_time or datetime.now(tz=quote_timestamp.tzinfo)
+        quote_age = abs((curr_t - quote_timestamp).total_seconds())
+        if quote_age > max_quote_age_seconds:
+            return CrossExchangeOpportunity(
+                symbol=symbol,
+                isin=isin,
+                buy_exchange="NSE",
+                sell_exchange="BSE",
+                buy_ask_price=nse_ask,
+                sell_bid_price=bse_bid,
+                quantity=quantity,
+                gross_spread_inr=0.0,
+                gross_spread_pct=0.0,
+                total_friction_inr=0.0,
+                net_profit_inr=0.0,
+                net_return_pct=0.0,
+                is_actionable=False,
+                status="STALE_QUOTE",
+                notes=[f"Quote age ({quote_age:.1f}s) exceeds maximum allowed age of {max_quote_age_seconds}s; arbitrage opportunity expired."],
+            )
+
+    # 2. Validate Order Book Depth
+    if available_buy_depth_qty is not None and available_buy_depth_qty < quantity:
+        return CrossExchangeOpportunity(
+            symbol=symbol,
+            isin=isin,
+            buy_exchange="NSE",
+            sell_exchange="BSE",
+            buy_ask_price=nse_ask,
+            sell_bid_price=bse_bid,
+            quantity=quantity,
+            gross_spread_inr=0.0,
+            gross_spread_pct=0.0,
+            total_friction_inr=0.0,
+            net_profit_inr=0.0,
+            net_return_pct=0.0,
+            is_actionable=False,
+            status="INSUFFICIENT_LIQUIDITY",
+            notes=[f"Available buy book depth ({available_buy_depth_qty}) is less than required execution quantity ({quantity})."],
+        )
+
+    if available_sell_depth_qty is not None and available_sell_depth_qty < quantity:
+        return CrossExchangeOpportunity(
+            symbol=symbol,
+            isin=isin,
+            buy_exchange="NSE",
+            sell_exchange="BSE",
+            buy_ask_price=nse_ask,
+            sell_bid_price=bse_bid,
+            quantity=quantity,
+            gross_spread_inr=0.0,
+            gross_spread_pct=0.0,
+            total_friction_inr=0.0,
+            net_profit_inr=0.0,
+            net_return_pct=0.0,
+            is_actionable=False,
+            status="INSUFFICIENT_LIQUIDITY",
+            notes=[f"Available sell book depth ({available_sell_depth_qty}) is less than required execution quantity ({quantity})."],
+        )
 
     # Opportunity 1: Buy BSE, Sell NSE
     spread_bse_buy = nse_bid - bse_ask

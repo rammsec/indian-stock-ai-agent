@@ -228,3 +228,8 @@ class DeterministicRiskEngine:
             max_risk_amount_inr=round(max_risk_inr, 2),
             estimated_trade_risk_inr=trade_risk,
         )
+
+    def reset_daily_halt(self) -> None:
+        """Reset daily halt status at the opening of a new daily trading session."""
+        self.is_daily_halted = False
+

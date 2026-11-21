@@ -84,3 +84,35 @@ def test_no_lookahead_bias():
 
     # Bar 39 feature must be identical regardless of future bars
     assert abs(val_at_bar_39 - val_at_bar_39_full) < 1e-6
+
+
+def test_indicator_incremental_invariance_across_all_features():
+    """Prove mathematically that NO indicator (VWAP, EMA, RSI, ATR, MACD) retroactively changes based on future bars.
+
+    Removes any chance of future-information leakage after eliminating backward filling.
+    """
+    candles = generate_synthetic_5m_session(symbol="HDFCBANK", base_price=1600.0, num_bars=70)
+    cutoff = 45
+
+    # Run indicators up to cutoff
+    df_upto_cutoff = compute_all_features(candles[:cutoff])
+
+    # Run indicators on full dataset including future bars (45..70)
+    df_full = compute_all_features(candles)
+
+    # Invariant: Every indicator value for all bars <= cutoff - 1 must match bit-for-bit
+    test_cols = ["vwap", "ema_9", "ema_21", "ema_50", "rsi_14", "macd", "macd_signal", "macd_hist", "atr_14"]
+    for col in test_cols:
+        series_partial = df_upto_cutoff[col].values
+        series_full = df_full[col].iloc[:cutoff].values
+
+        # Both slices must have same length
+        assert len(series_partial) == len(series_full) == cutoff
+
+        # Compare where not NaN
+        valid_mask = ~np.isnan(series_partial)
+        assert valid_mask.sum() > 0, f"Indicator {col} has no non-NaN values"
+        diff = np.abs(series_partial[valid_mask] - series_full[valid_mask])
+        max_diff = np.max(diff)
+        assert max_diff < 1e-9, f"Future leak detected in {col}! Max diff = {max_diff}"
+

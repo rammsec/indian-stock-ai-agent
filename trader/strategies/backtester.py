@@ -41,15 +41,19 @@ class BacktestResult:
 
 
 class IntradayBacktester:
-    """Rigorous, deterministic backtester with statutory Indian costs and no lookahead."""
+    """Rigorous, deterministic backtester with statutory Indian costs, slippage, and no lookahead."""
 
     def __init__(
         self,
         initial_capital: float = 1_000_000.0,
         risk_engine: DeterministicRiskEngine | None = None,
+        execution_mode: Literal["NEXT_BAR_OPEN", "SAME_BAR_CLOSE"] = "NEXT_BAR_OPEN",
+        slippage_bps: float = 5.0,
     ) -> None:
         self.initial_capital = initial_capital
         self.risk_engine = risk_engine or DeterministicRiskEngine()
+        self.execution_mode = execution_mode
+        self.slippage_bps = slippage_bps
 
     def run_backtest(
         self,
@@ -66,57 +70,116 @@ class IntradayBacktester:
 
         daily_returns: list[float] = []
         prior_equity = self.initial_capital
+        pending_signal = None  # Tuple of (action, signal)
 
         for i in range(1, len(features_df)):
             curr_row = features_df.iloc[i]
             ts = curr_row["timestamp"].to_pydatetime() if hasattr(curr_row["timestamp"], "to_pydatetime") else curr_row["timestamp"]
-            current_price = float(curr_row["close"])
+            open_price = float(curr_row["open"])
+            high_price = float(curr_row["high"])
+            low_price = float(curr_row["low"])
+            close_price = float(curr_row["close"])
             current_time = ts.astimezone(IST_TZ).time()
 
-            # 1. Update market prices in portfolio for open positions
-            portfolio.update_market_price(symbol, current_price, timestamp=ts)
+            # 1. Execute any pending signal from previous bar at NEXT BAR OPEN (with slippage)
+            if pending_signal is not None:
+                p_action, p_sig = pending_signal
+                pending_signal = None
 
-            # 2. Check 15:15 IST Mandatory Square-Off
-            if current_time >= INTRADAY_MANDATORY_SQUAREOFF_TIME and symbol in portfolio.positions:
-                portfolio.square_off_all_positions(current_prices={symbol: current_price}, timestamp=ts)
-                continue
-
-            # 3. Strategy evaluation on closed candle i
-            signal = strategy.evaluate_bar(symbol, features_df, current_bar_idx=i)
-
-            if signal.action == "ENTER_LONG" and symbol not in portfolio.positions:
-                # Risk check
-                risk_res = self.risk_engine.evaluate_order(
-                    symbol=symbol,
-                    side="BUY",
-                    requested_quantity=100,
-                    entry_price=current_price,
-                    stop_loss_price=signal.stop_loss,
-                    portfolio=portfolio,
-                    current_time=ts,
-                )
-                if risk_res.approved and risk_res.approved_quantity > 0:
+                if p_action == "ENTER_LONG" and symbol not in portfolio.positions:
+                    slippage_mult = 1.0 + (self.slippage_bps / 10000.0)
+                    exec_price = round(open_price * slippage_mult, 2)
+                    risk_res = self.risk_engine.evaluate_order(
+                        symbol=symbol,
+                        side="BUY",
+                        requested_quantity=100,
+                        entry_price=exec_price,
+                        stop_loss_price=p_sig.stop_loss,
+                        portfolio=portfolio,
+                        current_time=ts,
+                    )
+                    if risk_res.approved and risk_res.approved_quantity > 0:
+                        portfolio.submit_order(
+                            symbol=symbol,
+                            side=OrderSide.BUY,
+                            quantity=risk_res.approved_quantity,
+                            price=exec_price,
+                            exchange=candles[0].exchange,
+                            stop_loss=p_sig.stop_loss,
+                            target=p_sig.target,
+                            timestamp=ts,
+                        )
+                elif p_action == "EXIT" and symbol in portfolio.positions:
+                    slippage_mult = 1.0 - (self.slippage_bps / 10000.0)
+                    exec_price = round(open_price * slippage_mult, 2)
+                    pos = portfolio.positions[symbol]
                     portfolio.submit_order(
                         symbol=symbol,
-                        side=OrderSide.BUY,
-                        quantity=risk_res.approved_quantity,
-                        price=current_price,
+                        side=OrderSide.SELL,
+                        quantity=pos.quantity,
+                        price=exec_price,
                         exchange=candles[0].exchange,
-                        stop_loss=signal.stop_loss,
-                        target=signal.target,
                         timestamp=ts,
                     )
 
-            elif signal.action == "EXIT" and symbol in portfolio.positions:
-                pos = portfolio.positions[symbol]
-                portfolio.submit_order(
-                    symbol=symbol,
-                    side=OrderSide.SELL,
-                    quantity=pos.quantity,
-                    price=current_price,
-                    exchange=candles[0].exchange,
-                    timestamp=ts,
-                )
+            # 2. Check in-bar price progression for Stop-Loss & Target breaches (Low then High)
+            if symbol in portfolio.positions:
+                # Test low price for stop loss
+                portfolio.update_market_price(symbol, low_price, timestamp=ts)
+                # If still open, test high price for target
+                if symbol in portfolio.positions:
+                    portfolio.update_market_price(symbol, high_price, timestamp=ts)
+                # Update mark-to-market at bar close
+                if symbol in portfolio.positions:
+                    portfolio.update_market_price(symbol, close_price, timestamp=ts)
+
+            # 3. Check 15:15 IST Mandatory Square-Off
+            if current_time >= INTRADAY_MANDATORY_SQUAREOFF_TIME and symbol in portfolio.positions:
+                portfolio.square_off_all_positions(current_prices={symbol: close_price}, timestamp=ts)
+                pending_signal = None
+                continue
+
+            # 4. Strategy evaluation on closed candle i
+            signal = strategy.evaluate_bar(symbol, features_df, current_bar_idx=i)
+
+            if self.execution_mode == "NEXT_BAR_OPEN":
+                if signal.action == "ENTER_LONG" and symbol not in portfolio.positions:
+                    pending_signal = ("ENTER_LONG", signal)
+                elif signal.action == "EXIT" and symbol in portfolio.positions:
+                    pending_signal = ("EXIT", signal)
+            else:
+                # SAME_BAR_CLOSE mode
+                if signal.action == "ENTER_LONG" and symbol not in portfolio.positions:
+                    risk_res = self.risk_engine.evaluate_order(
+                        symbol=symbol,
+                        side="BUY",
+                        requested_quantity=100,
+                        entry_price=close_price,
+                        stop_loss_price=signal.stop_loss,
+                        portfolio=portfolio,
+                        current_time=ts,
+                    )
+                    if risk_res.approved and risk_res.approved_quantity > 0:
+                        portfolio.submit_order(
+                            symbol=symbol,
+                            side=OrderSide.BUY,
+                            quantity=risk_res.approved_quantity,
+                            price=close_price,
+                            exchange=candles[0].exchange,
+                            stop_loss=signal.stop_loss,
+                            target=signal.target,
+                            timestamp=ts,
+                        )
+                elif signal.action == "EXIT" and symbol in portfolio.positions:
+                    pos = portfolio.positions[symbol]
+                    portfolio.submit_order(
+                        symbol=symbol,
+                        side=OrderSide.SELL,
+                        quantity=pos.quantity,
+                        price=close_price,
+                        exchange=candles[0].exchange,
+                        timestamp=ts,
+                    )
 
         # Force square-off remaining open positions at final bar
         if symbol in portfolio.positions:

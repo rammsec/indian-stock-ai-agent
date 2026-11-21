@@ -1,6 +1,6 @@
 # Historical Evaluation Report — AI Multi-Agent Intraday Platform
 
-Generated: 2026-11-20 23:31:45  
+Generated: 2026-11-21 00:11:06  
 Branch: `feature/personal-ai-trading-desk`  
 Execution Horizon: 5-Minute Candles (09:15 - 15:30 IST)  
 Mode: Deterministic Historical Replay Simulation  
@@ -12,7 +12,7 @@ Mode: Deterministic Historical Replay Simulation
 | Market Regime | Council Posture | Confidence | Closed Trades | Win Rate % | Profit Factor | Ending Equity (₹10L Base) | Net Return % | Max Drawdown % | Ledger Integrity |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Bullish Trending Session** | `BUY_BULLISH` | 75% | 35 | 57.1% | 1.39 | ₹1,004,242.55 | +0.42% | 1.08% | VERIFIED ✓ |
-| **Sideways / Choppy Session** | `NEUTRAL` | 60% | 30 | 33.3% | 0.56 | ₹994,883.79 | -0.51% | 1.16% | VERIFIED ✓ |
+| **Sideways / Choppy Session** | `NEUTRAL` | 60% | 35 | 28.6% | 0.45 | ₹991,777.31 | -0.82% | 1.17% | VERIFIED ✓ |
 | **High Volatility VIX Shock Session** | `HOLD_HIGH_RISK` | 85% | 0 | 0.0% | 0.00 | ₹1,000,000.00 | +0.00% | 0.00% | VERIFIED ✓ |
 
 ---

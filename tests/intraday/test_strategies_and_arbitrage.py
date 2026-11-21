@@ -134,3 +134,54 @@ def test_paired_arbitrage_execution_and_unhedged_mitigation():
     res_failed_leg2 = executor.execute_paired_arbitrage(opp, leg1_fill_prob=1.0, leg2_fill_prob=0.0)
     assert res_failed_leg2.contingency_action_taken == "EMERGENCY_MARKET_SQUAREOFF"
     assert len(portfolio.positions) == 0  # No open position remains
+
+
+def test_quote_freshness_and_order_book_depth():
+    """Verify that stale quotes (>15s) and insufficient depth reject arbitrage opportunities."""
+    ts_quote = datetime(2026, 11, 20, 10, 0, 0, tzinfo=IST_TZ)
+
+    # 1. Stale quote (30 seconds old)
+    ts_now_stale = datetime(2026, 11, 20, 10, 0, 30, tzinfo=IST_TZ)
+    opp_stale = calculate_executable_arbitrage_spread(
+        symbol="RELIANCE",
+        nse_bid=2500.0,
+        nse_ask=2501.0,
+        bse_bid=2480.0,
+        bse_ask=2482.0,
+        quote_timestamp=ts_quote,
+        current_time=ts_now_stale,
+        max_quote_age_seconds=15.0,
+    )
+    assert opp_stale.is_actionable is False
+    assert opp_stale.status == "STALE_QUOTE"
+    assert "exceeds maximum allowed age" in opp_stale.notes[0]
+
+    # 2. Fresh quote (5 seconds old) passes freshness
+    ts_now_fresh = datetime(2026, 11, 20, 10, 0, 5, tzinfo=IST_TZ)
+    opp_fresh = calculate_executable_arbitrage_spread(
+        symbol="RELIANCE",
+        nse_bid=2500.0,
+        nse_ask=2501.0,
+        bse_bid=2478.0,
+        bse_ask=2480.0,
+        quote_timestamp=ts_quote,
+        current_time=ts_now_fresh,
+        max_quote_age_seconds=15.0,
+    )
+    assert opp_fresh.is_actionable is True
+    assert opp_fresh.status == "ACTIONABLE_OPPORTUNITY"
+
+    # 3. Insufficient order book depth
+    opp_low_depth = calculate_executable_arbitrage_spread(
+        symbol="RELIANCE",
+        nse_bid=2500.0,
+        nse_ask=2501.0,
+        bse_bid=2478.0,
+        bse_ask=2480.0,
+        quantity=100,
+        available_buy_depth_qty=40,  # Only 40 available
+    )
+    assert opp_low_depth.is_actionable is False
+    assert opp_low_depth.status == "INSUFFICIENT_LIQUIDITY"
+    assert "less than required execution quantity" in opp_low_depth.notes[0]
+

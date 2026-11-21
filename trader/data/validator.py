@@ -1,11 +1,11 @@
-"""Strict 5-minute candle validation, anomaly detection, and session filtering."""
+"""Strict 5-minute candle validation, anomaly detection, session filtering, and holiday checks."""
 
 from __future__ import annotations
 
 from datetime import datetime, timedelta, time
 import pandas as pd
 
-from ..config import IST_TZ, MARKET_OPEN_TIME, MARKET_CLOSE_TIME
+from ..config import IST_TZ, MARKET_OPEN_TIME, MARKET_CLOSE_TIME, is_nse_trading_day
 from .schema import Candle5M, CandleValidationResult
 
 
@@ -28,7 +28,6 @@ def detect_missing_candles(
         c_prev = candles[i - 1]
         c_curr = candles[i]
 
-        # Only check intervals on the same calendar day
         t_prev = c_prev.timestamp.astimezone(IST_TZ)
         t_curr = c_curr.timestamp.astimezone(IST_TZ)
 
@@ -47,9 +46,10 @@ def detect_missing_candles(
 def validate_candle_series(
     candles: list[Candle5M],
     filter_outside_market_hours: bool = True,
+    filter_trading_holidays: bool = True,
     max_single_bar_return_pct: float = 12.0,
 ) -> tuple[list[Candle5M], CandleValidationResult]:
-    """Perform rigorous validation, deduplication, and anomaly checks on a series of 5m candles.
+    """Perform rigorous validation, deduplication, holiday, and anomaly checks on a series of 5m candles.
 
     Returns:
         tuple[list[Candle5M], CandleValidationResult]: Sanitized candles and a comprehensive report.
@@ -68,23 +68,32 @@ def validate_candle_series(
     symbol = candles[0].symbol
     exchange = candles[0].exchange
     issues: list[str] = []
+    holiday_rejections: list[str] = []
     valid_candles: list[Candle5M] = []
     seen_timestamps: set[datetime] = set()
 
     for idx, c in enumerate(candles):
         ts_ist = c.timestamp.astimezone(IST_TZ)
+        bar_date = ts_ist.date()
 
-        # 1. Filter outside regular trading hours
+        # 1. Check official trading holidays and weekends
+        if filter_trading_holidays and not is_nse_trading_day(bar_date):
+            holiday_rejections.append(
+                f"Bar at {ts_ist.isoformat()} rejected: {bar_date} is an official exchange holiday or weekend"
+            )
+            continue
+
+        # 2. Filter outside regular trading hours
         if filter_outside_market_hours and not is_within_intraday_session(ts_ist):
             issues.append(f"Bar at {ts_ist.isoformat()} outside market hours (09:15-15:30 IST); dropped")
             continue
 
-        # 2. Check for duplicate timestamps
+        # 3. Check for duplicate timestamps
         if ts_ist in seen_timestamps:
             issues.append(f"Duplicate timestamp {ts_ist.isoformat()} detected; dropped")
             continue
 
-        # 3. Check for suspicious price spike relative to prior valid bar
+        # 4. Check for suspicious price spike relative to prior valid bar
         if valid_candles:
             prior_close = valid_candles[-1].close
             bar_return_pct = abs((c.close - prior_close) / prior_close) * 100.0
@@ -94,7 +103,7 @@ def validate_candle_series(
                     f"(Close {c.close} vs prior {prior_close}); flagged"
                 )
 
-        # 4. Check timestamp monotonicity
+        # 5. Check timestamp monotonicity
         if valid_candles and ts_ist <= valid_candles[-1].timestamp.astimezone(IST_TZ):
             issues.append(f"Non-monotonic timestamp {ts_ist.isoformat()} <= prior bar; dropped")
             continue
@@ -102,10 +111,15 @@ def validate_candle_series(
         seen_timestamps.add(ts_ist)
         valid_candles.append(c)
 
-    # 5. Detect missing intervals
+    # 6. Detect missing intervals
     missing_intervals = detect_missing_candles(valid_candles, expected_interval_minutes=5)
 
-    is_valid = len(valid_candles) > 0 and len(valid_candles) == len(candles) and len(missing_intervals) == 0
+    is_valid = (
+        len(valid_candles) > 0
+        and len(valid_candles) == len(candles)
+        and len(missing_intervals) == 0
+        and len(holiday_rejections) == 0
+    )
 
     report = CandleValidationResult(
         symbol=symbol,
@@ -116,6 +130,7 @@ def validate_candle_series(
         is_valid=is_valid,
         issues=issues,
         missing_intervals=missing_intervals,
+        holiday_rejections=holiday_rejections,
     )
 
     return valid_candles, report
