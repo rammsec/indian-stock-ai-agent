@@ -187,3 +187,176 @@ def test_05_failed_mark_evaluation_in_progress_aborts_and_releases_unused_reserv
     reg = SealedHoldoutGuard(registry_path=reg_path).load_registry()
     for d in dates[64:]:
         assert reg["records"][d.isoformat()]["state"] == "AVAILABLE"
+
+
+def test_06_train_val_only_unseen_not_evaluated_and_available_registry_unchanged(tmp_path: Path) -> None:
+    """6. EXPLORATORY_TRAIN_VAL_ONLY with AVAILABLE unseen dates leaves registry byte-for-byte unchanged and sets unseen_return_pct=None."""
+    reg_path = tmp_path / "sealed_holdout_registry.json"
+    out_path = tmp_path / "cycle_005_test06.json"
+    # Seed an empty registry file so we can verify byte-for-byte immutability
+    guard = SealedHoldoutGuard(registry_path=reg_path)
+    guard.save_registry(guard.load_registry())
+    before_bytes = reg_path.read_text(encoding="utf-8")
+
+    dates = _seed_1h_dates(80)
+    # Put non-zero pnl on last validation day to prove dr[-1] is NOT used as unseen
+    dummy_res = _dummy_backtest_result(64)
+    dummy_res["daily_runs"][-1]["net_pnl"] = 9999.0
+
+    fake_prov = {
+        "verified": False,
+        "final_provenance_status": "PARTIALLY_VERIFIED",
+        "dataset_fingerprint": "fp-c5-06",
+        "reconciled_eligible_dates": [d.isoformat() for d in dates],
+    }
+
+    orch = ChiefResearchOrchestrator()
+    with (
+        patch("trader.data.loader_1h.get_available_1h_dates", return_value=(dates, [])),
+        patch("trader.research.orchestrator.validate_1h_provenance", return_value=(False, fake_prov)),
+        patch("trader.research.orchestrator.HistoricalLabReplayEngine.run_date_range", return_value=dummy_res),
+        patch("trader.research.cycle004.run_cnc_swing_backtest", return_value=dummy_res),
+    ):
+        report = orch.run_cycle_005(
+            run_live_pytest=False,
+            include_unseen_in_exploratory=False,
+            registry_path=reg_path,
+            output_path=out_path,
+        )
+
+    assert report["evaluation_type"] == "EXPLORATORY_TRAIN_VAL_ONLY"
+    assert report["qualification_allowed"] is False
+    assert report["seal_reservation"]["reservation_status"] == "NOT_REQUESTED"
+    for row in report["qualification_board"]:
+        assert row["unseen_return_pct"] is None
+        assert row["unseen_evaluation_status"] == "NOT_EVALUATED"
+        assert row["statistical_verdict"] == "INSUFFICIENT EVIDENCE"
+
+    after_bytes = reg_path.read_text(encoding="utf-8")
+    assert after_bytes == before_bytes
+
+
+def test_07_cycle004_train_val_only_unseen_not_evaluated(tmp_path: Path) -> None:
+    """7. CYCLE-004 EXPLORATORY_TRAIN_VAL_ONLY also sets unseen_return_pct=None and unseen_evaluation_status=NOT_EVALUATED."""
+    reg_path = tmp_path / "sealed_holdout_registry.json"
+    out_path = tmp_path / "cycle_004_test07.json"
+    dates = _seed_1h_dates(80)
+    dummy_res = _dummy_backtest_result(64)
+    dummy_res["daily_runs"][-1]["net_pnl"] = 8888.0
+
+    fake_prov = {
+        "verified": False,
+        "final_provenance_status": "PARTIALLY_VERIFIED",
+        "dataset_fingerprint": "fp-c4-07",
+        "reconciled_eligible_dates": [d.isoformat() for d in dates],
+    }
+
+    orch = ChiefResearchOrchestrator()
+    with (
+        patch("trader.data.loader_1h.get_available_1h_dates", return_value=(dates, [])),
+        patch("trader.research.orchestrator.validate_1h_provenance", return_value=(False, fake_prov)),
+        patch("trader.research.orchestrator.HistoricalLabReplayEngine.run_date_range", return_value=dummy_res),
+        patch("trader.research.cycle004.run_cnc_swing_backtest", return_value=dummy_res),
+    ):
+        report = orch.run_cycle_004(
+            run_live_pytest=False,
+            include_unseen_in_exploratory=False,
+            registry_path=reg_path,
+            output_path=out_path,
+        )
+
+    assert report["evaluation_type"] == "EXPLORATORY_TRAIN_VAL_ONLY"
+    for row in report["qualification_board"]:
+        assert row["unseen_return_pct"] is None
+        assert row["unseen_evaluation_status"] == "NOT_EVALUATED"
+        assert row["statistical_verdict"] == "INSUFFICIENT EVIDENCE"
+
+
+def test_08_qualification_and_agents_handle_not_evaluated_without_zero_coercion() -> None:
+    """8. Seven-gate qualification, StatVal, and RedTeam distinguish NOT_EVALUATED from a measured 0.0%."""
+    from trader.research.agents import StatisticalValidationAgent, StrategyChallengerRedTeamAgent
+    from trader.research.qualification import evaluate_seven_gates
+
+    metrics = {
+        "sessions_evaluated": 120,
+        "total_trades": 50,
+        "total_return_pct": 12.0,
+        "net_pnl_inr": 6000.0,
+        "alpha_vs_buy_and_hold_pct": 4.0,
+        "max_drawdown_pct": 3.0,
+        "profit_factor": 1.8,
+        "sharpe_ratio": 1.6,
+        "expectancy_inr": 120.0,
+        "daily_runs": [{"net_pnl": 100.0, "trades": 1} for _ in range(60)],
+    }
+    unseen_not_eval = {"total_return_pct": None, "total_trades": 0, "status": "NOT_EVALUATED"}
+    wf = {"train": {"total_return_pct": 8.0}, "validation": {"total_return_pct": 4.0}, "unseen_test": unseen_not_eval}
+
+    stat_v, stat_reason = StatisticalValidationAgent().validate(metrics, wf)
+    assert stat_v == "INSUFFICIENT EVIDENCE"
+    assert "NOT_EVALUATED" in stat_reason
+
+    rt_ok, rt_reason = StrategyChallengerRedTeamAgent().challenge("STRAT-TEST", metrics, wf)
+    assert rt_ok is False
+    assert "NOT_EVALUATED" in rt_reason
+
+    qual = evaluate_seven_gates(
+        strategy_id="STRAT-TEST",
+        strategy_name="Test",
+        multi_day_metrics=metrics,
+        unseen_metrics=unseen_not_eval,
+        conservative_slippage_metrics={"net_return_pct": 10.0},
+        data_provenance_verified=True,
+        stat_validation_verdict=stat_v,
+        red_team_approved=rt_ok,
+        red_team_reason=rt_reason,
+        independent_holdout_valid=True,
+        provenance_status="VERIFIED",
+        holdout_status="VALID_UNSEEN",
+    )
+    assert qual.final_status == "INSUFFICIENT_EVIDENCE"
+    assert qual.gates[1].passed is False
+    assert "NOT_EVALUATED" in qual.gates[1].reason
+
+
+def test_09_cycle005_recovery_failed_when_mark_evaluation_failed_leaves_sealed(tmp_path: Path) -> None:
+    """9. run_cycle_005 reports recovery_failed=True and COMPLETION_FAILED_RECOVERY_FAILED if accessed SEALED dates remain unrecovered."""
+    reg_path = tmp_path / "sealed_holdout_registry.json"
+    out_path = tmp_path / "cycle_005_test09.json"
+    dates = _seed_1h_dates(80)
+    fake_prov = {
+        "verified": False,
+        "final_provenance_status": "PARTIALLY_VERIFIED",
+        "dataset_fingerprint": "fp-c5-09",
+        "reconciled_eligible_dates": [d.isoformat() for d in dates],
+    }
+
+    fake_failed_complete = {
+        "ok": False,
+        "completion_success": False,
+        "holdout_consumed": False,
+        "holdout_state": "SEALED",
+        "failure_reasons": ["Simulated completion failure"],
+    }
+
+    orch = ChiefResearchOrchestrator()
+    with (
+        patch("trader.data.loader_1h.get_available_1h_dates", return_value=(dates, [])),
+        patch("trader.research.orchestrator.validate_1h_provenance", return_value=(False, fake_prov)),
+        patch("trader.research.orchestrator.HistoricalLabReplayEngine.run_date_range", return_value=_dummy_backtest_result(80)),
+        patch("trader.research.cycle004.run_cnc_swing_backtest", return_value=_dummy_backtest_result(80)),
+        patch.object(SealedHoldoutGuard, "complete_evaluation", return_value=fake_failed_complete),
+        patch.object(SealedHoldoutGuard, "mark_evaluation_failed", return_value={"marked_failed": [], "exposed_dates": [], "holdout_consumed": False}),
+    ):
+        report = orch.run_cycle_005(
+            run_live_pytest=False,
+            include_unseen_in_exploratory=True,
+            registry_path=reg_path,
+            output_path=out_path,
+        )
+
+    assert report["recovery_failed"] is True
+    assert report["evaluation_status"] == "COMPLETION_FAILED_RECOVERY_FAILED"
+    assert report["holdout_state"] == "SEALED"
+    assert any("Recovery failed" in r for r in report["failure_reasons"])
+

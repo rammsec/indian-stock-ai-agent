@@ -47,6 +47,7 @@ CYCLE_003_PHASE11_3_REASSESSMENT_PATH = Path("data/lab/cycle_003_phase11_3_reass
 CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH = Path("data/lab/cycle_003_phase11_3_1_reassessment.json")
 CYCLE_004_REPORT_PATH = Path("data/lab/cycle_004_report.json")
 CYCLE_005_REPORT_PATH = Path("data/lab/cycle_005_report.json")
+CYCLE_005_CORRECTED_REPORT_PATH = Path("data/lab/cycle_005_report_v2.json")
 PROVENANCE_REPORT_PATH = Path("data/lab/provenance_report.json")
 ARCHIVE_HEALTH_PATH = Path("data/lab/daily_archive_health.json")
 LAB_INDEX_PATH = Path("docs/lab/data/lab_index.json")
@@ -860,7 +861,11 @@ class ChiefResearchOrchestrator:
                 "trades": int(best_active.get("trades", 0)),
                 "gross_return_pct": float(best_active.get("gross_return_pct", best_active.get("net_return_pct", 0.0))),
                 "net_return_pct": float(best_active.get("net_return_pct", 0.0)),
-                "unseen_return_pct": float(best_active.get("unseen_return_pct", 0.0)),
+                "unseen_return_pct": (
+                    None
+                    if best_active.get("unseen_return_pct") is None
+                    else float(best_active.get("unseen_return_pct", 0.0))
+                ),
                 "total_fees_inr": float(best_active.get("total_fees_inr", 0.0)),
                 "qualified_count": int(cc.get("qualified_strategies", 0)),
                 "candidates_tested": len(board),
@@ -1102,12 +1107,27 @@ class ChiefResearchOrchestrator:
                 cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
 
                 dr = res["daily_runs"]
-                unseen_slice = dr[v_end_1h:] or [dr[-1]]
-                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / cap) * 100.0, 2)
+                unseen_slice = dr[v_end_1h:] if consumed_dates else []
+                if not consumed_dates or not unseen_slice:
+                    unseen_ret_pct = None
+                    unseen_eval_status = "NOT_EVALUATED"
+                    unseen_test_dict: dict[str, Any] = {
+                        "total_return_pct": None,
+                        "total_trades": 0,
+                        "status": "NOT_EVALUATED",
+                    }
+                else:
+                    unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / cap) * 100.0, 2)
+                    unseen_eval_status = "EVALUATED"
+                    unseen_test_dict = {
+                        "total_return_pct": unseen_ret_pct,
+                        "total_trades": sum(d["trades"] for d in unseen_slice),
+                        "status": "EVALUATED",
+                    }
                 wf = {
                     "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / cap) * 100.0, 2)},
                     "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / cap) * 100.0, 2)},
-                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                    "unseen_test": unseen_test_dict,
                 }
                 stat_v, _ = self.stat_agent.validate(res, wf)
                 rt_ok, rt_reason = self.red_team.challenge(disp_id, res, wf)
@@ -1137,7 +1157,9 @@ class ChiefResearchOrchestrator:
                     "total_brokerage_inr": res.get("total_brokerage_inr", 0.0),
                     "total_statutory_inr": res.get("total_statutory_inr", 0.0),
                     "total_slippage_inr": res.get("total_slippage_inr", 0.0),
-                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "unseen_return_pct": unseen_ret_pct,
+                    "unseen_evaluation_status": unseen_eval_status,
+                    "statistical_verdict": stat_v,
                     "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
                     "exploratory_only": not qualification_allowed,
                     "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
@@ -1165,12 +1187,27 @@ class ChiefResearchOrchestrator:
                 cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
 
                 dr = res["daily_runs"]
-                unseen_slice = dr[v_end_1h:] or [dr[-1]]
-                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / 50_000.0) * 100.0, 2)
+                unseen_slice = dr[v_end_1h:] if consumed_dates else []
+                if not consumed_dates or not unseen_slice:
+                    unseen_ret_pct = None
+                    unseen_eval_status = "NOT_EVALUATED"
+                    unseen_test_dict = {
+                        "total_return_pct": None,
+                        "total_trades": 0,
+                        "status": "NOT_EVALUATED",
+                    }
+                else:
+                    unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / 50_000.0) * 100.0, 2)
+                    unseen_eval_status = "EVALUATED"
+                    unseen_test_dict = {
+                        "total_return_pct": unseen_ret_pct,
+                        "total_trades": sum(d["trades"] for d in unseen_slice),
+                        "status": "EVALUATED",
+                    }
                 wf = {
                     "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / 50_000.0) * 100.0, 2)},
                     "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / 50_000.0) * 100.0, 2)},
-                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                    "unseen_test": unseen_test_dict,
                 }
                 stat_v, _ = self.stat_agent.validate(res, wf)
                 rt_ok, rt_reason = self.red_team.challenge(sid, res, wf)
@@ -1199,7 +1236,9 @@ class ChiefResearchOrchestrator:
                     "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
                     "total_brokerage_inr": res["total_brokerage_inr"], "total_statutory_inr": res["total_statutory_inr"],
                     "total_slippage_inr": res["total_slippage_inr"],
-                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "unseen_return_pct": unseen_ret_pct,
+                    "unseen_evaluation_status": unseen_eval_status,
+                    "statistical_verdict": stat_v,
                     "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
                     "exploratory_only": not qualification_allowed,
                     "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
@@ -1758,7 +1797,7 @@ class ChiefResearchOrchestrator:
         allow_exploratory_on_blocked: bool = True,
         include_unseen_in_exploratory: bool = False,
         registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH,
-        output_path: Path = CYCLE_005_REPORT_PATH,
+        output_path: Path = CYCLE_005_CORRECTED_REPORT_PATH,
     ) -> dict[str, Any]:
         """Execute CYCLE-005 with strict Phase 11.3 holdout lifecycle, provenance, and recovery integrity."""
         import uuid
@@ -1792,13 +1831,11 @@ class ChiefResearchOrchestrator:
         val_1h_dates = elig_1h[t_end_1h:v_end_1h]
         unseen_1h_dates = elig_1h[v_end_1h:] or [elig_1h[-1]]
 
-        # Step 2: Validate 1h provenance & attempt reservation for unseen dates owned by CYCLE-005
+        # Step 2: Validate 1h provenance (read-only)
         prov_ok_005, prov_rep_005 = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
         dataset_fp = str(prov_rep_005.get("dataset_fingerprint", ""))
 
-        seal_res = holdout_guard.seal_dates("CYCLE-005", unseen_1h_dates, dataset_fingerprint=dataset_fp)
-
-        # Step 3: Central integrity guard validation
+        # Step 3: Central integrity guard validation (read-only; do not seal unless unseen dates will be accessed)
         integrity_guard = ResearchIntegrityGuard(registry_path=registry_path)
         guard_res = integrity_guard.validate(
             cycle_id="CYCLE-005",
@@ -1817,6 +1854,13 @@ class ChiefResearchOrchestrator:
             and not guard_res.get("holdout_metadata", {}).get("unseen_reused_dates")
         )
 
+        seal_res: dict[str, Any] = {
+            "cycle_id": "CYCLE-005",
+            "sealed_count": 0,
+            "blocked_dates": [],
+            "reservation_status": "NOT_REQUESTED",
+        }
+
         if qualification_allowed:
             eval_type = "FORMAL_QUALIFICATION"
             eval_dates = elig_1h
@@ -1830,20 +1874,9 @@ class ChiefResearchOrchestrator:
                 eval_type = "EXPLORATORY_TRAIN_VAL_ONLY"
                 eval_dates = train_1h_dates + val_1h_dates
                 consumed_dates = []
-                # Release any freshly sealed unseen reservation so AVAILABLE dates remain untouched
-                if seal_res.get("sealed_count", 0) > 0:
-                    holdout_guard.release_reservation(
-                        "CYCLE-005",
-                        unseen_1h_dates,
-                        "Exploratory train+val only run; preserving unseen holdout dates",
-                    )
         else:
-            release_res = (
-                holdout_guard.release_reservation("CYCLE-005", unseen_1h_dates, "Evaluation aborted before data access")
-                if seal_res.get("sealed_count", 0) > 0
-                else {"released": [], "denied": [], "ok": True}
-            )
-            cur_state = "AVAILABLE" if release_res.get("released") else "UNCONSUMED"
+            release_res = {"released": [], "denied": [], "ok": True}
+            cur_state = "UNCONSUMED"
             blocked_out = {
                 "cycle_id": "CYCLE-005",
                 "evaluation_id": evaluation_id,
@@ -1883,8 +1916,9 @@ class ChiefResearchOrchestrator:
             output_path.write_text(json.dumps(blocked_out, indent=2), encoding="utf-8")
             return blocked_out
 
-        # Step 4: Enforce mark_evaluation_in_progress() before reading consumed holdout dates
+        # Step 4: Reserve and enforce mark_evaluation_in_progress() before reading consumed holdout dates
         if consumed_dates:
+            seal_res = holdout_guard.seal_dates("CYCLE-005", consumed_dates, dataset_fingerprint=dataset_fp)
             prog_res = holdout_guard.mark_evaluation_in_progress(
                 "CYCLE-005",
                 consumed_dates,
@@ -2005,12 +2039,27 @@ class ChiefResearchOrchestrator:
                 cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
 
                 dr = res["daily_runs"]
-                unseen_slice = dr[v_end_1h:] or [dr[-1]]
-                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / cap) * 100.0, 2)
+                unseen_slice = dr[v_end_1h:] if consumed_dates else []
+                if not consumed_dates or not unseen_slice:
+                    unseen_ret_pct = None
+                    unseen_eval_status = "NOT_EVALUATED"
+                    unseen_test_dict: dict[str, Any] = {
+                        "total_return_pct": None,
+                        "total_trades": 0,
+                        "status": "NOT_EVALUATED",
+                    }
+                else:
+                    unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / cap) * 100.0, 2)
+                    unseen_eval_status = "EVALUATED"
+                    unseen_test_dict = {
+                        "total_return_pct": unseen_ret_pct,
+                        "total_trades": sum(d["trades"] for d in unseen_slice),
+                        "status": "EVALUATED",
+                    }
                 wf = {
                     "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / cap) * 100.0, 2)},
                     "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / cap) * 100.0, 2)},
-                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                    "unseen_test": unseen_test_dict,
                 }
                 stat_v, _ = self.stat_agent.validate(res, wf)
                 rt_ok, rt_reason = self.red_team.challenge(disp_id, res, wf)
@@ -2040,7 +2089,9 @@ class ChiefResearchOrchestrator:
                     "total_brokerage_inr": res.get("total_brokerage_inr", 0.0),
                     "total_statutory_inr": res.get("total_statutory_inr", 0.0),
                     "total_slippage_inr": res.get("total_slippage_inr", 0.0),
-                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "unseen_return_pct": unseen_ret_pct,
+                    "unseen_evaluation_status": unseen_eval_status,
+                    "statistical_verdict": stat_v,
                     "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
                     "exploratory_only": not qualification_allowed,
                     "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
@@ -2068,12 +2119,27 @@ class ChiefResearchOrchestrator:
                 cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
 
                 dr = res["daily_runs"]
-                unseen_slice = dr[v_end_1h:] or [dr[-1]]
-                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / 50_000.0) * 100.0, 2)
+                unseen_slice = dr[v_end_1h:] if consumed_dates else []
+                if not consumed_dates or not unseen_slice:
+                    unseen_ret_pct = None
+                    unseen_eval_status = "NOT_EVALUATED"
+                    unseen_test_dict = {
+                        "total_return_pct": None,
+                        "total_trades": 0,
+                        "status": "NOT_EVALUATED",
+                    }
+                else:
+                    unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / 50_000.0) * 100.0, 2)
+                    unseen_eval_status = "EVALUATED"
+                    unseen_test_dict = {
+                        "total_return_pct": unseen_ret_pct,
+                        "total_trades": sum(d["trades"] for d in unseen_slice),
+                        "status": "EVALUATED",
+                    }
                 wf = {
                     "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / 50_000.0) * 100.0, 2)},
                     "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / 50_000.0) * 100.0, 2)},
-                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                    "unseen_test": unseen_test_dict,
                 }
                 stat_v, _ = self.stat_agent.validate(res, wf)
                 rt_ok, rt_reason = self.red_team.challenge(sid, res, wf)
@@ -2102,7 +2168,9 @@ class ChiefResearchOrchestrator:
                     "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
                     "total_brokerage_inr": res["total_brokerage_inr"], "total_statutory_inr": res["total_statutory_inr"],
                     "total_slippage_inr": res["total_slippage_inr"],
-                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "unseen_return_pct": unseen_ret_pct,
+                    "unseen_evaluation_status": unseen_eval_status,
+                    "statistical_verdict": stat_v,
                     "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
                     "exploratory_only": not qualification_allowed,
                     "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
@@ -2160,14 +2228,37 @@ class ChiefResearchOrchestrator:
                         )
                         reg_after = holdout_guard.load_registry()
                         reg_records = reg_after.get("records", {})
+                    still_sealed_accessed = [
+                        d.isoformat()
+                        for d in consumed_dates
+                        if reg_records.get(d.isoformat(), {}).get("state") == "SEALED"
+                        and reg_records.get(d.isoformat(), {}).get("owning_cycle_id") == "CYCLE-005"
+                        and (
+                            bool(reg_records.get(d.isoformat(), {}).get("data_accessed"))
+                            or reg_records.get(d.isoformat(), {}).get("reservation_status") == "EVALUATION_IN_PROGRESS"
+                        )
+                    ]
                     any_owned_exposed = any(
                         reg_records.get(d.isoformat(), {}).get("state") == "EXPOSED"
                         and reg_records.get(d.isoformat(), {}).get("owning_cycle_id") == "CYCLE-005"
                         for d in consumed_dates
                     )
-                    holdout_consumed = any_owned_exposed or bool(exposure_status.get("holdout_consumed"))
-                    holdout_state = "EXPOSED" if holdout_consumed else exposure_status.get("holdout_state", "SEALED")
-                    eval_status = "COMPLETION_FAILED"
+                    if still_sealed_accessed:
+                        recovery_failed = True
+                        holdout_consumed = any_owned_exposed
+                        holdout_state = "SEALED"
+                        eval_status = "COMPLETION_FAILED_RECOVERY_FAILED"
+                        recovery_failure_reasons.append(
+                            f"Recovery failed: accessed dates remained SEALED: {still_sealed_accessed}"
+                        )
+                    elif any_owned_exposed or bool(exposure_status.get("holdout_consumed")):
+                        holdout_consumed = True
+                        holdout_state = "EXPOSED"
+                        eval_status = "COMPLETION_FAILED"
+                    else:
+                        holdout_consumed = False
+                        holdout_state = exposure_status.get("holdout_state", "SEALED")
+                        eval_status = "COMPLETION_FAILED"
                 except Exception as rec_exc:
                     recovery_failed = True
                     holdout_consumed = bool(exposure_status.get("holdout_consumed", False))
