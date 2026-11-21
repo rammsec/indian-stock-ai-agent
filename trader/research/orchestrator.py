@@ -38,6 +38,7 @@ from .qualification import evaluate_seven_gates
 
 RESEARCH_REPORT_PATH = Path("data/lab/research_cycle_report.json")
 CYCLE_002_REPORT_PATH = Path("data/lab/cycle_002_report.json")
+CYCLE_003_REPORT_PATH = Path("data/lab/cycle_003_report.json")
 PROVENANCE_REPORT_PATH = Path("data/lab/provenance_report.json")
 SEALED_HOLDOUT_REGISTRY_PATH = Path("data/lab/sealed_holdout_registry.json")
 ARCHIVE_HEALTH_PATH = Path("data/lab/daily_archive_health.json")
@@ -623,3 +624,231 @@ class ChiefResearchOrchestrator:
             record_sealed_holdout=True,
             output_path=CYCLE_002_REPORT_PATH,
         )
+
+    def run_cycle_003(
+        self,
+        test_report: dict[str, Any] | None = None,
+        run_live_pytest: bool = True,
+    ) -> dict[str, Any]:
+        """Execute CYCLE-003: Track A (30m Concentrated, 56 sessions) + Track B (60m Extended History, 240+ sessions)."""
+        import hashlib
+        import pandas as pd
+        from ..config import LabRiskConfig
+        from ..data.loader import CACHE_DIR
+        from ..data.loader_1h import get_available_1h_dates
+
+        live_test_metrics = test_report if test_report is not None else collect_dynamic_test_metrics(run_pytest=run_live_pytest)
+
+        # Track A: 30m Concentrated on 56 reconciled 5m->30m sessions
+        track_a = self.run_research_cycle(
+            cycle_id="CYCLE-003-30M",
+            min_bars_for_research=70,
+            candidate_ids=[
+                "STRAT-011-30M-BREAKOUT-VOL",
+                "STRAT-013-30M-CONC-BREAKOUT",
+                "STRAT-014-30M-VWAP-SQUEEZE",
+                "BENCHMARK-CASH-NO-TRADE",
+            ],
+            test_report=live_test_metrics,
+            run_live_pytest=False,
+            slippage_bps_list=(5.0, 10.0, 20.0, 30.0),
+            record_sealed_holdout=False,
+            output_path=Path("data/lab/cycle_003_30m_track.json"),
+        )
+
+        # Track B: 60m (1H) Extended 1-Year History (240+ NSE sessions)
+        elig_1h, excl_1h = get_available_1h_dates(LAB_DEFAULT_UNIVERSE, min_bars_per_stock=6)
+        assert len(elig_1h) >= 60, f"Expected >= 60 1h sessions, found {len(elig_1h)}"
+        start_1h, end_1h = elig_1h[0], elig_1h[-1]
+
+        # Independent 1h provenance check
+        prov_1h_ok = True
+        prov_1h_syms: dict[str, Any] = {}
+        for sym in LAB_DEFAULT_UNIVERSE:
+            p_file = CACHE_DIR / f"{sym}_1h.parquet"
+            if not p_file.exists():
+                prov_1h_ok = False
+                continue
+            df_1h = pd.read_parquet(p_file, columns=["timestamp"])
+            dups = int(df_1h["timestamp"].duplicated().sum())
+            if dups > 0:
+                prov_1h_ok = False
+            sha = hashlib.sha256(p_file.read_bytes()).hexdigest()[:16]
+            prov_1h_syms[sym] = {"file": str(p_file), "bars": len(df_1h), "duplicates": dups, "sha256": sha}
+
+        # Concentrated risk config: max 2 concurrent positions up to 50% each (~₹25k per position)
+        conc_risk = LabRiskConfig(max_open_positions=2, risk_per_trade_pct=0.015)
+        engine_1h = HistoricalLabReplayEngine(risk_config=conc_risk)
+        db = HistoricalLabDatabase()
+
+        track_b_ids = [
+            "STRAT-015-60M-TREND-BREAKOUT",
+            "STRAT-016-60M-VWAP-MOMENTUM",
+            "STRAT-017-60M-ORB-FILTERED",
+            "BENCHMARK-CASH-NO-TRADE",
+        ]
+
+        n_1h = len(elig_1h)
+        t_end_1h = max(1, int(n_1h * 0.60))
+        v_end_1h = max(t_end_1h + 1, int(n_1h * 0.80))
+        unseen_1h_dates = elig_1h[v_end_1h:] or [elig_1h[-1]]
+        holdout_guard = SealedHoldoutGuard()
+        holdout_1h = holdout_guard.record_exposure("CYCLE-003-60M", unseen_1h_dates, notes="1Y 1h unseen_test evaluation")
+
+        lb_1h: list[dict[str, Any]] = []
+        qual_1h: list[dict[str, Any]] = []
+        orders_1h: dict[str, list[dict[str, Any]]] = {}
+        slip_1h_all: list[dict[str, Any]] = []
+        slip_1h_matrix: dict[str, list[dict[str, Any]]] = {}
+
+        for sid in track_b_ids:
+            res = engine_1h.run_date_range(
+                start_date=start_1h,
+                end_date=end_1h,
+                strategy_id=sid,
+                symbols=LAB_DEFAULT_UNIVERSE,
+                data_mode=DataSourceMode.HISTORICAL_REAL,
+                execution_mode="DETERMINISTIC",
+                db=db,
+                eligible_dates=elig_1h,
+                timeframe_minutes=60,  # type: ignore[arg-type]
+            )
+            orders_1h[sid] = res.pop("orders", [])
+            res.pop("trades", [])
+
+            if res["total_trades"] > 0:
+                slip_rows = engine_1h.run_slippage_sensitivity(
+                    start_date=start_1h,
+                    end_date=end_1h,
+                    strategy_id=sid,
+                    slippage_bps_list=(5.0, 10.0, 20.0, 30.0),
+                    symbols=LAB_DEFAULT_UNIVERSE,
+                    data_mode=DataSourceMode.HISTORICAL_REAL,
+                    eligible_dates=elig_1h,
+                    timeframe_minutes=60,  # type: ignore[arg-type]
+                )
+            else:
+                slip_rows = [
+                    {
+                        "slippage_bps": float(b),
+                        "gross_return_pct": 0.0,
+                        "net_return_pct": 0.0,
+                        "net_pnl_inr": 0.0,
+                        "total_fees_inr": 0.0,
+                        "total_brokerage_inr": 0.0,
+                        "total_statutory_inr": 0.0,
+                        "total_slippage_inr": 0.0,
+                        "total_trades": 0,
+                        "win_rate_pct": 0.0,
+                    }
+                    for b in (5.0, 10.0, 20.0, 30.0)
+                ]
+            slip_1h_matrix[sid] = slip_rows
+            slip_1h_all.extend({"strategy_id": sid, **sr} for sr in slip_rows)
+            cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
+
+            lb_1h.append(res)
+            dr = res["daily_runs"]
+            unseen_slice = dr[v_end_1h:] or [dr[-1]]
+            unseen_pnl = sum(d["net_pnl"] for d in unseen_slice)
+            unseen_ret_pct = round((unseen_pnl / engine_1h.risk_config.initial_capital_inr) * 100.0, 2)
+            wf = {
+                "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / engine_1h.risk_config.initial_capital_inr) * 100.0, 2)},
+                "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / engine_1h.risk_config.initial_capital_inr) * 100.0, 2)},
+                "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+            }
+
+            stat_verdict, _ = self.stat_agent.validate(res, wf)
+            rt_approved, rt_reason = self.red_team.challenge(sid, res, wf)
+
+            qual = evaluate_seven_gates(
+                strategy_id=sid,
+                strategy_name=res["strategy_name"],
+                multi_day_metrics=res,
+                unseen_metrics=wf["unseen_test"],
+                conservative_slippage_metrics=cons_10,
+                data_provenance_verified=prov_1h_ok,
+                stat_validation_verdict=stat_verdict,
+                red_team_approved=rt_approved,
+                red_team_reason=rt_reason,
+                min_sessions_required=60,
+                min_trades_required=30,
+            )
+
+            qual_1h.append({
+                "strategy_id": sid,
+                "strategy_name": res["strategy_name"],
+                "timeframe_minutes": 60,
+                "final_status": qual.final_status,
+                "passed_gates": f"{qual.passed_gates_count}/{qual.total_gates}",
+                "sessions": res["sessions_evaluated"],
+                "trades": res["total_trades"],
+                "gross_return_pct": res["gross_return_pct"],
+                "net_return_pct": res["total_return_pct"],
+                "conservative_10bps_net_pct": cons_10["net_return_pct"],
+                "alpha_vs_bh_pct": res["alpha_vs_buy_and_hold_pct"],
+                "max_drawdown_pct": res["max_drawdown_pct"],
+                "sharpe_ratio": res["sharpe_ratio"],
+                "sortino_ratio": res["sortino_ratio"],
+                "profit_factor": res["profit_factor"],
+                "expectancy_inr": res["expectancy_inr"],
+                "total_fees_inr": res["total_fees_inr"],
+                "total_brokerage_inr": res.get("total_brokerage_inr", 0.0),
+                "total_statutory_inr": res.get("total_statutory_inr", 0.0),
+                "total_slippage_inr": res.get("total_slippage_inr", 0.0),
+                "unseen_return_pct": wf["unseen_test"]["total_return_pct"],
+                "statistical_verdict": stat_verdict,
+                "red_team_verdict": "APPROVED" if rt_approved else "REJECTED",
+                "summary": qual.summary,
+                "gates": [asdict(g) for g in qual.gates],
+            })
+
+        exec_1h_report = self.exec_agent.audit_costs(lb_1h, slip_1h_all, orders_by_strategy=orders_1h)
+        sq_report = self.sq_agent.review_system(test_report=live_test_metrics)
+        combined_board = sorted(qual_1h + track_a["qualification_board"], key=lambda x: x["net_return_pct"], reverse=True)
+        qualified_cnt = sum(1 for q in combined_board if q["final_status"] == "QUALIFIED")
+        rejected_cnt = sum(1 for q in combined_board if q["final_status"] == "REJECTED")
+        best_strat = max(combined_board, key=lambda x: x["net_return_pct"]) if combined_board else None
+
+        cycle_003_out = {
+            "cycle_id": "CYCLE-003",
+            "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+            "reconciled_eligible_sessions": len(elig_1h),
+            "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
+            "excluded_dates": excl_1h,
+            "provenance_verified": prov_1h_ok and track_a["provenance_verified"],
+            "provenance_1h_symbols": prov_1h_syms,
+            "sealed_holdout_status": holdout_1h,
+            "dynamic_test_metrics": live_test_metrics,
+            "command_centre": {
+                "current_cycle": "CYCLE-003",
+                "active_agents": 9,
+                "experiments_completed": len(combined_board),
+                "experiments_rejected": rejected_cnt,
+                "qualified_strategies": qualified_cnt,
+                "best_experimental_strategy": best_strat["strategy_id"] if best_strat else None,
+                "best_experimental_net_pct": best_strat["net_return_pct"] if best_strat else 0.0,
+                "track_a_30m_sessions": track_a["reconciled_eligible_sessions"],
+                "track_b_60m_sessions": len(elig_1h),
+                "max_candidates_per_cycle": self.MAX_CANDIDATES_PER_CYCLE,
+                "max_tuning_rounds": self.MAX_TUNING_ROUNDS_PER_HYPOTHESIS,
+            },
+            "track_a_30m": track_a,
+            "track_b_60m_qualification_board": sorted(qual_1h, key=lambda x: x["net_return_pct"], reverse=True),
+            "qualification_board": combined_board,
+            "slippage_sensitivity_matrix": {**track_a.get("slippage_sensitivity_matrix", {}), **slip_1h_matrix},
+            "agent_performance": [asdict(exec_1h_report), asdict(sq_report)],
+            "archive_health": track_a.get("archive_health", {}),
+        }
+
+        CYCLE_003_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        CYCLE_003_REPORT_PATH.write_text(json.dumps(cycle_003_out, indent=2), encoding="utf-8")
+
+        if LAB_INDEX_PATH.exists():
+            idx = json.loads(LAB_INDEX_PATH.read_text(encoding="utf-8"))
+            idx["cycle_003_report"] = cycle_003_out
+            idx["phase11_research_cycle"] = cycle_003_out
+            LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
+
+        return cycle_003_out
+

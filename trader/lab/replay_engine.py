@@ -26,6 +26,7 @@ from ..config import (
     LabRiskConfig,
 )
 from ..data.instruments import INSTRUMENT_MASTER
+from ..data.loader_1h import load_1h_session_with_warmup
 from ..data.resampler import resample_5m_candles, to_candle5m_compatible
 from ..data.schema import Candle5M, DataSourceMode
 from ..features.indicators import compute_all_features
@@ -37,10 +38,15 @@ from ..strategies.ema_cross import EMACrossStrategy
 from ..strategies.mtf_strategies import (
     CashNoTradeBenchmarkStrategy,
     LowFrequencyTrendFollowingStrategy,
-    MTF30mBreakoutVolumeStrategy,
     MTF15mRelativeStrengthLeaderStrategy,
     MTF15mVWAPTrendContinuationStrategy,
+    MTF30mBreakoutVolumeStrategy,
+    MTF30mConcentratedBreakoutStrategy,
     MTF30mEMATrendStrategy,
+    MTF30mVWAPSqueezeStrategy,
+    MTF60mORBFilteredStrategy,
+    MTF60mTrendBreakoutStrategy,
+    MTF60mVWAPMomentumStrategy,
 )
 from ..strategies.multi_indicator import MultiIndicatorConfluenceStrategy
 from ..strategies.orb_breakout import ORBBreakoutStrategy
@@ -64,6 +70,11 @@ STRATEGY_REGISTRY: dict[str, dict[str, Any]] = {
     "STRAT-010-30M-EMA-TREND": {"name": "30m EMA Trend Pullback", "cls": MTF30mEMATrendStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
     "STRAT-011-30M-BREAKOUT-VOL": {"name": "30m Breakout Volume Confirmation", "cls": MTF30mBreakoutVolumeStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
     "STRAT-012-LOW-FREQ-TREND": {"name": "30m Low-Frequency Trend Following", "cls": LowFrequencyTrendFollowingStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
+    "STRAT-013-30M-CONC-BREAKOUT": {"name": "30m Concentrated Breakout Volume", "cls": MTF30mConcentratedBreakoutStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
+    "STRAT-014-30M-VWAP-SQUEEZE": {"name": "30m VWAP Volatility Squeeze", "cls": MTF30mVWAPSqueezeStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
+    "STRAT-015-60M-TREND-BREAKOUT": {"name": "60m Trend Breakout", "cls": MTF60mTrendBreakoutStrategy, "kind": "STRATEGY", "timeframe_minutes": 60},
+    "STRAT-016-60M-VWAP-MOMENTUM": {"name": "60m VWAP Momentum", "cls": MTF60mVWAPMomentumStrategy, "kind": "STRATEGY", "timeframe_minutes": 60},
+    "STRAT-017-60M-ORB-FILTERED": {"name": "60m Opening Range Breakout", "cls": MTF60mORBFilteredStrategy, "kind": "STRATEGY", "timeframe_minutes": 60},
     "BENCHMARK-CASH-NO-TRADE": {"name": "Cash / No-Trade Baseline", "cls": CashNoTradeBenchmarkStrategy, "kind": "BENCHMARK", "timeframe_minutes": 30},
     "AGENT-CENTRAL-COUNCIL": {"name": "Central AI Council (8-Agent)", "cls": None, "kind": "AI_AGENT", "timeframe_minutes": 5},
     "AGENT-AUTONOMOUS-TRADER": {"name": "Autonomous Trading Agent", "cls": None, "kind": "AI_AGENT", "timeframe_minutes": 5},
@@ -188,7 +199,7 @@ class HistoricalLabReplayEngine:
         execution_mode: Literal["DETERMINISTIC", "AI_AGENT"] = "DETERMINISTIC",
         db: Any | None = None,
         router: ModelRouter | None = None,
-        timeframe_minutes: Literal[5, 15, 30] | None = None,
+        timeframe_minutes: Literal[5, 15, 30, 60] | None = None,
     ) -> dict[str, Any]:
         """Run deterministic or genuine AI chronological replay for a single historical date."""
         if strategy_id not in STRATEGY_REGISTRY:
@@ -199,7 +210,7 @@ class HistoricalLabReplayEngine:
 
         reg_entry = STRATEGY_REGISTRY[strategy_id]
         tf_min = int(timeframe_minutes or reg_entry.get("timeframe_minutes", 5))
-        if tf_min not in (5, 15, 30):
+        if tf_min not in (5, 15, 30, 60):
             raise ValueError(f"Unsupported timeframe_minutes: {tf_min}")
         strategy_obj: BaseStrategy | None = reg_entry["cls"]() if reg_entry["cls"] is not None else None
 
@@ -215,12 +226,31 @@ class HistoricalLabReplayEngine:
             if cache_key in self._session_feature_cache:
                 w_bars, s_bars, q, f_df = self._session_feature_cache[cache_key]
             else:
-                w_bars_5m, s_bars_5m, q = load_session_with_warmup(sym, target_date, warmup_days=5, mode=data_mode)
-                if tf_min == 5:
-                    w_bars, s_bars = w_bars_5m, s_bars_5m
+                if tf_min == 60:
+                    w_bars, s_bars, prov = load_1h_session_with_warmup(sym, target_date, warmup_days=10)
+                    q = StockSessionQuality(
+                        symbol=sym,
+                        date=target_date.isoformat(),
+                        data_availability="Cached Historical" if s_bars else "Unavailable",
+                        source_mode=DataSourceMode.HISTORICAL_REAL.value,
+                        provider=prov.source_name,
+                        retrieved_at_ist=prov.ingested_at.isoformat(),
+                        candles_count=len(s_bars),
+                        expected_candles=7,
+                        warmup_candles_count=len(w_bars),
+                        missing_intervals_count=max(0, 7 - len(s_bars)),
+                        missing_intervals_detail=[],
+                        status="Ready" if len(s_bars) >= 6 else ("Incomplete" if s_bars else "Unavailable"),
+                        quality_reason="1h Yahoo Finance NSE historical archive",
+                        sha256_hash=prov.sha256_hash,
+                    )
                 else:
-                    w_bars = to_candle5m_compatible(resample_5m_candles(w_bars_5m, target_minutes=tf_min, include_incomplete=False))
-                    s_bars = to_candle5m_compatible(resample_5m_candles(s_bars_5m, target_minutes=tf_min, include_incomplete=False))
+                    w_bars_5m, s_bars_5m, q = load_session_with_warmup(sym, target_date, warmup_days=5, mode=data_mode)
+                    if tf_min == 5:
+                        w_bars, s_bars = w_bars_5m, s_bars_5m
+                    else:
+                        w_bars = to_candle5m_compatible(resample_5m_candles(w_bars_5m, target_minutes=tf_min, include_incomplete=False))  # type: ignore[arg-type]
+                        s_bars = to_candle5m_compatible(resample_5m_candles(s_bars_5m, target_minutes=tf_min, include_incomplete=False))  # type: ignore[arg-type]
                 combined = w_bars + s_bars
                 f_df = compute_all_features(combined) if combined else pd.DataFrame()
                 self._session_feature_cache[cache_key] = (w_bars, s_bars, q, f_df)

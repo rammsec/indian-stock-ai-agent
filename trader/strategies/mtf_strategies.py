@@ -271,3 +271,239 @@ class CashNoTradeBenchmarkStrategy(BaseStrategy):
         row = features_df.iloc[current_bar_idx]
         ts = row["timestamp"].to_pydatetime() if hasattr(row["timestamp"], "to_pydatetime") else row["timestamp"]
         return StrategySignal(self.metadata.strategy_id, symbol, ts, "NO_SIGNAL", confidence=1.0, rationale=["Cash preservation"])
+
+
+class MTF30mConcentratedBreakoutStrategy(BaseStrategy):
+    """CYCLE-003 Strategy: Concentrated 30m Breakout + Volume + EMA alignment with 2.2x ATR target."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            StrategyMetadata(
+                strategy_id="STRAT-013-30M-CONC-BREAKOUT",
+                name="30m Concentrated Breakout Volume",
+                origin_source="BharatAlpha CYCLE-003 Research",
+                source_url="internal://cycle-003",
+                license_type="MIT",
+                timeframe="30m",
+                required_indicators=["ema_9", "ema_21", "vwap", "rsi_14", "atr_14", "volume"],
+                validation_status="EXPERIMENTAL",
+            )
+        )
+
+    def evaluate_bar(self, symbol: str, features_df: pd.DataFrame, current_bar_idx: int) -> StrategySignal:
+        row = features_df.iloc[current_bar_idx]
+        ts = row["timestamp"].to_pydatetime() if hasattr(row["timestamp"], "to_pydatetime") else row["timestamp"]
+        close = float(row["close"])
+        if current_bar_idx < 10:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5, rationale=["Warmup"])
+
+        hhmm = ts.strftime("%H:%M")
+        ema9 = float(row["ema_9"])
+        ema21 = float(row["ema_21"])
+        vwap = float(row["vwap"])
+        rsi = float(row["rsi_14"])
+        atr = max(float(row["atr_14"]), close * 0.0025)
+        vol = float(row["volume"])
+        avg_vol = float(features_df.iloc[max(0, current_bar_idx - 10):current_bar_idx]["volume"].mean())
+        prev_high = float(features_df.iloc[max(0, current_bar_idx - 4):current_bar_idx]["high"].max())
+
+        if ema9 < ema21 or close < vwap * 0.997:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "EXIT", confidence=0.75, rationale=["30m trend/VWAP breakdown"])
+
+        if "09:45" <= hhmm <= "13:45" and close > prev_high and close > vwap and ema9 > ema21 and 52.0 <= rsi <= 72.0 and vol >= 1.5 * max(1.0, avg_vol):
+            sl = round(close - 1.2 * atr, 2)
+            tp = round(close + 2.4 * atr, 2)
+            if (tp - close) / close >= 0.012:
+                return StrategySignal(
+                    self.metadata.strategy_id, symbol, ts, "BUY", confidence=0.82,
+                    stop_loss=sl, target=tp, rationale=["30m concentrated high-RR breakout + 1.5x vol"]
+                )
+        return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5)
+
+
+class MTF30mVWAPSqueezeStrategy(BaseStrategy):
+    """CYCLE-003 Strategy: 30m Volatility Contraction + VWAP Momentum Breakout."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            StrategyMetadata(
+                strategy_id="STRAT-014-30M-VWAP-SQUEEZE",
+                name="30m VWAP Volatility Squeeze",
+                origin_source="BharatAlpha CYCLE-003 Research",
+                source_url="internal://cycle-003",
+                license_type="MIT",
+                timeframe="30m",
+                required_indicators=["ema_9", "ema_21", "vwap", "rsi_14", "atr_14", "volume"],
+                validation_status="EXPERIMENTAL",
+            )
+        )
+
+    def evaluate_bar(self, symbol: str, features_df: pd.DataFrame, current_bar_idx: int) -> StrategySignal:
+        row = features_df.iloc[current_bar_idx]
+        ts = row["timestamp"].to_pydatetime() if hasattr(row["timestamp"], "to_pydatetime") else row["timestamp"]
+        close = float(row["close"])
+        if current_bar_idx < 12:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5, rationale=["Warmup"])
+
+        hhmm = ts.strftime("%H:%M")
+        vwap = float(row["vwap"])
+        ema9 = float(row["ema_9"])
+        ema21 = float(row["ema_21"])
+        rsi = float(row["rsi_14"])
+        atr = max(float(row["atr_14"]), close * 0.0025)
+        recent_ranges = (features_df.iloc[current_bar_idx - 4:current_bar_idx]["high"] - features_df.iloc[current_bar_idx - 4:current_bar_idx]["low"]).mean()
+        curr_range = float(row["high"]) - float(row["low"])
+        vol = float(row["volume"])
+        avg_vol = float(features_df.iloc[current_bar_idx - 10:current_bar_idx]["volume"].mean())
+
+        if close < vwap * 0.996:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "EXIT", confidence=0.72, rationale=["Lost VWAP support"])
+
+        if "10:15" <= hhmm <= "13:45" and curr_range > 1.25 * max(1e-4, float(recent_ranges)) and close > vwap and ema9 > ema21 and 54.0 <= rsi <= 72.0 and vol >= 1.4 * max(1.0, avg_vol):
+            sl = round(close - 1.1 * atr, 2)
+            tp = round(close + 2.2 * atr, 2)
+            return StrategySignal(
+                self.metadata.strategy_id, symbol, ts, "BUY", confidence=0.78,
+                stop_loss=sl, target=tp, rationale=["30m range expansion above VWAP"]
+            )
+        return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5)
+
+
+class MTF60mTrendBreakoutStrategy(BaseStrategy):
+    """CYCLE-003 Strategy: 60m (1H) Trend-Aligned 4-Bar High Breakout (240-session research)."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            StrategyMetadata(
+                strategy_id="STRAT-015-60M-TREND-BREAKOUT",
+                name="60m Trend Breakout",
+                origin_source="BharatAlpha CYCLE-003 1H Research",
+                source_url="internal://cycle-003",
+                license_type="MIT",
+                timeframe="60m",
+                required_indicators=["ema_9", "ema_21", "vwap", "rsi_14", "atr_14", "volume"],
+                validation_status="EXPERIMENTAL",
+            )
+        )
+
+    def evaluate_bar(self, symbol: str, features_df: pd.DataFrame, current_bar_idx: int) -> StrategySignal:
+        row = features_df.iloc[current_bar_idx]
+        ts = row["timestamp"].to_pydatetime() if hasattr(row["timestamp"], "to_pydatetime") else row["timestamp"]
+        close = float(row["close"])
+        if current_bar_idx < 12:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5, rationale=["Warmup"])
+
+        hhmm = ts.strftime("%H:%M")
+        ema9 = float(row["ema_9"])
+        ema21 = float(row["ema_21"])
+        rsi = float(row["rsi_14"])
+        atr = max(float(row["atr_14"]), close * 0.004)
+        vol = float(row["volume"])
+        avg_vol = float(features_df.iloc[current_bar_idx - 10:current_bar_idx]["volume"].mean())
+        prev_4h_high = float(features_df.iloc[current_bar_idx - 4:current_bar_idx]["high"].max())
+
+        if ema9 < ema21:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "EXIT", confidence=0.75, rationale=["60m EMA9 < EMA21"])
+
+        if "09:15" <= hhmm <= "13:15" and close > prev_4h_high and ema9 > ema21 and 50.0 <= rsi <= 72.0 and vol >= 1.25 * max(1.0, avg_vol):
+            sl = round(close - 1.2 * atr, 2)
+            tp = round(close + 2.4 * atr, 2)
+            return StrategySignal(
+                self.metadata.strategy_id, symbol, ts, "BUY", confidence=0.80,
+                stop_loss=sl, target=tp, rationale=["60m 4-bar high breakout with EMA & volume confirmation"]
+            )
+        return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5)
+
+
+class MTF60mVWAPMomentumStrategy(BaseStrategy):
+    """CYCLE-003 Strategy: 60m (1H) VWAP + RSI Momentum Continuation."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            StrategyMetadata(
+                strategy_id="STRAT-016-60M-VWAP-MOMENTUM",
+                name="60m VWAP Momentum",
+                origin_source="BharatAlpha CYCLE-003 1H Research",
+                source_url="internal://cycle-003",
+                license_type="MIT",
+                timeframe="60m",
+                required_indicators=["ema_9", "ema_21", "vwap", "rsi_14", "atr_14"],
+                validation_status="EXPERIMENTAL",
+            )
+        )
+
+    def evaluate_bar(self, symbol: str, features_df: pd.DataFrame, current_bar_idx: int) -> StrategySignal:
+        row = features_df.iloc[current_bar_idx]
+        ts = row["timestamp"].to_pydatetime() if hasattr(row["timestamp"], "to_pydatetime") else row["timestamp"]
+        close = float(row["close"])
+        if current_bar_idx < 10:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5, rationale=["Warmup"])
+
+        hhmm = ts.strftime("%H:%M")
+        vwap = float(row["vwap"])
+        ema9 = float(row["ema_9"])
+        ema21 = float(row["ema_21"])
+        rsi = float(row["rsi_14"])
+        atr = max(float(row["atr_14"]), close * 0.004)
+
+        if close < vwap * 0.996:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "EXIT", confidence=0.72, rationale=["60m close below VWAP"])
+
+        if "10:15" <= hhmm <= "13:15" and close > vwap and ema9 > ema21 and 52.0 <= rsi <= 68.0:
+            sl = round(close - 1.1 * atr, 2)
+            tp = round(close + 2.2 * atr, 2)
+            return StrategySignal(
+                self.metadata.strategy_id, symbol, ts, "BUY", confidence=0.76,
+                stop_loss=sl, target=tp, rationale=["60m VWAP + EMA9>EMA21 momentum"]
+            )
+        return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5)
+
+
+class MTF60mORBFilteredStrategy(BaseStrategy):
+    """CYCLE-003 Strategy: 60m (1H) Opening-Hour Range Breakout with Trend Filter."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            StrategyMetadata(
+                strategy_id="STRAT-017-60M-ORB-FILTERED",
+                name="60m Opening Range Breakout",
+                origin_source="BharatAlpha CYCLE-003 1H Research",
+                source_url="internal://cycle-003",
+                license_type="MIT",
+                timeframe="60m",
+                required_indicators=["ema_9", "ema_21", "atr_14", "volume"],
+                validation_status="EXPERIMENTAL",
+            )
+        )
+
+    def evaluate_bar(self, symbol: str, features_df: pd.DataFrame, current_bar_idx: int) -> StrategySignal:
+        row = features_df.iloc[current_bar_idx]
+        ts = row["timestamp"].to_pydatetime() if hasattr(row["timestamp"], "to_pydatetime") else row["timestamp"]
+        close = float(row["close"])
+        if current_bar_idx < 10:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5, rationale=["Warmup"])
+
+        hhmm = ts.strftime("%H:%M")
+        ema9 = float(row["ema_9"])
+        ema21 = float(row["ema_21"])
+        atr = max(float(row["atr_14"]), close * 0.004)
+        vol = float(row["volume"])
+        avg_vol = float(features_df.iloc[current_bar_idx - 10:current_bar_idx]["volume"].mean())
+
+        if ema9 < ema21:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "EXIT", confidence=0.72, rationale=["60m trend reversal"])
+
+        # Compare against today's 09:15 bar high
+        today = ts.date()
+        same_day = features_df.iloc[:current_bar_idx]
+        same_day_bars = same_day[same_day["timestamp"].dt.date == today]
+        if hhmm in ("10:15", "11:15", "12:15") and not same_day_bars.empty:
+            orb_high = float(same_day_bars.iloc[0]["high"])
+            if close > orb_high and ema9 > ema21 and vol >= 1.15 * max(1.0, avg_vol):
+                sl = round(close - 1.2 * atr, 2)
+                tp = round(close + 2.4 * atr, 2)
+                return StrategySignal(
+                    self.metadata.strategy_id, symbol, ts, "BUY", confidence=0.79,
+                    stop_loss=sl, target=tp, rationale=["60m 1st-hour ORB breakout + EMA trend"]
+                )
+        return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5)
