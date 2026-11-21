@@ -1,0 +1,632 @@
+{
+  "reassessment_id": "CYCLE-003-PHASE-11-3-1-REASSESSMENT",
+  "original_reassessment_reference": "CYCLE-003-PHASE-11-3-REASSESSMENT",
+  "original_cycle_reference": "CYCLE-003",
+  "guard_version": "11.3.1",
+  "validation_timestamp": "2026-11-21T15:14:48.552361+05:30",
+  "provenance_status": "PARTIALLY_VERIFIED",
+  "provenance_verified": false,
+  "holdout_status": "EXPOSED_HOLDOUT_REUSED",
+  "holdout_metadata": {
+    "state": "EXPOSED",
+    "owning_cycle_id": "CYCLE-003-60M",
+    "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+    "exposure_timestamp": "2026-11-21T13:41:25.227452+05:30"
+  },
+  "previously_exposed_dates_count": 12,
+  "previously_exposed_dates": [
+    "2026-11-02",
+    "2026-11-03",
+    "2026-11-05",
+    "2026-11-06",
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20"
+  ],
+  "integrity_passed": false,
+  "qualification_allowed": false,
+  "exploratory_research_allowed": true,
+  "failure_reasons": [
+    "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).",
+    "Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+  ],
+  "integrity_guard_result": {
+    "cycle_id": "CYCLE-003-60M",
+    "integrity_passed": false,
+    "qualification_allowed": false,
+    "exploratory_research_allowed": true,
+    "provenance_status": "PARTIALLY_VERIFIED",
+    "provenance_verified": false,
+    "holdout_status": "EXPOSED_HOLDOUT_REUSED",
+    "holdout_metadata": {
+      "state": "EXPOSED",
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "exposure_timestamp": "2026-11-21T13:41:25.227452+05:30"
+    },
+    "ownership_valid": true,
+    "split_valid": true,
+    "dataset_fingerprint_valid": true,
+    "failure_reasons": [
+      "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).",
+      "Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+    ],
+    "validation_timestamp": "2026-11-21T15:14:48.552361+05:30",
+    "guard_version": "11.3.1"
+  },
+  "active_strategy_leaderboard": [
+    {
+      "strategy_id": "STRAT-011-30M-BREAKOUT-VOL",
+      "strategy_name": "30m Breakout Volume Confirmation",
+      "timeframe_minutes": 30,
+      "final_status": "REJECTED",
+      "passed_gates": "0/7",
+      "sessions": 56,
+      "trades": 26,
+      "gross_return_pct": 0.4,
+      "net_return_pct": -1.59,
+      "conservative_10bps_net_pct": -3.77,
+      "alpha_vs_bh_pct": 13.22,
+      "max_drawdown_pct": 2.89,
+      "sharpe_ratio": -5.53,
+      "sortino_ratio": -15.47,
+      "profit_factor": 0.46,
+      "expectancy_inr": -74.83,
+      "total_fees_inr": 991.95,
+      "total_brokerage_inr": 371.26,
+      "total_statutory_inr": 675.25,
+      "total_slippage_inr": 473.56,
+      "unseen_return_pct": -0.34,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-1.59% (\u20b9-793.00), Unseen=-0.34% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+13.22%, vs Cash=-1.59% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=2.89% (<=10%), PF=0.46 (>1.20), Sharpe=-5.53 (>1.0), Expectancy=\u20b9-74.83"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=26/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-3.77% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-1.59%) is non-positive after costs.)"
+        }
+      ],
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "gate_1_reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED.",
+      "exploratory_only": true
+    },
+    {
+      "strategy_id": "STRAT-014-30M-VWAP-SQUEEZE",
+      "strategy_name": "30m VWAP Volatility Squeeze",
+      "timeframe_minutes": 30,
+      "final_status": "REJECTED",
+      "passed_gates": "0/7",
+      "sessions": 56,
+      "trades": 8,
+      "gross_return_pct": -0.99,
+      "net_return_pct": -1.61,
+      "conservative_10bps_net_pct": -2.37,
+      "alpha_vs_bh_pct": 13.2,
+      "max_drawdown_pct": 2.27,
+      "sharpe_ratio": -8.69,
+      "sortino_ratio": -14.2,
+      "profit_factor": 0.3,
+      "expectancy_inr": -143.4,
+      "total_fees_inr": 306.92,
+      "total_brokerage_inr": 145.91,
+      "total_statutory_inr": 211.53,
+      "total_slippage_inr": 167.53,
+      "unseen_return_pct": 0.02,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-1.61% (\u20b9-803.45), Unseen=+0.02% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+13.20%, vs Cash=-1.61% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=2.27% (<=10%), PF=0.30 (>1.20), Sharpe=-8.69 (>1.0), Expectancy=\u20b9-143.40"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=8/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-2.37% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-1.61%) is non-positive after costs.)"
+        }
+      ],
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "gate_1_reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED.",
+      "exploratory_only": true
+    },
+    {
+      "strategy_id": "STRAT-013-30M-CONC-BREAKOUT",
+      "strategy_name": "30m Concentrated Breakout Volume",
+      "timeframe_minutes": 30,
+      "final_status": "REJECTED",
+      "passed_gates": "0/7",
+      "sessions": 56,
+      "trades": 9,
+      "gross_return_pct": -1.18,
+      "net_return_pct": -1.86,
+      "conservative_10bps_net_pct": -2.55,
+      "alpha_vs_bh_pct": 12.95,
+      "max_drawdown_pct": 2.3,
+      "sharpe_ratio": -10.38,
+      "sortino_ratio": -40.18,
+      "profit_factor": 0.28,
+      "expectancy_inr": -129.96,
+      "total_fees_inr": 343.7,
+      "total_brokerage_inr": 127.63,
+      "total_statutory_inr": 243.58,
+      "total_slippage_inr": 128.44,
+      "unseen_return_pct": -1.25,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-1.86% (\u20b9-931.80), Unseen=-1.25% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+12.95%, vs Cash=-1.86% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=2.30% (<=10%), PF=0.28 (>1.20), Sharpe=-10.38 (>1.0), Expectancy=\u20b9-129.96"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=9/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-2.55% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-1.86%) is non-positive after costs.)"
+        }
+      ],
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "gate_1_reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED.",
+      "exploratory_only": true
+    },
+    {
+      "strategy_id": "STRAT-017-60M-ORB-FILTERED",
+      "strategy_name": "60m Opening Range Breakout",
+      "timeframe_minutes": 60,
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 240,
+      "trades": 109,
+      "gross_return_pct": 3.19,
+      "net_return_pct": -4.65,
+      "conservative_10bps_net_pct": -10.24,
+      "alpha_vs_bh_pct": 71.52,
+      "max_drawdown_pct": 6.16,
+      "sharpe_ratio": -1.42,
+      "sortino_ratio": -2.88,
+      "profit_factor": 0.78,
+      "expectancy_inr": -21.35,
+      "total_fees_inr": 3923.46,
+      "total_brokerage_inr": 1142.46,
+      "total_statutory_inr": 2781.0,
+      "total_slippage_inr": 954.87,
+      "unseen_return_pct": 0.65,
+      "statistical_verdict": "FAIL",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (2/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-4.65% (\u20b9-2327.26), Unseen=+0.65% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+71.52%, vs Cash=-4.65% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=6.16% (<=10%), PF=0.78 (>1.20), Sharpe=-1.42 (>1.0), Expectancy=\u20b9-21.35"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Sessions=240/60, Trades=109/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-10.24% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=FAIL, RedTeam=REJECTED (Red Team Reject: Net return (-4.65%) is non-positive after costs.)"
+        }
+      ],
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "gate_1_reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED.",
+      "exploratory_only": true
+    },
+    {
+      "strategy_id": "STRAT-015-60M-TREND-BREAKOUT",
+      "strategy_name": "60m Trend Breakout",
+      "timeframe_minutes": 60,
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 240,
+      "trades": 84,
+      "gross_return_pct": 0.26,
+      "net_return_pct": -5.76,
+      "conservative_10bps_net_pct": -10.1,
+      "alpha_vs_bh_pct": 70.41,
+      "max_drawdown_pct": 8.62,
+      "sharpe_ratio": -2.37,
+      "sortino_ratio": -5.12,
+      "profit_factor": 0.66,
+      "expectancy_inr": -34.31,
+      "total_fees_inr": 3012.21,
+      "total_brokerage_inr": 877.15,
+      "total_statutory_inr": 2135.06,
+      "total_slippage_inr": 735.62,
+      "unseen_return_pct": 0.65,
+      "statistical_verdict": "FAIL",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (2/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-5.76% (\u20b9-2881.84), Unseen=+0.65% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+70.41%, vs Cash=-5.76% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=8.62% (<=10%), PF=0.66 (>1.20), Sharpe=-2.37 (>1.0), Expectancy=\u20b9-34.31"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Sessions=240/60, Trades=84/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-10.10% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=FAIL, RedTeam=REJECTED (Red Team Reject: Net return (-5.76%) is non-positive after costs.)"
+        }
+      ],
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "gate_1_reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED.",
+      "exploratory_only": true
+    },
+    {
+      "strategy_id": "STRAT-016-60M-VWAP-MOMENTUM",
+      "strategy_name": "60m VWAP Momentum",
+      "timeframe_minutes": 60,
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 240,
+      "trades": 282,
+      "gross_return_pct": -7.57,
+      "net_return_pct": -28.13,
+      "conservative_10bps_net_pct": -43.33,
+      "alpha_vs_bh_pct": 48.04,
+      "max_drawdown_pct": 31.31,
+      "sharpe_ratio": -4.49,
+      "sortino_ratio": -8.35,
+      "profit_factor": 0.45,
+      "expectancy_inr": -49.88,
+      "total_fees_inr": 10282.1,
+      "total_brokerage_inr": 2994.25,
+      "total_statutory_inr": 7287.85,
+      "total_slippage_inr": 2753.71,
+      "unseen_return_pct": -2.02,
+      "statistical_verdict": "FAIL",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (2/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-28.13% (\u20b9-14065.25), Unseen=-2.02% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+48.04%, vs Cash=-28.13% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=31.31% (<=10%), PF=0.45 (>1.20), Sharpe=-4.49 (>1.0), Expectancy=\u20b9-49.88"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Sessions=240/60, Trades=282/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-43.33% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=FAIL, RedTeam=REJECTED (Red Team Reject: Net return (-28.13%) is non-positive after costs.)"
+        }
+      ],
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "gate_1_reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED.",
+      "exploratory_only": true
+    }
+  ],
+  "reference_benchmark_leaderboard": [
+    {
+      "benchmark_id": "BENCHMARK-CASH-NO-TRADE",
+      "benchmark_name": "Cash / No-Trade Baseline",
+      "category": "CAPITAL_PRESERVATION_BENCHMARK",
+      "period": "2025-11-21 -> 2026-11-20",
+      "sessions": 240,
+      "net_return_pct": 0.0,
+      "relative_outperformance_vs_bh_pct": 76.17,
+      "note": "Capital preservation baseline (0% return); not an active trading strategy."
+    },
+    {
+      "benchmark_id": "BENCHMARK-CASH-NO-TRADE",
+      "benchmark_name": "Cash / No-Trade Baseline",
+      "category": "CAPITAL_PRESERVATION_BENCHMARK",
+      "period": "2025-11-21 -> 2026-11-20",
+      "sessions": 56,
+      "net_return_pct": 0.0,
+      "relative_outperformance_vs_bh_pct": 14.81,
+      "note": "Capital preservation baseline (0% return); not an active trading strategy."
+    },
+    {
+      "benchmark_id": "BENCHMARK-BUY-AND-HOLD",
+      "benchmark_name": "5-Stock Equal-Weight Buy & Hold",
+      "category": "PASSIVE_MARKET_BENCHMARK",
+      "period": "2025-11-21 -> 2026-11-20",
+      "sessions": 240,
+      "net_return_pct": -76.17,
+      "relative_outperformance_vs_bh_pct": 0.0,
+      "note": "Equal-weight passive benchmark across RELIANCE, TCS, BIRLACABLE, ITC, TATAELXSI."
+    }
+  ],
+  "downgrade_explanations": [
+    {
+      "strategy_id": "STRAT-011-30M-BREAKOUT-VOL",
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+    },
+    {
+      "strategy_id": "STRAT-014-30M-VWAP-SQUEEZE",
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+    },
+    {
+      "strategy_id": "STRAT-013-30M-CONC-BREAKOUT",
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+    },
+    {
+      "strategy_id": "STRAT-017-60M-ORB-FILTERED",
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+    },
+    {
+      "strategy_id": "STRAT-015-60M-TREND-BREAKOUT",
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+    },
+    {
+      "strategy_id": "STRAT-016-60M-VWAP-MOMENTUM",
+      "original_status": "REJECTED",
+      "reassessed_status": "BLOCKED_INTEGRITY",
+      "gate_1_passed": false,
+      "reason": "Provenance status is PARTIALLY_VERIFIED (requires VERIFIED).; Holdout integrity failed: EXPOSED_HOLDOUT_REUSED."
+    }
+  ]
+}

@@ -952,21 +952,54 @@ function renderCycleProgression(prog) {
 
 function renderResearchIntegrity(idx) {
   if (!idx) return;
-  const reass113 = idx.cycle_003_phase11_3_reassessment || {};
+  const reass1131 = idx.cycle_003_phase11_3_1_reassessment || {};
   const reass = idx.cycle_003_integrity_reassessment || {};
+  const c4 = idx.cycle_004_report || {};
+  const guard = idx.integrity_guard_status || c4.integrity_guard_result || reass1131.integrity_guard_result || {};
   const prov1h = idx.provenance_report_1h || {};
   const holdout = reass.holdout_integrity || idx.sealed_holdout_summary || {};
+  const hMeta = guard.holdout_metadata || reass1131.holdout_metadata || {};
   const dq = idx.data_quality_analytics || {};
-  const qualAllowed = reass113.qualification_allowed === true && prov1h.verified === true && holdout.independent_holdout_valid === true;
+
+  const integrityPassed = (c4.integrity_passed ?? guard.integrity_passed) === true;
+  const qualAllowed = (c4.qualification_allowed ?? guard.qualification_allowed) === true;
+  const exploratoryAllowed = (c4.exploratory_research_allowed ?? guard.exploratory_research_allowed) === true;
+  const holdoutConsumed = c4.holdout_consumed === true;
+  const holdoutState = c4.holdout_state || hMeta.state || "--";
+  const evalType = c4.evaluation_type || "--";
+  const evalStatus = c4.evaluation_status || "--";
+  const evalCompletedAt = c4.evaluation_completed_at || "--";
+  const consumedDates = Array.isArray(c4.consumed_holdout_dates) ? c4.consumed_holdout_dates : [];
+  const exposedDates = Array.isArray(holdout.exposed_dates) ? holdout.exposed_dates : consumedDates;
+  const untouchedCount = holdout.untouched_available_count ?? hMeta.untouched_count ?? "--";
+  const qualifiedCount = reass.qualified_active_strategies || 0;
 
   const warnEl = document.getElementById("p11-integrity-warning");
   if (warnEl) {
-    if (!qualAllowed || (reass.data_quality_warnings && reass.data_quality_warnings.length)) {
+    const reasons = (c4.failure_reasons && c4.failure_reasons.length)
+      ? c4.failure_reasons
+      : ((guard.failure_reasons && guard.failure_reasons.length)
+        ? guard.failure_reasons
+        : (reass.data_quality_warnings || []));
+    if (!qualAllowed || reasons.length) {
       warnEl.style.display = "block";
-      const msgs = reass.data_quality_warnings || [
-        `Qualification blocked: 1H provenance=${prov1h.final_provenance_status || "UNKNOWN"}, holdout=${holdout.holdout_status || "EXPOSED_HOLDOUT_REUSED"}.`,
-      ];
-      warnEl.innerHTML = `<strong>&#9888; INTEGRITY GATE BLOCKED (Phase 11.3):</strong> ${msgs.join(" | ")}`;
+      warnEl.innerHTML = `
+        <strong>&#9888; INTEGRITY GUARD (${guard.guard_version || "11.3.2"}):</strong>
+        ${reasons.join(" | ")}
+        <div style="margin-top:4px; font-size:11px; color:#cbd5e1;">
+          <strong>Holdout State:</strong> ${holdoutState} |
+          <strong>Consumed:</strong> ${holdoutConsumed ? "YES (" + consumedDates.length + " dates)" : "NO"} |
+          <strong>Owning Cycle:</strong> ${hMeta.owning_cycle_id || c4.cycle_id || "--"} |
+          <strong>Eval Type:</strong> ${evalType} (${evalStatus}) |
+          <strong>Completed:</strong> ${evalCompletedAt}
+        </div>
+        <div style="margin-top:2px; font-size:11px; color:#94a3b8;">
+          <strong>Previously Exposed:</strong> ${exposedDates.length} dates |
+          <strong>Untouched Available:</strong> ${untouchedCount} |
+          <strong>Reserved:</strong> ${hMeta.reservation_timestamp || "--"} |
+          <strong>Last Validated:</strong> ${guard.validation_timestamp || "--"}
+        </div>
+      `;
     } else {
       warnEl.style.display = "none";
     }
@@ -974,16 +1007,19 @@ function renderResearchIntegrity(idx) {
 
   const gridEl = document.getElementById("p11-integrity-grid");
   if (gridEl) {
-    const provStatus = prov1h.final_provenance_status || "UNKNOWN";
-    const provCls = provStatus === "VERIFIED" ? "text-green" : (provStatus === "PARTIALLY_VERIFIED" ? "text-amber" : "text-red");
-    const holdoutValid = holdout.independent_holdout_valid === true;
+    const provStatus = c4.provenance_status || guard.provenance_status || prov1h.final_provenance_status || "UNKNOWN";
+    const provVerified = (c4.provenance_verified ?? guard.provenance_verified) === true;
+    const provCls = provVerified ? "text-green" : (provStatus === "PARTIALLY_VERIFIED" ? "text-amber" : "text-red");
+    const holdoutStatus = guard.holdout_status || holdout.holdout_status || "UNKNOWN";
     gridEl.innerHTML = `
+      <div class="metric-box"><div class="metric-label">Exploratory Research</div><div class="metric-val ${exploratoryAllowed ? "text-blue" : "text-red"}" style="font-size:13px;">${exploratoryAllowed ? "ALLOWED (NON-QUALIFYING)" : "BLOCKED"}</div></div>
+      <div class="metric-box"><div class="metric-label">Integrity Validation</div><div class="metric-val ${integrityPassed ? "text-green" : "text-red"}" style="font-size:13px;">${integrityPassed ? "PASSED" : "FAILED"}</div></div>
       <div class="metric-box"><div class="metric-label">Qualification Gate</div><div class="metric-val ${qualAllowed ? "text-green" : "text-red"}" style="font-size:13px;">${qualAllowed ? "ALLOWED" : "BLOCKED_INTEGRITY"}</div></div>
-      <div class="metric-box"><div class="metric-label">1H Provenance Status</div><div class="metric-val ${provCls}" style="font-size:13px;">${provStatus}</div></div>
-      <div class="metric-box"><div class="metric-label">Holdout Independence</div><div class="metric-val ${holdoutValid ? "text-green" : "text-red"}" style="font-size:13px;">${holdoutValid ? "VALID_UNSEEN" : (holdout.holdout_status || "INVALIDATED")}</div></div>
-      <div class="metric-box"><div class="metric-label">Exposed Dates (Registry)</div><div class="metric-val text-amber">${holdout.total_exposed_dates_in_registry || 0}</div></div>
+      <div class="metric-box"><div class="metric-label">Holdout Consumed</div><div class="metric-val ${holdoutConsumed ? "text-amber" : "text-green"}" style="font-size:13px;">${holdoutConsumed ? "CONSUMED (" + consumedDates.length + ")" : "PRESERVED"}</div></div>
+      <div class="metric-box"><div class="metric-label">Qualified Strategies</div><div class="metric-val ${qualifiedCount > 0 ? "text-green" : "text-amber"}">${qualifiedCount}</div></div>
+      <div class="metric-box"><div class="metric-label">1H Provenance (${provVerified ? "VERIFIED" : "UNVERIFIED"})</div><div class="metric-val ${provCls}" style="font-size:12px;">${provStatus}</div></div>
+      <div class="metric-box"><div class="metric-label">Holdout (${holdoutState})</div><div class="metric-val ${integrityPassed ? "text-green" : "text-red"}" style="font-size:12px;">${holdoutStatus}</div></div>
       <div class="metric-box"><div class="metric-label">5m Eligible / 1H Valid</div><div class="metric-val">${dq.research_eligible_sessions || 0} / ${prov1h.symbols && prov1h.symbols.RELIANCE ? prov1h.symbols.RELIANCE.valid_session_count : 0}</div></div>
-      <div class="metric-box"><div class="metric-label">Corrected Best Active</div><div class="metric-val" style="font-size:12px;">${reass.corrected_best_active_strategy || "--"} (${(reass.corrected_best_active_net_pct || 0).toFixed(2)}%)</div></div>
     `;
   }
 
