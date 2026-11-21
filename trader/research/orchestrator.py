@@ -46,6 +46,7 @@ CYCLE_003_REASSESSMENT_PATH = Path("data/lab/cycle_003_integrity_reassessment.js
 CYCLE_003_PHASE11_3_REASSESSMENT_PATH = Path("data/lab/cycle_003_phase11_3_reassessment.json")
 CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH = Path("data/lab/cycle_003_phase11_3_1_reassessment.json")
 CYCLE_004_REPORT_PATH = Path("data/lab/cycle_004_report.json")
+CYCLE_005_REPORT_PATH = Path("data/lab/cycle_005_report.json")
 PROVENANCE_REPORT_PATH = Path("data/lab/provenance_report.json")
 ARCHIVE_HEALTH_PATH = Path("data/lab/daily_archive_health.json")
 LAB_INDEX_PATH = Path("docs/lab/data/lab_index.json")
@@ -148,23 +149,29 @@ def verify_dataset_provenance(
 
 def collect_dynamic_test_metrics(run_pytest: bool = True) -> dict[str, Any]:
     """Run pytest dynamically and return structured execution metrics (never hardcoded)."""
+    import sys
+
     ts = datetime.now(tz=IST_TZ).isoformat()
     commit_sha = _get_git_commit_sha()
+    cmd = [sys.executable, "-m", "pytest", "tests/intraday/", "tests/phase6/", "-q"]
+    cmd_str = "pytest tests/intraday/ tests/phase6/ -q"
     if not run_pytest or os.environ.get("PYTEST_CURRENT_TEST"):
         return {
+            "executed": False,
+            "status": "NOT_RUN",
+            "independently_verified": False,
+            "command": None,
             "tests_executed": 0,
             "tests_passed": 0,
             "tests_failed": 0,
             "tests_skipped": 0,
             "execution_timestamp": ts,
             "commit_sha": commit_sha,
-            "mode": "SKIPPED_NESTED_PYTEST",
+            "mode": "SKIPPED_NESTED_PYTEST" if os.environ.get("PYTEST_CURRENT_TEST") else "NOT_RUN",
         }
 
-    import sys
-
     proc = subprocess.run(
-        [sys.executable, "-m", "pytest", "tests/intraday/", "tests/phase6/", "-q"],
+        cmd,
         capture_output=True,
         text=True,
     )
@@ -175,6 +182,10 @@ def collect_dynamic_test_metrics(run_pytest: bool = True) -> dict[str, Any]:
     skipped = int(m.group(1)) if (m := re.search(r"(\d+)\s+skipped", out)) else 0
     executed = passed + failed + errors + skipped
     return {
+        "executed": True,
+        "status": "EXECUTED",
+        "independently_verified": True,
+        "command": cmd_str,
         "tests_executed": executed,
         "tests_passed": passed,
         "tests_failed": failed + errors,
@@ -1740,7 +1751,506 @@ class ChiefResearchOrchestrator:
 
         return out
 
+    def run_cycle_005(
+        self,
+        test_report: dict[str, Any] | None = None,
+        run_live_pytest: bool = True,
+        allow_exploratory_on_blocked: bool = True,
+        include_unseen_in_exploratory: bool = False,
+        registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH,
+        output_path: Path = CYCLE_005_REPORT_PATH,
+    ) -> dict[str, Any]:
+        """Execute CYCLE-005 with strict Phase 11.3 holdout lifecycle, provenance, and recovery integrity."""
+        import uuid
+        from ..config import LabRiskConfig
+        from ..data.loader_1h import get_available_1h_dates
+        from .cycle004 import run_cnc_swing_backtest
 
+        if test_report is None:
+            live_test_metrics = collect_dynamic_test_metrics(run_pytest=run_live_pytest)
+        else:
+            live_test_metrics = {
+                **test_report,
+                "executed": bool(test_report.get("executed", False)),
+                "status": "NOT_RUN" if not test_report.get("executed", False) else "SUPPLIED_UNVERIFIED",
+                "independently_verified": False,
+                "source": "CALLER_SUPPLIED",
+            }
+        evaluation_id = f"eval_c5_{uuid.uuid4().hex[:8]}"
+        evaluation_started_at = datetime.now(tz=IST_TZ).isoformat()
 
+        holdout_guard = SealedHoldoutGuard(registry_path=registry_path)
+        stale_recovery = holdout_guard.recover_stale_reservations("CYCLE-005")
 
+        # Step 1: Identify eligible dates & splits
+        elig_1h, excl_1h = get_available_1h_dates(LAB_DEFAULT_UNIVERSE, min_bars_per_stock=6)
+        start_1h, end_1h = elig_1h[0], elig_1h[-1]
+        n_1h = len(elig_1h)
+        t_end_1h = max(1, int(n_1h * 0.60))
+        v_end_1h = max(t_end_1h + 1, int(n_1h * 0.80))
+        train_1h_dates = elig_1h[:t_end_1h]
+        val_1h_dates = elig_1h[t_end_1h:v_end_1h]
+        unseen_1h_dates = elig_1h[v_end_1h:] or [elig_1h[-1]]
 
+        # Step 2: Validate 1h provenance & attempt reservation for unseen dates owned by CYCLE-005
+        prov_ok_005, prov_rep_005 = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+        dataset_fp = str(prov_rep_005.get("dataset_fingerprint", ""))
+
+        seal_res = holdout_guard.seal_dates("CYCLE-005", unseen_1h_dates, dataset_fingerprint=dataset_fp)
+
+        # Step 3: Central integrity guard validation
+        integrity_guard = ResearchIntegrityGuard(registry_path=registry_path)
+        guard_res = integrity_guard.validate(
+            cycle_id="CYCLE-005",
+            training_dates=train_1h_dates,
+            validation_dates=val_1h_dates,
+            unseen_dates=unseen_1h_dates,
+            dataset_fingerprint=dataset_fp,
+            provenance_result=prov_rep_005,
+        )
+
+        qualification_allowed = bool(guard_res["integrity_passed"] and guard_res["qualification_allowed"])
+        exploratory_allowed = bool(guard_res.get("exploratory_research_allowed", False))
+        global_holdout_integrity_status = str(guard_res.get("holdout_status", "UNKNOWN"))
+        independent_holdout_available = bool(
+            global_holdout_integrity_status == "VALID_UNSEEN"
+            and not guard_res.get("holdout_metadata", {}).get("unseen_reused_dates")
+        )
+
+        if qualification_allowed:
+            eval_type = "FORMAL_QUALIFICATION"
+            eval_dates = elig_1h
+            consumed_dates = unseen_1h_dates
+        elif exploratory_allowed and allow_exploratory_on_blocked:
+            if include_unseen_in_exploratory:
+                eval_type = "EXPLORATORY_WITH_UNSEEN"
+                eval_dates = elig_1h
+                consumed_dates = unseen_1h_dates
+            else:
+                eval_type = "EXPLORATORY_TRAIN_VAL_ONLY"
+                eval_dates = train_1h_dates + val_1h_dates
+                consumed_dates = []
+                # Release any freshly sealed unseen reservation so AVAILABLE dates remain untouched
+                if seal_res.get("sealed_count", 0) > 0:
+                    holdout_guard.release_reservation(
+                        "CYCLE-005",
+                        unseen_1h_dates,
+                        "Exploratory train+val only run; preserving unseen holdout dates",
+                    )
+        else:
+            release_res = (
+                holdout_guard.release_reservation("CYCLE-005", unseen_1h_dates, "Evaluation aborted before data access")
+                if seal_res.get("sealed_count", 0) > 0
+                else {"released": [], "denied": [], "ok": True}
+            )
+            cur_state = "AVAILABLE" if release_res.get("released") else "UNCONSUMED"
+            blocked_out = {
+                "cycle_id": "CYCLE-005",
+                "evaluation_id": evaluation_id,
+                "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+                "reconciled_eligible_sessions": len(elig_1h),
+                "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
+                "excluded_dates": excl_1h,
+                "integrity_passed": False,
+                "qualification_allowed": False,
+                "exploratory_research_allowed": exploratory_allowed,
+                "exploratory_only": True,
+                "current_evaluation_holdout_consumed": False,
+                "current_evaluation_holdout_state": cur_state,
+                "global_holdout_integrity_status": global_holdout_integrity_status,
+                "independent_holdout_available": independent_holdout_available,
+                "holdout_consumed": False,
+                "holdout_state": cur_state,
+                "evaluation_status": "ABORTED_NO_EVALUATION",
+                "evaluation_type": "NONE",
+                "evaluation_started_at": evaluation_started_at,
+                "evaluation_completed_at": datetime.now(tz=IST_TZ).isoformat(),
+                "consumed_holdout_dates": [],
+                "dataset_fingerprint": dataset_fp,
+                "strategy_ids_evaluated": [],
+                "failure_reasons": guard_res["failure_reasons"],
+                "provenance_verified": bool(prov_rep_005.get("verified", False)),
+                "provenance_status": prov_rep_005.get("final_provenance_status", "FAILED"),
+                "qualification_blocked": True,
+                "seal_reservation": seal_res,
+                "release_result": release_res,
+                "stale_recovery": stale_recovery,
+                "integrity_guard_result": guard_res,
+                "dynamic_test_metrics": live_test_metrics,
+                "qualification_board": [],
+            }
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(blocked_out, indent=2), encoding="utf-8")
+            return blocked_out
+
+        # Step 4: Enforce mark_evaluation_in_progress() before reading consumed holdout dates
+        if consumed_dates:
+            prog_res = holdout_guard.mark_evaluation_in_progress(
+                "CYCLE-005",
+                consumed_dates,
+                dataset_fingerprint=dataset_fp,
+                evaluation_type=eval_type,
+            )
+            if not prog_res.get("ok"):
+                release_res = holdout_guard.release_reservation(
+                    "CYCLE-005",
+                    consumed_dates,
+                    reason=f"Evaluation aborted before data access: mark_evaluation_in_progress failed ({prog_res.get('reason')})",
+                )
+                cleanup_success = bool(release_res.get("ok") and len(release_res.get("released", [])) == len(consumed_dates))
+                cleanup_status = "RESERVATION_RELEASED" if cleanup_success else "RELEASE_FAILED_RESERVATION_PRESERVED"
+                final_holdout_state = "AVAILABLE" if cleanup_success else "SEALED"
+                aborted_out = {
+                    "cycle_id": "CYCLE-005",
+                    "evaluation_id": evaluation_id,
+                    "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+                    "reconciled_eligible_sessions": len(elig_1h),
+                    "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
+                    "excluded_dates": excl_1h,
+                    "integrity_passed": False,
+                    "qualification_allowed": False,
+                    "exploratory_research_allowed": exploratory_allowed,
+                    "exploratory_only": not qualification_allowed,
+                    "current_evaluation_holdout_consumed": False,
+                    "current_evaluation_holdout_state": final_holdout_state,
+                    "global_holdout_integrity_status": global_holdout_integrity_status,
+                    "independent_holdout_available": independent_holdout_available,
+                    "holdout_consumed": False,
+                    "holdout_state": final_holdout_state,
+                    "evaluation_status": "ABORTED_TRANSITION_FAILED",
+                    "evaluation_type": eval_type,
+                    "evaluation_started_at": evaluation_started_at,
+                    "evaluation_completed_at": datetime.now(tz=IST_TZ).isoformat(),
+                    "consumed_holdout_dates": [],
+                    "dataset_fingerprint": dataset_fp,
+                    "strategy_ids_evaluated": [],
+                    "failure_reasons": guard_res["failure_reasons"] + [
+                        f"mark_evaluation_in_progress failed: {prog_res.get('reason')}"
+                    ],
+                    "provenance_verified": bool(prov_rep_005.get("verified", False)),
+                    "provenance_status": prov_rep_005.get("final_provenance_status", "FAILED"),
+                    "qualification_blocked": True,
+                    "seal_reservation": seal_res,
+                    "transition_error": prog_res,
+                    "cleanup_result": release_res,
+                    "cleanup_status": cleanup_status,
+                    "stale_recovery": stale_recovery,
+                    "integrity_guard_result": guard_res,
+                    "dynamic_test_metrics": live_test_metrics,
+                    "qualification_board": [],
+                }
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_text(json.dumps(aborted_out, indent=2), encoding="utf-8")
+                return aborted_out
+
+        eval_start_date, eval_end_date = eval_dates[0], eval_dates[-1]
+        db = HistoricalLabDatabase()
+        leaderboard: list[dict[str, Any]] = []
+        qualification_board: list[dict[str, Any]] = []
+        orders_by_strat: dict[str, list[dict[str, Any]]] = {}
+        slip_matrix: dict[str, list[dict[str, Any]]] = {}
+        slip_all: list[dict[str, Any]] = []
+
+        try:
+            intraday_configs = [
+                ("STRAT-018-60M-ORB-SELECTIVE", "STRAT-018-60M-ORB-SELECTIVE", 50_000.0),
+                ("STRAT-017-60M-ORB@200K", "STRAT-017-60M-ORB-FILTERED", 200_000.0),
+                ("STRAT-017-60M-ORB@500K", "STRAT-017-60M-ORB-FILTERED", 500_000.0),
+                ("BENCHMARK-CASH-NO-TRADE", "BENCHMARK-CASH-NO-TRADE", 50_000.0),
+            ]
+
+            for disp_id, base_sid, cap in intraday_configs:
+                eng = HistoricalLabReplayEngine(
+                    risk_config=LabRiskConfig(initial_capital_inr=cap, max_open_positions=2, risk_per_trade_pct=0.015)
+                )
+                res = eng.run_date_range(
+                    start_date=eval_start_date,
+                    end_date=eval_end_date,
+                    strategy_id=base_sid,
+                    symbols=LAB_DEFAULT_UNIVERSE,
+                    data_mode=DataSourceMode.HISTORICAL_REAL,
+                    execution_mode="DETERMINISTIC",
+                    db=db,
+                    eligible_dates=eval_dates,
+                    timeframe_minutes=60,  # type: ignore[arg-type]
+                )
+                res["strategy_id"] = disp_id
+                if cap > 50_000.0:
+                    res["strategy_name"] = f"{res['strategy_name']} (₹{int(cap/1000)}K Capital)"
+                orders_by_strat[disp_id] = res.pop("orders", [])
+                res.pop("trades", [])
+
+                if res["total_trades"] > 0:
+                    slip_rows = eng.run_slippage_sensitivity(
+                        start_date=eval_start_date,
+                        end_date=eval_end_date,
+                        strategy_id=base_sid,
+                        slippage_bps_list=(5.0, 10.0, 20.0, 30.0),
+                        symbols=LAB_DEFAULT_UNIVERSE,
+                        data_mode=DataSourceMode.HISTORICAL_REAL,
+                        eligible_dates=eval_dates,
+                        timeframe_minutes=60,  # type: ignore[arg-type]
+                    )
+                else:
+                    slip_rows = [
+                        {
+                            "slippage_bps": float(b), "gross_return_pct": 0.0, "net_return_pct": 0.0,
+                            "net_pnl_inr": 0.0, "total_fees_inr": 0.0, "total_brokerage_inr": 0.0,
+                            "total_statutory_inr": 0.0, "total_slippage_inr": 0.0, "total_trades": 0, "win_rate_pct": 0.0,
+                        }
+                        for b in (5.0, 10.0, 20.0, 30.0)
+                    ]
+                slip_matrix[disp_id] = slip_rows
+                slip_all.extend({"strategy_id": disp_id, **sr} for sr in slip_rows)
+                cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
+
+                dr = res["daily_runs"]
+                unseen_slice = dr[v_end_1h:] or [dr[-1]]
+                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / cap) * 100.0, 2)
+                wf = {
+                    "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / cap) * 100.0, 2)},
+                    "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / cap) * 100.0, 2)},
+                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                }
+                stat_v, _ = self.stat_agent.validate(res, wf)
+                rt_ok, rt_reason = self.red_team.challenge(disp_id, res, wf)
+                qual = evaluate_seven_gates(
+                    strategy_id=disp_id, strategy_name=res["strategy_name"], multi_day_metrics=res,
+                    unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
+                    data_provenance_verified=prov_ok_005, stat_validation_verdict=stat_v,
+                    red_team_approved=rt_ok, red_team_reason=rt_reason,
+                    min_sessions_required=60, min_trades_required=30,
+                    independent_holdout_valid=guard_res["integrity_passed"],
+                    provenance_status=prov_rep_005.get("final_provenance_status", "FAILED"),
+                    holdout_status=guard_res.get("holdout_status", "FAILED"),
+                    integrity_guard_result=guard_res,
+                )
+                leaderboard.append(res)
+                qualification_board.append({
+                    "strategy_id": disp_id, "strategy_name": res["strategy_name"], "timeframe_minutes": 60,
+                    "initial_capital_inr": cap, "final_status": qual.final_status,
+                    "passed_gates": f"{qual.passed_gates_count}/{qual.total_gates}",
+                    "sessions": res["sessions_evaluated"], "trades": res["total_trades"],
+                    "gross_return_pct": res["gross_return_pct"], "net_return_pct": res["total_return_pct"],
+                    "conservative_10bps_net_pct": cons_10["net_return_pct"],
+                    "alpha_vs_bh_pct": res["alpha_vs_buy_and_hold_pct"],
+                    "max_drawdown_pct": res["max_drawdown_pct"], "sharpe_ratio": res["sharpe_ratio"],
+                    "sortino_ratio": res["sortino_ratio"], "profit_factor": res["profit_factor"],
+                    "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
+                    "total_brokerage_inr": res.get("total_brokerage_inr", 0.0),
+                    "total_statutory_inr": res.get("total_statutory_inr", 0.0),
+                    "total_slippage_inr": res.get("total_slippage_inr", 0.0),
+                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
+                    "exploratory_only": not qualification_allowed,
+                    "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
+                })
+
+            cnc_configs = [
+                ("STRAT-019-60M-CNC-ORB-SWING", "60m CNC Delivery ORB Swing (₹50K)", "ORB_SWING"),
+                ("STRAT-020-60M-CNC-TREND-SWING", "60m CNC Delivery Trend Swing (₹50K)", "TREND_SWING"),
+            ]
+            for sid, sname, mode in cnc_configs:
+                res = run_cnc_swing_backtest(eval_dates, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=5.0)
+                orders_by_strat[sid] = res.pop("orders", [])
+                slip_rows = []
+                for bps in (5.0, 10.0, 20.0, 30.0):
+                    sr_res = run_cnc_swing_backtest(eval_dates, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=bps)
+                    slip_rows.append({
+                        "slippage_bps": bps, "gross_return_pct": sr_res["gross_return_pct"],
+                        "net_return_pct": sr_res["total_return_pct"], "net_pnl_inr": sr_res["net_pnl_inr"],
+                        "total_fees_inr": sr_res["total_fees_inr"], "total_brokerage_inr": sr_res["total_brokerage_inr"],
+                        "total_statutory_inr": sr_res["total_statutory_inr"], "total_slippage_inr": sr_res["total_slippage_inr"],
+                        "total_trades": sr_res["total_trades"], "win_rate_pct": sr_res["win_rate_pct"],
+                    })
+                slip_matrix[sid] = slip_rows
+                slip_all.extend({"strategy_id": sid, **sr} for sr in slip_rows)
+                cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
+
+                dr = res["daily_runs"]
+                unseen_slice = dr[v_end_1h:] or [dr[-1]]
+                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / 50_000.0) * 100.0, 2)
+                wf = {
+                    "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / 50_000.0) * 100.0, 2)},
+                    "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / 50_000.0) * 100.0, 2)},
+                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                }
+                stat_v, _ = self.stat_agent.validate(res, wf)
+                rt_ok, rt_reason = self.red_team.challenge(sid, res, wf)
+                qual = evaluate_seven_gates(
+                    strategy_id=sid, strategy_name=sname, multi_day_metrics=res,
+                    unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
+                    data_provenance_verified=prov_ok_005, stat_validation_verdict=stat_v,
+                    red_team_approved=rt_ok, red_team_reason=rt_reason,
+                    min_sessions_required=60, min_trades_required=30,
+                    independent_holdout_valid=guard_res["integrity_passed"],
+                    provenance_status=prov_rep_005.get("final_provenance_status", "FAILED"),
+                    holdout_status=guard_res.get("holdout_status", "FAILED"),
+                    integrity_guard_result=guard_res,
+                )
+                leaderboard.append(res)
+                qualification_board.append({
+                    "strategy_id": sid, "strategy_name": sname, "timeframe_minutes": 60,
+                    "initial_capital_inr": 50_000.0, "final_status": qual.final_status,
+                    "passed_gates": f"{qual.passed_gates_count}/{qual.total_gates}",
+                    "sessions": res["sessions_evaluated"], "trades": res["total_trades"],
+                    "gross_return_pct": res["gross_return_pct"], "net_return_pct": res["total_return_pct"],
+                    "conservative_10bps_net_pct": cons_10["net_return_pct"],
+                    "alpha_vs_bh_pct": res["alpha_vs_buy_and_hold_pct"],
+                    "max_drawdown_pct": res["max_drawdown_pct"], "sharpe_ratio": res["sharpe_ratio"],
+                    "sortino_ratio": res["sortino_ratio"], "profit_factor": res["profit_factor"],
+                    "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
+                    "total_brokerage_inr": res["total_brokerage_inr"], "total_statutory_inr": res["total_statutory_inr"],
+                    "total_slippage_inr": res["total_slippage_inr"],
+                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
+                    "exploratory_only": not qualification_allowed,
+                    "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
+                })
+        except Exception as exc:
+            if consumed_dates:
+                holdout_guard.mark_evaluation_failed(
+                    "CYCLE-005",
+                    consumed_dates,
+                    reason=str(exc),
+                    data_accessed=True,
+                )
+            raise
+
+        # Step 5: Complete evaluation or record train+val-only completion
+        evaluation_completed_at = datetime.now(tz=IST_TZ).isoformat()
+        strategy_ids_evaluated = [q["strategy_id"] for q in qualification_board]
+        recovery_failed = False
+        recovery_failure_reasons: list[str] = []
+        if consumed_dates:
+            exposure_status = holdout_guard.complete_evaluation(
+                "CYCLE-005",
+                evaluation_id=evaluation_id,
+                evaluation_type=eval_type,
+                consumed_dates=consumed_dates,
+                strategy_ids=strategy_ids_evaluated,
+                dataset_fingerprint=dataset_fp,
+                evaluation_ref=str(output_path),
+            )
+            completion_ok = bool(exposure_status.get("ok"))
+            if completion_ok:
+                holdout_consumed = True
+                holdout_state = exposure_status.get("holdout_state", "EXPOSED")
+                eval_status = "COMPLETED_FORMAL" if qualification_allowed else "COMPLETED_EXPLORATORY_WITH_UNSEEN"
+            else:
+                try:
+                    reg_after = holdout_guard.load_registry()
+                    reg_records = reg_after.get("records", {})
+                    unrecovered_accessed = [
+                        d
+                        for d in consumed_dates
+                        if reg_records.get(d.isoformat(), {}).get("state") == "SEALED"
+                        and reg_records.get(d.isoformat(), {}).get("owning_cycle_id") == "CYCLE-005"
+                        and (
+                            bool(reg_records.get(d.isoformat(), {}).get("data_accessed"))
+                            or reg_records.get(d.isoformat(), {}).get("reservation_status") == "EVALUATION_IN_PROGRESS"
+                        )
+                    ]
+                    if unrecovered_accessed:
+                        holdout_guard.mark_evaluation_failed(
+                            "CYCLE-005",
+                            unrecovered_accessed,
+                            reason="; ".join(exposure_status.get("failure_reasons", ["complete_evaluation failed"])),
+                            data_accessed=True,
+                        )
+                        reg_after = holdout_guard.load_registry()
+                        reg_records = reg_after.get("records", {})
+                    any_owned_exposed = any(
+                        reg_records.get(d.isoformat(), {}).get("state") == "EXPOSED"
+                        and reg_records.get(d.isoformat(), {}).get("owning_cycle_id") == "CYCLE-005"
+                        for d in consumed_dates
+                    )
+                    holdout_consumed = any_owned_exposed or bool(exposure_status.get("holdout_consumed"))
+                    holdout_state = "EXPOSED" if holdout_consumed else exposure_status.get("holdout_state", "SEALED")
+                    eval_status = "COMPLETION_FAILED"
+                except Exception as rec_exc:
+                    recovery_failed = True
+                    holdout_consumed = bool(exposure_status.get("holdout_consumed", False))
+                    holdout_state = "RECOVERY_FAILED"
+                    eval_status = "COMPLETION_FAILED_RECOVERY_FAILED"
+                    recovery_failure_reasons.append(f"Recovery failed: {rec_exc}")
+        else:
+            exposure_status = {
+                "status": "UNCONSUMED",
+                "global_holdout_integrity_status": global_holdout_integrity_status,
+                "independent_holdout_valid": False,
+                "exposed": False,
+                "holdout_consumed": False,
+                "reason": "Exploratory evaluation ran on train+validation only; unseen holdout preserved.",
+            }
+            holdout_consumed = False
+            holdout_state = "UNCONSUMED"
+            eval_status = "COMPLETED_EXPLORATORY_TRAIN_VAL_ONLY"
+
+        exec_rep = self.exec_agent.audit_costs(leaderboard, slip_all, orders_by_strategy=orders_by_strat)
+        sq_rep = self.sq_agent.review_system(test_report=live_test_metrics)
+
+        sep_005 = separate_strategies_and_benchmarks(qualification_board, period_label=f"{start_1h.isoformat()} -> {end_1h.isoformat()}")
+        qualified_cnt = sep_005["qualified_active_strategies"]
+        rejected_cnt = sum(1 for q in sep_005["active_strategy_leaderboard"] if q["final_status"] in ("REJECTED", "INVALIDATED", "BLOCKED_INTEGRITY"))
+        best_strat = sep_005["best_active_strategy"]
+
+        cycle_failure_reasons = list(guard_res.get("failure_reasons", []))
+        if consumed_dates and not exposure_status.get("ok"):
+            cycle_failure_reasons.extend(exposure_status.get("failure_reasons", ["complete_evaluation failed"]))
+        cycle_failure_reasons.extend(recovery_failure_reasons)
+
+        cycle_005_out = {
+            "cycle_id": "CYCLE-005",
+            "evaluation_id": evaluation_id,
+            "generated_at_ist": evaluation_completed_at,
+            "reconciled_eligible_sessions": len(elig_1h),
+            "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
+            "excluded_dates": excl_1h,
+            "integrity_passed": bool(guard_res.get("integrity_passed", False)),
+            "qualification_allowed": qualification_allowed,
+            "exploratory_research_allowed": exploratory_allowed,
+            "exploratory_only": not qualification_allowed,
+            "current_evaluation_holdout_consumed": holdout_consumed,
+            "current_evaluation_holdout_state": holdout_state,
+            "global_holdout_integrity_status": global_holdout_integrity_status,
+            "independent_holdout_available": independent_holdout_available,
+            "holdout_consumed": holdout_consumed,
+            "holdout_state": holdout_state,
+            "recovery_failed": recovery_failed,
+            "evaluation_status": eval_status,
+            "evaluation_type": eval_type,
+            "evaluation_started_at": evaluation_started_at,
+            "evaluation_completed_at": evaluation_completed_at,
+            "consumed_holdout_dates": [d.isoformat() for d in consumed_dates],
+            "dataset_fingerprint": dataset_fp,
+            "strategy_ids_evaluated": strategy_ids_evaluated,
+            "failure_reasons": cycle_failure_reasons,
+            "provenance_verified": bool(prov_rep_005.get("verified", False)),
+            "provenance_status": prov_rep_005.get("final_provenance_status", "FAILED"),
+            "seal_reservation": seal_res,
+            "stale_recovery": stale_recovery,
+            "integrity_guard_result": guard_res,
+            "sealed_holdout_status": exposure_status,
+            "dynamic_test_metrics": live_test_metrics,
+            "command_centre": {
+                "current_cycle": "CYCLE-005",
+                "active_agents": 9,
+                "experiments_completed": len(qualification_board),
+                "experiments_rejected": rejected_cnt,
+                "qualified_strategies": qualified_cnt,
+                "best_experimental_strategy": best_strat["strategy_id"] if best_strat else None,
+                "best_experimental_net_pct": best_strat["net_return_pct"] if best_strat else 0.0,
+                "max_candidates_per_cycle": self.MAX_CANDIDATES_PER_CYCLE,
+                "max_tuning_rounds": self.MAX_TUNING_ROUNDS_PER_HYPOTHESIS,
+            },
+            "qualification_board": sorted(qualification_board, key=lambda x: x["net_return_pct"], reverse=True),
+            "reference_benchmark_leaderboard": sep_005["reference_benchmark_leaderboard"],
+            "slippage_sensitivity_matrix": slip_matrix,
+            "agent_performance": [asdict(exec_rep), asdict(sq_rep)],
+        }
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(cycle_005_out, indent=2), encoding="utf-8")
+
+        return cycle_005_out
