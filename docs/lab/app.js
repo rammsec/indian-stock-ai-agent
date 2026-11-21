@@ -952,19 +952,21 @@ function renderCycleProgression(prog) {
 
 function renderResearchIntegrity(idx) {
   if (!idx) return;
+  const reass113 = idx.cycle_003_phase11_3_reassessment || {};
   const reass = idx.cycle_003_integrity_reassessment || {};
   const prov1h = idx.provenance_report_1h || {};
   const holdout = reass.holdout_integrity || idx.sealed_holdout_summary || {};
   const dq = idx.data_quality_analytics || {};
+  const qualAllowed = reass113.qualification_allowed === true && prov1h.verified === true && holdout.independent_holdout_valid === true;
 
   const warnEl = document.getElementById("p11-integrity-warning");
   if (warnEl) {
-    if (holdout.independent_holdout_valid === false || (reass.data_quality_warnings && reass.data_quality_warnings.length)) {
+    if (!qualAllowed || (reass.data_quality_warnings && reass.data_quality_warnings.length)) {
       warnEl.style.display = "block";
       const msgs = reass.data_quality_warnings || [
-        `Holdout independence invalid (${holdout.holdout_status || "EXPOSED_HOLDOUT_REUSED"}): ${holdout.previously_exposed_dates_count || 0} previously exposed dates reused.`,
+        `Qualification blocked: 1H provenance=${prov1h.final_provenance_status || "UNKNOWN"}, holdout=${holdout.holdout_status || "EXPOSED_HOLDOUT_REUSED"}.`,
       ];
-      warnEl.innerHTML = `<strong>&#9888; INTEGRITY WARNING:</strong> ${msgs.join(" | ")}`;
+      warnEl.innerHTML = `<strong>&#9888; INTEGRITY GATE BLOCKED (Phase 11.3):</strong> ${msgs.join(" | ")}`;
     } else {
       warnEl.style.display = "none";
     }
@@ -976,6 +978,7 @@ function renderResearchIntegrity(idx) {
     const provCls = provStatus === "VERIFIED" ? "text-green" : (provStatus === "PARTIALLY_VERIFIED" ? "text-amber" : "text-red");
     const holdoutValid = holdout.independent_holdout_valid === true;
     gridEl.innerHTML = `
+      <div class="metric-box"><div class="metric-label">Qualification Gate</div><div class="metric-val ${qualAllowed ? "text-green" : "text-red"}" style="font-size:13px;">${qualAllowed ? "ALLOWED" : "BLOCKED_INTEGRITY"}</div></div>
       <div class="metric-box"><div class="metric-label">1H Provenance Status</div><div class="metric-val ${provCls}" style="font-size:13px;">${provStatus}</div></div>
       <div class="metric-box"><div class="metric-label">Holdout Independence</div><div class="metric-val ${holdoutValid ? "text-green" : "text-red"}" style="font-size:13px;">${holdoutValid ? "VALID_UNSEEN" : (holdout.holdout_status || "INVALIDATED")}</div></div>
       <div class="metric-box"><div class="metric-label">Exposed Dates (Registry)</div><div class="metric-val text-amber">${holdout.total_exposed_dates_in_registry || 0}</div></div>

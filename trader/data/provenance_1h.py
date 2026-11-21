@@ -237,10 +237,14 @@ def validate_1h_provenance(
         verified = False
     elif any_partial:
         overall_status = "PARTIALLY_VERIFIED"
-        verified = True
+        verified = False
     else:
         overall_status = "VERIFIED"
         verified = True
+
+    combined_fp_hasher = hashlib.sha256()
+    for sym in sorted(per_symbol.keys()):
+        combined_fp_hasher.update(f"{sym}:{per_symbol[sym].get('dataset_fingerprint', '')}\n".encode())
 
     report = {
         "validator_version": VALIDATOR_VERSION,
@@ -249,7 +253,10 @@ def validate_1h_provenance(
         "provider": provider_name,
         "resampling_methodology": resampling_methodology,
         "verified": verified,
+        "qualification_allowed": verified,
+        "exploratory_research_allowed": overall_status in ("VERIFIED", "PARTIALLY_VERIFIED"),
         "final_provenance_status": overall_status,
+        "dataset_fingerprint": combined_fp_hasher.hexdigest(),
         "total_missing_intervals": total_missing_intervals,
         "total_duplicates": total_duplicates,
         "total_invalid_ohlc": total_invalid_ohlc,
