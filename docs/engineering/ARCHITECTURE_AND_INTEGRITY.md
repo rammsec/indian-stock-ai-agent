@@ -75,7 +75,7 @@ Shared datasets & side-effect boundaries across workflows on `main`:
    - **Primary prediction generator**: reads `store.features_parquet`, `store.equities_parquet`, `store.regime_parquet`, and `store.quality_parquet`.
    - Calls `get_candidate_feature_columns()` (`backend/features/selector.py`), `run_walk_forward_backtest()` (`backend/backtesting/walk_forward.py`), `estimate_indian_roundtrip_cost()` (`backend/prediction/cost_model.py`), and `BharatAlphaQuantEnsemble` + `build_latest_prediction_records()` (`backend/prediction/ensemble_model.py`).
    - Persists `data/backtests/walk_forward_predictions.parquet`, `data/backtests/walk_forward_summary.json`, `data/predictions/prediction_log.parquet`, `data/predictions/latest_predictions.json`, `docs/data/latest_predictions.json`, and embeds `quantitative_prediction` into `docs/data/{SYMBOL}.json`.
-4. **Phase 4 — Corporate & Institutional Enrichment (Downstream / Parallel)** ([`scripts/run_phase4_corporate_intel.py`](../../scripts/run_phase4_corporate_intel.py)):
+4. **Phase 4 — Corporate & Institutional Enrichment (Downstream Enrichment)** ([`scripts/run_phase4_corporate_intel.py`](../../scripts/run_phase4_corporate_intel.py)):
    - Reads `equities_daily.parquet`, `quality.parquet`, `docs/data/regime.json`, and existing `docs/data/{SYM}.json`.
    - Calls `fetch_official_nse_bulk_and_block_deals()` and `build_corporate_intelligence_for_symbol()` (`backend/collectors/nse_corporate_collector.py`).
    - Persists `data/processed/nse_bulk_block_deals.parquet`, `data/processed/corporate_intelligence.parquet`, `docs/data/corporate_intel.json`, and enriches `docs/data/{SYMBOL}.json`. **Does not feed back into Phase 3 ML predictions.**
@@ -105,7 +105,7 @@ Shared datasets & side-effect boundaries across workflows on `main`:
 | **Agent 8 — Software Quality & Reliability** | `SoftwareQualityAgent.review_system()` ([`agents.py:207-242`](../../trader/research/agents.py#L207-L242)) | `run_research_cycle()` (`line 440`), `run_cycle_003()` (`line 775`), `run_cycle_004()` (`line 1301`) | `test_report` → `AgentActivityReport` (`PASS` only if `executed > 0 and failed == 0`). |
 | **Agent 9 — Strategy Challenger (Red Team)** | `StrategyChallengerRedTeamAgent.challenge()` ([`agents.py:245-273`](../../trader/research/agents.py#L245-L273)) | All cycles (`lines 387, 730, 1102, 1165`) | `multi_day_metrics`, `walk_forward` → `(bool, reason)` (rejects negative net/unseen, `< 20` trades, or 1-day profit dependence). **Directly gates Gate 7**. |
 
-*Note*: `run_cycle_004()` (`orchestrator.py:1281, 1293`) invokes Agents 5, 6, 8, and 9 (not 2, 3, 4, 7), and writes `[exec_rep, sq_rep]` to `agent_performance`, while `command_centre.active_agents` is hardcoded to `9` (`line 1281`).
+*Note*: `run_cycle_004()` invokes Agents 5 (`line 1300`), 6 (`lines 1101, 1164`), 8 (`line 1301`), and 9 (`lines 1102, 1165`) — not Agents 2, 3, 4, or 7 — and writes `[exec_rep, sq_rep]` to `agent_performance` (`orchestrator.py:1356`), while `command_centre.active_agents` is hardcoded to `9` (`orchestrator.py:1344`; similarly `run_cycle_003()` sets `active_agents = 9` at `orchestrator.py:794` and writes `[exec_1h_report, sq_report]` at `orchestrator.py:809`).
 
 ---
 
