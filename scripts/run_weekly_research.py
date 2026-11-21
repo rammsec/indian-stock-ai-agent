@@ -1,100 +1,103 @@
-"""Weekly Automated Research & Qualification Runner (Phase 11.1 & CYCLE-002)."""
+"""Weekly Automated Phase 11.3 Readiness & Integrity Audit (Non-Mutating)."""
 
 from __future__ import annotations
 
 import json
 import sys
-from datetime import date, datetime
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from trader.config import IST_TZ, LAB_DEFAULT_UNIVERSE
-from trader.lab.data_service import filter_research_eligible_dates, get_available_historical_dates
-from trader.research.orchestrator import (
-    LAB_INDEX_PATH,
-    ChiefResearchOrchestrator,
-    collect_dynamic_test_metrics,
-    verify_dataset_provenance,
-)
+from trader.data.loader_1h import get_available_1h_dates
+from trader.data.provenance_1h import validate_1h_provenance
+from trader.research.holdout import SEALED_HOLDOUT_REGISTRY_PATH
+from trader.research.integrity_guard import ResearchIntegrityGuard
+from trader.research.orchestrator import collect_dynamic_test_metrics
 
 WEEKLY_STATUS_PATH = Path("data/lab/weekly_research_status.json")
 HISTORY_DIR = Path("data/lab/history")
 
 
-def main() -> int:
+def run_weekly_audit(
+    run_live_pytest: bool = True,
+    registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH,
+    status_path: Path = WEEKLY_STATUS_PATH,
+    history_dir: Path = HISTORY_DIR,
+) -> tuple[int, dict]:
+    """Run read-only test, provenance, and holdout readiness checks without mutating historical artifacts."""
     now_ist = datetime.now(tz=IST_TZ)
-    print(f"=== Weekly Automated Research Runner ({now_ist.isoformat()}) ===")
 
     # 1. Run dynamic pytest suite first
-    test_metrics = collect_dynamic_test_metrics(run_pytest=True)
-    print(
-        f"Pytest check: executed={test_metrics['tests_executed']}, "
-        f"passed={test_metrics['tests_passed']}, failed={test_metrics['tests_failed']}"
-    )
-    if test_metrics["tests_executed"] == 0 or test_metrics["tests_failed"] > 0:
+    test_metrics = collect_dynamic_test_metrics(run_pytest=run_live_pytest)
+    if run_live_pytest and (test_metrics["tests_executed"] == 0 or test_metrics["tests_failed"] > 0):
         status_payload = {
             "last_run_ist": now_ist.isoformat(),
             "status": "ABORTED_TEST_FAILURE",
+            "qualification_ready": False,
             "test_metrics": test_metrics,
         }
-        WEEKLY_STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
-        WEEKLY_STATUS_PATH.write_text(json.dumps(status_payload, indent=2), encoding="utf-8")
-        print("ABORTING: Critical test check failed.", file=sys.stderr)
-        return 1
+        status_path.parent.mkdir(parents=True, exist_ok=True)
+        status_path.write_text(json.dumps(status_payload, indent=2), encoding="utf-8")
+        return 1, status_payload
 
-    # 2. Verify data quality & provenance before executing research cycle
-    avail_dates = get_available_historical_dates(LAB_DEFAULT_UNIVERSE, max_dates=150)
-    eligible_objs = filter_research_eligible_dates(avail_dates, min_bars_per_stock=70)
-    ordered_dates = sorted(date.fromisoformat(d.date) for d in eligible_objs)
-    prov_ok, prov_report = verify_dataset_provenance(ordered_dates, LAB_DEFAULT_UNIVERSE)
-    if not prov_ok:
-        status_payload = {
-            "last_run_ist": now_ist.isoformat(),
-            "status": "ABORTED_PROVENANCE_FAILURE",
-            "provenance_report": prov_report,
-        }
-        WEEKLY_STATUS_PATH.parent.mkdir(parents=True, exist_ok=True)
-        WEEKLY_STATUS_PATH.write_text(json.dumps(status_payload, indent=2), encoding="utf-8")
-        print("ABORTING: Dataset provenance verification failed.", file=sys.stderr)
-        return 1
+    # 2. Validate 1h provenance & holdout readiness (strictly read-only; never calls record_exposure or run_cycle_002)
+    elig_1h, excl_1h = get_available_1h_dates(LAB_DEFAULT_UNIVERSE, min_bars_per_stock=6)
+    n_1h = len(elig_1h)
+    t_end = max(1, int(n_1h * 0.60))
+    v_end = max(t_end + 1, int(n_1h * 0.80))
+    train_dates = elig_1h[:t_end]
+    val_dates = elig_1h[t_end:v_end]
+    unseen_dates = elig_1h[v_end:] or ([elig_1h[-1]] if elig_1h else [])
 
-    # 3. Execute CYCLE-002
-    orch = ChiefResearchOrchestrator()
-    report = orch.run_cycle_002(min_bars_for_research=70, test_report=test_metrics, run_live_pytest=False)
+    prov_ok, prov_report = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+    dataset_fp = str(prov_report.get("dataset_fingerprint", ""))
 
-    # 4. Preserve historical archive of this weekly run
-    HISTORY_DIR.mkdir(parents=True, exist_ok=True)
-    hist_file = HISTORY_DIR / f"{report['cycle_id']}_{now_ist.strftime('%Y%m%d_%H%M%S')}.json"
-    hist_file.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    guard_res = ResearchIntegrityGuard(registry_path=registry_path).validate(
+        cycle_id="WEEKLY-READINESS-AUDIT",
+        training_dates=train_dates,
+        validation_dates=val_dates,
+        unseen_dates=unseen_dates,
+        dataset_fingerprint=dataset_fp,
+        provenance_result=prov_report,
+    )
+
+    history_dir.mkdir(parents=True, exist_ok=True)
+    hist_file = history_dir / f"weekly_audit_{now_ist.strftime('%Y%m%d_%H%M%S')}.json"
 
     weekly_status = {
         "last_run_ist": now_ist.isoformat(),
-        "status": "COMPLETED",
-        "cycle_id": report["cycle_id"],
-        "reconciled_eligible_sessions": report["reconciled_eligible_sessions"],
-        "qualified_strategies": report["command_centre"]["qualified_strategies"],
-        "best_strategy": report["command_centre"]["best_experimental_strategy"],
-        "best_net_return_pct": report["command_centre"]["best_experimental_net_pct"],
-        "provenance_verified": report["provenance_verified"],
+        "status": "AUDIT_READY" if guard_res["qualification_allowed"] else "AUDIT_BLOCKED_INTEGRITY",
+        "mode": "READ_ONLY_PHASE11_3_AUDIT",
+        "reconciled_eligible_sessions": n_1h,
+        "excluded_sessions_count": len(excl_1h),
+        "provenance_verified": prov_ok,
+        "provenance_status": guard_res["provenance_status"],
+        "holdout_status": guard_res["holdout_status"],
+        "qualification_ready": bool(guard_res["qualification_allowed"]),
+        "failure_reasons": guard_res["failure_reasons"],
         "test_metrics": test_metrics,
         "history_snapshot": str(hist_file),
     }
-    WEEKLY_STATUS_PATH.write_text(json.dumps(weekly_status, indent=2), encoding="utf-8")
 
-    if LAB_INDEX_PATH.exists():
-        idx = json.loads(LAB_INDEX_PATH.read_text(encoding="utf-8"))
-        idx["weekly_research_status"] = weekly_status
-        LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
+    hist_file.write_text(json.dumps(weekly_status, indent=2), encoding="utf-8")
+    status_path.parent.mkdir(parents=True, exist_ok=True)
+    status_path.write_text(json.dumps(weekly_status, indent=2), encoding="utf-8")
+    return 0, weekly_status
 
+
+def main() -> int:
+    print(f"=== Weekly Phase 11.3 Readiness & Integrity Audit ({datetime.now(tz=IST_TZ).isoformat()}) ===")
+    code, status = run_weekly_audit(run_live_pytest=True)
     print(
-        f"Weekly research complete: {report['cycle_id']} | "
-        f"sessions={report['reconciled_eligible_sessions']} | "
-        f"qualified={report['command_centre']['qualified_strategies']} | "
-        f"best={report['command_centre']['best_experimental_strategy']} ({report['command_centre']['best_experimental_net_pct']:+.2f}%)"
+        f"Weekly audit complete: status={status['status']} | "
+        f"provenance={status.get('provenance_status')} | "
+        f"holdout={status.get('holdout_status')} | "
+        f"qualification_ready={status.get('qualification_ready')}"
     )
-    return 0
+    return code
 
 
 if __name__ == "__main__":

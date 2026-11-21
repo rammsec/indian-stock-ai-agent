@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   weekly-research:
@@ -27,29 +27,14 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install pytest pydantic pandas numpy pyarrow yfinance
 
-      - name: Run Weekly Research & Qualification Cycle (CYCLE-002)
+      - name: Run Weekly Phase 11.3 Readiness & Integrity Audit (Read-Only)
         run: |
           python scripts/run_weekly_research.py
 
-      - name: Upload Research Artifacts
+      - name: Upload Weekly Audit Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: weekly-research-reports
+          name: weekly-research-audit
           path: |
-            data/lab/cycle_002_report.json
-            data/lab/provenance_report.json
             data/lab/weekly_research_status.json
-            data/lab/sealed_holdout_registry.json
-            docs/lab/data/lab_index.json
-
-      - name: Commit updated research reports if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/lab/ docs/lab/data/
-          if ! git diff --cached --quiet; then
-            git commit -m "chore(research): weekly automated CYCLE-002 research update [skip ci]"
-            git push
-          else
-            echo "No research report changes to commit."
-          fi
+            data/lab/history/
