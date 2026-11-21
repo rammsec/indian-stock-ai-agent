@@ -177,7 +177,12 @@ class StatisticalValidationAgent:
         sessions = int(multi_day_metrics.get("sessions_evaluated", 0))
         trades = int(multi_day_metrics.get("total_trades", 0))
         net_ret = float(multi_day_metrics.get("total_return_pct", 0.0))
-        unseen_ret = float(walk_forward.get("unseen_test", {}).get("total_return_pct", 0.0))
+        unseen_test = walk_forward.get("unseen_test", {})
+
+        if unseen_test.get("status") == "NOT_EVALUATED" or unseen_test.get("total_return_pct") is None:
+            return "INSUFFICIENT EVIDENCE", "Unseen holdout NOT_EVALUATED; out-of-sample performance not measured."
+
+        unseen_ret = float(unseen_test.get("total_return_pct", 0.0))
 
         if sessions < 60 or trades < 30:
             return "INSUFFICIENT EVIDENCE", f"Sample size ({sessions} sessions, {trades} trades) below 60-session / 30-trade threshold."
@@ -253,8 +258,13 @@ class StrategyChallengerRedTeamAgent:
     ) -> tuple[bool, str]:
         trades = int(multi_day_metrics.get("total_trades", 0))
         net_ret = float(multi_day_metrics.get("total_return_pct", 0.0))
-        unseen_ret = float(walk_forward.get("unseen_test", {}).get("total_return_pct", 0.0))
+        unseen_test = walk_forward.get("unseen_test", {})
         daily_runs = multi_day_metrics.get("daily_runs", [])
+
+        if unseen_test.get("status") == "NOT_EVALUATED" or unseen_test.get("total_return_pct") is None:
+            return False, "Red Team Insufficient Evidence: Unseen out-of-sample split NOT_EVALUATED."
+
+        unseen_ret = float(unseen_test.get("total_return_pct", 0.0))
 
         if net_ret <= 0.0:
             return False, f"Red Team Reject: Net return ({net_ret:+.2f}%) is non-positive after costs."

@@ -105,11 +105,20 @@ def evaluate_seven_gates(
     # Gate 2 — Net Profitability (Overall + Unseen)
     net_ret = float(multi_day_metrics.get("total_return_pct", 0.0))
     net_pnl = float(multi_day_metrics.get("net_pnl_inr", 0.0))
-    unseen_ret = float(unseen_metrics.get("total_return_pct", 0.0))
-    g2_pass = net_ret > 0.0 and net_pnl > 0.0 and unseen_ret > 0.0
+    unseen_not_evaluated = (
+        unseen_metrics.get("status") == "NOT_EVALUATED"
+        or unseen_metrics.get("total_return_pct") is None
+    )
+    if unseen_not_evaluated:
+        g2_pass = False
+        g2_reason = f"Overall Net={net_ret:+.2f}% (₹{net_pnl:+.2f}), Unseen=NOT_EVALUATED (insufficient unseen evidence)"
+    else:
+        unseen_ret = float(unseen_metrics.get("total_return_pct", 0.0))
+        g2_pass = net_ret > 0.0 and net_pnl > 0.0 and unseen_ret > 0.0
+        g2_reason = f"Overall Net={net_ret:+.2f}% (₹{net_pnl:+.2f}), Unseen={unseen_ret:+.2f}% (requires > 0% on both)"
     gates.append(GateResult(
-        2, "Net Profitability", g2_pass, "PASS" if g2_pass else "FAIL",
-        f"Overall Net={net_ret:+.2f}% (₹{net_pnl:+.2f}), Unseen={unseen_ret:+.2f}% (requires > 0% on both)",
+        2, "Net Profitability", g2_pass, "PASS" if g2_pass else ("INSUFFICIENT_EVIDENCE" if unseen_not_evaluated else "FAIL"),
+        g2_reason,
     ))
 
     # Gate 3 — Benchmark Comparison (Positive alpha vs Buy & Hold and > 0% vs Cash)
@@ -165,6 +174,9 @@ def evaluate_seven_gates(
         else:
             final_status = "BLOCKED_INTEGRITY"
             summary = f"Blocked Integrity: {g1_reason} ({passed_count}/7 gates passed)."
+    elif unseen_not_evaluated:
+        final_status = "INSUFFICIENT_EVIDENCE"
+        summary = f"Insufficient unseen evidence: Unseen holdout NOT_EVALUATED ({passed_count}/7 gates passed)."
     elif not g2_pass or not g6_pass or not red_team_approved:
         final_status = "REJECTED"
         summary = f"Rejected: Failed profitability/robustness/red-team ({passed_count}/7 gates passed)."
