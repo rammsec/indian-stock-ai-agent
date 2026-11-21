@@ -862,14 +862,23 @@ class ChiefResearchOrchestrator:
         test_report: dict[str, Any] | None = None,
         run_live_pytest: bool = True,
         allow_exploratory_on_blocked: bool = True,
+        include_unseen_in_exploratory: bool = True,
         registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH,
+        output_path: Path = CYCLE_004_REPORT_PATH,
     ) -> dict[str, Any]:
-        """Execute CYCLE-004 with strict 5-step lifecycle: Identify -> Seal -> Validate -> Evaluate -> Expose."""
+        """Execute CYCLE-004 with strict holdout consumption, ownership, and crash recovery."""
+        import uuid
         from ..config import LabRiskConfig
         from ..data.loader_1h import get_available_1h_dates
         from .cycle004 import run_cnc_swing_backtest
 
         live_test_metrics = test_report if test_report is not None else collect_dynamic_test_metrics(run_pytest=run_live_pytest)
+        evaluation_id = f"eval_c4_{uuid.uuid4().hex[:8]}"
+        evaluation_started_at = datetime.now(tz=IST_TZ).isoformat()
+
+        holdout_guard = SealedHoldoutGuard(registry_path=registry_path)
+        # Recover any stale EVALUATION_IN_PROGRESS reservations conservatively as EXPOSED
+        stale_recovery = holdout_guard.recover_stale_reservations("CYCLE-004")
 
         # Step 1: Identify eligible dates & splits (no duplicates, no overlaps)
         elig_1h, excl_1h = get_available_1h_dates(LAB_DEFAULT_UNIVERSE, min_bars_per_stock=6)
@@ -881,11 +890,10 @@ class ChiefResearchOrchestrator:
         val_1h_dates = elig_1h[t_end_1h:v_end_1h]
         unseen_1h_dates = elig_1h[v_end_1h:] or [elig_1h[-1]]
 
-        # Step 2: Validate 1h provenance & reserve unseen dates as SEALED owned by CYCLE-004 (never expose yet)
+        # Step 2: Validate 1h provenance & reserve unseen dates as SEALED owned by CYCLE-004
         prov_ok_004, prov_rep_004 = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
         dataset_fp = str(prov_rep_004.get("dataset_fingerprint", ""))
 
-        holdout_guard = SealedHoldoutGuard(registry_path=registry_path)
         seal_res = holdout_guard.seal_dates("CYCLE-004", unseen_1h_dates, dataset_fingerprint=dataset_fp)
 
         # Step 3: Validate integrity centrally via ResearchIntegrityGuard
@@ -900,31 +908,103 @@ class ChiefResearchOrchestrator:
         )
 
         qualification_allowed = bool(guard_res["integrity_passed"] and guard_res["qualification_allowed"])
+        exploratory_allowed = bool(guard_res.get("exploratory_research_allowed", False))
 
-        # Step 4: Execute formal qualification ONLY if integrity_passed & qualification_allowed
-        if not qualification_allowed and not allow_exploratory_on_blocked:
+        # Determine whether any evaluation will start & which dates it will read
+        if qualification_allowed:
+            eval_type = "FORMAL_QUALIFICATION"
+            eval_dates = elig_1h
+            consumed_dates = unseen_1h_dates
+        elif exploratory_allowed and allow_exploratory_on_blocked:
+            if include_unseen_in_exploratory:
+                eval_type = "EXPLORATORY_WITH_UNSEEN"
+                eval_dates = elig_1h
+                consumed_dates = unseen_1h_dates
+            else:
+                eval_type = "EXPLORATORY_TRAIN_VAL_ONLY"
+                eval_dates = train_1h_dates + val_1h_dates
+                consumed_dates = []
+        else:
+            # Evaluation never starts: safely release unused reservation ONLY if we sealed it & never accessed it
+            release_res = (
+                holdout_guard.release_reservation("CYCLE-004", unseen_1h_dates, "Evaluation aborted before data access")
+                if seal_res.get("sealed_count", 0) > 0
+                else {"released": [], "denied": [], "ok": True}
+            )
             blocked_out = {
                 "cycle_id": "CYCLE-004",
+                "evaluation_id": evaluation_id,
                 "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
                 "reconciled_eligible_sessions": len(elig_1h),
                 "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
                 "excluded_dates": excl_1h,
+                "integrity_passed": False,
+                "qualification_allowed": False,
+                "exploratory_research_allowed": exploratory_allowed,
+                "exploratory_only": True,
+                "holdout_consumed": False,
+                "holdout_state": "AVAILABLE" if release_res.get("released") else guard_res["holdout_status"],
+                "evaluation_status": "ABORTED_NO_EVALUATION",
+                "evaluation_type": "NONE",
+                "evaluation_started_at": evaluation_started_at,
+                "evaluation_completed_at": datetime.now(tz=IST_TZ).isoformat(),
+                "consumed_holdout_dates": [],
+                "dataset_fingerprint": dataset_fp,
+                "strategy_ids_evaluated": [],
+                "failure_reasons": guard_res["failure_reasons"],
                 "provenance_verified": bool(prov_rep_004.get("verified", False)),
                 "provenance_status": prov_rep_004.get("final_provenance_status", "FAILED"),
-                "qualification_allowed": False,
                 "qualification_blocked": True,
                 "seal_reservation": seal_res,
+                "release_result": release_res,
+                "stale_recovery": stale_recovery,
                 "integrity_guard_result": guard_res,
                 "dynamic_test_metrics": live_test_metrics,
                 "qualification_board": [],
             }
-            CYCLE_004_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-            CYCLE_004_REPORT_PATH.write_text(json.dumps(blocked_out, indent=2), encoding="utf-8")
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(blocked_out, indent=2), encoding="utf-8")
             return blocked_out
 
-        if qualification_allowed:
-            holdout_guard.mark_evaluation_in_progress("CYCLE-004", unseen_1h_dates)
+        # Step 4: Enforce mark_evaluation_in_progress() BEFORE reading any consumed holdout dates
+        if consumed_dates:
+            prog_res = holdout_guard.mark_evaluation_in_progress(
+                "CYCLE-004",
+                consumed_dates,
+                dataset_fingerprint=dataset_fp,
+                evaluation_type=eval_type,
+            )
+            if not prog_res.get("ok"):
+                aborted_out = {
+                    "cycle_id": "CYCLE-004",
+                    "evaluation_id": evaluation_id,
+                    "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+                    "integrity_passed": False,
+                    "qualification_allowed": False,
+                    "exploratory_research_allowed": exploratory_allowed,
+                    "exploratory_only": not qualification_allowed,
+                    "holdout_consumed": False,
+                    "holdout_state": "BLOCKED_TRANSITION",
+                    "evaluation_status": "ABORTED_TRANSITION_FAILED",
+                    "evaluation_type": eval_type,
+                    "evaluation_started_at": evaluation_started_at,
+                    "evaluation_completed_at": datetime.now(tz=IST_TZ).isoformat(),
+                    "consumed_holdout_dates": [],
+                    "dataset_fingerprint": dataset_fp,
+                    "strategy_ids_evaluated": [],
+                    "failure_reasons": guard_res["failure_reasons"] + [f"mark_evaluation_in_progress failed: {prog_res.get('reason')}"],
+                    "provenance_verified": bool(prov_rep_004.get("verified", False)),
+                    "provenance_status": prov_rep_004.get("final_provenance_status", "FAILED"),
+                    "qualification_blocked": True,
+                    "transition_error": prog_res,
+                    "integrity_guard_result": guard_res,
+                    "qualification_board": [],
+                }
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_text(json.dumps(aborted_out, indent=2), encoding="utf-8")
+                return aborted_out
 
+        eval_start_date, eval_end_date = eval_dates[0], eval_dates[-1]
         db = HistoricalLabDatabase()
         leaderboard: list[dict[str, Any]] = []
         qualification_board: list[dict[str, Any]] = []
@@ -945,14 +1025,14 @@ class ChiefResearchOrchestrator:
                     risk_config=LabRiskConfig(initial_capital_inr=cap, max_open_positions=2, risk_per_trade_pct=0.015)
                 )
                 res = eng.run_date_range(
-                    start_date=start_1h,
-                    end_date=end_1h,
+                    start_date=eval_start_date,
+                    end_date=eval_end_date,
                     strategy_id=base_sid,
                     symbols=LAB_DEFAULT_UNIVERSE,
                     data_mode=DataSourceMode.HISTORICAL_REAL,
                     execution_mode="DETERMINISTIC",
                     db=db,
-                    eligible_dates=elig_1h,
+                    eligible_dates=eval_dates,
                     timeframe_minutes=60,  # type: ignore[arg-type]
                 )
                 res["strategy_id"] = disp_id
@@ -963,13 +1043,13 @@ class ChiefResearchOrchestrator:
 
                 if res["total_trades"] > 0:
                     slip_rows = eng.run_slippage_sensitivity(
-                        start_date=start_1h,
-                        end_date=end_1h,
+                        start_date=eval_start_date,
+                        end_date=eval_end_date,
                         strategy_id=base_sid,
                         slippage_bps_list=(5.0, 10.0, 20.0, 30.0),
                         symbols=LAB_DEFAULT_UNIVERSE,
                         data_mode=DataSourceMode.HISTORICAL_REAL,
-                        eligible_dates=elig_1h,
+                        eligible_dates=eval_dates,
                         timeframe_minutes=60,  # type: ignore[arg-type]
                     )
                 else:
@@ -1032,11 +1112,11 @@ class ChiefResearchOrchestrator:
                 ("STRAT-020-60M-CNC-TREND-SWING", "60m CNC Delivery Trend Swing (₹50K)", "TREND_SWING"),
             ]
             for sid, sname, mode in cnc_configs:
-                res = run_cnc_swing_backtest(elig_1h, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=5.0)
+                res = run_cnc_swing_backtest(eval_dates, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=5.0)
                 orders_by_strat[sid] = res.pop("orders", [])
                 slip_rows = []
                 for bps in (5.0, 10.0, 20.0, 30.0):
-                    sr_res = run_cnc_swing_backtest(elig_1h, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=bps)
+                    sr_res = run_cnc_swing_backtest(eval_dates, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=bps)
                     slip_rows.append({
                         "slippage_bps": bps, "gross_return_pct": sr_res["gross_return_pct"],
                         "net_return_pct": sr_res["total_return_pct"], "net_pnl_inr": sr_res["net_pnl_inr"],
@@ -1089,27 +1169,42 @@ class ChiefResearchOrchestrator:
                     "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
                 })
         except Exception as exc:
-            if qualification_allowed:
-                holdout_guard.mark_evaluation_failed("CYCLE-004", unseen_1h_dates, reason=str(exc))
+            if consumed_dates:
+                holdout_guard.mark_evaluation_failed(
+                    "CYCLE-004",
+                    consumed_dates,
+                    reason=str(exc),
+                    data_accessed=True,
+                )
             raise
 
-        # Step 5: Transition SEALED -> EXPOSED ONLY after evaluation succeeds AND qualification was allowed
-        if qualification_allowed:
-            exposure_status = holdout_guard.record_exposure(
+        # Step 5: Transition SEALED -> EXPOSED for ANY evaluation (formal or exploratory) that consumed unseen dates
+        evaluation_completed_at = datetime.now(tz=IST_TZ).isoformat()
+        strategy_ids_evaluated = [q["strategy_id"] for q in qualification_board]
+        if consumed_dates:
+            exposure_status = holdout_guard.complete_evaluation(
                 "CYCLE-004",
-                unseen_1h_dates,
-                notes="CYCLE-004 completed formal evaluation",
+                evaluation_id=evaluation_id,
+                evaluation_type=eval_type,
+                consumed_dates=consumed_dates,
+                strategy_ids=strategy_ids_evaluated,
                 dataset_fingerprint=dataset_fp,
-                strategy_ids=[q["strategy_id"] for q in qualification_board],
-                evaluation_ref=str(CYCLE_004_REPORT_PATH),
+                evaluation_ref=str(output_path),
             )
+            holdout_consumed = True
+            holdout_state = "EXPOSED"
+            eval_status = "COMPLETED_FORMAL" if qualification_allowed else "COMPLETED_EXPLORATORY_WITH_UNSEEN"
         else:
             exposure_status = {
                 "status": guard_res["holdout_status"],
                 "independent_holdout_valid": False,
                 "exposed": False,
-                "reason": "Qualification blocked by ResearchIntegrityGuard; dates not exposed.",
+                "holdout_consumed": False,
+                "reason": "Exploratory evaluation ran on train+validation only; SEALED holdout preserved.",
             }
+            holdout_consumed = False
+            holdout_state = "SEALED" if seal_res.get("sealed_count", 0) > 0 else guard_res["holdout_status"]
+            eval_status = "COMPLETED_EXPLORATORY_TRAIN_VAL_ONLY"
 
         exec_rep = self.exec_agent.audit_costs(leaderboard, slip_all, orders_by_strategy=orders_by_strat)
         sq_rep = self.sq_agent.review_system(test_report=live_test_metrics)
@@ -1121,15 +1216,29 @@ class ChiefResearchOrchestrator:
 
         cycle_004_out = {
             "cycle_id": "CYCLE-004",
-            "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+            "evaluation_id": evaluation_id,
+            "generated_at_ist": evaluation_completed_at,
             "reconciled_eligible_sessions": len(elig_1h),
             "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
             "excluded_dates": excl_1h,
+            "integrity_passed": bool(guard_res.get("integrity_passed", False)),
+            "qualification_allowed": qualification_allowed,
+            "exploratory_research_allowed": exploratory_allowed,
+            "exploratory_only": not qualification_allowed,
+            "holdout_consumed": holdout_consumed,
+            "holdout_state": holdout_state,
+            "evaluation_status": eval_status,
+            "evaluation_type": eval_type,
+            "evaluation_started_at": evaluation_started_at,
+            "evaluation_completed_at": evaluation_completed_at,
+            "consumed_holdout_dates": [d.isoformat() for d in consumed_dates],
+            "dataset_fingerprint": dataset_fp,
+            "strategy_ids_evaluated": strategy_ids_evaluated,
+            "failure_reasons": list(guard_res.get("failure_reasons", [])),
             "provenance_verified": bool(prov_rep_004.get("verified", False)),
             "provenance_status": prov_rep_004.get("final_provenance_status", "FAILED"),
-            "qualification_allowed": qualification_allowed,
-            "exploratory_research_allowed": bool(guard_res.get("exploratory_research_allowed", False)),
             "seal_reservation": seal_res,
+            "stale_recovery": stale_recovery,
             "integrity_guard_result": guard_res,
             "sealed_holdout_status": exposure_status,
             "dynamic_test_metrics": live_test_metrics,
@@ -1150,11 +1259,11 @@ class ChiefResearchOrchestrator:
             "agent_performance": [asdict(exec_rep), asdict(sq_rep)],
         }
 
-        CYCLE_004_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-        CYCLE_004_REPORT_PATH.write_text(json.dumps(cycle_004_out, indent=2), encoding="utf-8")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(cycle_004_out, indent=2), encoding="utf-8")
 
-        progression = self.build_cycle_progression()
-        if LAB_INDEX_PATH.exists():
+        if output_path == CYCLE_004_REPORT_PATH and LAB_INDEX_PATH.exists():
+            progression = self.build_cycle_progression()
             idx = json.loads(LAB_INDEX_PATH.read_text(encoding="utf-8"))
             idx["cycle_004_report"] = cycle_004_out
             idx["phase11_research_cycle"] = cycle_004_out

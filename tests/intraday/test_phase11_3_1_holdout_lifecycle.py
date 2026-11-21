@@ -111,9 +111,8 @@ def test_08_09_10_11_12_13_14_sequencing_recovery_concurrency_and_corruption(tmp
     assert res_bad["qualification_allowed"] is False
     assert hg.get_date_state(d_fresh[0]) == "SEALED"  # Still SEALED, not EXPOSED!
 
-    # 10. Failed evaluation is recorded correctly without exposing dates
-    hg.mark_evaluation_in_progress("CYCLE-004", d_fresh)
-    hg.mark_evaluation_failed("CYCLE-004", d_fresh, "Simulated crash")
+    # 10. Failed evaluation before data access preserves SEALED
+    hg.mark_evaluation_failed("CYCLE-004", d_fresh, "Pre-access failure", data_accessed=False)
     loaded = hg.load_registry()
     assert loaded["records"]["2026-11-16"]["reservation_status"] == "FAILED_EVALUATION"
     assert loaded["records"]["2026-11-16"]["state"] == "SEALED"
@@ -232,14 +231,15 @@ def test_21_to_28_central_guard_reassessment_fingerprints_and_immutability(tmp_p
         run_live_pytest=False,
         allow_exploratory_on_blocked=False,
         registry_path=reg_tmp,
+        output_path=tmp_path / "c4_blocked.json",
     )
     assert blocked_c4["qualification_blocked"] is True
     assert blocked_c4["provenance_verified"] is False
     assert blocked_c4["qualification_allowed"] is False
     assert blocked_c4["integrity_guard_result"]["qualification_allowed"] is False
-    # Sealed dates must NOT be EXPOSED when qualification was blocked
+    # Sealed dates must NOT be EXPOSED when qualification was blocked; aborted pre-access releases to AVAILABLE
     reg_loaded = SealedHoldoutGuard(registry_path=reg_tmp).load_registry()
-    assert all(rec["state"] == "SEALED" for rec in reg_loaded["records"].values())
+    assert all(rec["state"] == "AVAILABLE" for rec in reg_loaded["records"].values())
 
     # 24. Invalid fingerprints block qualification
     hg = SealedHoldoutGuard(registry_path=reg_tmp)
