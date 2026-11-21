@@ -1,7 +1,7 @@
 # BharatAlpha — Engineering Architecture & Research Integrity Reference
 
-> **Baseline**: `main` at commit `e083842` (Phase 11.3.1–11.3.6.1 merged via PR #9).
-> **Scope**: Documents the **actual existing implementation** on `main` with exact file paths, symbol names, and line numbers. Open pull requests ([PR #10](https://github.com/rammsec/indian-stock-ai-agent/pull/10), [PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11), [PR #12](https://github.com/rammsec/indian-stock-ai-agent/pull/12)) are explicitly noted as **open / unmerged** where relevant.
+> **Verified Baseline**: `main` at commit `e083842` (Phase 11.3.1–11.3.6.1 merged via PR #9).
+> **Verification Rule**: Every class, function, line range, and test count below was verified directly against `main` (`e083842`). Open pull requests ([PR #10](https://github.com/rammsec/indian-stock-ai-agent/pull/10), [PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11), [PR #12](https://github.com/rammsec/indian-stock-ai-agent/pull/12)) are explicitly marked **Open / Unmerged**.
 
 ---
 
@@ -22,168 +22,151 @@ Before modifying **any** function in this repository:
 
 | Layer / Directory | Primary Responsibility | Key Modules |
 | :--- | :--- | :--- |
-| **`backend/`** | Daily NSE Bhavcopy/Delivery collection, feature engineering, ML predictions, news/corporate intel, and static JSON generation for GitHub Pages (`docs/data/`). | [`backend/config.py`](../../backend/config.py), [`backend/data_engine.py`](../../backend/data_engine.py), [`backend/prediction/`](../../backend/prediction/), [`backend/news_intel/`](../../backend/news_intel/), [`backend/phase6/`](../../backend/phase6/) |
-| **`trader/data/`** | Intraday 5m & 1h NSE Parquet archive loading, resampling, and strict 15-check 1h provenance validation. | [`trader/data/loader.py`](../../trader/data/loader.py), [`trader/data/loader_1h.py`](../../trader/data/loader_1h.py), [`trader/data/provenance_1h.py`](../../trader/data/provenance_1h.py) |
+| **`backend/`** | Daily NSE Bhavcopy/Delivery collection, DuckDB/Parquet storage (`DuckDBStore`), feature engineering (237+ features & leakage guard), walk-forward ML ensemble (`BharatAlphaQuantEnsemble`), Phase 5 news/forward validation, and Phase 6 shadow research. | [`backend/config.py`](../../backend/config.py), [`backend/data_engine.py`](../../backend/data_engine.py), [`backend/collectors/`](../../backend/collectors/), [`backend/features/`](../../backend/features/), [`backend/backtesting/`](../../backend/backtesting/), [`backend/prediction/`](../../backend/prediction/), [`backend/news_intel/`](../../backend/news_intel/), [`backend/storage/duckdb_store.py`](../../backend/storage/duckdb_store.py) |
+| **`trader/data/`** | Intraday 5m & 1h NSE Parquet archive loading, resampling, and 15-check 1h provenance validation. | [`trader/data/loader.py`](../../trader/data/loader.py), [`trader/data/loader_1h.py`](../../trader/data/loader_1h.py), [`trader/data/provenance_1h.py`](../../trader/data/provenance_1h.py) |
 | **`trader/strategies/`** | Deterministic intraday & delivery strategies, cost-aware wrappers, and walk-forward candle splitting. | [`trader/strategies/orb_breakout.py`](../../trader/strategies/orb_breakout.py), [`trader/strategies/vwap_pullback.py`](../../trader/strategies/vwap_pullback.py), [`trader/strategies/cost_aware_wrapper.py`](../../trader/strategies/cost_aware_wrapper.py), [`trader/strategies/validation.py`](../../trader/strategies/validation.py) |
 | **`trader/lab/`** | Historical intraday replay engine, slippage sensitivity matrix, data quality analytics, and SQLite lab store. | [`trader/lab/data_service.py`](../../trader/lab/data_service.py), [`trader/lab/replay_engine.py`](../../trader/lab/replay_engine.py), [`trader/lab/database.py`](../../trader/lab/database.py) |
 | **`trader/research/`** | Multi-agent research orchestration, 7-gate qualification, central integrity guard, and atomic holdout registry. | [`trader/research/orchestrator.py`](../../trader/research/orchestrator.py), [`trader/research/holdout.py`](../../trader/research/holdout.py), [`trader/research/integrity_guard.py`](../../trader/research/integrity_guard.py), [`trader/research/qualification.py`](../../trader/research/qualification.py), [`trader/research/agents.py`](../../trader/research/agents.py), [`trader/research/cycle004.py`](../../trader/research/cycle004.py) |
-| **`scripts/`** | CLI entrypoints for daily Phases 1–5, 5m archiving, weekly research, and static dashboard builds. | [`scripts/run_phase1_foundation.py`](../../scripts/run_phase1_foundation.py) … [`scripts/run_phase5_experiments.py`](../../scripts/run_phase5_experiments.py), [`scripts/archive_daily_5m.py`](../../scripts/archive_daily_5m.py), [`scripts/run_weekly_research.py`](../../scripts/run_weekly_research.py) |
-| **`data/lab/` & `docs/lab/`** | Persisted research cycle reports (`cycle_002_report.json` … `cycle_004_report.json`), `sealed_holdout_registry.json`, and dashboard index `docs/lab/data/lab_index.json`. | [`data/lab/sealed_holdout_registry.json`](../../data/lab/sealed_holdout_registry.json), [`docs/lab/data/lab_index.json`](../../docs/lab/data/lab_index.json) |
+| **`scripts/`** | CLI entrypoints for daily Phases 1–5, 5m archiving, weekly research, and static dashboard builds. | [`scripts/run_phase1_foundation.py`](../../scripts/run_phase1_foundation.py) … [`scripts/run_phase5_experiments.py`](../../scripts/run_phase5_experiments.py), [`scripts/run_forward_validation.py`](../../scripts/run_forward_validation.py), [`scripts/archive_daily_5m.py`](../../scripts/archive_daily_5m.py), [`scripts/run_weekly_research.py`](../../scripts/run_weekly_research.py), [`scripts/build_github_pages.py`](../../scripts/build_github_pages.py) |
+| **`data/lab/` & `docs/`** | Persisted research cycle reports (`cycle_002_report.json` … `cycle_004_report.json`), `sealed_holdout_registry.json`, GitHub Pages quant JSONs (`docs/data/`), and lab dashboard (`docs/lab/data/lab_index.json`). | [`data/lab/sealed_holdout_registry.json`](../../data/lab/sealed_holdout_registry.json), [`docs/lab/data/lab_index.json`](../../docs/lab/data/lab_index.json) |
 
 ---
 
-## 2. Class & Function Dependency Mapping
+## 2. Workflow → Script → Module → Function Dependency Map
 
 ```mermaid
-flowchart TD
-    ORCH["ChiefResearchOrchestrator (orchestrator.py:214)"]
-    PROV1H["validate_1h_provenance (provenance_1h.py:22)"]
-    PROV5M["verify_dataset_provenance (orchestrator.py:62)"]
-    IG["ResearchIntegrityGuard.validate (integrity_guard.py:21)"]
-    HG["SealedHoldoutGuard (holdout.py:36)"]
-    ENG["HistoricalLabReplayEngine (replay_engine.py:183)"]
-    CNC["run_cnc_swing_backtest (cycle004.py)"]
-    AGENTS["Agents 1-9 (agents.py:35-245)"]
-    QUAL["evaluate_seven_gates (qualification.py:49)"]
+flowchart LR
+    W1[".github/workflows/daily_nse_research.yml"] --> S1["scripts/run_phase1_foundation.py"]
+    W1 --> S2["scripts/run_phase2_features.py"]
+    W1 --> S3["scripts/run_phase3_backtest.py"]
+    W1 --> S4["scripts/run_phase4_corporate_intel.py"]
+    W1 --> S5["scripts/run_phase5_experiments.py"]
+    W1 --> SF["scripts/run_forward_validation.py"]
+    W1 --> SB["scripts/build_github_pages.py"]
 
-    ORCH --> PROV1H
-    ORCH --> PROV5M
-    ORCH --> IG
-    ORCH --> HG
-    ORCH --> ENG
-    ORCH --> CNC
-    ORCH --> AGENTS
-    ORCH --> QUAL
-    IG --> HG
+    W2[".github/workflows/daily-5m-archive.yml"] --> SA["scripts/archive_daily_5m.py"]
+    W3[".github/workflows/weekly-research-cycle.yml"] --> SW["scripts/run_weekly_research.py"]
+    SW -->|"main: run_cycle_002()"| ORCH["ChiefResearchOrchestrator (orchestrator.py:214)"]
+
+    S1 & S2 & S3 & S4 & S5 & SF --> DUCK["DuckDBStore (backend/storage/duckdb_store.py)"]
+    ORCH --> IG["ResearchIntegrityGuard (integrity_guard.py:15)"]
+    IG --> HG["SealedHoldoutGuard (holdout.py:36)"]
+    ORCH --> ENG["HistoricalLabReplayEngine (replay_engine.py:183)"]
+    ORCH --> QUAL["evaluate_seven_gates (qualification.py:49)"]
 ```
 
-Key call chains on `main`:
-- `ChiefResearchOrchestrator.run_cycle_004()` ([`orchestrator.py:860`](../../trader/research/orchestrator.py#L860)):
-  1. `SealedHoldoutGuard.recover_stale_reservations("CYCLE-004")` ([`holdout.py:1016`](../../trader/research/holdout.py#L1016))
-  2. `get_available_1h_dates()` ([`loader_1h.py:74`](../../trader/data/loader_1h.py#L74)) → 60% / 20% / 20% split
-  3. `validate_1h_provenance()` ([`provenance_1h.py:22`](../../trader/data/provenance_1h.py#L22))
-  4. `SealedHoldoutGuard.seal_dates()` ([`holdout.py:128`](../../trader/research/holdout.py#L128))
-  5. `ResearchIntegrityGuard.validate()` ([`integrity_guard.py:21`](../../trader/research/integrity_guard.py#L21)) → calls `SealedHoldoutGuard.validate_cycle_splits()` ([`holdout.py:330`](../../trader/research/holdout.py#L330))
-  6. `SealedHoldoutGuard.mark_evaluation_in_progress()` ([`holdout.py:458`](../../trader/research/holdout.py#L458)) or `release_reservation()` ([`holdout.py:1046`](../../trader/research/holdout.py#L1046))
-  7. `HistoricalLabReplayEngine.run_date_range()` & `run_cnc_swing_backtest()`
-  8. `evaluate_seven_gates()` ([`qualification.py:49`](../../trader/research/qualification.py#L49))
-  9. `SealedHoldoutGuard.complete_evaluation()` ([`holdout.py:502`](../../trader/research/holdout.py#L502)) or `mark_evaluation_failed()` ([`holdout.py:954`](../../trader/research/holdout.py#L954))
+Shared datasets & side-effect boundaries across workflows on `main`:
+- `daily_nse_research.yml` writes `data/processed/`, `data/features/`, `data/predictions/`, `data/backtests/`, and `docs/data/`, then runs `pytest -v` (which mutates `docs/lab/data/lab_index.json` via `test_phase11_3_1_holdout_lifecycle.py`) and executes `git add ... docs/` + `git push origin main` (`daily_nse_research.yml:95-109`).
+- `daily-5m-archive.yml` writes `data/intraday/` and `data/lab/daily_archive_health.json`, then pushes to `main` (`daily-5m-archive.yml:33-43`).
+- `weekly-research-cycle.yml` runs `scripts/run_weekly_research.py` → `orch.run_cycle_002()`, which overwrites `data/lab/cycle_002_report.json`, `docs/lab/data/lab_index.json`, and mutates `data/lab/sealed_holdout_registry.json` via `record_exposure()`, then pushes to `main` (`weekly-research-cycle.yml:45-55`).
+- *(Open PR #11 migrates `weekly-research-cycle.yml` + `run_weekly_research.py` to read-only; open PR #12 removes `git push` from `daily_nse_research.yml` and `daily-5m-archive.yml` and adds `concurrency:` groups.)*
 
 ---
 
-## 3. End-to-End Data Flow (NSE Data Collection → Predictions & Lab)
+## 3. End-to-End NSE Data → Stock Predictions Flow (`backend/` + `scripts/`)
 
-1. **Daily EOD / Pre-Market Quant Pipeline** (`.github/workflows/daily_nse_research.yml`):
-   - `scripts/run_phase1_foundation.py` → collects NSE Bhavcopy, delivery %, indices, and market regime into `data/processed/`.
-   - `scripts/run_phase2_features.py` → engineers technical/cross-sectional features into `data/features/`.
-   - `scripts/run_phase3_backtest.py` → runs daily strategy backtests into `data/backtests/`.
-   - `scripts/run_phase4_corporate_intel.py` & `scripts/run_phase5_experiments.py` → corporate intel, news intelligence, and ML predictions into `data/predictions/`.
-   - `scripts/run_forward_validation.py` & `scripts/build_github_pages.py` → updates `docs/data/`.
-2. **Intraday 5m Archive Pipeline** (`.github/workflows/daily-5m-archive.yml`):
-   - `scripts/archive_daily_5m.py` → fetches 5m NSE candles for `LAB_DEFAULT_UNIVERSE` (`RELIANCE`, `TCS`, `BIRLACABLE`, `ITC`, `TATAELXSI`) into `data/intraday/` and updates `data/lab/daily_archive_health.json`.
-3. **1-Hour Research Lab Pipeline** (`trader/research/orchestrator.py`):
-   - Reads `{SYMBOL}_1h.parquet` via `get_available_1h_dates()` ([`loader_1h.py:74`](../../trader/data/loader_1h.py#L74)) and `load_1h_session_with_warmup()` ([`loader_1h.py:109`](../../trader/data/loader_1h.py#L109)).
-   - Validates provenance via `validate_1h_provenance()` ([`provenance_1h.py:22`](../../trader/data/provenance_1h.py#L22)), enforces holdout ownership via `ResearchIntegrityGuard` & `SealedHoldoutGuard`, executes deterministic replay (`HistoricalLabReplayEngine`, ₹50,000 paper capital baseline), and evaluates the 7 gates.
-
----
-
-## 4. Research Agent Orchestration & Decision-Making
-
-Defined in [`trader/research/agents.py`](../../trader/research/agents.py):
-- `MarketDataIntelligenceAgent` (`line 35`) — audits data completeness and excluded dates.
-- `QuantitativeStrategyResearchAgent` (`line 55`) — proposes bounded parameter/filter hypotheses (`MAX_CANDIDATES_PER_CYCLE`, `MAX_TUNING_ROUNDS_PER_HYPOTHESIS`).
-- `RiskManagementAgent` (`line 100`) — audits drawdown and risk limits.
-- `ExecutionCostAgent` (`line 119`) — reconciles gross PnL, brokerage, statutory taxes, and 5/10/20/30 bps slippage (`abs((init_cap + gross_pnl - fees) - final_eq) <= 1.0`).
-- `StatisticalValidationAgent` (`line 169`) — enforces `sessions >= 60`, `trades >= 30`, and positive overall + unseen returns.
-- `AIModelDecisionAgent` (`line 189`) — tracks genuine LLM vs deterministic runs ($0.00 unapproved paid API calls).
-- `SoftwareQualityAgent` (`line 207`) — verifies `collect_dynamic_test_metrics()` execution counts (`orchestrator.py:149`).
-- `StrategyChallengerRedTeamAgent` (`line 245`) — rejects non-positive net/unseen returns, `< 20` trades, or single-day profit concentration.
-
-Final qualification is decided deterministically by `evaluate_seven_gates()` ([`qualification.py:49-193`](../../trader/research/qualification.py#L49-L193)):
-- Gate 1 (`Data & Holdout Integrity`) takes strict precedence: failure yields `BLOCKED_INTEGRITY` or `INVALIDATED`.
-- Only `7/7` passing gates yield `QUALIFIED`.
+1. **Phase 1 — Data Collection & Storage** ([`scripts/run_phase1_foundation.py:50`](../../scripts/run_phase1_foundation.py#L50)):
+   - Calls `fetch_raw_company_data()` (`backend/data_engine.py`), `backend/collectors/`, `build_technical_snapshot()` (`backend/technical_engine.py`), and `run_full_stock_research()` (`backend/agents.py`).
+   - Persists `data/processed/equities_daily.parquet` via `DuckDBStore` (`backend/storage/duckdb_store.py`).
+2. **Phase 2 — Feature Engineering & Leakage Guard** ([`scripts/run_phase2_features.py:52`](../../scripts/run_phase2_features.py#L52)):
+   - Calls `build_historical_feature_matrix()` (`backend/features/feature_engine.py`), `backend/features/leakage_guard.py`, and `evaluate_and_select_features()` (`backend/features/selector.py`).
+   - Persists `data/features/features_daily.parquet` and `data/features/feature_catalog.json`.
+3. **Phase 3 — Walk-Forward Backtest & ML Inference** ([`scripts/run_phase3_backtest.py`](../../scripts/run_phase3_backtest.py)):
+   - Calls `get_candidate_feature_columns()` (`backend/features/selector.py`), `run_walk_forward_backtest()` (`backend/backtesting/walk_forward.py`), `estimate_indian_roundtrip_cost()` (`backend/prediction/cost_model.py`), and `BharatAlphaQuantEnsemble` + `build_latest_prediction_records()` (`backend/prediction/ensemble_model.py`).
+   - Persists `data/backtests/walk_forward_predictions.parquet`, `data/backtests/walk_forward_summary.json`, `data/predictions/prediction_log.parquet`, `data/predictions/latest_predictions.json`, and `docs/data/latest_predictions.json`.
+4. **Phase 4 — Corporate & Institutional Enrichment** ([`scripts/run_phase4_corporate_intel.py`](../../scripts/run_phase4_corporate_intel.py)):
+   - Calls `fetch_official_nse_bulk_and_block_deals()` and `build_corporate_intelligence_for_symbol()` (`backend/collectors/nse_corporate_collector.py`).
+   - Persists `data/processed/nse_bulk_block_deals.parquet`, `data/processed/corporate_intelligence.parquet`, and enriches `docs/data/{SYMBOL}.json`.
+5. **Phase 5 & 5.3 — Multi-Horizon Experiments & Forward Validation** ([`scripts/run_phase5_experiments.py`](../../scripts/run_phase5_experiments.py), [`scripts/run_forward_validation.py`](../../scripts/run_forward_validation.py)):
+   - Runs `run_walk_forward_backtest()` across 1D/5D/10D purged/embargoed horizons, `reconstruct_pit_historical_news_features()` (`backend/news_intel/features.py`), `run_phase5_intelligence_pipeline()` (`backend/news_intel/pipeline.py`), and `evaluate_forward_outcomes()` + `build_forward_validation_payload()` (`backend/news_intel/forward_validation.py`).
 
 ---
 
-## 5. Training, Validation & Unseen-Data Separation
+## 4. Research Agent Inventory & Orchestration Map (`trader/research/`)
 
-- Chronological split in `run_research_cycle()` (`orchestrator.py:313-316`), `run_cycle_003()` (`line 670`), and `run_cycle_004()` (`lines 886-891`):
-  - `train`: first 60% (`[:t_end]`)
-  - `validation`: next 20% (`[t_end:v_end]`)
-  - `unseen_test`: final 20% (`[v_end:]`)
-- `SealedHoldoutGuard.validate_cycle_splits()` ([`holdout.py:330-425`](../../trader/research/holdout.py#L330-L425)) rejects any overlap between splits, any non-`AVAILABLE` date in `train`/`validation`, any `EXPOSED`/`RETIRED` date in `unseen_dates`, any `SEALED` date owned by another cycle, or any `dataset_fingerprint` mismatch.
-- **Known Bug on `main`**: In `run_cycle_004()` ([`orchestrator.py:1105, 1168`](../../trader/research/orchestrator.py#L1105)), `unseen_slice = dr[v_end_1h:] or [dr[-1]]` falls back to the final validation day `[dr[-1]]` when `eval_type == "EXPLORATORY_TRAIN_VAL_ONLY"` (`eval_dates` has length `v_end_1h`). Fixed in open [PR #10](https://github.com/rammsec/indian-stock-ai-agent/pull/10).
+There are **8 agent classes** in [`trader/research/agents.py`](../../trader/research/agents.py) plus **Agent 1** (`ChiefResearchOrchestrator` itself, [`orchestrator.py:214`](../../trader/research/orchestrator.py#L214)), totaling **9 logical agents**:
+
+| Agent | Implementation & Line | Invoked In (`orchestrator.py`) | Inputs → Outputs & Decision Impact |
+| :--- | :--- | :--- | :--- |
+| **Agent 1 — Chief Research Orchestrator** | `ChiefResearchOrchestrator` ([`orchestrator.py:214`](../../trader/research/orchestrator.py#L214)); inline `AgentActivityReport` at [`lines 447-459`](../../trader/research/orchestrator.py#L447-L459) | `run_research_cycle()` (`CYCLE-002`) | Coordinates candidate execution and produces summary `AgentActivityReport`; **no self-approval authority**. |
+| **Agent 2 — Market Data Intelligence** | `MarketDataIntelligenceAgent.audit_data()` ([`agents.py:35-52`](../../trader/research/agents.py#L35-L52)) | `run_research_cycle()` (`line 260`) | `dq_analytics`, `excluded_dates` → `AgentActivityReport` (`PASS`/`WARN`). Advisory only. |
+| **Agent 3 — Quantitative Strategy Research** | `QuantitativeStrategyResearchAgent.propose_improvements()` ([`agents.py:55-97`](../../trader/research/agents.py#L55-L97)) | `run_research_cycle()` (`line 434`) | `leaderboard` → `(list[ResearchProposal], AgentActivityReport)`. Proposes bounded hypotheses. |
+| **Agent 4 — Risk Management** | `RiskManagementAgent.review_risk()` ([`agents.py:100-116`](../../trader/research/agents.py#L100-L116)) | `run_research_cycle()` (`line 435`) | `leaderboard` → `AgentActivityReport` (`PASS`/`WARN` on drawdown > 10%). |
+| **Agent 5 — Execution & Transaction Cost** | `ExecutionCostAgent.audit_costs()` ([`agents.py:119-166`](../../trader/research/agents.py#L119-L166)) | `run_research_cycle()` (`line 436`), `run_cycle_003()` (`line 774`), `run_cycle_004()` (`line 1300`) | `leaderboard`, `slippage_rows`, `orders` → `AgentActivityReport` (`PASS`/`FAIL` on ledger/fee mismatch > ₹1). |
+| **Agent 6 — Statistical Validation** | `StatisticalValidationAgent.validate()` ([`agents.py:169-186`](../../trader/research/agents.py#L169-L186)) | All cycles (`lines 386, 729, 1101, 1164`) | `multi_day_metrics`, `walk_forward` → `("PASS" \| "FAIL" \| "INSUFFICIENT EVIDENCE", reason)`. **Directly gates Gate 7** (`qualification.py:152`). |
+| **Agent 7 — AI Model & Decision Intelligence** | `AIModelDecisionAgent.audit_ai_vs_deterministic()` ([`agents.py:189-204`](../../trader/research/agents.py#L189-L204)) | `run_research_cycle()` (`line 437`) | `leaderboard` → `AgentActivityReport` (LLM vs deterministic attribution). |
+| **Agent 8 — Software Quality & Reliability** | `SoftwareQualityAgent.review_system()` ([`agents.py:207-242`](../../trader/research/agents.py#L207-L242)) | `run_research_cycle()` (`line 440`), `run_cycle_003()` (`line 775`), `run_cycle_004()` (`line 1301`) | `test_report` → `AgentActivityReport` (`PASS` only if `executed > 0 and failed == 0`). |
+| **Agent 9 — Strategy Challenger (Red Team)** | `StrategyChallengerRedTeamAgent.challenge()` ([`agents.py:245-273`](../../trader/research/agents.py#L245-L273)) | All cycles (`lines 387, 730, 1102, 1165`) | `multi_day_metrics`, `walk_forward` → `(bool, reason)` (rejects negative net/unseen, `< 20` trades, or 1-day profit dependence). **Directly gates Gate 7**. |
+
+*Note*: `run_cycle_004()` (`orchestrator.py:1281, 1293`) invokes Agents 5, 6, 8, and 9 (not 2, 3, 4, 7), and writes `[exec_rep, sq_rep]` to `agent_performance`, while `command_centre.active_agents` is hardcoded to `9` (`line 1281`).
 
 ---
 
-## 6. Holdout Registry Lifecycle & Concurrency Rules
+## 5. Research Orchestration Order & Deterministic Qualification (`run_cycle_004`)
 
-Managed by `SealedHoldoutGuard` ([`trader/research/holdout.py:36`](../../trader/research/holdout.py#L36)) over `data/lab/sealed_holdout_registry.json`:
+In [`ChiefResearchOrchestrator.run_cycle_004()`](../../trader/research/orchestrator.py#L860-L1370):
+1. **Stale Crash Recovery**: `holdout_guard.recover_stale_reservations("CYCLE-004")` (`line 881`).
+2. **Split & Provenance**: `get_available_1h_dates()` (`line 884`, 60%/20%/20% split) → `validate_1h_provenance()` (`line 894`).
+3. **Reserve & Guard**: `holdout_guard.seal_dates("CYCLE-004", unseen_1h_dates, ...)` (`line 897`) → `ResearchIntegrityGuard.validate()` (`line 901`).
+4. **Abort / Pre-Access Release**: If neither `qualification_allowed` nor `exploratory_allowed` (or `allow_exploratory_on_blocked=False`), releases freshly sealed dates via `release_reservation()` (`line 930`) and returns `ABORTED_NO_EVALUATION` (`line 947`).
+5. **Transition to In-Progress**: If `consumed_dates` is non-empty, calls `mark_evaluation_in_progress()` (`line 971`). If `ok=False`, aborts immediately before backtesting, attempts `release_reservation()` (`line 980`), and returns `ABORTED_TRANSITION_FAILED` (`line 1006`).
+6. **Backtest & 7-Gate Evaluation**: Runs `HistoricalLabReplayEngine` (`lines 1049-1133`) and `run_cnc_swing_backtest()` (`lines 1140-1195`), calling `evaluate_seven_gates()` (`qualification.py:49`). On exception, `mark_evaluation_failed(..., data_accessed=True)` (`line 1198`) conservatively exposes accessed dates.
+7. **Atomic Completion & Verification**: Calls `complete_evaluation()` (`line 1210`). If `ok=False`, inspects persisted registry (`lines 1226-1267`), invokes `mark_evaluation_failed()` only if owned accessed dates remain `SEALED`, and reports `COMPLETION_FAILED_RECOVERY_FAILED` if recovery fails.
 
-```mermaid
-stateDiagram-v2
-    [*] --> AVAILABLE
-    AVAILABLE --> SEALED: "seal_dates(cycle_id) [ACTIVE_RESERVATION]"
-    SEALED --> AVAILABLE: "release_reservation(owner) [if data_accessed=False]"
-    SEALED --> SEALED: "mark_evaluation_in_progress(owner) [EVALUATION_IN_PROGRESS, data_accessed=True]"
-    SEALED --> EXPOSED: "complete_evaluation(owner) [EVALUATION_COMPLETED]"
-    SEALED --> EXPOSED: "complete_evaluation() fail / mark_evaluation_failed() / recover_stale_reservations() [FAILED_EVALUATION]"
-    EXPOSED --> RETIRED: "retire_dates()"
-    AVAILABLE --> RETIRED: "retire_dates()"
-```
+*(Known bug on `main` at `orchestrator.py:1094, 1157`: `dr[v_end_1h:] or [dr[-1]]` falls back to the last validation day when `include_unseen_in_exploratory=False`; fixed in open [PR #10](https://github.com/rammsec/indian-stock-ai-agent/pull/10).)*
 
-- **Locking**: `_locked_registry()` ([`holdout.py:43-51`](../../trader/research/holdout.py#L43-L51)) uses `fcntl.flock(..., fcntl.LOCK_EX)` on `sealed_holdout_registry.lock`, and `save_registry()` ([`holdout.py:109-118`](../../trader/research/holdout.py#L109-L118)) writes a `.tmp` file and atomically replaces via `os.replace()`.
-- **Idempotency & Conflict Rules** (`complete_evaluation()`, [`holdout.py:502-952`](../../trader/research/holdout.py#L502-L952)):
-  - Under `_locked_registry()`, looks up `evaluation_history` for `evaluation_id` *before* empty/duplicate date validation.
-  - `> 1` matching records → fails closed with `DUPLICATE_EVALUATION_ID_HISTORY`.
-  - `1` matching record with identical `(cycle_id, evaluation_type, sorted(consumed_dates), dataset_fingerprint, sorted(strategy_ids))` → replays original result with `idempotent_replay=True`, `newly_exposed_dates=0`, no registry mutation.
-  - `1` matching record with differing identity → rejects with `EVALUATION_ID_CONFLICT`, `request_applied=False`, `newly_exposed_dates=0`, reporting the original persisted `holdout_consumed`/`holdout_state`.
-- **Known Concurrency Gaps on `main`**:
-  - `record_exposure()` ([`holdout.py:276-294`](../../trader/research/holdout.py#L276-L294)) appends `sealed_exposures` and calls `save_registry()` outside `_locked_registry()`.
-  - `retire_dates()` ([`holdout.py:427-456`](../../trader/research/holdout.py#L427-L456)) does not acquire `_locked_registry()`.
-  - Fixed in open [PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11).
+---
+
+## 6. Holdout Registry Lifecycle & Concurrency Rules (`trader/research/holdout.py`)
+
+| Method | Line Range | Lock Held? | Behaviour & Invariants |
+| :--- | :--- | :--- | :--- |
+| `_locked_registry()` | [`43-51`](../../trader/research/holdout.py#L43-L51) | N/A | `fcntl.flock(..., LOCK_EX)` on `sealed_holdout_registry.lock`. |
+| `save_registry()` | [`109-118`](../../trader/research/holdout.py#L109-L118) | Caller-dependent | Writes `.tmp` and calls `os.replace(tmp_path, self.registry_path)`. |
+| `seal_dates()` | [`128-200`](../../trader/research/holdout.py#L128-L200) | Yes | Rejects duplicates; atomically transitions `AVAILABLE -> SEALED` (`ACTIVE_RESERVATION`). |
+| `record_exposure()` | [`202-318`](../../trader/research/holdout.py#L202-L318) | **Partial (Bug)** | Lines `276-294` (`sealed_exposures.append` + `save_registry`) execute **outside** `_locked_registry()`. Fixed in open [PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11). |
+| `retire_dates()` | [`427-456`](../../trader/research/holdout.py#L427-L456) | **No (Bug)** | Reads and writes without `_locked_registry()`. Fixed in open [PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11). |
+| `mark_evaluation_in_progress()` | [`458-500`](../../trader/research/holdout.py#L458-L500) | Yes | Verifies `SEALED`, `owning_cycle_id`, fingerprint; sets `EVALUATION_IN_PROGRESS` and `data_accessed=True`. |
+| `complete_evaluation()` | [`502-952`](../../trader/research/holdout.py#L502-L952) | Yes | Checks `evaluation_history` first (`DUPLICATE_EVALUATION_ID_HISTORY` if `>1`, replay with `newly_exposed_dates=0` if identical, `EVALUATION_ID_CONFLICT` with `request_applied=False` if differing). Unseen IDs validate non-empty/non-duplicate/ownership/fingerprint/`EVALUATION_IN_PROGRESS`; failures after `data_accessed=True` conservatively expose owned dates as `FAILED_EVALUATION`. |
+| `mark_evaluation_failed()` | [`954-1014`](../../trader/research/holdout.py#L954-L1014) | Yes | Transitions owned `SEALED` dates to `EXPOSED` (`FAILED_EVALUATION`) when `data_accessed=True`. |
+| `recover_stale_reservations()` | [`1016-1044`](../../trader/research/holdout.py#L1016-L1044) | Yes | Transitions stale `EVALUATION_IN_PROGRESS` dates to `EXPOSED` (`FAILED_EVALUATION`). |
+| `release_reservation()` | [`1046-1084`](../../trader/research/holdout.py#L1046-L1084) | Yes | Releases `SEALED` → `AVAILABLE` only for `owning_cycle_id` when `data_accessed` is False. |
 
 ---
 
 ## 7. Data Provenance & Integrity Requirements
 
-- **1h Provenance** (`validate_1h_provenance()`, [`provenance_1h.py:22-265`](../../trader/data/provenance_1h.py#L22-L265)):
-  - Verifies file existence, SHA-256 fingerprint, `Asia/Kolkata` timezone, zero duplicate timestamps, OHLC consistency (`high >= max(open, close)`, `low <= min(open, close)`, positive prices), non-negative volume, session boundaries (`09:15–15:15 IST`), missing NSE trading calendar intervals, and `>= 60` sessions.
-  - Currently returns `PARTIALLY_VERIFIED` (`verified: False`) on the 240-session 1h archive (`2025-11-21` → `2026-11-20`).
-- **5m Provenance** (`verify_dataset_provenance()`, [`orchestrator.py:62-146`](../../trader/research/orchestrator.py#L62-L146)): verifies completeness, duplicates, and SHA-256 checksums across 5m Parquet files.
-- **Central Gate** (`ResearchIntegrityGuard.validate()`, [`integrity_guard.py:21-124`](../../trader/research/integrity_guard.py#L21-L124)): fails closed unless `prov_status == "VERIFIED"` and `provenance_result.get("verified") is True` and all holdout/split/fingerprint checks pass.
+- `validate_1h_provenance()` ([`trader/data/provenance_1h.py:22-265`](../../trader/data/provenance_1h.py#L22-L265)) runs 15 checks across `LAB_DEFAULT_UNIVERSE` `{SYMBOL}_1h.parquet` files; currently returns `PARTIALLY_VERIFIED` (`verified: False`) on the 240-session archive (`2025-11-21` → `2026-11-20`).
+- `verify_dataset_provenance()` ([`orchestrator.py:62-146`](../../trader/research/orchestrator.py#L62-L146)) validates 5m Parquet archives.
+- `ResearchIntegrityGuard.validate()` ([`integrity_guard.py:21-124`](../../trader/research/integrity_guard.py#L21-L124)) fails closed (`qualification_allowed=False`) unless `prov_status == "VERIFIED"`, `provenance_result["verified"] is True`, and all holdout/split/fingerprint checks pass.
 
 ---
 
-## 8. Daily, Weekly & Intraday Workflow Dependencies
+## 8. Regression Test-Count Reconciliation (`tests/intraday/ tests/phase6/`)
 
-| Workflow | Schedule / Trigger | Main Branch Behaviour (`e083842`) | Open PR Status |
-| :--- | :--- | :--- | :--- |
-| [`.github/workflows/intraday-lab-tests.yml`](../../.github/workflows/intraday-lab-tests.yml) | Push/PR to `main` | Runs `pytest tests/intraday/ tests/phase6/ -v --tb=short`; does not push | [PR #12](https://github.com/rammsec/indian-stock-ai-agent/pull/12) adds explicit `contents: read` |
-| [`.github/workflows/weekly-research-cycle.yml`](../../.github/workflows/weekly-research-cycle.yml) | Cron `0 12 * * 0` (Sun 17:30 IST) | Runs `scripts/run_weekly_research.py` (`CYCLE-002` + `record_exposure`), commits `data/lab/` & `docs/lab/data/` and pushes to `main` | [PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11) migrates to read-only audit + artifact upload |
-| [`.github/workflows/daily_nse_research.yml`](../../.github/workflows/daily_nse_research.yml) | Cron `30 3` & `0 13 * * 1-5` | Runs Phases 1–5 + `pytest -v`, then `git push origin main` (including `docs/`) | [PR #12](https://github.com/rammsec/indian-stock-ai-agent/pull/12) restricts to `contents: read`, adds `concurrency:`, uploads artifacts |
-| [`.github/workflows/daily-5m-archive.yml`](../../.github/workflows/daily-5m-archive.yml) | Cron `20 10 * * 1-5` | Runs `archive_daily_5m.py` and `git push` to `main` | [PR #12](https://github.com/rammsec/indian-stock-ai-agent/pull/12) restricts to `contents: read`, adds `concurrency:`, uploads artifacts |
+Verified via `pytest tests/intraday/ tests/phase6/ --collect-only -q` and `git diff --stat` against `main` (`e083842`):
 
----
-
-## 9. Test Coverage & Known Test Side Effects
-
-- **Suite**: `pytest tests/intraday/ tests/phase6/ -q` (**257 passed** on `main` at `e083842` / `4b01750`; **262–266 passed** across open PRs #10, #11, #12).
-- **Phase 11.3 Lifecycle Tests**: `tests/intraday/test_phase11_3_1_holdout_lifecycle.py` through `test_phase11_3_6_idempotency_edge_cases.py` (and `test_phase11_3_gate_enforcement.py`).
-- **Known Test Side Effects**:
-  - `test_phase11_3_1_holdout_lifecycle.py` calls `orch.reassess_cycle_003_phase11_3_1()`, which writes to production paths `data/lab/cycle_003_phase11_3_1_reassessment.json`, `data/lab/provenance_report.json`, and `docs/lab/data/lab_index.json`.
-  - `test_phase11_audit.py::test_session_selection_reconciliation_parity` takes ~3.5 minutes on a single CPU due to `df.iterrows()` across ~112k rows, and `test_archiver_completeness_protection` writes transient `data/intraday/*_NSE_5m.parquet` files.
+| Branch / PR | Base | Added Test File | Tests Added | Total Collected / Passed | Skips / Deselections |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| **`main`** (`e083842`) | — | — | — | **257** | 0 |
+| **[PR #10](https://github.com/rammsec/indian-stock-ai-agent/pull/10)** (`ffcb88f`) | `e083842` | `tests/intraday/test_phase11_3_cycle005_audit.py` | +9 | **266** (`257 + 9`) | 0 |
+| **[PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11)** (`d94b3f5`) | `e083842` | `tests/intraday/test_phase11_3_6_holdout_locking_and_workflow.py` | +7 | **264** (`257 + 7`) | 0 |
+| **[PR #12](https://github.com/rammsec/indian-stock-ai-agent/pull/12)** (`db3ea3b`) | `e083842` | `tests/intraday/test_phase11_3_7_workflow_and_registry_audit.py` | +5 | **262** (`257 + 5`) | 0 |
 
 ---
 
-## 10. Previously Identified Bugs, Fixes & Unresolved Risks
+## 9. Test Side-Effect Inventory & Isolation Gaps
 
-| ID | Issue | Status |
+| Test File & Location | Side Effect on Tracked / Shared Paths | Current Isolation & Remaining Gap |
 | :--- | :--- | :--- |
-| Phase 11.3.1–11.3.3 | Non-atomic `complete_evaluation()`, misleading `EXPOSED` history on failure, uncleaned failed `mark_evaluation_in_progress()` | **Fixed on `main`** (PR #9, `e083842`) |
-| Phase 11.3.4 | Failed completion after `data_accessed=True` left owned dates `SEALED` | **Fixed on `main`** (PR #9, `e083842`) |
-| Phase 11.3.5–11.3.6.1 | Non-idempotent `complete_evaluation()`, duplicate history, malformed retry bypass, `newly_exposed_dates` on replay | **Fixed on `main`** (PR #9, `e083842`) |
-| CYCLE-005 & `dr[-1]` fallback | `CYCLE-005` holdout reporting, `NOT_RUN` test evidence, `dr[v_end_1h:] or [dr[-1]]` validation fallback, `recovery_failed` check | **Open in [PR #10](https://github.com/rammsec/indian-stock-ai-agent/pull/10)** |
-| `holdout.py` locking & weekly CI | `record_exposure()`/`retire_dates()` outside `_locked_registry()`, weekly `CYCLE-002` push to `main` | **Open in [PR #11](https://github.com/rammsec/indian-stock-ai-agent/pull/11)** |
-| Daily CI direct pushes to `main` | `daily_nse_research.yml` & `daily-5m-archive.yml` `git push` to `main` + missing `concurrency:` groups | **Open in [PR #12](https://github.com/rammsec/indian-stock-ai-agent/pull/12)** |
-| Test isolation side effects | `test_phase11_3_1_holdout_lifecycle.py` mutating `docs/lab/data/lab_index.json` locally | **Unresolved (Low)** — mitigated in CI by PR #12 removing `git push` |
+| [`tests/intraday/test_phase11_3_1_holdout_lifecycle.py:165-263`](../../tests/intraday/test_phase11_3_1_holdout_lifecycle.py#L165-L263) | Calls `orch.reassess_cycle_003_phase11_3_1()` with default output paths, overwriting `data/lab/cycle_003_phase11_3_1_reassessment.json`, `data/lab/provenance_report.json`, and `docs/lab/data/lab_index.json`. | Only `registry_path` is passed via `tmp_path`; report & index paths are not isolated. Mitigated in CI by PR #12 removing `git push` from `daily_nse_research.yml`. |
+| [`tests/intraday/test_phase11_audit.py:37`](../../tests/intraday/test_phase11_audit.py#L37) | `test_archiver_completeness_protection` writes transient `data/intraday/*_NSE_5m.parquet` files when `archive_daily_5m` runs. | Uses `tmp_path` + `monkeypatch` partially, but leaves `*_NSE_5m.parquet` in `data/intraday/`. |
+| [`tests/intraday/test_phase11_audit.py`](../../tests/intraday/test_phase11_audit.py) | `test_session_selection_reconciliation_parity` iterates ~112k rows via `df.iterrows()`, taking ~3.5 minutes on 1 CPU. | Causes `collect_dynamic_test_metrics(run_pytest=True)` + `run_cycle_005()` combined runs to exceed 600s timeouts. |
+| Phase 11.3.2–11.3.7 test files | Use `tmp_path` for `registry_path` and `output_path`. | Fully isolated; zero writes to `data/lab/sealed_holdout_registry.json`. |
+
+---
+
+## 10. Remaining Unknowns & Risks
+
+- **Open PRs**: PR #10 (`CYCLE-005` & `dr[-1]` fallback fix), PR #11 (`record_exposure`/`retire_dates` locking & weekly workflow migration), and PR #12 (daily workflow push-to-main removal & concurrency groups) are open and not yet merged into `main`.
+- **Unverified Outside Scope**: `backend/phase6/` internal model weights and `scripts/run_phase1_foundation.py` live NSE scraping endpoints were inspected at entrypoints only and not executed against live NSE network endpoints in this pass.
