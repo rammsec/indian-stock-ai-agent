@@ -544,6 +544,115 @@ class SealedHoldoutGuard:
             reg = self.load_registry()
             records = reg["records"]
             iso_dates = [d.isoformat() for d in consumed_dates]
+            normalized_dates = sorted(iso_dates)
+            normalized_strats = sorted(strat_list)
+
+            # Idempotency check: if evaluation_id already exists in evaluation_history,
+            # either replay the original authoritative result (exact identity match) or
+            # reject with EVALUATION_ID_CONFLICT without mutating the registry.
+            existing_hist = next(
+                (h for h in reg.get("evaluation_history", []) if h.get("evaluation_id") == evaluation_id),
+                None,
+            )
+            if existing_hist is not None:
+                conflict_fields: list[str] = []
+                if existing_hist.get("cycle_id") != cycle_id:
+                    conflict_fields.append("cycle_id")
+                if existing_hist.get("evaluation_type") != evaluation_type:
+                    conflict_fields.append("evaluation_type")
+                if sorted(existing_hist.get("consumed_dates", [])) != normalized_dates:
+                    conflict_fields.append("consumed_dates")
+                if existing_hist.get("dataset_fingerprint", "") != dataset_fingerprint:
+                    conflict_fields.append("dataset_fingerprint")
+                if sorted(existing_hist.get("strategy_ids", [])) != normalized_strats:
+                    conflict_fields.append("strategy_ids")
+
+                if conflict_fields:
+                    conflict_msg = (
+                        f"EVALUATION_ID_CONFLICT: evaluation_id '{evaluation_id}' already exists with different "
+                        f"parameters ({', '.join(conflict_fields)})"
+                    )
+                    return {
+                        "ok": False,
+                        "completion_success": False,
+                        "evaluation_id": evaluation_id,
+                        "cycle_id": cycle_id,
+                        "evaluation_type": evaluation_type,
+                        "holdout_consumed": False,
+                        "holdout_state": existing_hist.get("holdout_state")
+                        or existing_hist.get("final_lifecycle_state", "SEALED"),
+                        "exposed_dates": [],
+                        "newly_exposed_dates": 0,
+                        "completed_at": now_ist,
+                        "invalid_dates": [{"date": "CONFLICT", "reason": conflict_msg}],
+                        "failure_reasons": [conflict_msg],
+                        "ownership_violations": [],
+                        "fingerprint_mismatches": [],
+                        "lifecycle_violations": ["EVALUATION_ID_CONFLICT"],
+                        "reused_dates": [],
+                        "ownership_valid": False,
+                        "independent_holdout_valid": False,
+                        "leakage_detected": True,
+                        "idempotent_replay": False,
+                        "conflict_fields": conflict_fields,
+                        "status": "EVALUATION_ID_CONFLICT",
+                    }
+
+                orig_ok = bool(existing_hist.get("ok", existing_hist.get("completion_success", False)))
+                orig_completion_success = bool(existing_hist.get("completion_success", orig_ok))
+                orig_eval_status = existing_hist.get(
+                    "evaluation_status", "EVALUATION_COMPLETED" if orig_ok else "FAILED_EVALUATION"
+                )
+                orig_holdout_state = (
+                    existing_hist.get("holdout_state")
+                    or existing_hist.get("final_lifecycle_state")
+                    or ("EXPOSED" if orig_ok else "SEALED")
+                )
+                orig_exposed_dates = list(
+                    existing_hist.get(
+                        "exposed_dates",
+                        existing_hist.get("consumed_dates", []) if orig_ok else [],
+                    )
+                )
+                orig_holdout_consumed = bool(
+                    existing_hist.get("holdout_consumed", orig_ok or bool(orig_exposed_dates))
+                )
+                orig_failure_reasons = list(existing_hist.get("failure_reasons", []))
+                orig_completed_at = existing_hist.get("completed_at", now_ist)
+                orig_status = existing_hist.get("status") or ("VALID_UNSEEN" if orig_ok else "FAILED_EVALUATION")
+                orig_invalid_dates = list(existing_hist.get("invalid_dates", []))
+                orig_ownership_violations = list(existing_hist.get("ownership_violations", []))
+                orig_fingerprint_mismatches = list(existing_hist.get("fingerprint_mismatches", []))
+                orig_lifecycle_violations = list(existing_hist.get("lifecycle_violations", []))
+                orig_reused_dates = list(existing_hist.get("reused_dates", []))
+
+                return {
+                    "ok": orig_ok,
+                    "completion_success": orig_completion_success,
+                    "evaluation_id": evaluation_id,
+                    "cycle_id": cycle_id,
+                    "evaluation_type": evaluation_type,
+                    "evaluation_status": orig_eval_status,
+                    "holdout_consumed": orig_holdout_consumed,
+                    "holdout_state": orig_holdout_state,
+                    "exposed_dates": orig_exposed_dates,
+                    "newly_exposed_dates": len(orig_exposed_dates),
+                    "completed_at": orig_completed_at,
+                    "total_sealed_dates": len(reg.get("sealed_dates", [])),
+                    "current_unseen_dates": len(iso_dates),
+                    "previously_exposed_dates": 0 if orig_ok else len(orig_reused_dates),
+                    "reused_dates": orig_reused_dates,
+                    "ownership_violations": orig_ownership_violations,
+                    "fingerprint_mismatches": orig_fingerprint_mismatches,
+                    "lifecycle_violations": orig_lifecycle_violations,
+                    "invalid_dates": orig_invalid_dates,
+                    "failure_reasons": orig_failure_reasons,
+                    "ownership_valid": len(orig_ownership_violations) == 0,
+                    "leakage_detected": not orig_ok,
+                    "independent_holdout_valid": orig_ok,
+                    "idempotent_replay": True,
+                    "status": orig_status,
+                }
 
             invalid_dates: list[dict[str, str]] = []
             failure_reasons: list[str] = []
@@ -661,6 +770,15 @@ class SealedHoldoutGuard:
                         "timestamp": now_ist,
                     })
 
+                if ownership_violations:
+                    status = "HOLDOUT_OWNERSHIP_VIOLATION"
+                elif reused_dates:
+                    status = "EXPOSED_HOLDOUT_REUSED"
+                elif fingerprint_mismatches:
+                    status = "DATASET_FINGERPRINT_MISMATCH"
+                else:
+                    status = "LIFECYCLE_STATE_VIOLATION"
+
                 # Append failed evaluation history record reflecting ACTUAL registry state
                 reg.setdefault("evaluation_history", []).append({
                     "evaluation_id": evaluation_id,
@@ -673,22 +791,20 @@ class SealedHoldoutGuard:
                     "started_at": started_at,
                     "completed_at": now_ist,
                     "final_lifecycle_state": final_state,
+                    "holdout_state": final_state,
+                    "holdout_consumed": bool(newly_exposed_on_fail),
                     "completion_success": False,
                     "failure_reasons": failure_reasons,
                     "exposed_dates": newly_exposed_on_fail,
+                    "invalid_dates": invalid_dates,
+                    "ownership_violations": ownership_violations,
+                    "fingerprint_mismatches": fingerprint_mismatches,
+                    "lifecycle_violations": lifecycle_violations,
+                    "reused_dates": reused_dates,
+                    "status": status,
                     "ok": False,
                 })
                 self.save_registry(reg)
-
-                status = "VALID_UNSEEN"
-                if ownership_violations:
-                    status = "HOLDOUT_OWNERSHIP_VIOLATION"
-                elif reused_dates:
-                    status = "EXPOSED_HOLDOUT_REUSED"
-                elif fingerprint_mismatches:
-                    status = "DATASET_FINGERPRINT_MISMATCH"
-                else:
-                    status = "LIFECYCLE_STATE_VIOLATION"
 
                 return {
                     "ok": False,
@@ -762,8 +878,12 @@ class SealedHoldoutGuard:
                 "started_at": started_at,
                 "completed_at": now_ist,
                 "final_lifecycle_state": "EXPOSED",
+                "holdout_state": "EXPOSED",
+                "holdout_consumed": True,
+                "exposed_dates": iso_dates,
                 "completion_success": True,
                 "failure_reasons": [],
+                "status": "VALID_UNSEEN",
                 "ok": True,
             })
 
