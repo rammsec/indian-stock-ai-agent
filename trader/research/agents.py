@@ -117,22 +117,52 @@ class RiskManagementAgent:
 
 
 class ExecutionCostAgent:
-    """Agent 5: Audits Indian statutory charges, slippage sensitivity (5/10/20 bps), and fee drag."""
+    """Agent 5: Audits Indian statutory charges, slippage sensitivity (5/10/20/30 bps), and order/ledger reconciliation."""
 
-    def audit_costs(self, leaderboard: list[dict[str, Any]], slippage_rows: list[dict[str, Any]]) -> AgentActivityReport:
+    def audit_costs(
+        self,
+        leaderboard: list[dict[str, Any]],
+        slippage_rows: list[dict[str, Any]],
+        orders_by_strategy: dict[str, list[dict[str, Any]]] | None = None,
+    ) -> AgentActivityReport:
         gross_pos_net_neg = [
             r["strategy_id"] for r in leaderboard
             if r.get("gross_return_pct", 0.0) > 0 and r.get("total_return_pct", 0.0) <= 0
         ]
+        reconciliation_errors: list[str] = []
+        audited_orders = 0
+        for row in leaderboard:
+            sid = row.get("strategy_id", "unknown")
+            init_cap = float(row.get("initial_capital_inr", 50000.0))
+            gross_pnl = float(row.get("gross_pnl_inr", 0.0))
+            fees = float(row.get("total_fees_inr", 0.0))
+            final_eq = float(row.get("final_equity_inr", init_cap))
+            brokerage = float(row.get("total_brokerage_inr", 0.0))
+            statutory = float(row.get("total_statutory_inr", 0.0))
+
+            if abs((init_cap + gross_pnl - fees) - final_eq) > 1.0:
+                reconciliation_errors.append(f"{sid}: equity mismatch")
+            if ("total_brokerage_inr" in row or "total_statutory_inr" in row) and abs((brokerage + statutory) - fees) > 1.0:
+                reconciliation_errors.append(f"{sid}: fee breakdown mismatch")
+            if orders_by_strategy and sid in orders_by_strategy:
+                audited_orders += len(orders_by_strategy[sid])
+
+        status: Literal["PASS", "WARN", "FAIL"] = "FAIL" if reconciliation_errors else "PASS"
+        finding = (
+            f"Reconciliation errors: {'; '.join(reconciliation_errors)}"
+            if reconciliation_errors
+            else (
+                f"Audited {audited_orders} orders & {len(slippage_rows)} slippage runs (5/10/20/30 bps); "
+                f"0 ledger mismatches; {len(gross_pos_net_neg)} strategies had gross gains erased by fees."
+            )
+        )
         return AgentActivityReport(
             agent_name="Agent 5 — Execution & Transaction Cost",
             role="Realistic Fill & Indian Friction Auditor",
             execution_type="DETERMINISTIC_LOCAL",
-            assigned_task="Test 5/10/20 bps slippage & ₹20/order fee drag",
-            latest_finding=(
-                f"{len(gross_pos_net_neg)} strategies had positive gross return erased by ₹20/order brokerage + STT + slippage."
-            ),
-            status="PASS",
+            assigned_task="Audit actual orders, brokerage, statutory taxes, and 5/10/20/30 bps slippage",
+            latest_finding=finding,
+            status=status,
         )
 
 
@@ -175,16 +205,40 @@ class AIModelDecisionAgent:
 
 
 class SoftwareQualityAgent:
-    """Agent 8: Verifies test suite, accounting invariants, and zero lookahead."""
+    """Agent 8: Verifies live pytest suite, accounting invariants, and zero lookahead."""
 
-    def review_system(self, tests_passed: int = 149) -> AgentActivityReport:
+    def review_system(
+        self,
+        test_report: dict[str, Any] | None = None,
+        tests_passed: int | None = None,
+    ) -> AgentActivityReport:
+        if test_report is not None:
+            executed = int(test_report.get("tests_executed", 0))
+            passed = int(test_report.get("tests_passed", 0))
+            failed = int(test_report.get("tests_failed", 0))
+            skipped = int(test_report.get("tests_skipped", 0))
+            commit_sha = str(test_report.get("commit_sha", "unknown"))[:8]
+            status: Literal["PASS", "WARN", "FAIL"] = (
+                "PASS" if (executed > 0 and failed == 0 and passed == executed - skipped) else "FAIL"
+            )
+            finding = (
+                f"Executed {executed} tests ({passed} passed, {failed} failed, {skipped} skipped) "
+                f"at commit {commit_sha}."
+            )
+        elif tests_passed is not None:
+            status = "PASS" if tests_passed > 0 else "FAIL"
+            finding = f"{tests_passed} automated regression tests passing; zero lookahead & zero ledger drift."
+        else:
+            status = "FAIL"
+            finding = "No dynamic test execution report supplied."
+
         return AgentActivityReport(
             agent_name="Agent 8 — Software Quality & Reliability",
             role="CI, Accounting & Lookahead Reviewer",
             execution_type="DETERMINISTIC_LOCAL",
-            assigned_task="Enforce regression tests & double-entry ledger invariants",
-            latest_finding=f"All {tests_passed} automated regression tests passing; zero lookahead & zero ledger drift.",
-            status="PASS",
+            assigned_task="Enforce live pytest execution, regression tests & double-entry ledger invariants",
+            latest_finding=finding,
+            status=status,
         )
 
 

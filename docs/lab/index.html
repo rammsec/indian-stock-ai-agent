@@ -345,28 +345,51 @@
       </section>
     </div>
 
-    <!-- VIEW: RESEARCH & QUALIFICATION (PHASE 11) -->
+    <!-- VIEW: RESEARCH & QUALIFICATION (PHASE 11 & CYCLE-002) -->
     <div id="view-qualification" class="section-view">
       <section class="card">
-        <h3 style="font-size: 15px; color: #fff; margin-bottom: 12px;">A. Research Command Centre</h3>
+        <h3 style="font-size: 15px; color: #fff; margin-bottom: 12px;">A. Research Command Centre &amp; Weekly Operations</h3>
         <div class="metrics-grid" id="p11-command-grid"></div>
+        <div id="p11-ops-status" style="margin-top: 10px; font-size: 12px; color: var(--text-muted);"></div>
       </section>
       <section class="card">
-        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">B. 7-Gate Strategy Qualification Board</h3>
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">B. CYCLE-002 Multi-Timeframe Comparison (5m vs 15m vs 30m vs Cash)</h3>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Timeframe</th>
+                <th>Strategies</th>
+                <th>Avg Trades</th>
+                <th>Avg Net %</th>
+                <th>Best Strategy</th>
+                <th>Best Net %</th>
+                <th>Avg Total Fees (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="p11-timeframe-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">C. 7-Gate Strategy Qualification Board &amp; Full Cost Attribution</h3>
         <div style="overflow-x: auto;">
           <table class="lab-table">
             <thead>
               <tr>
                 <th>Strategy</th>
+                <th>TF</th>
                 <th>Status</th>
                 <th>Gates</th>
-                <th>Sessions</th>
                 <th>Trades</th>
+                <th>Gross %</th>
+                <th>Brokerage (₹)</th>
+                <th>Statutory (₹)</th>
+                <th>Slippage (₹)</th>
                 <th>Net %</th>
+                <th>10bps Net %</th>
                 <th>Alpha vs B&amp;H</th>
                 <th>Max DD</th>
-                <th>Sharpe</th>
-                <th>PF</th>
                 <th>Unseen %</th>
                 <th>Stat Val</th>
                 <th>Red Team</th>
@@ -377,7 +400,7 @@
         </div>
       </section>
       <section class="card">
-        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">C. 9-Agent Research Architecture Activity</h3>
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">D. 9-Agent Research Architecture Activity</h3>
         <div style="overflow-x: auto;">
           <table class="lab-table">
             <thead>
@@ -395,7 +418,8 @@
         </div>
       </section>
       <section class="card">
-        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">D. Session Reconciliation &amp; Excluded Dates</h3>
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">E. Daily Archive Health &amp; Session Reconciliation</h3>
+        <div id="p11-archive-health" style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;"></div>
         <div id="p11-excluded-dates" style="font-size: 12px; color: var(--text-muted);"></div>
       </section>
     </div>

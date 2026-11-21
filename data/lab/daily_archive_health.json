@@ -1,17 +1,63 @@
 {
-  "last_successful_run_ist": "2026-11-21T11:53:11.431782+05:30",
+  "last_run_ist": "2026-11-21T13:06:53.716075+05:30",
+  "last_successful_run_ist": "2026-11-21T13:06:53.716075+05:30",
+  "archive_status": "SUCCESS_NO_NEW_DATA",
+  "archive_freshness_status": "FRESH",
   "latest_trading_timestamp_ist": "2026-11-20T15:25:00+05:30",
   "total_new_bars_added": 0,
+  "new_sessions_added": 0,
+  "missing_interval_count": 495,
   "failed_symbols": [],
   "provider_status": "HEALTHY",
+  "per_symbol_coverage": {
+    "RELIANCE": {
+      "sessions": 59,
+      "total_bars": 4325,
+      "missing_intervals": 100,
+      "latest_session_bars": 73,
+      "status": "OK"
+    },
+    "TCS": {
+      "sessions": 59,
+      "total_bars": 4315,
+      "missing_intervals": 110,
+      "latest_session_bars": 74,
+      "status": "OK"
+    },
+    "BIRLACABLE": {
+      "sessions": 59,
+      "total_bars": 4354,
+      "missing_intervals": 71,
+      "latest_session_bars": 75,
+      "status": "OK"
+    },
+    "ITC": {
+      "sessions": 59,
+      "total_bars": 4326,
+      "missing_intervals": 99,
+      "latest_session_bars": 74,
+      "status": "OK"
+    },
+    "TATAELXSI": {
+      "sessions": 59,
+      "total_bars": 4310,
+      "missing_intervals": 115,
+      "latest_session_bars": 73,
+      "status": "OK"
+    }
+  },
   "symbols": [
     {
       "symbol": "RELIANCE",
       "status": "OK",
       "provider": "YahooFinanceAPI:RELIANCE.NS",
-      "retrieved_at_ist": "2026-11-21T11:53:10.505188+05:30",
+      "retrieved_at_ist": "2026-11-21T13:06:52.748436+05:30",
       "total_bars": 4325,
+      "sessions_count": 59,
+      "new_sessions_added": 0,
       "net_added": 0,
+      "missing_interval_count": 100,
+      "latest_session_bars": 73,
       "duplicates_removed": 0,
       "latest_bar_ist": "2026-11-20T15:25:00+05:30"
     },
@@ -19,9 +65,13 @@
       "symbol": "TCS",
       "status": "OK",
       "provider": "YahooFinanceAPI:TCS.NS",
-      "retrieved_at_ist": "2026-11-21T11:53:10.777091+05:30",
+      "retrieved_at_ist": "2026-11-21T13:06:53.019135+05:30",
       "total_bars": 4315,
+      "sessions_count": 59,
+      "new_sessions_added": 0,
       "net_added": 0,
+      "missing_interval_count": 110,
+      "latest_session_bars": 74,
       "duplicates_removed": 0,
       "latest_bar_ist": "2026-11-20T15:25:00+05:30"
     },
@@ -29,9 +79,13 @@
       "symbol": "BIRLACABLE",
       "status": "OK",
       "provider": "YahooFinanceAPI:BIRLACABLE.NS",
-      "retrieved_at_ist": "2026-11-21T11:53:10.979440+05:30",
+      "retrieved_at_ist": "2026-11-21T13:06:53.225490+05:30",
       "total_bars": 4354,
+      "sessions_count": 59,
+      "new_sessions_added": 0,
       "net_added": 0,
+      "missing_interval_count": 71,
+      "latest_session_bars": 75,
       "duplicates_removed": 0,
       "latest_bar_ist": "2026-11-20T15:25:00+05:30"
     },
@@ -39,9 +93,13 @@
       "symbol": "ITC",
       "status": "OK",
       "provider": "YahooFinanceAPI:ITC.NS",
-      "retrieved_at_ist": "2026-11-21T11:53:11.209822+05:30",
+      "retrieved_at_ist": "2026-11-21T13:06:53.497281+05:30",
       "total_bars": 4326,
+      "sessions_count": 59,
+      "new_sessions_added": 0,
       "net_added": 0,
+      "missing_interval_count": 99,
+      "latest_session_bars": 74,
       "duplicates_removed": 0,
       "latest_bar_ist": "2026-11-20T15:25:00+05:30"
     },
@@ -49,9 +107,13 @@
       "symbol": "TATAELXSI",
       "status": "OK",
       "provider": "YahooFinanceAPI:TATAELXSI.NS",
-      "retrieved_at_ist": "2026-11-21T11:53:11.417208+05:30",
+      "retrieved_at_ist": "2026-11-21T13:06:53.693784+05:30",
       "total_bars": 4310,
+      "sessions_count": 59,
+      "new_sessions_added": 0,
       "net_added": 0,
+      "missing_interval_count": 115,
+      "latest_session_bars": 73,
       "duplicates_removed": 0,
       "latest_bar_ist": "2026-11-20T15:25:00+05:30"
     }

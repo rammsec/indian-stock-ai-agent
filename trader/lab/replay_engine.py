@@ -26,6 +26,7 @@ from ..config import (
     LabRiskConfig,
 )
 from ..data.instruments import INSTRUMENT_MASTER
+from ..data.resampler import resample_5m_candles, to_candle5m_compatible
 from ..data.schema import Candle5M, DataSourceMode
 from ..features.indicators import compute_all_features
 from ..portfolio.cost_calculator import calculate_intraday_costs
@@ -33,6 +34,14 @@ from ..portfolio.ledger import IntradayPaperPortfolio, OrderSide, OrderStatus
 from ..risk.engine import DeterministicRiskEngine
 from ..strategies.base import BaseStrategy, StrategySignal
 from ..strategies.ema_cross import EMACrossStrategy
+from ..strategies.mtf_strategies import (
+    CashNoTradeBenchmarkStrategy,
+    LowFrequencyTrendFollowingStrategy,
+    MTF30mBreakoutVolumeStrategy,
+    MTF15mRelativeStrengthLeaderStrategy,
+    MTF15mVWAPTrendContinuationStrategy,
+    MTF30mEMATrendStrategy,
+)
 from ..strategies.multi_indicator import MultiIndicatorConfluenceStrategy
 from ..strategies.orb_breakout import ORBBreakoutStrategy
 from ..strategies.rsi_macd import RSIMACDStrategy
@@ -43,15 +52,21 @@ from .data_service import StockSessionQuality, load_session_with_warmup
 
 
 STRATEGY_REGISTRY: dict[str, dict[str, Any]] = {
-    "STRAT-001-VWAP-PULLBACK": {"name": "VWAP Pullback", "cls": VWAPPullbackStrategy, "kind": "STRATEGY"},
-    "STRAT-002-ORB-BREAKOUT": {"name": "Opening Range Breakout", "cls": ORBBreakoutStrategy, "kind": "STRATEGY"},
-    "STRAT-003-EMA-CROSS": {"name": "EMA 9/21 Crossover", "cls": EMACrossStrategy, "kind": "STRATEGY"},
-    "STRAT-004-SUPERTREND": {"name": "Supertrend", "cls": SupertrendStrategy, "kind": "STRATEGY"},
-    "STRAT-005-RSI-MACD": {"name": "RSI & MACD Combination", "cls": RSIMACDStrategy, "kind": "STRATEGY"},
-    "STRAT-006-VOLUME-BREAKOUT": {"name": "Volume Breakout", "cls": VolumeBreakoutStrategy, "kind": "STRATEGY"},
-    "STRAT-007-MULTI-INDICATOR": {"name": "Multi-Indicator Confirmation", "cls": MultiIndicatorConfluenceStrategy, "kind": "STRATEGY"},
-    "AGENT-CENTRAL-COUNCIL": {"name": "Central AI Council (8-Agent)", "cls": None, "kind": "AI_AGENT"},
-    "AGENT-AUTONOMOUS-TRADER": {"name": "Autonomous Trading Agent", "cls": None, "kind": "AI_AGENT"},
+    "STRAT-001-VWAP-PULLBACK": {"name": "VWAP Pullback", "cls": VWAPPullbackStrategy, "kind": "STRATEGY", "timeframe_minutes": 5},
+    "STRAT-002-ORB-BREAKOUT": {"name": "Opening Range Breakout", "cls": ORBBreakoutStrategy, "kind": "STRATEGY", "timeframe_minutes": 5},
+    "STRAT-003-EMA-CROSS": {"name": "EMA 9/21 Crossover", "cls": EMACrossStrategy, "kind": "STRATEGY", "timeframe_minutes": 5},
+    "STRAT-004-SUPERTREND": {"name": "Supertrend", "cls": SupertrendStrategy, "kind": "STRATEGY", "timeframe_minutes": 5},
+    "STRAT-005-RSI-MACD": {"name": "RSI & MACD Combination", "cls": RSIMACDStrategy, "kind": "STRATEGY", "timeframe_minutes": 5},
+    "STRAT-006-VOLUME-BREAKOUT": {"name": "Volume Breakout", "cls": VolumeBreakoutStrategy, "kind": "STRATEGY", "timeframe_minutes": 5},
+    "STRAT-007-MULTI-INDICATOR": {"name": "Multi-Indicator Confirmation", "cls": MultiIndicatorConfluenceStrategy, "kind": "STRATEGY", "timeframe_minutes": 5},
+    "STRAT-008-15M-RS-LEADER": {"name": "15m Relative Strength Leader", "cls": MTF15mRelativeStrengthLeaderStrategy, "kind": "STRATEGY", "timeframe_minutes": 15},
+    "STRAT-009-15M-VWAP-TREND": {"name": "15m VWAP Trend Continuation", "cls": MTF15mVWAPTrendContinuationStrategy, "kind": "STRATEGY", "timeframe_minutes": 15},
+    "STRAT-010-30M-EMA-TREND": {"name": "30m EMA Trend Pullback", "cls": MTF30mEMATrendStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
+    "STRAT-011-30M-BREAKOUT-VOL": {"name": "30m Breakout Volume Confirmation", "cls": MTF30mBreakoutVolumeStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
+    "STRAT-012-LOW-FREQ-TREND": {"name": "30m Low-Frequency Trend Following", "cls": LowFrequencyTrendFollowingStrategy, "kind": "STRATEGY", "timeframe_minutes": 30},
+    "BENCHMARK-CASH-NO-TRADE": {"name": "Cash / No-Trade Baseline", "cls": CashNoTradeBenchmarkStrategy, "kind": "BENCHMARK", "timeframe_minutes": 30},
+    "AGENT-CENTRAL-COUNCIL": {"name": "Central AI Council (8-Agent)", "cls": None, "kind": "AI_AGENT", "timeframe_minutes": 5},
+    "AGENT-AUTONOMOUS-TRADER": {"name": "Autonomous Trading Agent", "cls": None, "kind": "AI_AGENT", "timeframe_minutes": 5},
 }
 
 
@@ -162,7 +177,7 @@ class HistoricalLabReplayEngine:
     ) -> None:
         self.risk_config = risk_config or LabRiskConfig()
         self.cost_config = cost_config or CostConfig()
-        self._session_feature_cache: dict[tuple[str, date, str], tuple[list[Candle5M], list[Candle5M], StockSessionQuality, pd.DataFrame]] = {}
+        self._session_feature_cache: dict[tuple[str, date, str, int], tuple[list[Candle5M], list[Candle5M], StockSessionQuality, pd.DataFrame]] = {}
 
     def run_historical_day(
         self,
@@ -173,6 +188,7 @@ class HistoricalLabReplayEngine:
         execution_mode: Literal["DETERMINISTIC", "AI_AGENT"] = "DETERMINISTIC",
         db: Any | None = None,
         router: ModelRouter | None = None,
+        timeframe_minutes: Literal[5, 15, 30] | None = None,
     ) -> dict[str, Any]:
         """Run deterministic or genuine AI chronological replay for a single historical date."""
         if strategy_id not in STRATEGY_REGISTRY:
@@ -182,6 +198,9 @@ class HistoricalLabReplayEngine:
         run_id = f"run_{target_date.strftime('%Y%m%d')}_{strategy_id}_{uuid.uuid4().hex[:6]}"
 
         reg_entry = STRATEGY_REGISTRY[strategy_id]
+        tf_min = int(timeframe_minutes or reg_entry.get("timeframe_minutes", 5))
+        if tf_min not in (5, 15, 30):
+            raise ValueError(f"Unsupported timeframe_minutes: {tf_min}")
         strategy_obj: BaseStrategy | None = reg_entry["cls"]() if reg_entry["cls"] is not None else None
 
         # 1. Load warmup + session candles strictly <= target_date (using in-memory feature cache)
@@ -192,11 +211,16 @@ class HistoricalLabReplayEngine:
         session_start_idx: dict[str, int] = {}
 
         for sym in symbols:
-            cache_key = (sym, target_date, data_mode.value)
+            cache_key = (sym, target_date, data_mode.value, tf_min)
             if cache_key in self._session_feature_cache:
                 w_bars, s_bars, q, f_df = self._session_feature_cache[cache_key]
             else:
-                w_bars, s_bars, q = load_session_with_warmup(sym, target_date, warmup_days=5, mode=data_mode)
+                w_bars_5m, s_bars_5m, q = load_session_with_warmup(sym, target_date, warmup_days=5, mode=data_mode)
+                if tf_min == 5:
+                    w_bars, s_bars = w_bars_5m, s_bars_5m
+                else:
+                    w_bars = to_candle5m_compatible(resample_5m_candles(w_bars_5m, target_minutes=tf_min, include_incomplete=False))
+                    s_bars = to_candle5m_compatible(resample_5m_candles(s_bars_5m, target_minutes=tf_min, include_incomplete=False))
                 combined = w_bars + s_bars
                 f_df = compute_all_features(combined) if combined else pd.DataFrame()
                 self._session_feature_cache[cache_key] = (w_bars, s_bars, q, f_df)
@@ -831,6 +855,11 @@ class HistoricalLabReplayEngine:
         downside = float(np.std([p for p in pnls if p < 0])) if losses else 1e-4
         sortino = (float(np.mean(pnls)) / downside * math.sqrt(252)) if len(pnls) > 1 and downside > 0 else 0.0
         total_fees = round(sum(t["fees"] for t in completed_trades_detailed), 2)
+        total_brokerage_inr = round(
+            sum(o.cost_breakdown.brokerage_inr for o in portfolio.orders if o.cost_breakdown is not None), 2
+        )
+        total_statutory_inr = round(max(0.0, total_fees - total_brokerage_inr), 2)
+        total_slippage_inr = round(sum(o.get("slippage", 0.0) for o in order_records), 2)
         net_pnl = round(summary["total_equity_inr"] - self.risk_config.initial_capital_inr, 2)
 
         completed_at = datetime.now(tz=IST_TZ).isoformat()
@@ -870,8 +899,9 @@ class HistoricalLabReplayEngine:
             "strategy_id": strategy_id,
             "strategy_name": reg_entry["name"],
             "strategy_version": "v1.0",
+            "timeframe_minutes": tf_min,
             "mode": execution_mode,
-            "model_config": {"strategy_id": strategy_id, "execution_mode": execution_mode},
+            "model_config": {"strategy_id": strategy_id, "execution_mode": execution_mode, "timeframe_minutes": tf_min},
             "data_provenance": {
                 sym: {
                     "availability": q.data_availability,
@@ -901,6 +931,9 @@ class HistoricalLabReplayEngine:
             "profit_factor": summary["profit_factor"],
             "total_trades": len(completed_trades_detailed),
             "total_fees": total_fees,
+            "total_brokerage_inr": total_brokerage_inr,
+            "total_statutory_inr": total_statutory_inr,
+            "total_slippage_inr": total_slippage_inr,
             "ai_api_cost_usd": round(total_ai_cost_usd, 6),
             "avg_holding_minutes": round(float(np.mean([t["holding_minutes"] for t in completed_trades_detailed])), 1) if completed_trades_detailed else 0.0,
             "avg_win_inr": round(float(np.mean(wins)), 2) if wins else 0.0,
@@ -933,6 +966,7 @@ class HistoricalLabReplayEngine:
         router: ModelRouter | None = None,
         eligible_dates: list[date] | None = None,
         excluded_dates_info: list[dict[str, Any]] | None = None,
+        timeframe_minutes: Literal[5, 15, 30] | None = None,
     ) -> dict[str, Any]:
         """Run multi-day chronological evaluation across explicitly eligible dates (or all NSE trading days in range)."""
         from ..config import is_nse_trading_day
@@ -947,13 +981,19 @@ class HistoricalLabReplayEngine:
                     target_dates.append(curr)
                 curr += timedelta(days=1)
 
+        tf_min = int(timeframe_minutes or STRATEGY_REGISTRY[strategy_id].get("timeframe_minutes", 5))
         daily_runs: list[dict[str, Any]] = []
         cumulative_equity = self.risk_config.initial_capital_inr
         cumulative_benchmark = self.risk_config.initial_capital_inr
         total_trades = 0
         total_fees = 0.0
+        total_brokerage = 0.0
+        total_statutory = 0.0
+        total_slippage = 0.0
         total_ai_cost = 0.0
         all_pnls: list[float] = []
+        all_orders: list[dict[str, Any]] = []
+        all_trades: list[dict[str, Any]] = []
 
         for curr in target_dates:
             res = self.run_historical_day(
@@ -964,6 +1004,7 @@ class HistoricalLabReplayEngine:
                 execution_mode=execution_mode,
                 db=db,
                 router=router,
+                timeframe_minutes=tf_min,  # type: ignore[arg-type]
             )
             r = res["run"]
             has_bars = any(p["candles"] > 0 for p in r["data_provenance"].values())
@@ -972,8 +1013,13 @@ class HistoricalLabReplayEngine:
                 cumulative_benchmark += res["benchmark"]["net_pnl_inr"]
                 total_trades += r["total_trades"]
                 total_fees += r["total_fees"]
+                total_brokerage += r.get("total_brokerage_inr", 0.0)
+                total_statutory += r.get("total_statutory_inr", 0.0)
+                total_slippage += r.get("total_slippage_inr", 0.0)
                 total_ai_cost += r.get("ai_api_cost_usd", 0.0)
                 all_pnls.extend(t["net_pnl"] for t in res["trades"])
+                all_orders.extend(res["orders"])
+                all_trades.extend(res["trades"])
                 daily_runs.append({
                     "date": curr.isoformat(),
                     "net_pnl": r["net_pnl"],
@@ -982,6 +1028,9 @@ class HistoricalLabReplayEngine:
                     "trades": r["total_trades"],
                     "win_rate_pct": r["win_rate_pct"],
                     "fees": r["total_fees"],
+                    "brokerage_inr": r.get("total_brokerage_inr", 0.0),
+                    "statutory_inr": r.get("total_statutory_inr", 0.0),
+                    "slippage_inr": r.get("total_slippage_inr", 0.0),
                     "cumulative_equity": round(cumulative_equity, 2),
                     "cumulative_benchmark": round(cumulative_benchmark, 2),
                     "regime": r.get("regime", {}).get("summary", "UNKNOWN"),
@@ -1015,13 +1064,20 @@ class HistoricalLabReplayEngine:
         bm_ret_pct = round(((cumulative_benchmark - self.risk_config.initial_capital_inr) / self.risk_config.initial_capital_inr) * 100.0, 2)
         alpha_pct = round(net_ret_pct - bm_ret_pct, 2)
         sufficiency = "VALIDATED_SAMPLE" if (len(daily_runs) >= 30 and total_trades >= 20) else "STATISTICALLY_INSUFFICIENT"
-        perf_cat = "DETERMINISTIC_STRATEGY" if STRATEGY_REGISTRY[strategy_id]["kind"] == "STRATEGY" else (
-            "GENUINE_AI" if (execution_mode == "AI_AGENT" and total_ai_cost > 0) else "DETERMINISTIC_FALLBACK"
+        perf_cat = (
+            "CASH_BENCHMARK"
+            if STRATEGY_REGISTRY[strategy_id]["kind"] == "BENCHMARK"
+            else (
+                "DETERMINISTIC_STRATEGY"
+                if STRATEGY_REGISTRY[strategy_id]["kind"] == "STRATEGY"
+                else ("GENUINE_AI" if (execution_mode == "AI_AGENT" and total_ai_cost > 0) else "DETERMINISTIC_FALLBACK")
+            )
         )
 
         return {
             "strategy_id": strategy_id,
             "strategy_name": STRATEGY_REGISTRY[strategy_id]["name"],
+            "timeframe_minutes": tf_min,
             "performance_category": perf_cat,
             "statistical_sufficiency": sufficiency,
             "start_date": start_date.isoformat(),
@@ -1045,8 +1101,13 @@ class HistoricalLabReplayEngine:
             "total_trades": total_trades,
             "win_rate_pct": win_rate,
             "total_fees_inr": round(total_fees, 2),
+            "total_brokerage_inr": round(total_brokerage, 2),
+            "total_statutory_inr": round(total_statutory, 2),
+            "total_slippage_inr": round(total_slippage, 2),
             "total_ai_cost_usd": round(total_ai_cost, 6),
             "slippage_bps": self.cost_config.base_slippage_bps,
+            "orders": all_orders,
+            "trades": all_trades,
             "daily_runs": daily_runs,
         }
 
@@ -1058,8 +1119,10 @@ class HistoricalLabReplayEngine:
         slippage_bps_list: tuple[float, ...] = (5.0, 10.0, 20.0),
         symbols: tuple[str, ...] | list[str] = LAB_DEFAULT_UNIVERSE,
         data_mode: DataSourceMode = DataSourceMode.HISTORICAL_REAL,
+        eligible_dates: list[date] | None = None,
+        timeframe_minutes: Literal[5, 15, 30] | None = None,
     ) -> list[dict[str, Any]]:
-        """Run multi-day backtest across 5, 10, and 20 bps slippage assumptions."""
+        """Run multi-day backtest across configured slippage bps assumptions without double-counting."""
         from dataclasses import replace
 
         results = []
@@ -1067,13 +1130,24 @@ class HistoricalLabReplayEngine:
         try:
             for bps in slippage_bps_list:
                 self.cost_config = replace(orig_cost, base_slippage_bps=bps)
-                res = self.run_date_range(start_date, end_date, strategy_id=strategy_id, symbols=symbols, data_mode=data_mode)
+                res = self.run_date_range(
+                    start_date,
+                    end_date,
+                    strategy_id=strategy_id,
+                    symbols=symbols,
+                    data_mode=data_mode,
+                    eligible_dates=eligible_dates,
+                    timeframe_minutes=timeframe_minutes,
+                )
                 results.append({
                     "slippage_bps": bps,
                     "gross_return_pct": res["gross_return_pct"],
                     "net_return_pct": res["total_return_pct"],
                     "net_pnl_inr": res["net_pnl_inr"],
                     "total_fees_inr": res["total_fees_inr"],
+                    "total_brokerage_inr": res["total_brokerage_inr"],
+                    "total_statutory_inr": res["total_statutory_inr"],
+                    "total_slippage_inr": res["total_slippage_inr"],
                     "total_trades": res["total_trades"],
                     "win_rate_pct": res["win_rate_pct"],
                 })
