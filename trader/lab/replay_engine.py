@@ -520,9 +520,10 @@ class HistoricalLabReplayEngine:
                         })
 
             if t_ist >= self.risk_config.square_off_time and len(portfolio.positions) > 0:
+                prev_closed_len = len(portfolio.closed_trades)
                 sq_orders = portfolio.square_off_all_positions(last_prices, timestamp=ts)
-                for so in sq_orders:
-                    tr = portfolio.closed_trades[-1] if portfolio.closed_trades else {}
+                new_closed_trades = portfolio.closed_trades[prev_closed_len:]
+                for so, tr in zip(sq_orders, new_closed_trades):
                     meta = open_entry_meta.pop(so.symbol, {})
                     entry_dt = datetime.fromisoformat(meta.get("entry_timestamp", ts.isoformat()))
                     completed_trades_detailed.append({
