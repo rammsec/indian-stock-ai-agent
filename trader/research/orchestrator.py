@@ -35,13 +35,15 @@ from .agents import (
     StatisticalValidationAgent,
     StrategyChallengerRedTeamAgent,
 )
-from .holdout import SEALED_HOLDOUT_REGISTRY_PATH, SealedHoldoutGuard
+from .holdout import SEALED_HOLDOUT_REGISTRY_PATH, SealedHoldoutGuard, _get_git_commit_sha
+from .integrity_guard import ResearchIntegrityGuard
 from .qualification import evaluate_seven_gates, separate_strategies_and_benchmarks
 
 RESEARCH_REPORT_PATH = Path("data/lab/research_cycle_report.json")
 CYCLE_002_REPORT_PATH = Path("data/lab/cycle_002_report.json")
 CYCLE_003_REPORT_PATH = Path("data/lab/cycle_003_report.json")
 CYCLE_003_REASSESSMENT_PATH = Path("data/lab/cycle_003_integrity_reassessment.json")
+CYCLE_003_PHASE11_3_REASSESSMENT_PATH = Path("data/lab/cycle_003_phase11_3_reassessment.json")
 CYCLE_004_REPORT_PATH = Path("data/lab/cycle_004_report.json")
 PROVENANCE_REPORT_PATH = Path("data/lab/provenance_report.json")
 ARCHIVE_HEALTH_PATH = Path("data/lab/daily_archive_health.json")
@@ -395,7 +397,9 @@ class ChiefResearchOrchestrator:
                 red_team_reason=rt_reason,
                 min_sessions_required=60,
                 min_trades_required=30,
-                independent_holdout_valid=holdout_status.get("independent_holdout_valid", True),
+                independent_holdout_valid=holdout_status.get("independent_holdout_valid", False),
+                provenance_status="VERIFIED" if prov_verified else "FAILED",
+                holdout_status=holdout_status.get("status", "UNKNOWN"),
             )
 
             qualification_board.append({
@@ -942,12 +946,25 @@ class ChiefResearchOrchestrator:
             }
             stat_v, _ = self.stat_agent.validate(res, wf)
             rt_ok, rt_reason = self.red_team.challenge(disp_id, res, wf)
+            prov_ok_004, prov_rep_004 = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+            guard_res_004 = ResearchIntegrityGuard().validate(
+                cycle_id="CYCLE-004",
+                training_dates=elig_1h[:t_end_1h],
+                validation_dates=elig_1h[t_end_1h:v_end_1h],
+                unseen_dates=unseen_1h_dates,
+                dataset_fingerprint=prov_rep_004.get("dataset_fingerprint", ""),
+                provenance_result=prov_rep_004,
+            )
             qual = evaluate_seven_gates(
                 strategy_id=disp_id, strategy_name=res["strategy_name"], multi_day_metrics=res,
                 unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
-                data_provenance_verified=True, stat_validation_verdict=stat_v,
+                data_provenance_verified=prov_ok_004, stat_validation_verdict=stat_v,
                 red_team_approved=rt_ok, red_team_reason=rt_reason,
                 min_sessions_required=60, min_trades_required=30,
+                independent_holdout_valid=holdout_status.get("independent_holdout_valid", False),
+                provenance_status=prov_rep_004.get("final_provenance_status", "FAILED"),
+                holdout_status=holdout_status.get("status", "UNKNOWN"),
+                integrity_guard_result=guard_res_004,
             )
             leaderboard.append(res)
             qualification_board.append({
@@ -1001,12 +1018,25 @@ class ChiefResearchOrchestrator:
             }
             stat_v, _ = self.stat_agent.validate(res, wf)
             rt_ok, rt_reason = self.red_team.challenge(sid, res, wf)
+            prov_ok_cnc, prov_rep_cnc = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+            guard_res_cnc = ResearchIntegrityGuard().validate(
+                cycle_id="CYCLE-004",
+                training_dates=elig_1h[:t_end_1h],
+                validation_dates=elig_1h[t_end_1h:v_end_1h],
+                unseen_dates=unseen_1h_dates,
+                dataset_fingerprint=prov_rep_cnc.get("dataset_fingerprint", ""),
+                provenance_result=prov_rep_cnc,
+            )
             qual = evaluate_seven_gates(
                 strategy_id=sid, strategy_name=sname, multi_day_metrics=res,
                 unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
-                data_provenance_verified=True, stat_validation_verdict=stat_v,
+                data_provenance_verified=prov_ok_cnc, stat_validation_verdict=stat_v,
                 red_team_approved=rt_ok, red_team_reason=rt_reason,
                 min_sessions_required=60, min_trades_required=30,
+                independent_holdout_valid=holdout_status.get("independent_holdout_valid", False),
+                provenance_status=prov_rep_cnc.get("final_provenance_status", "FAILED"),
+                holdout_status=holdout_status.get("status", "UNKNOWN"),
+                integrity_guard_result=guard_res_cnc,
             )
             leaderboard.append(res)
             qualification_board.append({
@@ -1201,6 +1231,123 @@ class ChiefResearchOrchestrator:
             LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
 
         return reassessment
+
+    def reassess_cycle_003_phase11_3(self) -> dict[str, Any]:
+        """Phase 11.3: Correct Gate 1 & qualification statuses for CYCLE-003 using ResearchIntegrityGuard."""
+        if not CYCLE_003_REPORT_PATH.exists():
+            raise FileNotFoundError(f"Missing original CYCLE-003 report: {CYCLE_003_REPORT_PATH}")
+
+        orig = json.loads(CYCLE_003_REPORT_PATH.read_text(encoding="utf-8"))
+        prov_ok_strict, prov_1h_report = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+        PROVENANCE_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        PROVENANCE_REPORT_PATH.write_text(json.dumps(prov_1h_report, indent=2), encoding="utf-8")
+
+        guard = SealedHoldoutGuard()
+        reg = guard.load_registry()
+        guard.save_registry(reg)
+
+        cycle2_dates: set[str] = set()
+        cycle3_unseen_dates: list[str] = []
+        cycle3_commit_sha = "unknown"
+        for exp in reg.get("sealed_exposures", []):
+            if exp.get("cycle_id") == "CYCLE-002":
+                cycle2_dates.update(exp.get("unseen_dates", []))
+            elif exp.get("cycle_id") == "CYCLE-003-60M" and not cycle3_unseen_dates:
+                cycle3_unseen_dates = list(exp.get("unseen_dates", []))
+                cycle3_commit_sha = str(exp.get("commit_sha", "unknown"))
+
+        reused_in_c3 = sorted(d for d in cycle3_unseen_dates if d in cycle2_dates)
+        holdout_valid = len(reused_in_c3) == 0 and len(cycle3_unseen_dates) > 0
+        holdout_status_str = "EXPOSED_HOLDOUT_REUSED" if reused_in_c3 else "VALID_UNSEEN"
+        prov_status_str = str(prov_1h_report.get("final_provenance_status", "FAILED"))
+
+        sep = separate_strategies_and_benchmarks(
+            orig.get("qualification_board", []),
+            period_label=orig.get("date_range", ""),
+        )
+
+        recalculated_strategies: list[dict[str, Any]] = []
+        downgrade_explanations: list[dict[str, Any]] = []
+
+        for row in sep["active_strategy_leaderboard"]:
+            sid = row["strategy_id"]
+            orig_status = row.get("final_status", "REJECTED")
+            is_60m = int(row.get("timeframe_minutes", 5)) == 60
+            orig_gates = [dict(g) for g in row.get("gates", [])]
+
+            if not prov_ok_strict and is_60m:
+                g1_passed = False
+                g1_reason = f"BLOCKED: 1H provenance is {prov_status_str} (requires VERIFIED); holdout={holdout_status_str}."
+                new_status = "BLOCKED_INTEGRITY"
+            elif is_60m and not holdout_valid:
+                g1_passed = False
+                g1_reason = f"INVALIDATED: {holdout_status_str} ({len(reused_in_c3)}/48 unseen dates reused from CYCLE-002)."
+                new_status = "INVALIDATED"
+            elif not is_60m:
+                g1_passed = False
+                g1_reason = "BLOCKED: 5m->30m archive has partial sessions and < 60 sessions."
+                new_status = "REJECTED" if float(row.get("net_return_pct", 0.0)) < 0 else "INSUFFICIENT_EVIDENCE"
+            else:
+                g1_passed = True
+                g1_reason = "Verified provenance and untouched holdout."
+                new_status = orig_status
+
+            # Update Gate 1 in the strategy's gates list so Gate 1 never falsely shows PASS
+            for g in orig_gates:
+                if int(g.get("gate_number", 0)) == 1:
+                    g["passed"] = g1_passed
+                    g["status_label"] = "PASS" if g1_passed else "FAIL"
+                    g["reason"] = g1_reason
+
+            passed_cnt = sum(1 for g in orig_gates if g.get("passed"))
+            recalculated_strategies.append({
+                **row,
+                "original_status": orig_status,
+                "reassessed_status": new_status,
+                "passed_gates": f"{passed_cnt}/{len(orig_gates) or 7}",
+                "gate_1_passed": g1_passed,
+                "gate_1_reason": g1_reason,
+                "provenance_status": prov_status_str if is_60m else "PARTIALLY_VERIFIED",
+                "holdout_status": holdout_status_str if is_60m else "INSUFFICIENT_UNSEEN_DATA",
+                "gates": orig_gates,
+            })
+            downgrade_explanations.append({
+                "strategy_id": sid,
+                "original_status": orig_status,
+                "reassessed_status": new_status,
+                "gate_1_passed": g1_passed,
+                "reason": g1_reason,
+            })
+
+        out = {
+            "reassessment_id": "CYCLE-003-PHASE-11-3-REASSESSMENT",
+            "reassessment_timestamp": datetime.now(tz=IST_TZ).isoformat(),
+            "original_cycle_reference": orig.get("cycle_id", "CYCLE-003"),
+            "original_commit_sha": cycle3_commit_sha,
+            "original_generated_at_ist": orig.get("generated_at_ist"),
+            "provenance_status": prov_status_str,
+            "provenance_verified": prov_ok_strict,
+            "holdout_status": holdout_status_str,
+            "independent_holdout_valid": holdout_valid,
+            "previously_exposed_dates_count": len(reused_in_c3),
+            "previously_exposed_dates": reused_in_c3,
+            "qualification_allowed": False,
+            "active_strategy_leaderboard": recalculated_strategies,
+            "reference_benchmark_leaderboard": sep["reference_benchmark_leaderboard"],
+            "downgrade_explanations": downgrade_explanations,
+        }
+
+        CYCLE_003_PHASE11_3_REASSESSMENT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        CYCLE_003_PHASE11_3_REASSESSMENT_PATH.write_text(json.dumps(out, indent=2), encoding="utf-8")
+
+        if LAB_INDEX_PATH.exists():
+            idx = json.loads(LAB_INDEX_PATH.read_text(encoding="utf-8"))
+            idx["cycle_003_phase11_3_reassessment"] = out
+            idx["provenance_report_1h"] = prov_1h_report
+            LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
+
+        return out
+
 
 
 

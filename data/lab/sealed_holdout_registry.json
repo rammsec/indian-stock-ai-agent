@@ -279,7 +279,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-03": {
       "date": "2026-11-03",
@@ -290,7 +293,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-05": {
       "date": "2026-11-05",
@@ -301,7 +307,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-06": {
       "date": "2026-11-06",
@@ -312,7 +321,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-11": {
       "date": "2026-11-11",
@@ -323,7 +335,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-12": {
       "date": "2026-11-12",
@@ -334,7 +349,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-13": {
       "date": "2026-11-13",
@@ -345,7 +363,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-16": {
       "date": "2026-11-16",
@@ -356,7 +377,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-17": {
       "date": "2026-11-17",
@@ -367,7 +391,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-18": {
       "date": "2026-11-18",
@@ -378,7 +405,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-19": {
       "date": "2026-11-19",
@@ -389,7 +419,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-20": {
       "date": "2026-11-20",
@@ -400,7 +433,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-002",
+      "reservation_timestamp": "2026-11-21T13:09:13.493067+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-09": {
       "date": "2026-09-09",
@@ -411,7 +447,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-10": {
       "date": "2026-09-10",
@@ -422,7 +461,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-11": {
       "date": "2026-09-11",
@@ -433,7 +475,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-15": {
       "date": "2026-09-15",
@@ -444,7 +489,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-16": {
       "date": "2026-09-16",
@@ -455,7 +503,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-17": {
       "date": "2026-09-17",
@@ -466,7 +517,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-18": {
       "date": "2026-09-18",
@@ -477,7 +531,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-21": {
       "date": "2026-09-21",
@@ -488,7 +545,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-22": {
       "date": "2026-09-22",
@@ -499,7 +559,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-23": {
       "date": "2026-09-23",
@@ -510,7 +573,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-24": {
       "date": "2026-09-24",
@@ -521,7 +587,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-25": {
       "date": "2026-09-25",
@@ -532,7 +601,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-28": {
       "date": "2026-09-28",
@@ -543,7 +615,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-29": {
       "date": "2026-09-29",
@@ -554,7 +629,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-09-30": {
       "date": "2026-09-30",
@@ -565,7 +643,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-01": {
       "date": "2026-10-01",
@@ -576,7 +657,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-05": {
       "date": "2026-10-05",
@@ -587,7 +671,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-06": {
       "date": "2026-10-06",
@@ -598,7 +685,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-07": {
       "date": "2026-10-07",
@@ -609,7 +699,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-08": {
       "date": "2026-10-08",
@@ -620,7 +713,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-09": {
       "date": "2026-10-09",
@@ -631,7 +727,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-12": {
       "date": "2026-10-12",
@@ -642,7 +741,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-13": {
       "date": "2026-10-13",
@@ -653,7 +755,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-14": {
       "date": "2026-10-14",
@@ -664,7 +769,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-15": {
       "date": "2026-10-15",
@@ -675,7 +783,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-16": {
       "date": "2026-10-16",
@@ -686,7 +797,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-19": {
       "date": "2026-10-19",
@@ -697,7 +811,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-21": {
       "date": "2026-10-21",
@@ -708,7 +825,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-22": {
       "date": "2026-10-22",
@@ -719,7 +839,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-23": {
       "date": "2026-10-23",
@@ -730,7 +853,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-26": {
       "date": "2026-10-26",
@@ -741,7 +867,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-27": {
       "date": "2026-10-27",
@@ -752,7 +881,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-28": {
       "date": "2026-10-28",
@@ -763,7 +895,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-29": {
       "date": "2026-10-29",
@@ -774,7 +909,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-10-30": {
       "date": "2026-10-30",
@@ -785,7 +923,10 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     },
     "2026-11-04": {
       "date": "2026-11-04",
@@ -796,7 +937,11 @@
       "dataset_fingerprint": "",
       "strategy_ids_evaluated": [],
       "previous_exposure_count": 1,
-      "reason_for_retirement": null
+      "reason_for_retirement": null,
+      "owning_cycle_id": "CYCLE-003-60M",
+      "reservation_timestamp": "2026-11-21T13:41:25.227452+05:30",
+      "registry_version": "11.3.0"
     }
-  }
+  },
+  "registry_version": "11.3.0"
 }

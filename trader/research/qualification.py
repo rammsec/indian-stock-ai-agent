@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any, Literal
+
+from ..config import IST_TZ
 
 QualificationStatus = Literal[
     "REJECTED",
@@ -13,6 +16,7 @@ QualificationStatus = Literal[
     "INSUFFICIENT_EVIDENCE",
     "INSUFFICIENT EVIDENCE",
     "INVALIDATED",
+    "BLOCKED_INTEGRITY",
     "QUALIFIED",
     "SUSPENDED",
 ]
@@ -36,6 +40,10 @@ class QualificationEvaluation:
     passed_gates_count: int
     total_gates: int
     summary: str
+    provenance_status: str = "UNKNOWN"
+    holdout_status: str = "UNKNOWN"
+    validation_timestamp: str = ""
+    failure_reasons: list[str] = field(default_factory=list)
 
 
 def evaluate_seven_gates(
@@ -44,25 +52,52 @@ def evaluate_seven_gates(
     multi_day_metrics: dict[str, Any],
     unseen_metrics: dict[str, Any],
     conservative_slippage_metrics: dict[str, Any],
-    data_provenance_verified: bool,
-    stat_validation_verdict: Literal["PASS", "FAIL", "INSUFFICIENT EVIDENCE"],
-    red_team_approved: bool,
-    red_team_reason: str,
+    data_provenance_verified: bool | None = None,
+    stat_validation_verdict: Literal["PASS", "FAIL", "INSUFFICIENT EVIDENCE"] = "INSUFFICIENT EVIDENCE",
+    red_team_approved: bool = False,
+    red_team_reason: str = "",
     min_sessions_required: int = 60,
     min_trades_required: int = 30,
-    independent_holdout_valid: bool = True,
+    independent_holdout_valid: bool | None = None,
+    provenance_status: str | None = None,
+    holdout_status: str | None = None,
+    integrity_guard_result: dict[str, Any] | None = None,
 ) -> QualificationEvaluation:
-    """Evaluate a strategy candidate against all 7 mandatory institutional qualification gates."""
+    """Evaluate a strategy candidate against all 7 mandatory institutional qualification gates (fail-closed)."""
     gates: list[GateResult] = []
+    val_ts = datetime.now(tz=IST_TZ).isoformat()
+    failure_reasons: list[str] = []
 
-    # Gate 1 — Data & Holdout Integrity
-    g1_pass = bool(data_provenance_verified) and bool(independent_holdout_valid)
-    if not data_provenance_verified:
-        g1_reason = "Unverified data provenance"
-    elif not independent_holdout_valid:
-        g1_reason = "INVALIDATED: Exposed holdout dates reused in final evaluation"
+    if integrity_guard_result is not None:
+        prov_status_eff = str(integrity_guard_result.get("provenance_status", "FAILED"))
+        hold_status_eff = str(integrity_guard_result.get("holdout_status", "FAILED"))
+        prov_ok = (prov_status_eff == "VERIFIED") and bool(integrity_guard_result.get("qualification_allowed", False))
+        hold_ok = bool(integrity_guard_result.get("qualification_allowed", False)) and bool(
+            integrity_guard_result.get("ownership_valid", False)
+        ) and bool(integrity_guard_result.get("split_valid", False))
+        failure_reasons.extend(integrity_guard_result.get("failure_reasons", []))
     else:
-        g1_reason = "Verified historical provenance, zero lookahead, untouched holdout"
+        prov_status_eff = provenance_status or ("VERIFIED" if data_provenance_verified is True else "MISSING_OR_UNVERIFIED")
+        hold_status_eff = holdout_status or ("VALID_UNSEEN" if independent_holdout_valid is True else "MISSING_OR_INVALID")
+        prov_ok = (data_provenance_verified is True) and (prov_status_eff == "VERIFIED")
+        hold_ok = independent_holdout_valid is True
+
+    # Gate 1 — Data & Holdout Integrity (fail closed if missing or partial)
+    g1_pass = prov_ok and hold_ok
+    if data_provenance_verified is None and integrity_guard_result is None:
+        g1_reason = "BLOCKED: Missing data provenance verification result"
+        failure_reasons.append(g1_reason)
+    elif not prov_ok:
+        g1_reason = f"BLOCKED: Provenance status is {prov_status_eff} (requires VERIFIED)"
+        failure_reasons.append(g1_reason)
+    elif independent_holdout_valid is None and integrity_guard_result is None:
+        g1_reason = "BLOCKED: Missing independent holdout validation result"
+        failure_reasons.append(g1_reason)
+    elif not hold_ok:
+        g1_reason = f"INVALIDATED: Holdout integrity failed ({hold_status_eff})"
+        failure_reasons.append(g1_reason)
+    else:
+        g1_reason = "Verified historical provenance, zero lookahead, untouched owned holdout"
     gates.append(GateResult(
         1, "Data & Holdout Integrity", g1_pass, "PASS" if g1_pass else "FAIL", g1_reason,
     ))
@@ -122,10 +157,14 @@ def evaluate_seven_gates(
 
     passed_count = sum(1 for g in gates if g.passed)
 
-    # Determine final qualification status
+    # Determine final qualification status (integrity gates take strict precedence)
     if not g1_pass:
-        final_status: QualificationStatus = "INVALIDATED"
-        summary = f"Invalidated: {g1_reason} ({passed_count}/7 gates passed)."
+        if (not hold_ok) and prov_ok:
+            final_status: QualificationStatus = "INVALIDATED"
+            summary = f"Invalidated: {g1_reason} ({passed_count}/7 gates passed)."
+        else:
+            final_status = "BLOCKED_INTEGRITY"
+            summary = f"Blocked Integrity: {g1_reason} ({passed_count}/7 gates passed)."
     elif not g2_pass or not g6_pass or not red_team_approved:
         final_status = "REJECTED"
         summary = f"Rejected: Failed profitability/robustness/red-team ({passed_count}/7 gates passed)."
@@ -147,6 +186,10 @@ def evaluate_seven_gates(
         passed_gates_count=passed_count,
         total_gates=7,
         summary=summary,
+        provenance_status=prov_status_eff,
+        holdout_status=hold_status_eff,
+        validation_timestamp=val_ts,
+        failure_reasons=failure_reasons,
     )
 
 

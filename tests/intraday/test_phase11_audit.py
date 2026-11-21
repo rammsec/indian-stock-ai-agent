@@ -122,6 +122,7 @@ def test_seven_gate_qualification_and_red_team_veto():
     qual = evaluate_seven_gates(
         "TEST-GOOD", "Good Strategy", good_metrics, wf_ok["unseen_test"],
         {"net_return_pct": 6.2}, True, s_verdict, r_ok, r_reason,
+        independent_holdout_valid=True,
     )
     assert qual.final_status == "QUALIFIED"
     assert qual.passed_gates_count == 7
