@@ -86,7 +86,7 @@ async function loadLabIndex() {
 
     const dateSel = document.getElementById("date-select");
     dateSel.innerHTML = LAB_STATE.index.available_dates
-      .map((d) => `<option value="${d.date}">${d.date} (${d.ready_count}/${d.total_stocks} Ready)</option>`)
+      .map((d) => `<option value="${d.date}">${d.date} — ${d.date_status || "PARTIAL"} (${d.ready_count}/${d.total_stocks} Ready)</option>`)
       .join("");
 
     const stratSel = document.getElementById("strategy-select");
@@ -132,8 +132,9 @@ function getActiveRunBundle() {
 }
 
 function renderDataQuality(dateStr) {
-  document.getElementById("lbl-selected-date").textContent = dateStr;
   const dateInfo = LAB_STATE.index.available_dates.find((d) => d.date === dateStr);
+  document.getElementById("lbl-selected-date").textContent =
+    dateInfo ? `${dateStr} • ${dateInfo.date_status || "PARTIAL"} (${dateInfo.ready_count}/${dateInfo.total_stocks} Ready)` : dateStr;
   const tbody = document.getElementById("data-quality-tbody");
   if (!dateInfo || !tbody) return;
 
@@ -143,16 +144,17 @@ function renderDataQuality(dateStr) {
   tbody.innerHTML = dateInfo.stocks
     .map((s) => {
       const p = provMap[s.symbol] || {};
-      const badgeCls = s.status === "Ready" ? "badge-green" : "badge-amber";
+      const badgeCls = s.status === "Ready" ? "badge-green" : (s.status === "Incomplete" ? "badge-amber" : "badge-red");
       return `
         <tr>
           <td style="font-weight: 700; color: #fff;">${s.symbol}</td>
           <td>${p.availability || s.data_availability}</td>
-          <td>${p.candles ?? s.candles_count}</td>
+          <td>${p.candles ?? s.candles_count} / ${s.expected_candles || 75}</td>
           <td>${p.warmup ?? 0}</td>
           <td>${p.missing ?? s.missing_intervals_count}</td>
           <td style="font-size: 11px; color: var(--text-muted);">${p.provider || s.provider}</td>
           <td><span class="badge ${badgeCls}">${s.status}</span></td>
+          <td style="font-size: 11px; color: var(--text-muted);">${s.quality_reason || ""}</td>
         </tr>
       `;
     })
@@ -451,7 +453,7 @@ function renderLeaderboard() {
   document.getElementById("lbl-leaderboard-date").textContent = LAB_STATE.currentDate;
   const tbody = document.getElementById("leaderboard-tbody");
   const runs = Object.values(LAB_STATE.currentDateData.runs).map((b) => b.run);
-  runs.sort((a, b) => b.total_return_pct - a.total_return_pct);
+  runs.sort((a, b) => (b.total_return_pct - a.total_return_pct) || (b.sharpe_ratio - a.sharpe_ratio));
 
   tbody.innerHTML = runs
     .map((r, i) => {
@@ -469,7 +471,9 @@ function renderLeaderboard() {
           <td>${r.max_drawdown_pct}%</td>
           <td>${r.sharpe_ratio}</td>
           <td>${r.total_trades}</td>
+          <td>${(r.avg_holding_minutes || 0).toFixed(1)}m</td>
           <td style="color: var(--accent-red);">₹${r.total_fees.toFixed(2)}</td>
+          <td>$${(r.ai_api_cost_usd || 0).toFixed(4)}</td>
         </tr>
       `;
     })

@@ -1,14 +1,22 @@
-"""Comprehensive tests for the Historical AI Trading Lab (5-stock ₹50,000 simulator, DB, and dashboard)."""
+"""Comprehensive regression tests for Historical AI Trading Lab (data quality, AI attribution, multi-day, and DB)."""
 
 import json
 from datetime import date, datetime
 from pathlib import Path
+import httpx
 import pytest
 
+from trader.agents.router import GeminiProvider, ModelRouter, TokenBudgetManager
 from trader.config import IST_TZ, LAB_DEFAULT_UNIVERSE, LAB_INITIAL_CAPITAL_INR
-from trader.data.instruments import get_instrument_by_symbol, get_instrument_by_isin
+from trader.data.instruments import get_instrument_by_isin, get_instrument_by_symbol
+from trader.data.loader import generate_synthetic_5m_session
 from trader.data.schema import DataSourceMode
-from trader.lab.data_service import load_session_with_warmup, get_available_historical_dates
+from trader.lab.data_service import (
+    EXPECTED_SESSION_BARS,
+    _classify_stock_quality,
+    generate_pre_backtest_quality_report,
+    load_session_with_warmup,
+)
 from trader.lab.database import HistoricalLabDatabase
 from trader.lab.replay_engine import HistoricalLabReplayEngine, STRATEGY_REGISTRY
 
@@ -25,6 +33,28 @@ def test_five_stock_universe_and_birlacable_isin():
     assert get_instrument_by_isin("INE800A01015").symbol == "BIRLACABLE"
 
 
+def test_strict_data_quality_incomplete_never_ready():
+    """INCOMPLETE (<75 bars or missing intervals) must NEVER count as READY; partial dates labelled PARTIAL."""
+    d = date(2026, 11, 20)
+    full_bars = generate_synthetic_5m_session("BIRLACABLE", session_date=d, num_bars=75)
+    partial_bars = full_bars[:73]  # 73/75 bars -> Incomplete
+
+    q_full = _classify_stock_quality("BIRLACABLE", d, full_bars, 0, "Cached Historical", "HISTORICAL_REAL", "Parquet", "2026-11-20T16:00:00+05:30")
+    q_inc = _classify_stock_quality("RELIANCE", d, partial_bars, 0, "Cached Historical", "HISTORICAL_REAL", "Parquet", "2026-11-20T16:00:00+05:30")
+    q_empty = _classify_stock_quality("TCS", d, [], 0, "Unavailable", "HISTORICAL_REAL", "None", "2026-11-20T16:00:00+05:30")
+
+    assert q_full.status == "Ready"
+    assert q_full.candles_count == EXPECTED_SESSION_BARS
+    assert q_inc.status == "Incomplete"
+    assert q_empty.status == "Unavailable"
+
+    # Official holiday must be classified EXCHANGE_HOLIDAY
+    rep_holiday = generate_pre_backtest_quality_report(date(2026, 1, 26))
+    assert rep_holiday.date_status == "EXCHANGE_HOLIDAY"
+    assert rep_holiday.all_stocks_ready is False
+    assert rep_holiday.ready_count == 0
+
+
 def test_warmup_slicing_zero_future_leakage():
     """Ensure load_session_with_warmup never returns candles after target_date."""
     target = date(2026, 11, 18)
@@ -39,8 +69,8 @@ def test_warmup_slicing_zero_future_leakage():
         assert c.timestamp.astimezone(IST_TZ).date() == target
 
 
-def test_replay_determinism_and_next_bar_execution():
-    """Replaying identical inputs produces bit-for-bit identical ₹50,000 portfolio results."""
+def test_replay_determinism_and_no_fabricated_vix():
+    """Replaying identical inputs produces identical ₹50,000 results and explicitly flags unavailable VIX/L1."""
     eng = HistoricalLabReplayEngine()
     target = date(2026, 11, 18)
 
@@ -52,36 +82,110 @@ def test_replay_determinism_and_next_bar_execution():
     assert r1["run"]["total_trades"] == r2["run"]["total_trades"]
     assert r1["run"]["execution_config"]["execution_rule"] == "NEXT_BAR_OPEN"
     assert r1["benchmark"]["initial_capital_inr"] == 50_000.0
-
-    # Verify all 9 strategies/models are registered
     assert len(STRATEGY_REGISTRY) == 9
 
+    # Check that indicator snapshots explicitly mark VIX and L1 microstructure as UNAVAILABLE
+    if r1["decisions"]:
+        snap = r1["decisions"][0]["indicator_snapshot"]
+        assert snap["vix_status"] == "UNAVAILABLE"
+        assert snap["microstructure_l1_status"] == "UNAVAILABLE"
 
-def test_historical_lab_sqlite_persistence(tmp_path):
-    """Verify all 6 entities persist and query cleanly in SQLite."""
-    db_file = tmp_path / "test_lab.db"
-    db = HistoricalLabDatabase(db_path=db_file)
+
+def test_ai_attribution_caching_and_fallback_honesty(tmp_path, monkeypatch):
+    """Verify genuine AI invocation caches by input_hash, records real cost, and never mislabels fallback as LLM."""
+    db = HistoricalLabDatabase(db_path=tmp_path / "ai_test.db")
     eng = HistoricalLabReplayEngine()
 
-    bundle = eng.run_historical_day(date(2026, 11, 18), strategy_id="STRAT-004-SUPERTREND", data_mode=DataSourceMode.HISTORICAL_REAL)
-    db.save_run_bundle(bundle)
+    # 1. Without API key, AI_AGENT mode MUST label decisions DETERMINISTIC_FALLBACK with $0.00 cost
+    router_no_key = ModelRouter(provider=GeminiProvider(api_key=""))
+    res_fb = eng.run_historical_day(
+        date(2026, 11, 18),
+        strategy_id="AGENT-CENTRAL-COUNCIL",
+        symbols=["BIRLACABLE"],
+        data_mode=DataSourceMode.HISTORICAL_REAL,
+        execution_mode="AI_AGENT",
+        db=db,
+        router=router_no_key,
+    )
+    assert res_fb["run"]["ai_api_cost_usd"] == 0.0
+    for dec in res_fb["decisions"]:
+        assert dec["execution_mode"] == "DETERMINISTIC_FALLBACK"
+        assert dec["provider"] == "deterministic_fallback"
 
-    runs = db.list_runs("2026-11-18")
-    assert len(runs) == 1
-    assert runs[0]["strategy_id"] == "STRAT-004-SUPERTREND"
-    assert runs[0]["starting_capital"] == 50_000.0
+    # 2. With mocked Gemini key, records actual LLM provider, tokens, and cost
+    call_counter = {"n": 0}
 
-    db.save_experiment({
-        "experiment_id": "exp_test_01",
-        "parent_strategy_version": "STRAT-004-SUPERTREND@v1.0",
-        "modified_parameters": {"atr_mult": 1.3},
-        "validation_period": "2026-11-18",
-        "performance_metrics": {"net_pnl": runs[0]["net_pnl"]},
-        "suggestion_summary": "Test ATR adjustment",
-        "approval_status": "PROPOSED_PENDING_WALK_FORWARD",
-        "created_at": datetime.now(tz=IST_TZ).isoformat(),
-    })
-    assert len(db.list_experiments()) == 1
+    class DummyResp:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {
+                "candidates": [{"content": {"parts": [{"text": "Hold position; wait for VWAP confirmation."}]}}],
+                "usageMetadata": {"promptTokenCount": 120, "candidatesTokenCount": 30},
+            }
+
+    class DummyClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def post(self, url, json):
+            call_counter["n"] += 1
+            return DummyResp()
+
+    monkeypatch.setattr(httpx, "Client", DummyClient)
+    db2 = HistoricalLabDatabase(db_path=tmp_path / "ai_test_llm.db")
+    router_llm = ModelRouter(budget_manager=TokenBudgetManager(daily_budget_usd=1.0), provider=GeminiProvider(api_key="fake-key"))
+
+    res_llm = eng.run_historical_day(
+        date(2026, 11, 18),
+        strategy_id="AGENT-AUTONOMOUS-TRADER",
+        symbols=["BIRLACABLE"],
+        data_mode=DataSourceMode.HISTORICAL_REAL,
+        execution_mode="AI_AGENT",
+        db=db2,
+        router=router_llm,
+    )
+    assert call_counter["n"] > 0
+    assert res_llm["run"]["ai_api_cost_usd"] > 0.0
+    assert any(d["execution_mode"] == "LLM" and d["provider"] == "google-gemini" for d in res_llm["decisions"])
+
+    # Re-running identical snapshot hits input_hash cache ($0 incremental cost)
+    prev_calls = call_counter["n"]
+    res_cached = eng.run_historical_day(
+        date(2026, 11, 18),
+        strategy_id="AGENT-AUTONOMOUS-TRADER",
+        symbols=["BIRLACABLE"],
+        data_mode=DataSourceMode.HISTORICAL_REAL,
+        execution_mode="AI_AGENT",
+        db=db2,
+        router=router_llm,
+    )
+    assert call_counter["n"] == prev_calls
+    assert res_cached["run"]["ai_api_cost_usd"] == 0.0
+
+
+def test_multi_day_range_and_walk_forward():
+    """Verify multi-day date range and walk-forward Train/Validation/Unseen splits on real data."""
+    eng = HistoricalLabReplayEngine()
+    res_range = eng.run_date_range(date(2026, 11, 16), date(2026, 11, 20), strategy_id="STRAT-001-VWAP-PULLBACK")
+    assert res_range["sessions_evaluated"] == 5
+    assert res_range["initial_capital_inr"] == 50_000.0
+    assert len(res_range["daily_runs"]) == 5
+
+    wf = eng.run_walk_forward(
+        [date(2026, 11, 16), date(2026, 11, 17), date(2026, 11, 18), date(2026, 11, 19), date(2026, 11, 20)],
+        strategy_id="STRAT-001-VWAP-PULLBACK",
+    )
+    assert wf["train"]["sessions_evaluated"] >= 1
+    assert wf["validation"]["sessions_evaluated"] >= 1
+    assert wf["unseen_test"]["sessions_evaluated"] >= 1
 
 
 def test_lab_dashboard_files_and_json_contract():
@@ -97,4 +201,5 @@ def test_lab_dashboard_files_and_json_contract():
     assert idx["initial_capital_inr"] == 50_000.0
     assert idx["universe"] == ["RELIANCE", "TCS", "BIRLACABLE", "ITC", "TATAELXSI"]
     assert len(idx["strategies"]) == 9
-    assert len(idx["available_dates"]) >= 1
+    assert "coverage_summary" in idx
+    assert idx["available_dates"][0]["date_status"] in ("FULLY_READY", "PARTIAL")

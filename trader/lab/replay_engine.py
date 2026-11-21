@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Any, Literal
 
 import numpy as np
@@ -14,6 +16,7 @@ from ..agents.contracts import MarketPosture
 from ..agents.council import CentralMarketCouncil
 from ..agents.market_intelligence import MarketIntelligenceAgent
 from ..agents.microstructure_agent import MicrostructureAgent
+from ..agents.router import ModelRouter
 from ..agents.technical_agent import TechnicalAnalysisAgent
 from ..config import (
     IST_TZ,
@@ -50,6 +53,31 @@ STRATEGY_REGISTRY: dict[str, dict[str, Any]] = {
     "AGENT-CENTRAL-COUNCIL": {"name": "Central AI Council (8-Agent)", "cls": None, "kind": "AI_AGENT"},
     "AGENT-AUTONOMOUS-TRADER": {"name": "Autonomous Trading Agent", "cls": None, "kind": "AI_AGENT"},
 }
+
+
+def classify_session_regime(candles: list[Candle5M]) -> dict[str, str]:
+    """Classify a historical session's market regime from actual price/volatility behavior."""
+    if not candles or len(candles) < 5:
+        return {"trend_regime": "UNKNOWN", "volatility_regime": "UNKNOWN", "summary": "INSUFFICIENT_DATA"}
+
+    day_open = candles[0].open
+    day_close = candles[-1].close
+    ret_pct = ((day_close - day_open) / day_open) * 100.0 if day_open > 0 else 0.0
+    bar_rets = [
+        abs((candles[i].close - candles[i - 1].close) / candles[i - 1].close) * 100.0
+        for i in range(1, len(candles))
+        if candles[i - 1].close > 0
+    ]
+    avg_bar_move = float(np.mean(bar_rets)) if bar_rets else 0.0
+
+    trend = "TRENDING" if abs(ret_pct) >= 0.65 else "SIDEWAYS"
+    vol = "HIGH_VOLATILITY" if avg_bar_move >= 0.25 else "LOW_VOLATILITY"
+    return {
+        "trend_regime": trend,
+        "volatility_regime": vol,
+        "session_return_pct": f"{ret_pct:+.2f}%",
+        "summary": f"{trend}_{vol}",
+    }
 
 
 def compute_five_stock_equal_weight_benchmark(
@@ -142,8 +170,10 @@ class HistoricalLabReplayEngine:
         symbols: tuple[str, ...] | list[str] = LAB_DEFAULT_UNIVERSE,
         data_mode: DataSourceMode = DataSourceMode.HISTORICAL_REAL,
         execution_mode: Literal["DETERMINISTIC", "AI_AGENT"] = "DETERMINISTIC",
+        db: Any | None = None,
+        router: ModelRouter | None = None,
     ) -> dict[str, Any]:
-        """Run deterministic chronological replay for a single historical date."""
+        """Run deterministic or genuine AI chronological replay for a single historical date."""
         if strategy_id not in STRATEGY_REGISTRY:
             raise ValueError(f"Unknown strategy/model ID: {strategy_id}")
 
@@ -190,7 +220,9 @@ class HistoricalLabReplayEngine:
         mi_agent = MarketIntelligenceAgent()
         tech_agent = TechnicalAnalysisAgent()
         micro_agent = MicrostructureAgent()
-        council = CentralMarketCouncil()
+        active_router = router or ModelRouter()
+        council = CentralMarketCouncil(router=active_router)
+        total_ai_cost_usd: float = 0.0
 
         # Chronological union of timestamps on target_date
         all_timestamps = sorted({c.timestamp for bars in session_by_sym.values() for c in bars})
@@ -528,7 +560,6 @@ class HistoricalLabReplayEngine:
 
             # C. Periodic Central Council Assessment (Hourly on 5m replay)
             if last_council_eval is None or (ts - last_council_eval).total_seconds() >= 3600:
-                # Derive market breadth from available symbols up to ts
                 adv = 0
                 dec = 0
                 pct_changes = []
@@ -545,16 +576,53 @@ class HistoricalLabReplayEngine:
                         else:
                             dec += 1
                 avg_chg = float(np.mean(pct_changes)) if pct_changes else 0.0
-                mi_msg = mi_agent.analyze_market(
-                    nifty_change_pct=avg_chg,
-                    bank_nifty_change_pct=avg_chg * 1.1,
-                    india_vix=14.5,
-                    advances=max(1, adv * 300),
-                    declines=max(1, dec * 300),
-                    timestamp=ts,
-                )
-                c_msg = council.evaluate_council(market_intel=mi_msg)
-                current_posture = c_msg.posture
+                # NOTE: Historical India VIX & FII/DII intraday feeds are unavailable in 5m OHLCV cache;
+                # pass neutral 0.0 sentinel only when deterministic council runs, and explicitly tag VIX UNAVAILABLE in snapshot.
+                if strategy_obj is None and execution_mode == "AI_AGENT":
+                    council_snap = {
+                        "council_ts": ts.isoformat(),
+                        "avg_chg": round(avg_chg, 4),
+                        "adv": adv,
+                        "dec": dec,
+                    }
+                    c_hash = hashlib.sha256(json.dumps(council_snap, sort_keys=True).encode()).hexdigest()
+                    c_cached = db.get_cached_ai_response(c_hash) if db is not None else None
+                    if c_cached is not None:
+                        current_posture = MarketPosture(c_cached["response_text"])
+                    else:
+                        mi_msg = mi_agent.analyze_market(
+                            nifty_change_pct=avg_chg,
+                            bank_nifty_change_pct=avg_chg,
+                            india_vix=15.0,
+                            advances=max(1, adv),
+                            declines=max(1, dec),
+                            timestamp=ts,
+                        )
+                        c_msg = council.evaluate_council(market_intel=mi_msg)
+                        current_posture = c_msg.posture
+                        if db is not None:
+                            db.save_cached_ai_response({
+                                "input_hash": c_hash,
+                                "provider": "google-gemini" if "LLM" in c_msg.model_used else "deterministic_fallback",
+                                "model_id": c_msg.model_used,
+                                "model_version": "v1.0",
+                                "execution_mode": "LLM" if "LLM" in c_msg.model_used else "DETERMINISTIC_FALLBACK",
+                                "request_timestamp": ts.isoformat(),
+                                "response_timestamp": datetime.now(tz=IST_TZ).isoformat(),
+                                "input_tokens": 0,
+                                "output_tokens": 0,
+                                "actual_cost_usd": 0.0,
+                                "response_text": current_posture.value,
+                                "input_snapshot": council_snap,
+                            })
+                else:
+                    # Pure deterministic posture from 5-stock breadth
+                    if adv >= 4 and avg_chg > 0.3:
+                        current_posture = MarketPosture.BUY_BULLISH
+                    elif dec >= 4 and avg_chg < -0.3:
+                        current_posture = MarketPosture.SELL_BEARISH
+                    else:
+                        current_posture = MarketPosture.NEUTRAL
                 last_council_eval = ts
 
             # D. Evaluate each stock at closed bar `ts` (NO future info!)
@@ -576,35 +644,113 @@ class HistoricalLabReplayEngine:
                         "rsi_14": round(float(row["rsi_14"]), 1),
                         "macd": round(float(row["macd"]), 2),
                         "atr_14": round(atr, 2),
+                        "volume": int(row["volume"]),
+                        "vix_status": "UNAVAILABLE",
+                        "microstructure_l1_status": "UNAVAILABLE",
                     }
 
                     if strategy_obj is not None:
                         sig = strategy_obj.evaluate_bar(sym, df, current_bar_idx=idx)
                         agent_name = reg_entry["name"]
+                        provider_name = "local_python"
                         model_name = "deterministic_python"
                         model_ver = "v1.0"
                         exec_mode_label = "DETERMINISTIC"
+                        ai_tokens_in = 0
+                        ai_tokens_out = 0
+                        ai_cost = 0.0
+                        req_ts = ts.isoformat()
+                        resp_ts = ts.isoformat()
                     else:
                         # AI Agent Mode: slice strictly up to idx (zero future leakage)
                         sub_candles = (warmup_by_sym[sym] + session_by_sym[sym])[: idx + 1]
                         tech_msg = tech_agent.analyze_candles(sub_candles[-60:])
-                        micro_msg = micro_agent.analyze_microstructure(
-                            sym, "NSE", best_bid=close_px - 0.25, best_ask=close_px + 0.25, traded_volume_20m=25000.0
-                        )
+                        actual_vol_20m = sum(c.volume for c in sub_candles[-4:])
+
+                        # Deterministic baseline signal (without fabricated L1 bid/ask spreads)
                         if strategy_id == "AGENT-CENTRAL-COUNCIL" and current_posture in (MarketPosture.SELL_BEARISH, MarketPosture.HOLD_HIGH_RISK):
-                            sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="NO_SIGNAL", confidence=0.7, rationale=[f"Council posture {current_posture.value} blocks new longs"])
-                        elif tech_msg.signal == "BULLISH" and tech_msg.confidence >= 0.65 and micro_msg.execution_feasibility != "REJECT":
+                            det_sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="NO_SIGNAL", confidence=0.7, rationale=[f"Council posture {current_posture.value} blocks new longs"])
+                        elif tech_msg.signal == "BULLISH" and tech_msg.confidence >= 0.65 and actual_vol_20m > 0:
                             sl = round(close_px - 1.0 * atr, 2)
                             tp = round(close_px + 2.0 * atr, 2)
-                            sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="ENTER_LONG", entry_price=close_px, confidence=tech_msg.confidence, stop_loss=sl, target=tp, rationale=tech_msg.evidence[:2])
+                            det_sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="ENTER_LONG", entry_price=close_px, confidence=tech_msg.confidence, stop_loss=sl, target=tp, rationale=tech_msg.evidence[:2])
                         elif tech_msg.signal == "BEARISH" and sym in portfolio.positions:
-                            sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="EXIT", confidence=tech_msg.confidence, rationale=["Technical bearish reversal"])
+                            det_sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="EXIT", confidence=tech_msg.confidence, rationale=["Technical bearish reversal"])
                         else:
-                            sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="HOLD", confidence=0.55, rationale=[f"Tech={tech_msg.signal}, Micro={micro_msg.execution_feasibility}"])
+                            det_sig = StrategySignal(strategy_id=strategy_id, symbol=sym, timestamp=ts, action="HOLD", confidence=0.55, rationale=[f"Tech={tech_msg.signal} (VIX/L1_Microstructure=UNAVAILABLE)"])
+
+                        sig = det_sig
                         agent_name = reg_entry["name"]
-                        model_name = "deterministic_fallback" if execution_mode == "DETERMINISTIC" else "gemini-2.5-flash"
                         model_ver = "v1.0"
-                        exec_mode_label = "DETERMINISTIC_FALLBACK" if execution_mode == "DETERMINISTIC" else "LLM"
+                        ai_tokens_in = 0
+                        ai_tokens_out = 0
+                        ai_cost = 0.0
+                        req_ts = datetime.now(tz=IST_TZ).isoformat()
+                        resp_ts = req_ts
+
+                        if execution_mode == "AI_AGENT":
+                            snap_payload = {
+                                "strategy_id": strategy_id,
+                                "symbol": sym,
+                                "timestamp": ts.isoformat(),
+                                "indicators": ind_snap,
+                                "tech_signal": tech_msg.signal,
+                                "council_posture": current_posture.value,
+                                "in_position": sym in portfolio.positions,
+                            }
+                            input_hash = hashlib.sha256(json.dumps(snap_payload, sort_keys=True).encode()).hexdigest()
+                            cached = db.get_cached_ai_response(input_hash) if db is not None else None
+                            if cached is not None:
+                                provider_name = cached["provider"]
+                                model_name = cached["model_id"]
+                                exec_mode_label = cached["execution_mode"]
+                                ai_tokens_in = int(cached["input_tokens"])
+                                ai_tokens_out = int(cached["output_tokens"])
+                                ai_cost = 0.0  # Cached hit incurs $0 incremental API cost
+                            else:
+                                prompt = (
+                                    f"Evaluate {sym} at {ts.strftime('%H:%M IST')}. "
+                                    f"Close={close_px}, VWAP={ind_snap['vwap']}, EMA9={ind_snap['ema_9']}, "
+                                    f"EMA21={ind_snap['ema_21']}, RSI={ind_snap['rsi_14']}, Vol20m={actual_vol_20m:.0f}. "
+                                    f"Tech={tech_msg.signal}, Council={current_posture.value}. "
+                                    f"Note: Historical VIX and L1 Bid/Ask are UNAVAILABLE. "
+                                    f"Return concise reasoning for action={det_sig.action}."
+                                )
+                                inv_res = active_router.invoke_agent(
+                                    task_level=1,
+                                    agent_name=strategy_id.lower(),
+                                    prompt=prompt,
+                                    deterministic_fn=lambda: "; ".join(det_sig.rationale),
+                                )
+                                resp_ts = datetime.now(tz=IST_TZ).isoformat()
+                                model_name = inv_res.model_used
+                                exec_mode_label = inv_res.execution_mode
+                                provider_name = "google-gemini" if inv_res.execution_mode == "LLM" else "deterministic_fallback"
+                                ai_tokens_in = inv_res.input_tokens
+                                ai_tokens_out = inv_res.output_tokens
+                                ai_cost = inv_res.cost_usd
+                                total_ai_cost_usd += ai_cost
+                                if inv_res.execution_mode == "LLM" and inv_res.text:
+                                    sig.rationale = [inv_res.text[:240]]
+                                if db is not None:
+                                    db.save_cached_ai_response({
+                                        "input_hash": input_hash,
+                                        "provider": provider_name,
+                                        "model_id": model_name,
+                                        "model_version": model_ver,
+                                        "execution_mode": exec_mode_label,
+                                        "request_timestamp": req_ts,
+                                        "response_timestamp": resp_ts,
+                                        "input_tokens": ai_tokens_in,
+                                        "output_tokens": ai_tokens_out,
+                                        "actual_cost_usd": ai_cost,
+                                        "response_text": "; ".join(sig.rationale),
+                                        "input_snapshot": snap_payload,
+                                    })
+                        else:
+                            provider_name = "local_python"
+                            model_name = "deterministic_python"
+                            exec_mode_label = "DETERMINISTIC"
 
                     # Map StrategySignal action -> BUY / SELL / HOLD / WAIT
                     rec = "BUY" if sig.action == "ENTER_LONG" else ("SELL" if sig.action == "EXIT" else ("WAIT" if sig.action == "NO_SIGNAL" else sig.action))
@@ -616,9 +762,15 @@ class HistoricalLabReplayEngine:
                         "decision_timestamp": ts.isoformat(),
                         "time_str": ts.strftime("%H:%M"),
                         "agent_name": agent_name,
+                        "provider": provider_name,
                         "model_name": model_name,
                         "model_version": model_ver,
                         "execution_mode": exec_mode_label,
+                        "request_timestamp": req_ts,
+                        "response_timestamp": resp_ts,
+                        "input_tokens": ai_tokens_in,
+                        "output_tokens": ai_tokens_out,
+                        "actual_cost_usd": ai_cost,
                         "recommendation": rec,
                         "confidence": round(sig.confidence, 2),
                         "reasoning_summary": reason_text,
@@ -744,9 +896,12 @@ class HistoricalLabReplayEngine:
             "profit_factor": summary["profit_factor"],
             "total_trades": len(completed_trades_detailed),
             "total_fees": total_fees,
+            "ai_api_cost_usd": round(total_ai_cost_usd, 6),
+            "avg_holding_minutes": round(float(np.mean([t["holding_minutes"] for t in completed_trades_detailed])), 1) if completed_trades_detailed else 0.0,
             "avg_win_inr": round(float(np.mean(wins)), 2) if wins else 0.0,
             "avg_loss_inr": round(float(np.mean(losses)), 2) if losses else 0.0,
             "expectancy_inr": round(float(np.mean(pnls)), 2) if pnls else 0.0,
+            "regime": classify_session_regime(session_by_sym.get(symbols[0], [])) if symbols else {},
         }
 
         return {
@@ -759,6 +914,109 @@ class HistoricalLabReplayEngine:
             "candles": candles_payload,
             "markers": chart_markers,
             "stage_bc_analysis": analysis,
+        }
+
+    def run_date_range(
+        self,
+        start_date: date,
+        end_date: date,
+        strategy_id: str = "STRAT-001-VWAP-PULLBACK",
+        symbols: tuple[str, ...] | list[str] = LAB_DEFAULT_UNIVERSE,
+        data_mode: DataSourceMode = DataSourceMode.HISTORICAL_REAL,
+        execution_mode: Literal["DETERMINISTIC", "AI_AGENT"] = "DETERMINISTIC",
+        db: Any | None = None,
+        router: ModelRouter | None = None,
+    ) -> dict[str, Any]:
+        """Run multi-day chronological evaluation across all verified trading dates in [start_date, end_date]."""
+        from ..config import is_nse_trading_day
+
+        curr = start_date
+        daily_runs: list[dict[str, Any]] = []
+        cumulative_equity = self.risk_config.initial_capital_inr
+        cumulative_benchmark = self.risk_config.initial_capital_inr
+        total_trades = 0
+        total_fees = 0.0
+        total_ai_cost = 0.0
+        all_pnls: list[float] = []
+
+        while curr <= end_date:
+            if is_nse_trading_day(curr):
+                res = self.run_historical_day(
+                    target_date=curr,
+                    strategy_id=strategy_id,
+                    symbols=symbols,
+                    data_mode=data_mode,
+                    execution_mode=execution_mode,
+                    db=db,
+                    router=router,
+                )
+                r = res["run"]
+                has_bars = any(p["candles"] > 0 for p in r["data_provenance"].values())
+                if has_bars:
+                    cumulative_equity += r["net_pnl"]
+                    cumulative_benchmark += res["benchmark"]["net_pnl_inr"]
+                    total_trades += r["total_trades"]
+                    total_fees += r["total_fees"]
+                    total_ai_cost += r.get("ai_api_cost_usd", 0.0)
+                    all_pnls.extend(t["net_pnl"] for t in res["trades"])
+                    daily_runs.append({
+                        "date": curr.isoformat(),
+                        "net_pnl": r["net_pnl"],
+                        "return_pct": r["total_return_pct"],
+                        "benchmark_return_pct": res["benchmark"]["total_return_pct"],
+                        "trades": r["total_trades"],
+                        "win_rate_pct": r["win_rate_pct"],
+                        "fees": r["total_fees"],
+                        "cumulative_equity": round(cumulative_equity, 2),
+                        "cumulative_benchmark": round(cumulative_benchmark, 2),
+                        "regime": r.get("regime", {}).get("summary", "UNKNOWN"),
+                    })
+            curr += timedelta(days=1)
+
+        wins = [p for p in all_pnls if p > 0]
+        win_rate = round((len(wins) / len(all_pnls)) * 100.0, 2) if all_pnls else 0.0
+        net_pnl_total = round(cumulative_equity - self.risk_config.initial_capital_inr, 2)
+        return {
+            "strategy_id": strategy_id,
+            "start_date": start_date.isoformat(),
+            "end_date": end_date.isoformat(),
+            "sessions_evaluated": len(daily_runs),
+            "initial_capital_inr": self.risk_config.initial_capital_inr,
+            "final_equity_inr": round(cumulative_equity, 2),
+            "net_pnl_inr": net_pnl_total,
+            "total_return_pct": round((net_pnl_total / self.risk_config.initial_capital_inr) * 100.0, 2),
+            "benchmark_final_inr": round(cumulative_benchmark, 2),
+            "total_trades": total_trades,
+            "win_rate_pct": win_rate,
+            "total_fees_inr": round(total_fees, 2),
+            "total_ai_cost_usd": round(total_ai_cost, 6),
+            "daily_runs": daily_runs,
+        }
+
+    def run_walk_forward(
+        self,
+        ordered_dates: list[date],
+        strategy_id: str = "STRAT-001-VWAP-PULLBACK",
+        train_ratio: float = 0.60,
+        val_ratio: float = 0.20,
+        symbols: tuple[str, ...] | list[str] = LAB_DEFAULT_UNIVERSE,
+        data_mode: DataSourceMode = DataSourceMode.HISTORICAL_REAL,
+    ) -> dict[str, Any]:
+        """Evaluate strategy across chronological Train, Validation, and Unseen Test date splits."""
+        n = len(ordered_dates)
+        if n < 3:
+            raise ValueError("Need at least 3 trading dates for Train/Validation/Unseen splits")
+        t_end = max(1, int(n * train_ratio))
+        v_end = max(t_end + 1, int(n * (train_ratio + val_ratio)))
+        train_dates = ordered_dates[:t_end]
+        val_dates = ordered_dates[t_end:v_end]
+        test_dates = ordered_dates[v_end:] or [ordered_dates[-1]]
+
+        return {
+            "strategy_id": strategy_id,
+            "train": self.run_date_range(train_dates[0], train_dates[-1], strategy_id, symbols, data_mode),
+            "validation": self.run_date_range(val_dates[0], val_dates[-1], strategy_id, symbols, data_mode),
+            "unseen_test": self.run_date_range(test_dates[0], test_dates[-1], strategy_id, symbols, data_mode),
         }
 
     def generate_stage_bc_analysis(

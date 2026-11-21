@@ -128,6 +128,21 @@ class HistoricalLabDatabase:
                     approval_status TEXT NOT NULL,
                     created_at TEXT NOT NULL
                 );
+
+                CREATE TABLE IF NOT EXISTS ai_response_cache (
+                    input_hash TEXT PRIMARY KEY,
+                    provider TEXT NOT NULL,
+                    model_id TEXT NOT NULL,
+                    model_version TEXT NOT NULL,
+                    execution_mode TEXT NOT NULL,
+                    request_timestamp TEXT NOT NULL,
+                    response_timestamp TEXT NOT NULL,
+                    input_tokens INTEGER NOT NULL,
+                    output_tokens INTEGER NOT NULL,
+                    actual_cost_usd REAL NOT NULL,
+                    response_text TEXT NOT NULL,
+                    input_snapshot_json TEXT NOT NULL
+                );
                 """
             )
 
@@ -299,3 +314,37 @@ class HistoricalLabDatabase:
         with self._connect() as conn:
             rows = conn.execute("SELECT * FROM strategy_experiments ORDER BY created_at DESC").fetchall()
             return [dict(r) for r in rows]
+
+    def get_cached_ai_response(self, input_hash: str) -> dict[str, Any] | None:
+        """Retrieve cached AI provider response by reproducible input hash."""
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT * FROM ai_response_cache WHERE input_hash = ?", (input_hash,)
+            ).fetchone()
+            return dict(row) if row else None
+
+    def save_cached_ai_response(self, entry: dict[str, Any]) -> None:
+        """Persist genuine AI provider response keyed by reproducible input hash."""
+        with self._connect() as conn:
+            conn.execute(
+                """
+                INSERT OR REPLACE INTO ai_response_cache VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )
+                """,
+                (
+                    entry["input_hash"],
+                    entry["provider"],
+                    entry["model_id"],
+                    entry["model_version"],
+                    entry["execution_mode"],
+                    entry["request_timestamp"],
+                    entry["response_timestamp"],
+                    entry["input_tokens"],
+                    entry["output_tokens"],
+                    entry["actual_cost_usd"],
+                    entry["response_text"],
+                    json.dumps(entry["input_snapshot"]),
+                ),
+            )
+
