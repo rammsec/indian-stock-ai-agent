@@ -202,4 +202,26 @@ def test_lab_dashboard_files_and_json_contract():
     assert idx["universe"] == ["RELIANCE", "TCS", "BIRLACABLE", "ITC", "TATAELXSI"]
     assert len(idx["strategies"]) == 9
     assert "coverage_summary" in idx
+    assert "data_quality_analytics" in idx
+    assert "multi_day_leaderboard" in idx
+    assert "slippage_sensitivity" in idx
     assert idx["available_dates"][0]["date_status"] in ("FULLY_READY", "PARTIAL")
+
+
+def test_phase8_data_quality_analytics_and_slippage_sensitivity():
+    """Verify Phase 8 data-quality analytics and 5/10/20 bps slippage sensitivity."""
+    from trader.lab.data_service import compute_data_quality_analytics
+
+    dq = compute_data_quality_analytics(min_bars_for_research=70)
+    assert dq["total_available_days"] >= 30
+    assert dq["research_eligible_sessions"] >= 30
+    assert dq["fully_ready_sessions"] == 0  # Honest: 4 stocks miss 1-2 closing bars in yfinance
+    assert len(dq["coverage_by_stock"]) == 5
+
+    eng = HistoricalLabReplayEngine()
+    sens = eng.run_slippage_sensitivity(
+        date(2026, 11, 16), date(2026, 11, 20), strategy_id="STRAT-001-VWAP-PULLBACK", slippage_bps_list=(5.0, 10.0, 20.0)
+    )
+    assert len(sens) == 3
+    assert [s["slippage_bps"] for s in sens] == [5.0, 10.0, 20.0]
+

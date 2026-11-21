@@ -162,6 +162,7 @@ class HistoricalLabReplayEngine:
     ) -> None:
         self.risk_config = risk_config or LabRiskConfig()
         self.cost_config = cost_config or CostConfig()
+        self._session_feature_cache: dict[tuple[str, date, str], tuple[list[Candle5M], list[Candle5M], StockSessionQuality, pd.DataFrame]] = {}
 
     def run_historical_day(
         self,
@@ -183,7 +184,7 @@ class HistoricalLabReplayEngine:
         reg_entry = STRATEGY_REGISTRY[strategy_id]
         strategy_obj: BaseStrategy | None = reg_entry["cls"]() if reg_entry["cls"] is not None else None
 
-        # 1. Load warmup + session candles strictly <= target_date
+        # 1. Load warmup + session candles strictly <= target_date (using in-memory feature cache)
         warmup_by_sym: dict[str, list[Candle5M]] = {}
         session_by_sym: dict[str, list[Candle5M]] = {}
         quality_by_sym: dict[str, StockSessionQuality] = {}
@@ -191,17 +192,20 @@ class HistoricalLabReplayEngine:
         session_start_idx: dict[str, int] = {}
 
         for sym in symbols:
-            w_bars, s_bars, q = load_session_with_warmup(sym, target_date, warmup_days=5, mode=data_mode)
+            cache_key = (sym, target_date, data_mode.value)
+            if cache_key in self._session_feature_cache:
+                w_bars, s_bars, q, f_df = self._session_feature_cache[cache_key]
+            else:
+                w_bars, s_bars, q = load_session_with_warmup(sym, target_date, warmup_days=5, mode=data_mode)
+                combined = w_bars + s_bars
+                f_df = compute_all_features(combined) if combined else pd.DataFrame()
+                self._session_feature_cache[cache_key] = (w_bars, s_bars, q, f_df)
+
             warmup_by_sym[sym] = w_bars
             session_by_sym[sym] = s_bars
             quality_by_sym[sym] = q
-            combined = w_bars + s_bars
-            if combined:
-                features_by_sym[sym] = compute_all_features(combined)
-                session_start_idx[sym] = len(w_bars)
-            else:
-                features_by_sym[sym] = pd.DataFrame()
-                session_start_idx[sym] = 0
+            features_by_sym[sym] = f_df
+            session_start_idx[sym] = len(w_bars) if not f_df.empty else 0
 
         # 2. Initialize ₹50,000 Portfolio & Lab Risk Engine
         portfolio = IntradayPaperPortfolio(
@@ -973,25 +977,99 @@ class HistoricalLabReplayEngine:
                     })
             curr += timedelta(days=1)
 
+        total_gross_pnl = 0.0
+        total_turnover = 0.0
+        all_holding_mins: list[float] = []
+        peak_cum = self.risk_config.initial_capital_inr
+        max_cum_dd = 0.0
+
+        for d_idx, d_run in enumerate(daily_runs):
+            peak_cum = max(peak_cum, d_run["cumulative_equity"])
+            dd = ((peak_cum - d_run["cumulative_equity"]) / peak_cum) * 100.0 if peak_cum > 0 else 0.0
+            max_cum_dd = max(max_cum_dd, dd)
+
         wins = [p for p in all_pnls if p > 0]
+        losses = [p for p in all_pnls if p <= 0]
         win_rate = round((len(wins) / len(all_pnls)) * 100.0, 2) if all_pnls else 0.0
+        gross_wins = sum(wins)
+        gross_losses = abs(sum(losses))
+        profit_factor = round(gross_wins / gross_losses, 2) if gross_losses > 0 else (10.0 if gross_wins > 0 else 0.0)
+        sharpe = round((float(np.mean(all_pnls)) / float(np.std(all_pnls)) * math.sqrt(252)), 2) if len(all_pnls) > 1 and np.std(all_pnls) > 0 else 0.0
+        downside = float(np.std(losses)) if len(losses) > 1 else 1e-4
+        sortino = round((float(np.mean(all_pnls)) / downside * math.sqrt(252)), 2) if len(all_pnls) > 1 and downside > 0 else 0.0
+
         net_pnl_total = round(cumulative_equity - self.risk_config.initial_capital_inr, 2)
+        gross_pnl_total = round(net_pnl_total + total_fees, 2)
+        net_ret_pct = round((net_pnl_total / self.risk_config.initial_capital_inr) * 100.0, 2)
+        gross_ret_pct = round((gross_pnl_total / self.risk_config.initial_capital_inr) * 100.0, 2)
+        bm_ret_pct = round(((cumulative_benchmark - self.risk_config.initial_capital_inr) / self.risk_config.initial_capital_inr) * 100.0, 2)
+        alpha_pct = round(net_ret_pct - bm_ret_pct, 2)
+        sufficiency = "VALIDATED_SAMPLE" if (len(daily_runs) >= 30 and total_trades >= 20) else "STATISTICALLY_INSUFFICIENT"
+        perf_cat = "DETERMINISTIC_STRATEGY" if STRATEGY_REGISTRY[strategy_id]["kind"] == "STRATEGY" else (
+            "GENUINE_AI" if (execution_mode == "AI_AGENT" and total_ai_cost > 0) else "DETERMINISTIC_FALLBACK"
+        )
+
         return {
             "strategy_id": strategy_id,
+            "strategy_name": STRATEGY_REGISTRY[strategy_id]["name"],
+            "performance_category": perf_cat,
+            "statistical_sufficiency": sufficiency,
             "start_date": start_date.isoformat(),
             "end_date": end_date.isoformat(),
             "sessions_evaluated": len(daily_runs),
             "initial_capital_inr": self.risk_config.initial_capital_inr,
             "final_equity_inr": round(cumulative_equity, 2),
+            "gross_pnl_inr": gross_pnl_total,
+            "gross_return_pct": gross_ret_pct,
             "net_pnl_inr": net_pnl_total,
-            "total_return_pct": round((net_pnl_total / self.risk_config.initial_capital_inr) * 100.0, 2),
+            "total_return_pct": net_ret_pct,
             "benchmark_final_inr": round(cumulative_benchmark, 2),
+            "benchmark_return_pct": bm_ret_pct,
+            "cash_only_return_pct": 0.0,
+            "alpha_vs_buy_and_hold_pct": alpha_pct,
+            "max_drawdown_pct": round(max_cum_dd, 2),
+            "sharpe_ratio": sharpe,
+            "sortino_ratio": sortino,
+            "profit_factor": profit_factor,
+            "expectancy_inr": round(float(np.mean(all_pnls)), 2) if all_pnls else 0.0,
             "total_trades": total_trades,
             "win_rate_pct": win_rate,
             "total_fees_inr": round(total_fees, 2),
             "total_ai_cost_usd": round(total_ai_cost, 6),
+            "slippage_bps": self.cost_config.base_slippage_bps,
             "daily_runs": daily_runs,
         }
+
+    def run_slippage_sensitivity(
+        self,
+        start_date: date,
+        end_date: date,
+        strategy_id: str = "STRAT-001-VWAP-PULLBACK",
+        slippage_bps_list: tuple[float, ...] = (5.0, 10.0, 20.0),
+        symbols: tuple[str, ...] | list[str] = LAB_DEFAULT_UNIVERSE,
+        data_mode: DataSourceMode = DataSourceMode.HISTORICAL_REAL,
+    ) -> list[dict[str, Any]]:
+        """Run multi-day backtest across 5, 10, and 20 bps slippage assumptions."""
+        from dataclasses import replace
+
+        results = []
+        orig_cost = self.cost_config
+        try:
+            for bps in slippage_bps_list:
+                self.cost_config = replace(orig_cost, base_slippage_bps=bps)
+                res = self.run_date_range(start_date, end_date, strategy_id=strategy_id, symbols=symbols, data_mode=data_mode)
+                results.append({
+                    "slippage_bps": bps,
+                    "gross_return_pct": res["gross_return_pct"],
+                    "net_return_pct": res["total_return_pct"],
+                    "net_pnl_inr": res["net_pnl_inr"],
+                    "total_fees_inr": res["total_fees_inr"],
+                    "total_trades": res["total_trades"],
+                    "win_rate_pct": res["win_rate_pct"],
+                })
+        finally:
+            self.cost_config = orig_cost
+        return results
 
     def run_walk_forward(
         self,

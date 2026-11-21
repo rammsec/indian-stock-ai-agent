@@ -1,4 +1,4 @@
-"""Generate verified historical 5m datasets, run 9-model evaluations across multi-day ranges, persist to SQLite, and export Lab JSONs."""
+"""Generate Phase 8 verified 5m datasets, 35+ session multi-day evaluation, slippage sensitivity, and Lab JSONs."""
 
 from __future__ import annotations
 
@@ -11,27 +11,42 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from trader.config import IST_TZ, LAB_DEFAULT_UNIVERSE
 from trader.data.schema import DataSourceMode
-from trader.lab.data_service import get_available_historical_dates, refresh_universe_cache
+from trader.lab.data_service import (
+    compute_data_quality_analytics,
+    filter_research_eligible_dates,
+    get_available_historical_dates,
+    refresh_universe_cache,
+)
 from trader.lab.database import HistoricalLabDatabase
 from trader.lab.replay_engine import STRATEGY_REGISTRY, HistoricalLabReplayEngine
 
 LAB_DATA_DIR = Path("docs/lab/data")
 
 
-def generate_historical_lab_artifacts(max_dates: int = 12) -> None:
+def generate_historical_lab_artifacts(
+    replay_dates_count: int = 10,
+    multi_day_sessions_target: int = 35,
+) -> None:
     LAB_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    refresh_universe_cache(LAB_DEFAULT_UNIVERSE, days=60)
-    avail_dates = get_available_historical_dates(LAB_DEFAULT_UNIVERSE, max_dates=60)
-    # Include all dates with at least partial or full real data (honestly labelled FULLY_READY vs PARTIAL)
-    eval_dates = [d for d in avail_dates if d.date_status in ("FULLY_READY", "PARTIAL")][:max_dates]
+    # Use existing 59-day cache if already populated; only refresh if missing
+    avail_dates = get_available_historical_dates(LAB_DEFAULT_UNIVERSE, max_dates=90)
+    if not avail_dates:
+        refresh_universe_cache(LAB_DEFAULT_UNIVERSE, days=60)
+        avail_dates = get_available_historical_dates(LAB_DEFAULT_UNIVERSE, max_dates=90)
 
+    eligible_dates = filter_research_eligible_dates(avail_dates, min_bars_per_stock=70)
+    eval_dates = eligible_dates[:replay_dates_count]
+    multi_dates = sorted([date.fromisoformat(d.date) for d in eligible_dates[:multi_day_sessions_target]])
+
+    dq_analytics = compute_data_quality_analytics(LAB_DEFAULT_UNIVERSE, min_bars_for_research=70)
     engine = HistoricalLabReplayEngine()
     db = HistoricalLabDatabase()
 
+    # 1. Generate bar-by-bar interactive replay JSONs for recent dates
     for d_info in eval_dates:
         target_d = date.fromisoformat(d_info.date)
         date_runs = {}
-        print(f"Evaluating 9 models on {d_info.date} ({d_info.date_status}: {d_info.ready_count}/{d_info.total_stocks} Ready, {d_info.incomplete_count} Incomplete)...")
+        print(f"Generating interactive replay for {d_info.date} ({d_info.date_status}: {d_info.ready_count}/{d_info.total_stocks} Ready)...")
         for sid in STRATEGY_REGISTRY:
             exec_mode = "AI_AGENT" if sid.startswith("AGENT-") else "DETERMINISTIC"
             bundle = engine.run_historical_day(
@@ -45,40 +60,55 @@ def generate_historical_lab_artifacts(max_dates: int = 12) -> None:
             db.save_run_bundle(bundle)
             date_runs[sid] = bundle
 
-        best_sid = max(date_runs.keys(), key=lambda k: date_runs[k]["run"]["total_return_pct"])
-        best_run = date_runs[best_sid]["run"]
-        db.save_experiment({
-            "experiment_id": f"exp_{d_info.date}_{best_sid}",
-            "parent_strategy_version": f"{best_sid}@v1.0",
-            "modified_parameters": {"atr_sl_mult": 1.3},
-            "validation_period": d_info.date,
-            "performance_metrics": {"net_pnl": best_run["net_pnl"], "win_rate": best_run["win_rate_pct"]},
-            "suggestion_summary": "; ".join(date_runs[best_sid]["stage_bc_analysis"]["stage_c_suggestions"]),
-            "approval_status": "PROPOSED_PENDING_WALK_FORWARD",
-            "created_at": datetime.now(tz=IST_TZ).isoformat(),
-        })
-
         out_file = LAB_DATA_DIR / f"runs_{d_info.date}.json"
         out_file.write_text(json.dumps({"date": d_info.date, "runs": date_runs}, indent=2), encoding="utf-8")
 
-    # Compute walk-forward summary for default strategy across ordered eval_dates
-    ordered_d = sorted(date.fromisoformat(d.date) for d in eval_dates)
+    # 2. Multi-day (35+ sessions) evaluation across all 9 models
+    multi_day_leaderboard = []
+    if multi_dates:
+        start_d, end_d = multi_dates[0], multi_dates[-1]
+        print(f"\nRunning {len(multi_dates)}-session evaluation ({start_d} -> {end_d}) across 9 models...")
+        for sid in STRATEGY_REGISTRY:
+            exec_mode = "AI_AGENT" if sid.startswith("AGENT-") else "DETERMINISTIC"
+            res_range = engine.run_date_range(
+                start_date=start_d,
+                end_date=end_d,
+                strategy_id=sid,
+                symbols=LAB_DEFAULT_UNIVERSE,
+                data_mode=DataSourceMode.HISTORICAL_REAL,
+                execution_mode=exec_mode,  # type: ignore[arg-type]
+                db=db,
+            )
+            multi_day_leaderboard.append(res_range)
+            print(
+                f"  {sid:28s} | Sessions: {res_range['sessions_evaluated']} | "
+                f"Net: {res_range['total_return_pct']:+.2f}% (Gross: {res_range['gross_return_pct']:+.2f}%) | "
+                f"Alpha vs B&H: {res_range['alpha_vs_buy_and_hold_pct']:+.2f}% | "
+                f"Trades: {res_range['total_trades']} | {res_range['statistical_sufficiency']}"
+            )
+
+    # 3. Slippage sensitivity (5, 10, 20 bps) & Walk-Forward on default strategy
+    slippage_sensitivity = []
     walk_forward = {}
-    if len(ordered_d) >= 5:
-        walk_forward = engine.run_walk_forward(ordered_d, strategy_id="STRAT-001-VWAP-PULLBACK")
+    if len(multi_dates) >= 5:
+        slippage_sensitivity = engine.run_slippage_sensitivity(
+            multi_dates[0], multi_dates[-1], strategy_id="STRAT-001-VWAP-PULLBACK", slippage_bps_list=(5.0, 10.0, 20.0)
+        )
+        walk_forward = engine.run_walk_forward(multi_dates, strategy_id="STRAT-001-VWAP-PULLBACK")
 
     index_payload = {
         "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
         "initial_capital_inr": 50_000.0,
         "universe": list(LAB_DEFAULT_UNIVERSE),
+        "data_quality_analytics": dq_analytics,
         "coverage_summary": {
-            "total_cached_trading_days": len(avail_dates),
-            "evaluated_days": len(eval_dates),
-            "start_date": avail_dates[-1].date if avail_dates else None,
-            "end_date": avail_dates[0].date if avail_dates else None,
-            "fully_ready_days": sum(1 for d in avail_dates if d.date_status == "FULLY_READY"),
-            "partial_days": sum(1 for d in avail_dates if d.date_status == "PARTIAL"),
-            "gap_note": "Yahoo Finance 5m history provides ~60 trading days; 1-2 bars/day are occasionally omitted on NSE.",
+            "total_cached_trading_days": dq_analytics["total_available_days"],
+            "evaluated_days": len(multi_dates),
+            "start_date": multi_dates[0].isoformat() if multi_dates else None,
+            "end_date": multi_dates[-1].isoformat() if multi_dates else None,
+            "fully_ready_days": dq_analytics["fully_ready_sessions"],
+            "partial_days": dq_analytics["partial_sessions"],
+            "gap_note": "Yahoo Finance 5m history provides ~59 trading days; 1-2 bars/day near 15:15-15:20 IST are omitted on 4 large-caps (disclosed as PARTIAL).",
         },
         "strategies": [
             {"id": sid, "name": meta["name"], "kind": meta["kind"]}
@@ -109,13 +139,19 @@ def generate_historical_lab_artifacts(max_dates: int = 12) -> None:
             }
             for d in eval_dates
         ],
+        "multi_day_leaderboard": sorted(
+            multi_day_leaderboard,
+            key=lambda r: (r["total_return_pct"], r["sharpe_ratio"]),
+            reverse=True,
+        ),
+        "slippage_sensitivity": slippage_sensitivity,
         "walk_forward_summary": walk_forward,
         "history_runs": db.list_runs(),
         "experiments": db.list_experiments(),
     }
     (LAB_DATA_DIR / "lab_index.json").write_text(json.dumps(index_payload, indent=2), encoding="utf-8")
-    print(f"Historical Lab data generated for {len(eval_dates)} verified dates at {LAB_DATA_DIR}")
+    print(f"\nPhase 8 Lab artifacts generated: {len(multi_dates)} sessions evaluated across 9 models.")
 
 
 if __name__ == "__main__":
-    generate_historical_lab_artifacts(max_dates=10)
+    generate_historical_lab_artifacts(replay_dates_count=10, multi_day_sessions_target=35)

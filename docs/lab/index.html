@@ -18,6 +18,7 @@
 
     <nav class="top-nav">
       <button class="nav-tab active" data-view="view-lab">Historical Trading Lab</button>
+      <button class="nav-tab" data-view="view-data-quality">Data Quality</button>
       <a class="nav-tab" href="../trader/">Live Paper Trading</a>
       <button class="nav-tab" data-view="view-research">Strategy Research</button>
       <button class="nav-tab" data-view="view-leaderboard">Model Comparison</button>
@@ -180,8 +181,38 @@
     <div id="view-leaderboard" class="section-view">
       <section class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h3 style="font-size: 15px; color: #fff;">Model & Strategy Comparison Leaderboard (Independent ₹50,000 Portfolios)</h3>
-          <span class="badge badge-blue" id="lbl-leaderboard-date">--</span>
+          <h3 style="font-size: 15px; color: #fff;">Multi-Day Validated Model Leaderboard (<span id="lbl-multiday-range">--</span>)</h3>
+          <span class="badge badge-green" id="lbl-multiday-sessions">-- Sessions</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Model / Strategy</th>
+                <th>Category</th>
+                <th>Sufficiency</th>
+                <th>Sessions</th>
+                <th>Gross %</th>
+                <th>Net %</th>
+                <th>Alpha vs B&H</th>
+                <th>Sharpe</th>
+                <th>Sortino</th>
+                <th>Profit Factor</th>
+                <th>Max DD %</th>
+                <th>Trades</th>
+                <th>Fees (₹)</th>
+                <th>AI Cost ($)</th>
+              </tr>
+            </thead>
+            <tbody id="multiday-leaderboard-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 15px; color: #fff;">Single-Day Model Comparison (Selected Date: <span id="lbl-leaderboard-date">--</span>)</h3>
         </div>
         <div style="overflow-x: auto;">
           <table class="lab-table">
@@ -207,6 +238,61 @@
             <tbody id="leaderboard-tbody"></tbody>
           </table>
         </div>
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">Slippage Sensitivity Analysis (5, 10, 20 bps)</h3>
+          <table class="lab-table">
+            <thead>
+              <tr><th>Slippage</th><th>Gross %</th><th>Net %</th><th>Net P&L (₹)</th><th>Fees (₹)</th><th>Trades</th><th>Win Rate</th></tr>
+            </thead>
+            <tbody id="slippage-tbody"></tbody>
+          </table>
+        </section>
+        <section class="card">
+          <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">Walk-Forward Out-of-Sample Validation</h3>
+          <table class="lab-table">
+            <thead>
+              <tr><th>Split</th><th>Period</th><th>Sessions</th><th>Net %</th><th>B&H %</th><th>Alpha %</th><th>Trades</th></tr>
+            </thead>
+            <tbody id="walkforward-tbody"></tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+
+    <!-- VIEW: DATA QUALITY & COVERAGE -->
+    <div id="view-data-quality" class="section-view">
+      <section class="card">
+        <h3 style="font-size: 15px; color: #fff; margin-bottom: 12px;">Historical Market Data Quality & Coverage Audit</h3>
+        <div class="metrics-grid" id="dq-summary-grid"></div>
+      </section>
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">Five-Stock Historical Coverage Matrix</h3>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>Total Bars</th>
+                <th>Sessions</th>
+                <th>Ready (75/75)</th>
+                <th>Incomplete</th>
+                <th>Missing Intervals</th>
+                <th>Zero-Vol Bars</th>
+                <th>Outliers (&gt;10%)</th>
+                <th>Avg Bars/Day</th>
+                <th>Provider</th>
+              </tr>
+            </thead>
+            <tbody id="dq-matrix-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">Missing Candle Windows by Time of Day (IST)</h3>
+        <div id="dq-missing-windows" style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);"></div>
       </section>
     </div>
 

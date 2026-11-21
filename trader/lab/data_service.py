@@ -370,3 +370,84 @@ def get_available_historical_dates(
         )
 
     return results
+
+
+def filter_research_eligible_dates(
+    avail_dates: list[HistoricalDateAvailability],
+    min_bars_per_stock: int = 70,
+) -> list[HistoricalDateAvailability]:
+    """Filter dates meeting configurable research threshold while preserving PARTIAL disclosure."""
+    eligible = []
+    for d in avail_dates:
+        if all(s.candles_count >= min_bars_per_stock for s in d.stocks):
+            eligible.append(d)
+    return eligible
+
+
+def compute_data_quality_analytics(
+    symbols: tuple[str, ...] | list[str] = LAB_DEFAULT_UNIVERSE,
+    min_bars_for_research: int = 70,
+) -> dict[str, Any]:
+    """Compute comprehensive Phase 8 data-quality analytics across the 5-stock universe."""
+    avail_dates = get_available_historical_dates(symbols=symbols, max_dates=90)
+    eligible = filter_research_eligible_dates(avail_dates, min_bars_per_stock=min_bars_for_research)
+
+    coverage_by_stock: dict[str, dict[str, Any]] = {}
+    missing_by_time: dict[str, int] = {}
+    coverage_by_provider: dict[str, int] = {}
+
+    for sym in symbols:
+        try:
+            candles, prov = load_historical_5m_candles(sym, "NSE", days=60, mode=DataSourceMode.HISTORICAL_REAL, use_cache=True)
+            prov_name = prov.source_name
+        except DataUnavailableError:
+            candles = []
+            prov_name = "Unavailable"
+
+        coverage_by_provider[prov_name] = coverage_by_provider.get(prov_name, 0) + len(candles)
+        zero_vol = sum(1 for c in candles if c.volume <= 0)
+        outliers = 0
+        for i in range(1, len(candles)):
+            if candles[i - 1].close > 0:
+                ret = abs(candles[i].close - candles[i - 1].close) / candles[i - 1].close
+                if ret > 0.10:
+                    outliers += 1
+
+        sym_days = [s for d in avail_dates for s in d.stocks if s.symbol == sym]
+        ready_days = sum(1 for s in sym_days if s.status == "Ready")
+        inc_days = sum(1 for s in sym_days if s.status == "Incomplete")
+        total_missing = sum(s.missing_intervals_count for s in sym_days)
+
+        for s in sym_days:
+            for detail in s.missing_intervals_detail:
+                # Extract HH:MM window from gap string
+                if "between " in detail:
+                    part = detail.split("between ")[1].split(" (")[0]
+                    missing_by_time[part] = missing_by_time.get(part, 0) + 1
+
+        coverage_by_stock[sym] = {
+            "symbol": sym,
+            "total_bars": len(candles),
+            "sessions_present": len(sym_days),
+            "ready_sessions": ready_days,
+            "incomplete_sessions": inc_days,
+            "total_missing_intervals": total_missing,
+            "zero_volume_bars": zero_vol,
+            "outlier_bars_gt_10pct": outliers,
+            "avg_bars_per_session": round(sum(s.candles_count for s in sym_days) / len(sym_days), 1) if sym_days else 0.0,
+            "provider": prov_name,
+        }
+
+    return {
+        "total_available_days": len(avail_dates),
+        "fully_ready_sessions": sum(1 for d in avail_dates if d.date_status == "FULLY_READY"),
+        "partial_sessions": sum(1 for d in avail_dates if d.date_status == "PARTIAL"),
+        "unavailable_sessions": sum(1 for d in avail_dates if d.date_status == "UNAVAILABLE"),
+        "research_eligible_sessions": len(eligible),
+        "research_min_bars_threshold": min_bars_for_research,
+        "last_refresh_ist": datetime.now(tz=IST_TZ).isoformat(),
+        "coverage_by_stock": coverage_by_stock,
+        "coverage_by_provider": coverage_by_provider,
+        "missing_windows_histogram": dict(sorted(missing_by_time.items(), key=lambda x: -x[1])[:10]),
+    }
+

@@ -523,3 +523,130 @@ function renderPerformanceHistory(runs) {
     )
     .join("");
 }
+
+function renderDataQualityAnalytics(dq) {
+  if (!dq) return;
+  const grid = document.getElementById("dq-summary-grid");
+  if (grid) {
+    grid.innerHTML = `
+      <div class="metric-box"><div class="metric-label">Total Cached Days</div><div class="metric-val">${dq.total_available_days}</div></div>
+      <div class="metric-box"><div class="metric-label">Fully Ready (75/75 All 5)</div><div class="metric-val text-amber">${dq.fully_ready_sessions}</div></div>
+      <div class="metric-box"><div class="metric-label">Partial Sessions</div><div class="metric-val text-blue">${dq.partial_sessions}</div></div>
+      <div class="metric-box"><div class="metric-label">Research Eligible (&ge;${dq.research_min_bars_threshold} bars)</div><div class="metric-val text-green">${dq.research_eligible_sessions}</div></div>
+      <div class="metric-box"><div class="metric-label">Unavailable Sessions</div><div class="metric-val">${dq.unavailable_sessions}</div></div>
+    `;
+  }
+
+  const tbody = document.getElementById("dq-matrix-tbody");
+  if (tbody && dq.coverage_by_stock) {
+    tbody.innerHTML = Object.values(dq.coverage_by_stock)
+      .map(
+        (s) => `
+        <tr>
+          <td style="font-weight: 700; color: #fff;">${s.symbol}</td>
+          <td>${s.total_bars}</td>
+          <td>${s.sessions_present}</td>
+          <td class="text-green">${s.ready_sessions}</td>
+          <td class="text-amber">${s.incomplete_sessions}</td>
+          <td>${s.total_missing_intervals}</td>
+          <td>${s.zero_volume_bars}</td>
+          <td>${s.outlier_bars_gt_10pct}</td>
+          <td>${s.avg_bars_per_session}</td>
+          <td style="font-size: 11px; color: var(--text-muted);">${s.provider}</td>
+        </tr>
+      `
+      )
+      .join("");
+  }
+
+  const winEl = document.getElementById("dq-missing-windows");
+  if (winEl && dq.missing_windows_histogram) {
+    const entries = Object.entries(dq.missing_windows_histogram);
+    winEl.innerHTML = entries.length
+      ? entries.map(([w, cnt]) => `<span class="badge badge-amber" style="margin: 3px;">${w} IST: ${cnt} occurrences</span>`).join("")
+      : "No missing intervals detected.";
+  }
+}
+
+function renderMultiDayLeaderboard(rows, cov) {
+  if (cov) {
+    const rngEl = document.getElementById("lbl-multiday-range");
+    const sesEl = document.getElementById("lbl-multiday-sessions");
+    if (rngEl) rngEl.textContent = `${cov.start_date || "--"} to ${cov.end_date || "--"}`;
+    if (sesEl) sesEl.textContent = `${cov.evaluated_days || 0} Sessions (PARTIAL Disclosed)`;
+  }
+
+  const tbody = document.getElementById("multiday-leaderboard-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = rows
+    .map((r, i) => {
+      const catBadge = r.performance_category === "GENUINE_AI" ? "badge-green" : (r.performance_category === "DETERMINISTIC_FALLBACK" ? "badge-amber" : "badge-blue");
+      const sufBadge = r.statistical_sufficiency === "VALIDATED_SAMPLE" ? "badge-green" : "badge-gray";
+      return `
+        <tr>
+          <td><strong>#${i + 1}</strong></td>
+          <td style="font-weight: 700; color: #fff;">${r.strategy_name}</td>
+          <td><span class="badge ${catBadge}">${r.performance_category}</span></td>
+          <td><span class="badge ${sufBadge}">${r.statistical_sufficiency}</span></td>
+          <td>${r.sessions_evaluated}</td>
+          <td class="${r.gross_return_pct >= 0 ? "text-green" : "text-red"}">${r.gross_return_pct >= 0 ? "+" : ""}${r.gross_return_pct}%</td>
+          <td class="${r.total_return_pct >= 0 ? "text-green" : "text-red"}">${r.total_return_pct >= 0 ? "+" : ""}${r.total_return_pct}%</td>
+          <td class="${r.alpha_vs_buy_and_hold_pct >= 0 ? "text-green" : "text-red"}">${r.alpha_vs_buy_and_hold_pct >= 0 ? "+" : ""}${r.alpha_vs_buy_and_hold_pct}%</td>
+          <td>${r.sharpe_ratio}</td>
+          <td>${r.sortino_ratio}</td>
+          <td>${r.profit_factor}</td>
+          <td>${r.max_drawdown_pct}%</td>
+          <td>${r.total_trades}</td>
+          <td style="color: var(--accent-red);">₹${r.total_fees_inr.toFixed(2)}</td>
+          <td>$${(r.total_ai_cost_usd || 0).toFixed(4)}</td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+function renderSlippageAndWalkForward(slipRows, wf) {
+  const slipBody = document.getElementById("slippage-tbody");
+  if (slipBody) {
+    slipBody.innerHTML = slipRows
+      .map(
+        (s) => `
+        <tr>
+          <td><strong>${s.slippage_bps} bps</strong></td>
+          <td>${s.gross_return_pct >= 0 ? "+" : ""}${s.gross_return_pct}%</td>
+          <td class="${s.net_return_pct >= 0 ? "text-green" : "text-red"}">${s.net_return_pct >= 0 ? "+" : ""}${s.net_return_pct}%</td>
+          <td>₹${s.net_pnl_inr.toFixed(2)}</td>
+          <td style="color: var(--accent-red);">₹${s.total_fees_inr.toFixed(2)}</td>
+          <td>${s.total_trades}</td>
+          <td>${s.win_rate_pct}%</td>
+        </tr>
+      `
+      )
+      .join("");
+  }
+
+  const wfBody = document.getElementById("walkforward-tbody");
+  if (wfBody && wf.train) {
+    const splits = [
+      ["Train (60%)", wf.train],
+      ["Validation (20%)", wf.validation],
+      ["Unseen Test (20%)", wf.unseen_test],
+    ];
+    wfBody.innerHTML = splits
+      .map(
+        ([label, d]) => `
+        <tr>
+          <td style="font-weight: 700; color: #fff;">${label}</td>
+          <td style="font-size: 11px;">${d.start_date} &rarr; ${d.end_date}</td>
+          <td>${d.sessions_evaluated}</td>
+          <td class="${d.total_return_pct >= 0 ? "text-green" : "text-red"}">${d.total_return_pct >= 0 ? "+" : ""}${d.total_return_pct}%</td>
+          <td>${d.benchmark_return_pct >= 0 ? "+" : ""}${d.benchmark_return_pct}%</td>
+          <td class="${d.alpha_vs_buy_and_hold_pct >= 0 ? "text-green" : "text-red"}">${d.alpha_vs_buy_and_hold_pct >= 0 ? "+" : ""}${d.alpha_vs_buy_and_hold_pct}%</td>
+          <td>${d.total_trades}</td>
+        </tr>
+      `
+      )
+      .join("");
+  }
+}
+
