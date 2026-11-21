@@ -45,7 +45,13 @@ def run_phase10_brokerage_and_sizing_study() -> None:
     for cfg_name, r_cfg, c_cfg in configs:
         eng = HistoricalLabReplayEngine(risk_config=r_cfg, cost_config=c_cfg)
         for sid in strategies_to_test:
-            res = eng.run_date_range(start_d, end_d, strategy_id=sid, data_mode=DataSourceMode.HISTORICAL_REAL)
+            res = eng.run_date_range(
+                start_d,
+                end_d,
+                strategy_id=sid,
+                data_mode=DataSourceMode.HISTORICAL_REAL,
+                eligible_dates=ordered_dates,
+            )
             row = {
                 "config_name": cfg_name,
                 "strategy_id": sid,

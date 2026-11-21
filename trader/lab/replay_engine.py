@@ -930,11 +930,22 @@ class HistoricalLabReplayEngine:
         execution_mode: Literal["DETERMINISTIC", "AI_AGENT"] = "DETERMINISTIC",
         db: Any | None = None,
         router: ModelRouter | None = None,
+        eligible_dates: list[date] | None = None,
+        excluded_dates_info: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
-        """Run multi-day chronological evaluation across all verified trading dates in [start_date, end_date]."""
+        """Run multi-day chronological evaluation across explicitly eligible dates (or all NSE trading days in range)."""
         from ..config import is_nse_trading_day
 
-        curr = start_date
+        if eligible_dates is not None:
+            target_dates = sorted(d for d in eligible_dates if start_date <= d <= end_date and is_nse_trading_day(d))
+        else:
+            target_dates = []
+            curr = start_date
+            while curr <= end_date:
+                if is_nse_trading_day(curr):
+                    target_dates.append(curr)
+                curr += timedelta(days=1)
+
         daily_runs: list[dict[str, Any]] = []
         cumulative_equity = self.risk_config.initial_capital_inr
         cumulative_benchmark = self.risk_config.initial_capital_inr
@@ -943,39 +954,37 @@ class HistoricalLabReplayEngine:
         total_ai_cost = 0.0
         all_pnls: list[float] = []
 
-        while curr <= end_date:
-            if is_nse_trading_day(curr):
-                res = self.run_historical_day(
-                    target_date=curr,
-                    strategy_id=strategy_id,
-                    symbols=symbols,
-                    data_mode=data_mode,
-                    execution_mode=execution_mode,
-                    db=db,
-                    router=router,
-                )
-                r = res["run"]
-                has_bars = any(p["candles"] > 0 for p in r["data_provenance"].values())
-                if has_bars:
-                    cumulative_equity += r["net_pnl"]
-                    cumulative_benchmark += res["benchmark"]["net_pnl_inr"]
-                    total_trades += r["total_trades"]
-                    total_fees += r["total_fees"]
-                    total_ai_cost += r.get("ai_api_cost_usd", 0.0)
-                    all_pnls.extend(t["net_pnl"] for t in res["trades"])
-                    daily_runs.append({
-                        "date": curr.isoformat(),
-                        "net_pnl": r["net_pnl"],
-                        "return_pct": r["total_return_pct"],
-                        "benchmark_return_pct": res["benchmark"]["total_return_pct"],
-                        "trades": r["total_trades"],
-                        "win_rate_pct": r["win_rate_pct"],
-                        "fees": r["total_fees"],
-                        "cumulative_equity": round(cumulative_equity, 2),
-                        "cumulative_benchmark": round(cumulative_benchmark, 2),
-                        "regime": r.get("regime", {}).get("summary", "UNKNOWN"),
-                    })
-            curr += timedelta(days=1)
+        for curr in target_dates:
+            res = self.run_historical_day(
+                target_date=curr,
+                strategy_id=strategy_id,
+                symbols=symbols,
+                data_mode=data_mode,
+                execution_mode=execution_mode,
+                db=db,
+                router=router,
+            )
+            r = res["run"]
+            has_bars = any(p["candles"] > 0 for p in r["data_provenance"].values())
+            if has_bars:
+                cumulative_equity += r["net_pnl"]
+                cumulative_benchmark += res["benchmark"]["net_pnl_inr"]
+                total_trades += r["total_trades"]
+                total_fees += r["total_fees"]
+                total_ai_cost += r.get("ai_api_cost_usd", 0.0)
+                all_pnls.extend(t["net_pnl"] for t in res["trades"])
+                daily_runs.append({
+                    "date": curr.isoformat(),
+                    "net_pnl": r["net_pnl"],
+                    "return_pct": r["total_return_pct"],
+                    "benchmark_return_pct": res["benchmark"]["total_return_pct"],
+                    "trades": r["total_trades"],
+                    "win_rate_pct": r["win_rate_pct"],
+                    "fees": r["total_fees"],
+                    "cumulative_equity": round(cumulative_equity, 2),
+                    "cumulative_benchmark": round(cumulative_benchmark, 2),
+                    "regime": r.get("regime", {}).get("summary", "UNKNOWN"),
+                })
 
         total_gross_pnl = 0.0
         total_turnover = 0.0
@@ -1092,9 +1101,9 @@ class HistoricalLabReplayEngine:
 
         return {
             "strategy_id": strategy_id,
-            "train": self.run_date_range(train_dates[0], train_dates[-1], strategy_id, symbols, data_mode),
-            "validation": self.run_date_range(val_dates[0], val_dates[-1], strategy_id, symbols, data_mode),
-            "unseen_test": self.run_date_range(test_dates[0], test_dates[-1], strategy_id, symbols, data_mode),
+            "train": self.run_date_range(train_dates[0], train_dates[-1], strategy_id, symbols, data_mode, eligible_dates=train_dates),
+            "validation": self.run_date_range(val_dates[0], val_dates[-1], strategy_id, symbols, data_mode, eligible_dates=val_dates),
+            "unseen_test": self.run_date_range(test_dates[0], test_dates[-1], strategy_id, symbols, data_mode, eligible_dates=test_dates),
         }
 
     def generate_stage_bc_analysis(

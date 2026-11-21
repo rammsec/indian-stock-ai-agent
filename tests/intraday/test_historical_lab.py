@@ -291,8 +291,8 @@ def test_phase10_daily_5m_archive_merge_dedup(tmp_path, monkeypatch):
     )
     monkeypatch.setattr(arch, "load_historical_5m_candles", lambda **kw: (c1[-2:] + c2, prov))
 
-    added = arch.merge_and_archive_symbol("RELIANCE", days=5)
-    assert added == 10
+    rep = arch.merge_and_archive_symbol("RELIANCE", days=5)
+    assert rep["net_added"] == 10
     merged = pd.read_parquet(tmp_path / "RELIANCE_NSE_5m.parquet")
     assert len(merged) == 20
 

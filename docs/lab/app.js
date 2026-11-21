@@ -695,5 +695,72 @@ function renderPhase10Study(rows) {
     .join("");
 }
 
+function renderPhase11Qualification(p11) {
+  if (!p11) return;
+  const cc = p11.command_centre || {};
+  const cmdGrid = document.getElementById("p11-command-grid");
+  if (cmdGrid) {
+    cmdGrid.innerHTML = `
+      <div class="metric-box"><div class="metric-label">Research Cycle</div><div class="metric-val text-blue">${cc.current_cycle || "--"}</div></div>
+      <div class="metric-box"><div class="metric-label">Active Agents</div><div class="metric-val">${cc.active_agents || 0}</div></div>
+      <div class="metric-box"><div class="metric-label">Reconciled Sessions</div><div class="metric-val">${p11.reconciled_eligible_sessions || 0}</div></div>
+      <div class="metric-box"><div class="metric-label">Candidates Tested</div><div class="metric-val">${cc.experiments_completed || 0}</div></div>
+      <div class="metric-box"><div class="metric-label">Rejected</div><div class="metric-val text-red">${cc.experiments_rejected || 0}</div></div>
+      <div class="metric-box"><div class="metric-label">Qualified Strategies</div><div class="metric-val ${cc.qualified_strategies > 0 ? "text-green" : "text-amber"}">${cc.qualified_strategies || 0}</div></div>
+      <div class="metric-box"><div class="metric-label">Best Candidate</div><div class="metric-val" style="font-size:13px;">${cc.best_experimental_strategy || "--"} (${(cc.best_experimental_net_pct || 0).toFixed(2)}%)</div></div>
+    `;
+  }
+
+  const qualBody = document.getElementById("p11-qual-tbody");
+  if (qualBody && p11.qualification_board) {
+    qualBody.innerHTML = p11.qualification_board
+      .map((q) => {
+        const stCls = q.final_status === "QUALIFIED" ? "badge-green" : (q.final_status === "REJECTED" ? "badge-red" : "badge-amber");
+        return `
+          <tr>
+            <td style="font-weight:700; color:#fff;">${q.strategy_name}</td>
+            <td><span class="badge ${stCls}">${q.final_status}</span></td>
+            <td>${q.passed_gates}</td>
+            <td>${q.sessions}</td>
+            <td>${q.trades}</td>
+            <td class="${q.net_return_pct >= 0 ? "text-green" : "text-red"}">${q.net_return_pct >= 0 ? "+" : ""}${q.net_return_pct}%</td>
+            <td class="${q.alpha_vs_bh_pct >= 0 ? "text-green" : "text-red"}">${q.alpha_vs_bh_pct >= 0 ? "+" : ""}${q.alpha_vs_bh_pct}%</td>
+            <td>${q.max_drawdown_pct}%</td>
+            <td>${q.sharpe_ratio}</td>
+            <td>${q.profit_factor}</td>
+            <td class="${q.unseen_return_pct >= 0 ? "text-green" : "text-red"}">${q.unseen_return_pct >= 0 ? "+" : ""}${q.unseen_return_pct}%</td>
+            <td>${q.statistical_verdict}</td>
+            <td>${q.red_team_verdict}</td>
+          </tr>
+        `;
+      })
+      .join("");
+  }
+
+  const agBody = document.getElementById("p11-agents-tbody");
+  if (agBody && p11.agent_performance) {
+    agBody.innerHTML = p11.agent_performance
+      .map((a) => `
+        <tr>
+          <td style="font-weight:700; color:#fff;">${a.agent_name}</td>
+          <td>${a.role}</td>
+          <td><span class="badge badge-blue">${a.execution_type}</span></td>
+          <td style="color:var(--text-muted);">${a.assigned_task}</td>
+          <td>${a.latest_finding}</td>
+          <td><span class="badge ${a.status === "PASS" ? "badge-green" : "badge-amber"}">${a.status}</span></td>
+        </tr>
+      `)
+      .join("");
+  }
+
+  const exEl = document.getElementById("p11-excluded-dates");
+  if (exEl && p11.excluded_dates) {
+    exEl.innerHTML = p11.excluded_dates.length
+      ? p11.excluded_dates.map((e) => `<div><strong>${e.date}</strong> (${e.date_status}): ${e.reason}</div>`).join("")
+      : "No excluded dates.";
+  }
+}
+
+
 
 

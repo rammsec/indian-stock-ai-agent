@@ -1,0 +1,1129 @@
+{
+  "cycle_id": "CYCLE-001",
+  "generated_at_ist": "2026-11-21T12:02:17.910453+05:30",
+  "reconciled_eligible_sessions": 56,
+  "date_range": "2026-08-25 -> 2026-11-20",
+  "excluded_dates": [
+    {
+      "date": "2026-11-04",
+      "date_status": "PARTIAL",
+      "reason": "BIRLACABLE: 63/75 bars"
+    },
+    {
+      "date": "2026-10-28",
+      "date_status": "PARTIAL",
+      "reason": "BIRLACABLE: 66/75 bars"
+    },
+    {
+      "date": "2026-10-27",
+      "date_status": "PARTIAL",
+      "reason": "BIRLACABLE: 42/75 bars"
+    }
+  ],
+  "command_centre": {
+    "current_cycle": "CYCLE-001",
+    "active_agents": 9,
+    "experiments_completed": 10,
+    "experiments_rejected": 10,
+    "qualified_strategies": 0,
+    "best_experimental_strategy": "STRAT-002-ORB-BREAKOUT",
+    "best_experimental_net_pct": -2.2,
+    "last_archive_ist": "2026-11-21T11:53:11.431782+05:30",
+    "max_candidates_per_cycle": 10,
+    "max_tuning_rounds": 3
+  },
+  "agent_performance": [
+    {
+      "agent_name": "Agent 1 \u2014 Chief Research Orchestrator",
+      "role": "Research Coordinator & Backlog Manager",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Coordinate CYCLE-001 across 56 reconciled sessions",
+      "latest_finding": "Evaluated 10 candidates: 0 QUALIFIED, 10 REJECTED. Best candidate: STRAT-002-ORB-BREAKOUT (-2.20%).",
+      "status": "ACTIVE",
+      "proposals_count": 3,
+      "rejections_count": 10
+    },
+    {
+      "agent_name": "Agent 2 \u2014 Market Data Intelligence",
+      "role": "Data Quality & Provider Auditor",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Audit 5-stock 5m coverage & missing intervals",
+      "latest_finding": "59 cached days; 0 fully ready (75/75), 56 research-eligible (>=70/75), 3 excluded due to <70 bars on BIRLACABLE.",
+      "status": "WARNING",
+      "proposals_count": 0,
+      "rejections_count": 0
+    },
+    {
+      "agent_name": "Agent 3 \u2014 Quantitative Strategy Research",
+      "role": "Strategy Discovery & Hypothesis Design",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Identify weaknesses & propose falsifiable experiments",
+      "latest_finding": "Generated 3 falsifiable hypotheses targeting fee-drag & sideways whipsaws.",
+      "status": "ACTIVE",
+      "proposals_count": 3,
+      "rejections_count": 0
+    },
+    {
+      "agent_name": "Agent 4 \u2014 Risk Management",
+      "role": "Capital Preservation & Drawdown Gatekeeper",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Audit 10% max DD ceiling & concentration limits",
+      "latest_finding": "9/10 models breached 10% max drawdown ceiling; cash/no-trade remains superior to high-frequency trading on \u20b950k.",
+      "status": "WARNING",
+      "proposals_count": 0,
+      "rejections_count": 9
+    },
+    {
+      "agent_name": "Agent 5 \u2014 Execution & Transaction Cost",
+      "role": "Realistic Fill & Indian Friction Auditor",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Test 5/10/20 bps slippage & \u20b920/order fee drag",
+      "latest_finding": "0 strategies had positive gross return erased by \u20b920/order brokerage + STT + slippage.",
+      "status": "PASS",
+      "proposals_count": 0,
+      "rejections_count": 0
+    },
+    {
+      "agent_name": "Agent 6 \u2014 Statistical Validation",
+      "role": "Independent Scientific Reviewer",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Audit 60-session threshold & unseen out-of-sample splits",
+      "latest_finding": "Evaluated 56/60 sessions; 0 strategies passed positive unseen profitability.",
+      "status": "WARNING",
+      "proposals_count": 0,
+      "rejections_count": 0
+    },
+    {
+      "agent_name": "Agent 7 \u2014 AI Model & Decision Intelligence",
+      "role": "LLM vs Deterministic Attribution Auditor",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Verify LLM API attribution & cost efficiency",
+      "latest_finding": "Genuine LLM runs: 0, Deterministic Fallback runs: 2 ($0.00 API cost; no unapproved paid calls).",
+      "status": "PASS",
+      "proposals_count": 0,
+      "rejections_count": 0
+    },
+    {
+      "agent_name": "Agent 8 \u2014 Software Quality & Reliability",
+      "role": "CI, Accounting & Lookahead Reviewer",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Enforce regression tests & double-entry ledger invariants",
+      "latest_finding": "All 149 automated regression tests passing; zero lookahead & zero ledger drift.",
+      "status": "PASS",
+      "proposals_count": 0,
+      "rejections_count": 0
+    },
+    {
+      "agent_name": "Agent 9 \u2014 Strategy Challenger (Red Team)",
+      "role": "Independent Adversarial Challenger",
+      "execution_type": "DETERMINISTIC_LOCAL",
+      "assigned_task": "Challenge concentration, unseen performance & cost survival",
+      "latest_finding": "Rejected 10/10 candidates failing net cost survival or unseen splits.",
+      "status": "PASS",
+      "proposals_count": 0,
+      "rejections_count": 10
+    }
+  ],
+  "qualification_board": [
+    {
+      "strategy_id": "STRAT-002-ORB-BREAKOUT",
+      "strategy_name": "Opening Range Breakout",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 25,
+      "net_return_pct": -2.2,
+      "alpha_vs_bh_pct": 11.92,
+      "max_drawdown_pct": 2.2,
+      "sharpe_ratio": -6.79,
+      "sortino_ratio": -8.9,
+      "profit_factor": 0.32,
+      "expectancy_inr": -44.08,
+      "total_fees_inr": 843.63,
+      "unseen_return_pct": -0.82,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-2.20% (\u20b9-1101.96), Unseen=-0.82% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+11.92%, vs Cash=-2.20% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=2.20% (<=10%), PF=0.32 (>1.20), Sharpe=-6.79 (>1.0), Expectancy=\u20b9-44.08"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=25/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-3.45% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-2.20%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "STRAT-003-EMA-CROSS",
+      "strategy_name": "EMA 9/21 Crossover",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 101,
+      "net_return_pct": -10.27,
+      "alpha_vs_bh_pct": 3.85,
+      "max_drawdown_pct": 10.39,
+      "sharpe_ratio": -4.6,
+      "sortino_ratio": -8.04,
+      "profit_factor": 0.47,
+      "expectancy_inr": -48.13,
+      "total_fees_inr": 3519.67,
+      "unseen_return_pct": -2.48,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-10.27% (\u20b9-5132.78), Unseen=-2.48% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=+3.85%, vs Cash=-10.27% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=10.39% (<=10%), PF=0.47 (>1.20), Sharpe=-4.60 (>1.0), Expectancy=\u20b9-48.13"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=101/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-15.32% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-10.27%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "STRAT-001-VWAP-V2",
+      "strategy_name": "VWAP Pullback (v2.0 Cost-Aware)",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 104,
+      "net_return_pct": -18.69,
+      "alpha_vs_bh_pct": -4.57,
+      "max_drawdown_pct": 19.23,
+      "sharpe_ratio": -7.37,
+      "sortino_ratio": -13.19,
+      "profit_factor": 0.33,
+      "expectancy_inr": -95.48,
+      "total_fees_inr": 3678.59,
+      "unseen_return_pct": -4.43,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-18.69% (\u20b9-9345.39), Unseen=-4.43% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-4.57%, vs Cash=-18.69% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=19.23% (<=10%), PF=0.33 (>1.20), Sharpe=-7.37 (>1.0), Expectancy=\u20b9-95.48"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=104/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-23.89% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-18.69%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "STRAT-005-RSI-MACD",
+      "strategy_name": "RSI & MACD Combination",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 230,
+      "net_return_pct": -29.25,
+      "alpha_vs_bh_pct": -15.13,
+      "max_drawdown_pct": 29.25,
+      "sharpe_ratio": -6.96,
+      "sortino_ratio": -10.88,
+      "profit_factor": 0.32,
+      "expectancy_inr": -63.6,
+      "total_fees_inr": 8649.52,
+      "unseen_return_pct": -5.5,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-29.25% (\u20b9-14627.50), Unseen=-5.50% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-15.13%, vs Cash=-29.25% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=29.25% (<=10%), PF=0.32 (>1.20), Sharpe=-6.96 (>1.0), Expectancy=\u20b9-63.60"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=230/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-40.75% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-29.25%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "STRAT-001-VWAP-PULLBACK",
+      "strategy_name": "VWAP Pullback",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 229,
+      "net_return_pct": -30.44,
+      "alpha_vs_bh_pct": -16.32,
+      "max_drawdown_pct": 30.61,
+      "sharpe_ratio": -7.54,
+      "sortino_ratio": -12.19,
+      "profit_factor": 0.31,
+      "expectancy_inr": -70.78,
+      "total_fees_inr": 7566.97,
+      "unseen_return_pct": -8.09,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-30.44% (\u20b9-15217.85), Unseen=-8.09% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-16.32%, vs Cash=-30.44% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=30.61% (<=10%), PF=0.31 (>1.20), Sharpe=-7.54 (>1.0), Expectancy=\u20b9-70.78"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=229/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-41.89% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-30.44%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "STRAT-006-VOLUME-BREAKOUT",
+      "strategy_name": "Volume Breakout",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 253,
+      "net_return_pct": -32.3,
+      "alpha_vs_bh_pct": -18.18,
+      "max_drawdown_pct": 32.3,
+      "sharpe_ratio": -6.87,
+      "sortino_ratio": -11.12,
+      "profit_factor": 0.34,
+      "expectancy_inr": -63.83,
+      "total_fees_inr": 9740.91,
+      "unseen_return_pct": -8.06,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-32.30% (\u20b9-16147.92), Unseen=-8.06% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-18.18%, vs Cash=-32.30% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=32.30% (<=10%), PF=0.34 (>1.20), Sharpe=-6.87 (>1.0), Expectancy=\u20b9-63.83"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=253/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-44.95% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-32.30%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "STRAT-004-SUPERTREND",
+      "strategy_name": "Supertrend",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 375,
+      "net_return_pct": -43.74,
+      "alpha_vs_bh_pct": -29.62,
+      "max_drawdown_pct": 43.77,
+      "sharpe_ratio": -5.98,
+      "sortino_ratio": -9.95,
+      "profit_factor": 0.39,
+      "expectancy_inr": -56.54,
+      "total_fees_inr": 12408.64,
+      "unseen_return_pct": -10.52,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-43.74% (\u20b9-21867.89), Unseen=-10.52% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-29.62%, vs Cash=-43.74% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=43.77% (<=10%), PF=0.39 (>1.20), Sharpe=-5.98 (>1.0), Expectancy=\u20b9-56.54"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=375/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-62.49% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-43.74%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "AGENT-CENTRAL-COUNCIL",
+      "strategy_name": "Central AI Council (8-Agent)",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 433,
+      "net_return_pct": -55.19,
+      "alpha_vs_bh_pct": -41.07,
+      "max_drawdown_pct": 55.19,
+      "sharpe_ratio": -7.13,
+      "sortino_ratio": -9.49,
+      "profit_factor": 0.29,
+      "expectancy_inr": -64.85,
+      "total_fees_inr": 14552.16,
+      "unseen_return_pct": -12.76,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-55.19% (\u20b9-27595.76), Unseen=-12.76% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-41.07%, vs Cash=-55.19% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=55.19% (<=10%), PF=0.29 (>1.20), Sharpe=-7.13 (>1.0), Expectancy=\u20b9-64.85"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=433/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-76.84% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-55.19%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "STRAT-007-MULTI-INDICATOR",
+      "strategy_name": "Multi-Indicator Confirmation",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 522,
+      "net_return_pct": -60.56,
+      "alpha_vs_bh_pct": -46.44,
+      "max_drawdown_pct": 60.56,
+      "sharpe_ratio": -6.88,
+      "sortino_ratio": -10.0,
+      "profit_factor": 0.32,
+      "expectancy_inr": -58.61,
+      "total_fees_inr": 18027.07,
+      "unseen_return_pct": -14.45,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-60.56% (\u20b9-30280.88), Unseen=-14.45% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-46.44%, vs Cash=-60.56% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=60.56% (<=10%), PF=0.32 (>1.20), Sharpe=-6.88 (>1.0), Expectancy=\u20b9-58.61"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=522/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-86.66% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-60.56%) is non-positive after costs.)"
+        }
+      ]
+    },
+    {
+      "strategy_id": "AGENT-AUTONOMOUS-TRADER",
+      "strategy_name": "Autonomous Trading Agent",
+      "final_status": "REJECTED",
+      "passed_gates": "1/7",
+      "sessions": 56,
+      "trades": 547,
+      "net_return_pct": -69.38,
+      "alpha_vs_bh_pct": -55.26,
+      "max_drawdown_pct": 69.38,
+      "sharpe_ratio": -7.32,
+      "sortino_ratio": -10.02,
+      "profit_factor": 0.29,
+      "expectancy_inr": -63.89,
+      "total_fees_inr": 18708.01,
+      "unseen_return_pct": -14.64,
+      "statistical_verdict": "INSUFFICIENT EVIDENCE",
+      "red_team_verdict": "REJECTED",
+      "summary": "Rejected: Failed profitability/robustness/red-team (1/7 gates passed).",
+      "gates": [
+        {
+          "gate_number": 1,
+          "gate_name": "Data Integrity",
+          "passed": true,
+          "status_label": "PASS",
+          "reason": "Verified historical provenance, zero lookahead, explicit eligibility"
+        },
+        {
+          "gate_number": 2,
+          "gate_name": "Net Profitability",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Overall Net=-69.38% (\u20b9-34691.02), Unseen=-14.64% (requires > 0% on both)"
+        },
+        {
+          "gate_number": 3,
+          "gate_name": "Benchmark Comparison",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "Alpha vs B&H=-55.26%, vs Cash=-69.38% (requires positive alpha & positive net)"
+        },
+        {
+          "gate_number": 4,
+          "gate_name": "Risk Controls",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "MaxDD=69.38% (<=10%), PF=0.29 (>1.20), Sharpe=-7.32 (>1.0), Expectancy=\u20b9-63.89"
+        },
+        {
+          "gate_number": 5,
+          "gate_name": "Statistical Reliability",
+          "passed": false,
+          "status_label": "INSUFFICIENT_EVIDENCE",
+          "reason": "Sessions=56/60, Trades=547/30"
+        },
+        {
+          "gate_number": 6,
+          "gate_name": "Execution Robustness",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "10 bps slippage Net Return=-96.73% (must remain > 0% under realistic brokerage)"
+        },
+        {
+          "gate_number": 7,
+          "gate_name": "Independent Approval",
+          "passed": false,
+          "status_label": "FAIL",
+          "reason": "StatVal=INSUFFICIENT EVIDENCE, RedTeam=REJECTED (Red Team Reject: Net return (-69.38%) is non-positive after costs.)"
+        }
+      ]
+    }
+  ],
+  "proposals": [
+    {
+      "proposal_id": "PROP-001-ORB-REGIME",
+      "parent_strategy_id": "STRAT-002-ORB-BREAKOUT",
+      "weakness_identified": "Flat \u20b920/order brokerage + slippage (-1.68% fee drag) turns +0.34% gross edge negative (-0.94% net).",
+      "hypothesis": "Filtering ORB entries to strong-trend days with >= 0.8% target distance improves net expectancy.",
+      "proposed_change": "Apply CostAwareFilterWrapper(min_expected_move_pct=0.008) + VWAP alignment.",
+      "expected_benefit": "Higher win rate and lower fee-to-profit ratio.",
+      "falsification_criterion": "Reject if Unseen Test net return <= baseline ORB or < 5 unseen trades."
+    },
+    {
+      "proposal_id": "PROP-002-VWAP-COST-GATE",
+      "parent_strategy_id": "STRAT-001-VWAP-PULLBACK",
+      "weakness_identified": "Over-trading (168+ trades) causes -11.25% to -20% cumulative fee drag on \u20b950,000 capital.",
+      "hypothesis": "Requiring 1.2% target hurdle + EMA9>EMA21 alignment cuts low-expectancy whipsaws.",
+      "proposed_change": "Apply CostAwareFilterWrapper(min_expected_move_pct=0.012).",
+      "expected_benefit": "Reduce trade count by >50% and improve net return on Validation & Unseen splits.",
+      "falsification_criterion": "Reject if Unseen Test net return does not beat v1.0 baseline."
+    },
+    {
+      "proposal_id": "PROP-003-CASH-PRESERVATION",
+      "parent_strategy_id": "STRAT-003-EMA-CROSS",
+      "weakness_identified": "EMA crossovers whipsaw during SIDEWAYS_LOW_VOLATILITY regimes.",
+      "hypothesis": "Abstaining (Cash/No-Trade) when ADX/trend breadth is weak preserves capital.",
+      "proposed_change": "Restrict entries to 09:30-14:00 IST with VWAP & EMA alignment.",
+      "expected_benefit": "Lower max drawdown and higher Sharpe ratio.",
+      "falsification_criterion": "Reject if net return fails to turn positive after costs on Unseen Test."
+    }
+  ],
+  "regime_breakdown": {
+    "STRAT-001-VWAP-PULLBACK": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 149,
+        "net_pnl_inr": -8284.0,
+        "fees_inr": 4909.8,
+        "positive_sessions": 8,
+        "session_win_rate_pct": 21.6
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 80,
+        "net_pnl_inr": -6933.85,
+        "fees_inr": 2657.17,
+        "positive_sessions": 1,
+        "session_win_rate_pct": 5.3
+      }
+    },
+    "STRAT-002-ORB-BREAKOUT": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 16,
+        "net_pnl_inr": -434.45,
+        "fees_inr": 501.75,
+        "positive_sessions": 5,
+        "session_win_rate_pct": 13.5
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 9,
+        "net_pnl_inr": -667.51,
+        "fees_inr": 341.88,
+        "positive_sessions": 2,
+        "session_win_rate_pct": 10.5
+      }
+    },
+    "STRAT-003-EMA-CROSS": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 65,
+        "net_pnl_inr": -2407.55,
+        "fees_inr": 2247.09,
+        "positive_sessions": 7,
+        "session_win_rate_pct": 18.9
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 36,
+        "net_pnl_inr": -2725.23,
+        "fees_inr": 1272.58,
+        "positive_sessions": 2,
+        "session_win_rate_pct": 10.5
+      }
+    },
+    "STRAT-004-SUPERTREND": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 251,
+        "net_pnl_inr": -14583.13,
+        "fees_inr": 8211.8,
+        "positive_sessions": 6,
+        "session_win_rate_pct": 16.2
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 124,
+        "net_pnl_inr": -7284.76,
+        "fees_inr": 4196.84,
+        "positive_sessions": 1,
+        "session_win_rate_pct": 5.3
+      }
+    },
+    "STRAT-005-RSI-MACD": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 150,
+        "net_pnl_inr": -8039.55,
+        "fees_inr": 5689.82,
+        "positive_sessions": 5,
+        "session_win_rate_pct": 13.5
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 80,
+        "net_pnl_inr": -6587.95,
+        "fees_inr": 2959.7,
+        "positive_sessions": 3,
+        "session_win_rate_pct": 15.8
+      }
+    },
+    "STRAT-006-VOLUME-BREAKOUT": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 172,
+        "net_pnl_inr": -8137.73,
+        "fees_inr": 6536.56,
+        "positive_sessions": 5,
+        "session_win_rate_pct": 13.5
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 81,
+        "net_pnl_inr": -8010.19,
+        "fees_inr": 3204.35,
+        "positive_sessions": 3,
+        "session_win_rate_pct": 15.8
+      }
+    },
+    "STRAT-007-MULTI-INDICATOR": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 346,
+        "net_pnl_inr": -17216.66,
+        "fees_inr": 11786.3,
+        "positive_sessions": 4,
+        "session_win_rate_pct": 10.8
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 176,
+        "net_pnl_inr": -13064.22,
+        "fees_inr": 6240.77,
+        "positive_sessions": 1,
+        "session_win_rate_pct": 5.3
+      }
+    },
+    "AGENT-CENTRAL-COUNCIL": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 286,
+        "net_pnl_inr": -14511.44,
+        "fees_inr": 9534.67,
+        "positive_sessions": 7,
+        "session_win_rate_pct": 18.9
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 147,
+        "net_pnl_inr": -13084.32,
+        "fees_inr": 5017.49,
+        "positive_sessions": 2,
+        "session_win_rate_pct": 10.5
+      }
+    },
+    "AGENT-AUTONOMOUS-TRADER": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 366,
+        "net_pnl_inr": -19807.6,
+        "fees_inr": 12401.22,
+        "positive_sessions": 6,
+        "session_win_rate_pct": 16.2
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 181,
+        "net_pnl_inr": -14883.42,
+        "fees_inr": 6306.79,
+        "positive_sessions": 1,
+        "session_win_rate_pct": 5.3
+      }
+    },
+    "STRAT-001-VWAP-V2": {
+      "TRENDING_LOW_VOLATILITY": {
+        "regime": "TRENDING_LOW_VOLATILITY",
+        "sessions": 37,
+        "trades": 71,
+        "net_pnl_inr": -5244.58,
+        "fees_inr": 2427.69,
+        "positive_sessions": 9,
+        "session_win_rate_pct": 24.3
+      },
+      "SIDEWAYS_LOW_VOLATILITY": {
+        "regime": "SIDEWAYS_LOW_VOLATILITY",
+        "sessions": 19,
+        "trades": 33,
+        "net_pnl_inr": -4100.81,
+        "fees_inr": 1250.9,
+        "positive_sessions": 4,
+        "session_win_rate_pct": 21.1
+      }
+    }
+  },
+  "archive_health": {
+    "last_successful_run_ist": "2026-11-21T11:53:11.431782+05:30",
+    "latest_trading_timestamp_ist": "2026-11-20T15:25:00+05:30",
+    "total_new_bars_added": 0,
+    "failed_symbols": [],
+    "provider_status": "HEALTHY",
+    "symbols": [
+      {
+        "symbol": "RELIANCE",
+        "status": "OK",
+        "provider": "YahooFinanceAPI:RELIANCE.NS",
+        "retrieved_at_ist": "2026-11-21T11:53:10.505188+05:30",
+        "total_bars": 4325,
+        "net_added": 0,
+        "duplicates_removed": 0,
+        "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+      },
+      {
+        "symbol": "TCS",
+        "status": "OK",
+        "provider": "YahooFinanceAPI:TCS.NS",
+        "retrieved_at_ist": "2026-11-21T11:53:10.777091+05:30",
+        "total_bars": 4315,
+        "net_added": 0,
+        "duplicates_removed": 0,
+        "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+      },
+      {
+        "symbol": "BIRLACABLE",
+        "status": "OK",
+        "provider": "YahooFinanceAPI:BIRLACABLE.NS",
+        "retrieved_at_ist": "2026-11-21T11:53:10.979440+05:30",
+        "total_bars": 4354,
+        "net_added": 0,
+        "duplicates_removed": 0,
+        "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+      },
+      {
+        "symbol": "ITC",
+        "status": "OK",
+        "provider": "YahooFinanceAPI:ITC.NS",
+        "retrieved_at_ist": "2026-11-21T11:53:11.209822+05:30",
+        "total_bars": 4326,
+        "net_added": 0,
+        "duplicates_removed": 0,
+        "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+      },
+      {
+        "symbol": "TATAELXSI",
+        "status": "OK",
+        "provider": "YahooFinanceAPI:TATAELXSI.NS",
+        "retrieved_at_ist": "2026-11-21T11:53:11.417208+05:30",
+        "total_bars": 4310,
+        "net_added": 0,
+        "duplicates_removed": 0,
+        "latest_bar_ist": "2026-11-20T15:25:00+05:30"
+      }
+    ]
+  }
+}
