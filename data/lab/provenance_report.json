@@ -1,10 +1,10 @@
 {
   "verified": true,
-  "verified_at_ist": "2026-11-21T13:23:09.736421+05:30",
+  "verified_at_ist": "2026-11-21T13:45:40.217837+05:30",
   "sessions_verified": 56,
   "total_missing_candles": 115,
   "total_duplicate_candles": 0,
-  "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+  "resampling_methodology": "NONE_RAW_5M",
   "symbols": {
     "RELIANCE": {
       "symbol": "RELIANCE",
@@ -13,12 +13,12 @@
         "ParquetCache:RELIANCE_NSE_5m.parquet"
       ],
       "candle_interval": "5m",
-      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "resampling_methodology": "NONE_RAW_5M",
       "sessions_checked": 56,
       "total_5m_candles": 4103,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:23:08.061456+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:45:38.988484+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/RELIANCE_5m.parquet"
@@ -39,12 +39,12 @@
         "ParquetCache:TCS_NSE_5m.parquet"
       ],
       "candle_interval": "5m",
-      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "resampling_methodology": "NONE_RAW_5M",
       "sessions_checked": 56,
       "total_5m_candles": 4093,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:23:08.443412+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:45:39.265933+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/TCS_5m.parquet"
@@ -65,12 +65,12 @@
         "ParquetCache:BIRLACABLE_NSE_5m.parquet"
       ],
       "candle_interval": "5m",
-      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "resampling_methodology": "NONE_RAW_5M",
       "sessions_checked": 56,
       "total_5m_candles": 4183,
       "missing_candles": 15,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:23:08.830921+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:45:39.546318+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/BIRLACABLE_5m.parquet"
@@ -91,12 +91,12 @@
         "ParquetCache:ITC_NSE_5m.parquet"
       ],
       "candle_interval": "5m",
-      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "resampling_methodology": "NONE_RAW_5M",
       "sessions_checked": 56,
       "total_5m_candles": 4104,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:23:09.218299+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:45:39.823672+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/ITC_5m.parquet"
@@ -117,12 +117,12 @@
         "ParquetCache:TATAELXSI_NSE_5m.parquet"
       ],
       "candle_interval": "5m",
-      "resampling_methodology": "OHLCV_0915_IST_STRICT_NO_INTERPOLATION",
+      "resampling_methodology": "NONE_RAW_5M",
       "sessions_checked": 56,
       "total_5m_candles": 4089,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:23:09.609517+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:45:40.104773+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/TATAELXSI_5m.parquet"

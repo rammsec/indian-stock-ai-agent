@@ -100,6 +100,10 @@ async function loadLabIndex() {
     renderSlippageAndWalkForward(LAB_STATE.index.slippage_sensitivity || [], LAB_STATE.index.walk_forward_summary || {});
     renderExperiments(LAB_STATE.index.phase9_experiments || LAB_STATE.index.experiments || []);
     renderPhase10Study(LAB_STATE.index.phase10_sizing_brokerage_study || []);
+    renderPhase11Qualification(
+      LAB_STATE.index.cycle_003_report || LAB_STATE.index.cycle_002_report || LAB_STATE.index.phase11_research_cycle,
+      LAB_STATE.index.weekly_research_status
+    );
 
     const defaultDate = LAB_STATE.index.available_dates[0].date;
     const defaultStrat = LAB_STATE.index.strategies[0].id;
