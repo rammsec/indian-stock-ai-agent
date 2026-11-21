@@ -225,3 +225,37 @@ def test_phase8_data_quality_analytics_and_slippage_sensitivity():
     assert len(sens) == 3
     assert [s["slippage_bps"] for s in sens] == [5.0, 10.0, 20.0]
 
+
+def test_phase9_cost_aware_filter_wrapper():
+    """Verify CostAwareFilterWrapper filters out signals whose expected move is below the cost hurdle."""
+    from trader.features.indicators import compute_all_features
+    from trader.strategies.base import BaseStrategy, StrategyMetadata, StrategySignal
+    from trader.strategies.cost_aware_wrapper import CostAwareFilterWrapper
+
+    class DummyLowTargetStrat(BaseStrategy):
+        def __init__(self):
+            super().__init__(
+                StrategyMetadata(
+                    strategy_id="DUMMY-TEST",
+                    name="Dummy",
+                    origin_source="Test",
+                    source_url="internal://test",
+                    license_type="MIT",
+                )
+            )
+
+        def evaluate_bar(self, symbol, features_df, current_bar_idx):
+            r = features_df.iloc[current_bar_idx]
+            ts = r["timestamp"].to_pydatetime() if hasattr(r["timestamp"], "to_pydatetime") else r["timestamp"]
+            close = float(r["close"])
+            # Tiny 0.2% target (below 1.2% cost hurdle)
+            return StrategySignal("DUMMY-TEST", symbol, ts, "ENTER_LONG", close, close * 0.99, close * 1.002, 0.8, ["Test"])
+
+    candles = generate_synthetic_5m_session("RELIANCE", base_price=2500.0, num_bars=40)
+    df = compute_all_features(candles)
+    wrapped = CostAwareFilterWrapper(DummyLowTargetStrat(), min_expected_move_pct=0.012)
+    sig = wrapped.evaluate_bar("RELIANCE", df, 25)
+    assert sig.action == "NO_SIGNAL"
+    assert "Filtered:" in sig.rationale[0]
+
+

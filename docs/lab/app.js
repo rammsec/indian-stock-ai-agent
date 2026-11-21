@@ -650,3 +650,23 @@ function renderSlippageAndWalkForward(slipRows, wf) {
   }
 }
 
+function renderExperiments(exps) {
+  const tbody = document.getElementById("experiments-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = exps
+    .map((e) => {
+      const cls = e.approval_status === "APPROVED_FOR_PAPER" ? "badge-green" : "badge-amber";
+      return `
+        <tr>
+          <td style="font-weight: 700; color: #fff;">${e.experiment_id}</td>
+          <td><code>${e.parent_strategy_version}</code></td>
+          <td style="font-size: 11px;">${e.validation_period}</td>
+          <td style="color: var(--text-muted);">${e.suggestion_summary}</td>
+          <td><span class="badge ${cls}">${e.approval_status}</span></td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
+
