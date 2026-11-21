@@ -10,7 +10,9 @@ QualificationStatus = Literal[
     "EXPERIMENTAL",
     "IMPROVING",
     "VALIDATION PENDING",
+    "INSUFFICIENT_EVIDENCE",
     "INSUFFICIENT EVIDENCE",
+    "INVALIDATED",
     "QUALIFIED",
     "SUSPENDED",
 ]
@@ -48,15 +50,21 @@ def evaluate_seven_gates(
     red_team_reason: str,
     min_sessions_required: int = 60,
     min_trades_required: int = 30,
+    independent_holdout_valid: bool = True,
 ) -> QualificationEvaluation:
     """Evaluate a strategy candidate against all 7 mandatory institutional qualification gates."""
     gates: list[GateResult] = []
 
-    # Gate 1 — Data Integrity
-    g1_pass = bool(data_provenance_verified)
+    # Gate 1 — Data & Holdout Integrity
+    g1_pass = bool(data_provenance_verified) and bool(independent_holdout_valid)
+    if not data_provenance_verified:
+        g1_reason = "Unverified data provenance"
+    elif not independent_holdout_valid:
+        g1_reason = "INVALIDATED: Exposed holdout dates reused in final evaluation"
+    else:
+        g1_reason = "Verified historical provenance, zero lookahead, untouched holdout"
     gates.append(GateResult(
-        1, "Data Integrity", g1_pass, "PASS" if g1_pass else "FAIL",
-        "Verified historical provenance, zero lookahead, explicit eligibility" if g1_pass else "Unverified data provenance",
+        1, "Data & Holdout Integrity", g1_pass, "PASS" if g1_pass else "FAIL", g1_reason,
     ))
 
     # Gate 2 — Net Profitability (Overall + Unseen)
@@ -115,11 +123,14 @@ def evaluate_seven_gates(
     passed_count = sum(1 for g in gates if g.passed)
 
     # Determine final qualification status
-    if not g2_pass or not g6_pass or not red_team_approved:
-        final_status: QualificationStatus = "REJECTED"
+    if not g1_pass:
+        final_status: QualificationStatus = "INVALIDATED"
+        summary = f"Invalidated: {g1_reason} ({passed_count}/7 gates passed)."
+    elif not g2_pass or not g6_pass or not red_team_approved:
+        final_status = "REJECTED"
         summary = f"Rejected: Failed profitability/robustness/red-team ({passed_count}/7 gates passed)."
     elif not g5_pass or stat_validation_verdict == "INSUFFICIENT EVIDENCE":
-        final_status = "INSUFFICIENT EVIDENCE"
+        final_status = "INSUFFICIENT_EVIDENCE"
         summary = f"Insufficient statistical evidence ({sessions}/{min_sessions_required} sessions, {trades}/{min_trades_required} trades)."
     elif passed_count == 7:
         final_status = "QUALIFIED"
@@ -137,3 +148,55 @@ def evaluate_seven_gates(
         total_gates=7,
         summary=summary,
     )
+
+
+def separate_strategies_and_benchmarks(
+    qualification_board: list[dict[str, Any]],
+    period_label: str = "",
+) -> dict[str, Any]:
+    """Strictly separate executable trading strategies from Cash/Buy-and-Hold reference benchmarks."""
+    active_strategies: list[dict[str, Any]] = []
+    reference_benchmarks: list[dict[str, Any]] = []
+
+    for row in qualification_board:
+        sid = str(row.get("strategy_id", ""))
+        if sid.startswith("BENCHMARK-"):
+            net_ret = float(row.get("net_return_pct", 0.0))
+            alpha_bh = float(row.get("alpha_vs_bh_pct", 0.0))
+            reference_benchmarks.append({
+                "benchmark_id": sid,
+                "benchmark_name": row.get("strategy_name", "Cash / No-Trade Baseline"),
+                "category": "CAPITAL_PRESERVATION_BENCHMARK",
+                "period": period_label,
+                "sessions": row.get("sessions", 0),
+                "net_return_pct": net_ret,
+                "relative_outperformance_vs_bh_pct": alpha_bh,
+                "note": "Capital preservation baseline (0% return); not an active trading strategy.",
+            })
+        else:
+            active_strategies.append(row)
+
+    # Derive implied Buy & Hold benchmark from the first row's net_return_pct - alpha_vs_bh_pct
+    if qualification_board:
+        sample = qualification_board[0]
+        bh_ret = round(float(sample.get("net_return_pct", 0.0)) - float(sample.get("alpha_vs_bh_pct", 0.0)), 2)
+        reference_benchmarks.append({
+            "benchmark_id": "BENCHMARK-BUY-AND-HOLD",
+            "benchmark_name": "5-Stock Equal-Weight Buy & Hold",
+            "category": "PASSIVE_MARKET_BENCHMARK",
+            "period": period_label,
+            "sessions": sample.get("sessions", 0),
+            "net_return_pct": bh_ret,
+            "relative_outperformance_vs_bh_pct": 0.0,
+            "note": "Equal-weight passive benchmark across RELIANCE, TCS, BIRLACABLE, ITC, TATAELXSI.",
+        })
+
+    active_sorted = sorted(active_strategies, key=lambda x: float(x.get("net_return_pct", -999.0)), reverse=True)
+    qualified_active = sum(1 for s in active_sorted if s.get("final_status") == "QUALIFIED")
+
+    return {
+        "active_strategy_leaderboard": active_sorted,
+        "reference_benchmark_leaderboard": reference_benchmarks,
+        "qualified_active_strategies": qualified_active,
+        "best_active_strategy": active_sorted[0] if active_sorted else None,
+    }

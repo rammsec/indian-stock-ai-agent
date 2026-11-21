@@ -30,10 +30,10 @@ class ResampledCandle:
 
 def resample_5m_candles(
     candles_5m: list[Candle5M],
-    target_minutes: Literal[15, 30] = 15,
+    target_minutes: Literal[15, 30, 60] = 15,
     include_incomplete: bool = False,
 ) -> list[ResampledCandle]:
-    """Deterministically resample 5m candles into 15m or 30m bars aligned to 09:15 IST.
+    """Deterministically resample 5m candles into 15m, 30m, or 60m bars aligned to 09:15 IST.
 
     Rules:
     - Never combines candles across different NSE trading dates.
@@ -41,8 +41,8 @@ def resample_5m_candles(
     - Records source_bar_count and is_complete for every bucket.
     - By default drops incomplete buckets so strategies never act on partial intervals.
     """
-    if target_minutes not in (15, 30):
-        raise ValueError("target_minutes must be 15 or 30")
+    if target_minutes not in (15, 30, 60):
+        raise ValueError("target_minutes must be 15, 30, or 60")
     if not candles_5m:
         return []
 

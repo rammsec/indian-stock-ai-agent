@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from ..config import IST_TZ, LAB_DEFAULT_UNIVERSE
+from ..data.provenance_1h import validate_1h_provenance
 from ..data.schema import DataSourceMode
 from ..lab.data_service import (
     compute_data_quality_analytics,
@@ -34,14 +35,15 @@ from .agents import (
     StatisticalValidationAgent,
     StrategyChallengerRedTeamAgent,
 )
-from .qualification import evaluate_seven_gates
+from .holdout import SEALED_HOLDOUT_REGISTRY_PATH, SealedHoldoutGuard
+from .qualification import evaluate_seven_gates, separate_strategies_and_benchmarks
 
 RESEARCH_REPORT_PATH = Path("data/lab/research_cycle_report.json")
 CYCLE_002_REPORT_PATH = Path("data/lab/cycle_002_report.json")
 CYCLE_003_REPORT_PATH = Path("data/lab/cycle_003_report.json")
+CYCLE_003_REASSESSMENT_PATH = Path("data/lab/cycle_003_integrity_reassessment.json")
 CYCLE_004_REPORT_PATH = Path("data/lab/cycle_004_report.json")
 PROVENANCE_REPORT_PATH = Path("data/lab/provenance_report.json")
-SEALED_HOLDOUT_REGISTRY_PATH = Path("data/lab/sealed_holdout_registry.json")
 ARCHIVE_HEALTH_PATH = Path("data/lab/daily_archive_health.json")
 LAB_INDEX_PATH = Path("docs/lab/data/lab_index.json")
 
@@ -139,48 +141,6 @@ def verify_dataset_provenance(
         "symbols": per_symbol,
     }
     return all_ok, report
-
-
-class SealedHoldoutGuard:
-    """Tracks final-test holdout exposure and prevents silent reuse of sealed dates for tuning."""
-
-    def __init__(self, registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH) -> None:
-        self.registry_path = registry_path
-
-    def load_registry(self) -> dict[str, Any]:
-        if self.registry_path.exists():
-            return json.loads(self.registry_path.read_text(encoding="utf-8"))
-        return {"sealed_exposures": [], "sealed_dates": []}
-
-    def record_exposure(self, cycle_id: str, unseen_dates: list[date], notes: str = "") -> dict[str, Any]:
-        reg = self.load_registry()
-        iso_dates = [d.isoformat() for d in unseen_dates]
-        existing = set(reg.get("sealed_dates", []))
-        newly_sealed = [d for d in iso_dates if d not in existing]
-        reused = [d for d in iso_dates if d in existing]
-        reg["sealed_exposures"].append({
-            "cycle_id": cycle_id,
-            "recorded_at_ist": datetime.now(tz=IST_TZ).isoformat(),
-            "commit_sha": _get_git_commit_sha(),
-            "unseen_dates": iso_dates,
-            "newly_sealed_count": len(newly_sealed),
-            "previously_sealed_count": len(reused),
-            "notes": notes,
-        })
-        reg["sealed_dates"] = sorted(existing | set(iso_dates))
-        self.registry_path.parent.mkdir(parents=True, exist_ok=True)
-        self.registry_path.write_text(json.dumps(reg, indent=2), encoding="utf-8")
-        return {
-            "total_sealed_dates": len(reg["sealed_dates"]),
-            "current_unseen_dates": len(iso_dates),
-            "previously_exposed_dates": len(reused),
-            "leakage_detected": False,
-        }
-
-    def check_tuning_leakage(self, tuning_dates: list[date]) -> list[str]:
-        reg = self.load_registry()
-        sealed = set(reg.get("sealed_dates", []))
-        return [d.isoformat() for d in tuning_dates if d.isoformat() in sealed]
 
 
 def collect_dynamic_test_metrics(run_pytest: bool = True) -> dict[str, Any]:
@@ -435,6 +395,7 @@ class ChiefResearchOrchestrator:
                 red_team_reason=rt_reason,
                 min_sessions_required=60,
                 min_trades_required=30,
+                independent_holdout_valid=holdout_status.get("independent_holdout_valid", True),
             )
 
             qualification_board.append({
@@ -473,9 +434,10 @@ class ChiefResearchOrchestrator:
         live_test_metrics = test_report if test_report is not None else collect_dynamic_test_metrics(run_pytest=run_live_pytest)
         sq_report = self.sq_agent.review_system(test_report=live_test_metrics)
 
-        qualified_cnt = sum(1 for q in qualification_board if q["final_status"] == "QUALIFIED")
-        rejected_cnt = sum(1 for q in qualification_board if q["final_status"] == "REJECTED")
-        best_strat = max(qualification_board, key=lambda x: x["net_return_pct"]) if qualification_board else None
+        sep_boards = separate_strategies_and_benchmarks(qualification_board, period_label=f"{start_d.isoformat()} -> {end_d.isoformat()}")
+        qualified_cnt = sep_boards["qualified_active_strategies"]
+        rejected_cnt = sum(1 for q in sep_boards["active_strategy_leaderboard"] if q["final_status"] in ("REJECTED", "INVALIDATED"))
+        best_strat = sep_boards["best_active_strategy"]
 
         orch_report = AgentActivityReport(
             agent_name="Agent 1 — Chief Research Orchestrator",
@@ -1109,5 +1071,136 @@ class ChiefResearchOrchestrator:
             LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
 
         return cycle_004_out
+
+    def reassess_cycle_003(self) -> dict[str, Any]:
+        """Phase 11.2 Mandatory Repair E: Reassess CYCLE-003 under strict provenance, holdout & benchmark rules."""
+        if not CYCLE_003_REPORT_PATH.exists():
+            raise FileNotFoundError(f"Missing original CYCLE-003 report: {CYCLE_003_REPORT_PATH}")
+
+        orig = json.loads(CYCLE_003_REPORT_PATH.read_text(encoding="utf-8"))
+        prov_ok, prov_1h_report = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+        PROVENANCE_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        PROVENANCE_REPORT_PATH.write_text(json.dumps(prov_1h_report, indent=2), encoding="utf-8")
+
+        # Inspect historical exposures in sealed_holdout_registry.json
+        guard = SealedHoldoutGuard()
+        reg = guard.load_registry()
+        guard.save_registry(reg)  # Ensures legacy exposures are migrated cleanly into per-date records
+
+        cycle2_dates: set[str] = set()
+        cycle3_unseen_dates: list[str] = []
+        for exp in reg.get("sealed_exposures", []):
+            if exp.get("cycle_id") == "CYCLE-002":
+                cycle2_dates.update(exp.get("unseen_dates", []))
+            elif exp.get("cycle_id") == "CYCLE-003-60M" and not cycle3_unseen_dates:
+                cycle3_unseen_dates = list(exp.get("unseen_dates", []))
+
+        reused_in_c3 = sorted(d for d in cycle3_unseen_dates if d in cycle2_dates)
+        untouched_in_c3 = sorted(d for d in cycle3_unseen_dates if d not in cycle2_dates)
+        holdout_valid = len(reused_in_c3) == 0 and len(untouched_in_c3) > 0
+
+        # Separate benchmarks from active strategies
+        sep = separate_strategies_and_benchmarks(
+            orig.get("qualification_board", []),
+            period_label=orig.get("date_range", ""),
+        )
+
+        recalculated_strategies: list[dict[str, Any]] = []
+        downgrade_explanations: list[dict[str, Any]] = []
+
+        for row in sep["active_strategy_leaderboard"]:
+            sid = row["strategy_id"]
+            orig_status = row.get("final_status", "REJECTED")
+            sessions = int(row.get("sessions", 0))
+            trades = int(row.get("trades", 0))
+            net_ret = float(row.get("net_return_pct", 0.0))
+            unseen_ret = float(row.get("unseen_return_pct", 0.0))
+
+            if not prov_ok:
+                new_status = "INVALIDATED"
+                reason = "1-hour dataset provenance verification failed."
+            elif int(row.get("timeframe_minutes", 5)) == 60 and not holdout_valid:
+                new_status = "INVALIDATED"
+                reason = (
+                    f"EXPOSED_HOLDOUT_REUSED: {len(reused_in_c3)}/48 unseen dates were previously exposed in CYCLE-002; "
+                    f"independent out-of-sample claim ({unseen_ret:+.2f}%) is invalidated."
+                )
+            elif sessions < 60 or trades < 30:
+                new_status = "INSUFFICIENT_EVIDENCE" if net_ret >= 0 else "REJECTED"
+                reason = f"Sample size ({sessions}/60 sessions, {trades}/30 trades) below statistical threshold."
+            else:
+                new_status = "REJECTED"
+                reason = f"Negative net return ({net_ret:+.2f}%) after realistic transaction costs."
+
+            recalculated_strategies.append({
+                **row,
+                "original_status": orig_status,
+                "reassessed_status": new_status,
+                "independent_holdout_valid": holdout_valid if int(row.get("timeframe_minutes", 5)) == 60 else False,
+                "reassessment_reason": reason,
+            })
+            downgrade_explanations.append({
+                "strategy_id": sid,
+                "original_status": orig_status,
+                "reassessed_status": new_status,
+                "reason": reason,
+            })
+
+        archive_health = {}
+        if ARCHIVE_HEALTH_PATH.exists():
+            archive_health = json.loads(ARCHIVE_HEALTH_PATH.read_text(encoding="utf-8"))
+
+        reassessment = {
+            "reassessment_id": "CYCLE-003-INTEGRITY-REASSESSMENT",
+            "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+            "original_cycle_id": orig.get("cycle_id", "CYCLE-003"),
+            "original_generated_at_ist": orig.get("generated_at_ist"),
+            "original_best_strategy_reported": orig.get("command_centre", {}).get("best_experimental_strategy"),
+            "corrected_best_active_strategy": (
+                sep["best_active_strategy"]["strategy_id"] if sep["best_active_strategy"] else None
+            ),
+            "corrected_best_active_net_pct": (
+                sep["best_active_strategy"]["net_return_pct"] if sep["best_active_strategy"] else 0.0
+            ),
+            "qualified_active_strategies": sep["qualified_active_strategies"],
+            "provenance_verification": {
+                "verified": prov_ok,
+                "final_provenance_status": prov_1h_report["final_provenance_status"],
+                "validator_version": prov_1h_report["validator_version"],
+                "total_missing_intervals": prov_1h_report["total_missing_intervals"],
+                "total_duplicates": prov_1h_report["total_duplicates"],
+                "total_invalid_ohlc": prov_1h_report["total_invalid_ohlc"],
+            },
+            "holdout_integrity": {
+                "independent_holdout_valid": holdout_valid,
+                "holdout_status": "EXPOSED_HOLDOUT_REUSED" if reused_in_c3 else "VALID_UNSEEN",
+                "total_unseen_dates_in_cycle_003": len(cycle3_unseen_dates),
+                "previously_exposed_dates_count": len(reused_in_c3),
+                "previously_exposed_dates": reused_in_c3,
+                "total_exposed_dates_in_registry": len(reg.get("records", {})),
+            },
+            "data_quality_warnings": [
+                f"EXPOSED_HOLDOUT_REUSED: {len(reused_in_c3)} of {len(cycle3_unseen_dates)} unseen dates in CYCLE-003 overlapped with CYCLE-002.",
+                f"1h archive status is {prov_1h_report['final_provenance_status']} ({prov_1h_report['total_missing_intervals']} missing intervals across 5 stocks).",
+                "BENCHMARK-CASH-NO-TRADE removed from active strategy rankings (capital preservation baseline only).",
+            ],
+            "active_strategy_leaderboard": recalculated_strategies,
+            "reference_benchmark_leaderboard": sep["reference_benchmark_leaderboard"],
+            "downgrade_explanations": downgrade_explanations,
+            "archive_health": archive_health,
+        }
+
+        CYCLE_003_REASSESSMENT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        CYCLE_003_REASSESSMENT_PATH.write_text(json.dumps(reassessment, indent=2), encoding="utf-8")
+
+        if LAB_INDEX_PATH.exists():
+            idx = json.loads(LAB_INDEX_PATH.read_text(encoding="utf-8"))
+            idx["cycle_003_integrity_reassessment"] = reassessment
+            idx["provenance_report_1h"] = prov_1h_report
+            idx["sealed_holdout_summary"] = reassessment["holdout_integrity"]
+            LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
+
+        return reassessment
+
 
 
