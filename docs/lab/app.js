@@ -807,6 +807,147 @@ function renderPhase11Qualification(p11, weeklyStatus) {
   }
 }
 
+let PROG_RETURNS_CHART = null;
+let PROG_FRICTION_CHART = null;
+
+function renderCycleProgression(prog) {
+  if (!prog || !prog.length) return;
+  const grid = document.getElementById("prog-summary-grid");
+  const bestGross = Math.max(...prog.map((p) => p.gross_return_pct));
+  const bestNet = Math.max(...prog.map((p) => p.net_return_pct));
+  const bestUnseen = Math.max(...prog.map((p) => p.unseen_return_pct));
+  const maxSessions = Math.max(...prog.map((p) => p.sessions));
+  if (grid) {
+    grid.innerHTML = `
+      <div class="metric-box"><div class="metric-label">Cycles Completed</div><div class="metric-val text-blue">${prog.length}</div></div>
+      <div class="metric-box"><div class="metric-label">Max Sessions Tested</div><div class="metric-val">${maxSessions}</div></div>
+      <div class="metric-box"><div class="metric-label">Best Active Gross %</div><div class="metric-val ${bestGross >= 0 ? "text-green" : "text-red"}">${bestGross >= 0 ? "+" : ""}${bestGross.toFixed(2)}%</div></div>
+      <div class="metric-box"><div class="metric-label">Best Active Net %</div><div class="metric-val ${bestNet >= 0 ? "text-green" : "text-red"}">${bestNet >= 0 ? "+" : ""}${bestNet.toFixed(2)}%</div></div>
+      <div class="metric-box"><div class="metric-label">Best Unseen Test %</div><div class="metric-val ${bestUnseen >= 0 ? "text-green" : "text-red"}">${bestUnseen >= 0 ? "+" : ""}${bestUnseen.toFixed(2)}%</div></div>
+    `;
+  }
+
+  const tbody = document.getElementById("prog-table-tbody");
+  if (tbody) {
+    tbody.innerHTML = prog
+      .map((p) => `
+        <tr>
+          <td><span class="badge badge-blue">${p.cycle_id}</span></td>
+          <td>${p.title}</td>
+          <td style="font-weight:700; color:#fff;">${p.best_active_strategy}</td>
+          <td><span class="badge badge-gray">${p.timeframe}</span></td>
+          <td>${p.sessions}</td>
+          <td>${p.trades}</td>
+          <td class="${p.gross_return_pct >= 0 ? "text-green" : "text-red"}">${p.gross_return_pct >= 0 ? "+" : ""}${p.gross_return_pct.toFixed(2)}%</td>
+          <td class="${p.net_return_pct >= 0 ? "text-green" : "text-red"}">${p.net_return_pct >= 0 ? "+" : ""}${p.net_return_pct.toFixed(2)}%</td>
+          <td class="${p.unseen_return_pct >= 0 ? "text-green" : "text-red"}">${p.unseen_return_pct >= 0 ? "+" : ""}${p.unseen_return_pct.toFixed(2)}%</td>
+          <td style="color:var(--accent-red);">₹${Number(p.total_fees_inr || 0).toFixed(2)}</td>
+          <td><span class="badge ${p.qualified_count > 0 ? "badge-green" : "badge-amber"}">${p.qualified_count}/${p.candidates_tested}</span></td>
+          <td style="color:var(--text-muted); font-size:11px;">${p.key_insight}</td>
+        </tr>
+      `)
+      .join("");
+  }
+
+  if (typeof Chart === "undefined") return;
+  const labels = prog.map((p) => p.cycle_id);
+
+  const ctxRet = document.getElementById("prog-returns-chart");
+  if (ctxRet) {
+    if (PROG_RETURNS_CHART) PROG_RETURNS_CHART.destroy();
+    PROG_RETURNS_CHART = new Chart(ctxRet, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Gross Return %",
+            data: prog.map((p) => p.gross_return_pct),
+            backgroundColor: "rgba(59, 130, 246, 0.75)",
+            borderColor: "#3b82f6",
+            borderWidth: 1,
+          },
+          {
+            label: "Net Return %",
+            data: prog.map((p) => p.net_return_pct),
+            backgroundColor: "rgba(16, 185, 129, 0.75)",
+            borderColor: "#10b981",
+            borderWidth: 1,
+          },
+          {
+            label: "Unseen Out-of-Sample %",
+            data: prog.map((p) => p.unseen_return_pct),
+            type: "line",
+            borderColor: "#f59e0b",
+            backgroundColor: "#f59e0b",
+            tension: 0.25,
+            borderWidth: 2,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: "#cbd5e1" } } },
+        scales: {
+          x: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(148,163,184,0.1)" } },
+          y: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(148,163,184,0.1)" } },
+        },
+      },
+    });
+  }
+
+  const ctxFric = document.getElementById("prog-friction-chart");
+  if (ctxFric) {
+    if (PROG_FRICTION_CHART) PROG_FRICTION_CHART.destroy();
+    PROG_FRICTION_CHART = new Chart(ctxFric, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Total Fees (₹)",
+            data: prog.map((p) => p.total_fees_inr),
+            backgroundColor: "rgba(239, 68, 68, 0.7)",
+            borderColor: "#ef4444",
+            borderWidth: 1,
+            yAxisID: "y",
+          },
+          {
+            label: "Trades Executed",
+            data: prog.map((p) => p.trades),
+            type: "line",
+            borderColor: "#38bdf8",
+            backgroundColor: "#38bdf8",
+            borderWidth: 2,
+            yAxisID: "y1",
+          },
+          {
+            label: "Sessions Evaluated",
+            data: prog.map((p) => p.sessions),
+            type: "line",
+            borderColor: "#a855f7",
+            backgroundColor: "#a855f7",
+            borderDash: [4, 4],
+            borderWidth: 2,
+            yAxisID: "y1",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: "#cbd5e1" } } },
+        scales: {
+          x: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(148,163,184,0.1)" } },
+          y: { position: "left", ticks: { color: "#fca5a5" }, grid: { color: "rgba(148,163,184,0.1)" } },
+          y1: { position: "right", ticks: { color: "#7dd3fc" }, grid: { drawOnChartArea: false } },
+        },
+      },
+    });
+  }
+}
+
 
 
 

@@ -507,3 +507,54 @@ class MTF60mORBFilteredStrategy(BaseStrategy):
                     stop_loss=sl, target=tp, rationale=["60m 1st-hour ORB breakout + EMA trend"]
                 )
         return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5)
+
+
+class MTF60mORBSelectiveStrategy(BaseStrategy):
+    """CYCLE-004 Strategy: Ultra-Selective 60m ORB with 1.5x Volume, RSI 55-68 & 1.5% Move Hurdle."""
+
+    def __init__(self) -> None:
+        super().__init__(
+            StrategyMetadata(
+                strategy_id="STRAT-018-60M-ORB-SELECTIVE",
+                name="60m Ultra-Selective ORB",
+                origin_source="BharatAlpha CYCLE-004 Research",
+                source_url="internal://cycle-004",
+                license_type="MIT",
+                timeframe="60m",
+                required_indicators=["ema_9", "ema_21", "rsi_14", "atr_14", "volume"],
+                validation_status="EXPERIMENTAL",
+            )
+        )
+
+    def evaluate_bar(self, symbol: str, features_df: pd.DataFrame, current_bar_idx: int) -> StrategySignal:
+        row = features_df.iloc[current_bar_idx]
+        ts = row["timestamp"].to_pydatetime() if hasattr(row["timestamp"], "to_pydatetime") else row["timestamp"]
+        close = float(row["close"])
+        if current_bar_idx < 12:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5, rationale=["Warmup"])
+
+        hhmm = ts.strftime("%H:%M")
+        ema9 = float(row["ema_9"])
+        ema21 = float(row["ema_21"])
+        rsi = float(row["rsi_14"])
+        atr = max(float(row["atr_14"]), close * 0.004)
+        vol = float(row["volume"])
+        avg_vol = float(features_df.iloc[current_bar_idx - 10:current_bar_idx]["volume"].mean())
+
+        if ema9 < ema21:
+            return StrategySignal(self.metadata.strategy_id, symbol, ts, "EXIT", confidence=0.75, rationale=["60m trend reversal"])
+
+        today = ts.date()
+        same_day = features_df.iloc[:current_bar_idx]
+        same_day_bars = same_day[same_day["timestamp"].dt.date == today]
+        if hhmm in ("10:15", "11:15") and not same_day_bars.empty:
+            orb_high = float(same_day_bars.iloc[0]["high"])
+            if close > orb_high and ema9 > ema21 and 55.0 <= rsi <= 68.0 and vol >= 1.5 * max(1.0, avg_vol):
+                sl = round(close - 1.2 * atr, 2)
+                tp = round(close + 3.0 * atr, 2)
+                if (tp - close) / close >= 0.015:
+                    return StrategySignal(
+                        self.metadata.strategy_id, symbol, ts, "BUY", confidence=0.84,
+                        stop_loss=sl, target=tp, rationale=["60m ultra-selective ORB + 1.5x vol + 1.5% hurdle"]
+                    )
+        return StrategySignal(self.metadata.strategy_id, symbol, ts, "HOLD", confidence=0.5)

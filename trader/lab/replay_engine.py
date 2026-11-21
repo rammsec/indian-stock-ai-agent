@@ -45,6 +45,7 @@ from ..strategies.mtf_strategies import (
     MTF30mEMATrendStrategy,
     MTF30mVWAPSqueezeStrategy,
     MTF60mORBFilteredStrategy,
+    MTF60mORBSelectiveStrategy,
     MTF60mTrendBreakoutStrategy,
     MTF60mVWAPMomentumStrategy,
 )
@@ -75,6 +76,7 @@ STRATEGY_REGISTRY: dict[str, dict[str, Any]] = {
     "STRAT-015-60M-TREND-BREAKOUT": {"name": "60m Trend Breakout", "cls": MTF60mTrendBreakoutStrategy, "kind": "STRATEGY", "timeframe_minutes": 60},
     "STRAT-016-60M-VWAP-MOMENTUM": {"name": "60m VWAP Momentum", "cls": MTF60mVWAPMomentumStrategy, "kind": "STRATEGY", "timeframe_minutes": 60},
     "STRAT-017-60M-ORB-FILTERED": {"name": "60m Opening Range Breakout", "cls": MTF60mORBFilteredStrategy, "kind": "STRATEGY", "timeframe_minutes": 60},
+    "STRAT-018-60M-ORB-SELECTIVE": {"name": "60m Ultra-Selective ORB", "cls": MTF60mORBSelectiveStrategy, "kind": "STRATEGY", "timeframe_minutes": 60},
     "BENCHMARK-CASH-NO-TRADE": {"name": "Cash / No-Trade Baseline", "cls": CashNoTradeBenchmarkStrategy, "kind": "BENCHMARK", "timeframe_minutes": 30},
     "AGENT-CENTRAL-COUNCIL": {"name": "Central AI Council (8-Agent)", "cls": None, "kind": "AI_AGENT", "timeframe_minutes": 5},
     "AGENT-AUTONOMOUS-TRADER": {"name": "Autonomous Trading Agent", "cls": None, "kind": "AI_AGENT", "timeframe_minutes": 5},
