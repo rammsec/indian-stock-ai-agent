@@ -34,7 +34,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/intraday/
+          git add data/intraday/ data/lab/daily_archive_health.json
           if ! git diff --cached --quiet; then
             git commit -m "chore(data): archive daily 5m NSE candles [skip ci]"
             git push

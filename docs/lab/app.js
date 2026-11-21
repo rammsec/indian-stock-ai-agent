@@ -101,9 +101,11 @@ async function loadLabIndex() {
     renderExperiments(LAB_STATE.index.phase9_experiments || LAB_STATE.index.experiments || []);
     renderPhase10Study(LAB_STATE.index.phase10_sizing_brokerage_study || []);
     renderPhase11Qualification(
-      LAB_STATE.index.cycle_003_report || LAB_STATE.index.cycle_002_report || LAB_STATE.index.phase11_research_cycle,
+      LAB_STATE.index.cycle_004_report || LAB_STATE.index.cycle_003_report || LAB_STATE.index.cycle_002_report || LAB_STATE.index.phase11_research_cycle,
       LAB_STATE.index.weekly_research_status
     );
+    renderCycleProgression(LAB_STATE.index.cycle_progression || []);
+    renderResearchIntegrity(LAB_STATE.index);
 
     const defaultDate = LAB_STATE.index.available_dates[0].date;
     const defaultStrat = LAB_STATE.index.strategies[0].id;
@@ -945,6 +947,58 @@ function renderCycleProgression(prog) {
         },
       },
     });
+  }
+}
+
+function renderResearchIntegrity(idx) {
+  if (!idx) return;
+  const reass = idx.cycle_003_integrity_reassessment || {};
+  const prov1h = idx.provenance_report_1h || {};
+  const holdout = reass.holdout_integrity || idx.sealed_holdout_summary || {};
+  const dq = idx.data_quality_analytics || {};
+
+  const warnEl = document.getElementById("p11-integrity-warning");
+  if (warnEl) {
+    if (holdout.independent_holdout_valid === false || (reass.data_quality_warnings && reass.data_quality_warnings.length)) {
+      warnEl.style.display = "block";
+      const msgs = reass.data_quality_warnings || [
+        `Holdout independence invalid (${holdout.holdout_status || "EXPOSED_HOLDOUT_REUSED"}): ${holdout.previously_exposed_dates_count || 0} previously exposed dates reused.`,
+      ];
+      warnEl.innerHTML = `<strong>&#9888; INTEGRITY WARNING:</strong> ${msgs.join(" | ")}`;
+    } else {
+      warnEl.style.display = "none";
+    }
+  }
+
+  const gridEl = document.getElementById("p11-integrity-grid");
+  if (gridEl) {
+    const provStatus = prov1h.final_provenance_status || "UNKNOWN";
+    const provCls = provStatus === "VERIFIED" ? "text-green" : (provStatus === "PARTIALLY_VERIFIED" ? "text-amber" : "text-red");
+    const holdoutValid = holdout.independent_holdout_valid === true;
+    gridEl.innerHTML = `
+      <div class="metric-box"><div class="metric-label">1H Provenance Status</div><div class="metric-val ${provCls}" style="font-size:13px;">${provStatus}</div></div>
+      <div class="metric-box"><div class="metric-label">Holdout Independence</div><div class="metric-val ${holdoutValid ? "text-green" : "text-red"}" style="font-size:13px;">${holdoutValid ? "VALID_UNSEEN" : (holdout.holdout_status || "INVALIDATED")}</div></div>
+      <div class="metric-box"><div class="metric-label">Exposed Dates (Registry)</div><div class="metric-val text-amber">${holdout.total_exposed_dates_in_registry || 0}</div></div>
+      <div class="metric-box"><div class="metric-label">5m Eligible / 1H Valid</div><div class="metric-val">${dq.research_eligible_sessions || 0} / ${prov1h.symbols && prov1h.symbols.RELIANCE ? prov1h.symbols.RELIANCE.valid_session_count : 0}</div></div>
+      <div class="metric-box"><div class="metric-label">Corrected Best Active</div><div class="metric-val" style="font-size:12px;">${reass.corrected_best_active_strategy || "--"} (${(reass.corrected_best_active_net_pct || 0).toFixed(2)}%)</div></div>
+    `;
+  }
+
+  const bmBody = document.getElementById("p11-benchmark-tbody");
+  if (bmBody && reass.reference_benchmark_leaderboard) {
+    bmBody.innerHTML = reass.reference_benchmark_leaderboard
+      .map((b) => `
+        <tr>
+          <td style="font-weight:700; color:#fff;">${b.benchmark_name}</td>
+          <td><span class="badge badge-blue">${b.category}</span></td>
+          <td style="font-size:11px;">${b.period || "--"}</td>
+          <td>${b.sessions || 0}</td>
+          <td class="${b.net_return_pct >= 0 ? "text-green" : "text-red"}">${b.net_return_pct >= 0 ? "+" : ""}${b.net_return_pct}%</td>
+          <td class="${b.relative_outperformance_vs_bh_pct >= 0 ? "text-green" : "text-red"}">${b.relative_outperformance_vs_bh_pct >= 0 ? "+" : ""}${b.relative_outperformance_vs_bh_pct}%</td>
+          <td style="color:var(--text-muted); font-size:11px;">${b.note}</td>
+        </tr>
+      `)
+      .join("");
   }
 }
 

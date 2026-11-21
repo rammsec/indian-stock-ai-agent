@@ -1,140 +1,134 @@
 {
+  "validator_version": "11.2.0",
+  "verification_timestamp": "2026-11-21T14:24:29.241075+05:30",
+  "timeframe": "1h",
+  "provider": "yahoo_finance_1h",
+  "resampling_methodology": "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
   "verified": true,
-  "verified_at_ist": "2026-11-21T13:45:40.217837+05:30",
-  "sessions_verified": 56,
-  "total_missing_candles": 115,
-  "total_duplicate_candles": 0,
-  "resampling_methodology": "NONE_RAW_5M",
+  "final_provenance_status": "PARTIALLY_VERIFIED",
+  "total_missing_intervals": 247,
+  "total_duplicates": 0,
+  "total_invalid_ohlc": 0,
   "symbols": {
     "RELIANCE": {
       "symbol": "RELIANCE",
-      "exchange": "NSE",
-      "providers": [
-        "ParquetCache:RELIANCE_NSE_5m.parquet"
-      ],
-      "candle_interval": "5m",
-      "resampling_methodology": "NONE_RAW_5M",
-      "sessions_checked": 56,
-      "total_5m_candles": 4103,
-      "missing_candles": 25,
-      "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:45:38.988484+05:30",
-      "exchange_date_range": "2026-08-25 -> 2026-11-20",
-      "source_files": [
-        "data/intraday/RELIANCE_5m.parquet"
-      ],
-      "dataset_sha256_samples": [
-        "0187d6704e1eb5c4",
-        "02f551ecbd81995e",
-        "0941d07bdcf6ee91",
-        "09fe2617c9d724a9",
-        "0c4cf1679e053d78"
-      ],
-      "bad_sessions": []
+      "timeframe": "1h",
+      "provider": "yahoo_finance_1h",
+      "source_file": "data/intraday/RELIANCE_1h.parquet",
+      "source_sha256": "f8931a85587e923a77214e344e0dde35c8db06db57a810c47ad939a48123dcfe",
+      "dataset_fingerprint": "ac66d35ed691d435d420e1a56cc328124a911862baf46418b40065d155024a01",
+      "first_timestamp": "2025-11-21T09:15:00+05:30",
+      "last_timestamp": "2026-11-20T15:15:00+05:30",
+      "session_count": 247,
+      "valid_session_count": 240,
+      "incomplete_session_count": 7,
+      "missing_interval_count": 47,
+      "duplicate_count": 0,
+      "invalid_ohlc_count": 0,
+      "negative_volume_count": 0,
+      "out_of_session_count": 0,
+      "timezone_validation": "PASS_ASIA_KOLKATA",
+      "latest_session_bars": 7,
+      "latest_session_complete": true,
+      "resampling_methodology": "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
+      "final_provenance_status": "PARTIALLY_VERIFIED",
+      "failure_reasons": []
     },
     "TCS": {
       "symbol": "TCS",
-      "exchange": "NSE",
-      "providers": [
-        "ParquetCache:TCS_NSE_5m.parquet"
-      ],
-      "candle_interval": "5m",
-      "resampling_methodology": "NONE_RAW_5M",
-      "sessions_checked": 56,
-      "total_5m_candles": 4093,
-      "missing_candles": 25,
-      "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:45:39.265933+05:30",
-      "exchange_date_range": "2026-08-25 -> 2026-11-20",
-      "source_files": [
-        "data/intraday/TCS_5m.parquet"
-      ],
-      "dataset_sha256_samples": [
-        "0ed5b773615fc78c",
-        "1289d82ca145ae58",
-        "131e4cd0873ff3ae",
-        "162f554962c0ef0d",
-        "17bd92e09b1c3ed5"
-      ],
-      "bad_sessions": []
+      "timeframe": "1h",
+      "provider": "yahoo_finance_1h",
+      "source_file": "data/intraday/TCS_1h.parquet",
+      "source_sha256": "542d5c0b8408957568f9c1354c5500f9a93eba45a15b2e70b9156fa8087dbbf4",
+      "dataset_fingerprint": "d6c444f840a9385d945b801ca3a9579761419099a065faa457d4467946344eca",
+      "first_timestamp": "2025-11-21T09:15:00+05:30",
+      "last_timestamp": "2026-11-20T15:15:00+05:30",
+      "session_count": 247,
+      "valid_session_count": 240,
+      "incomplete_session_count": 7,
+      "missing_interval_count": 54,
+      "duplicate_count": 0,
+      "invalid_ohlc_count": 0,
+      "negative_volume_count": 0,
+      "out_of_session_count": 0,
+      "timezone_validation": "PASS_ASIA_KOLKATA",
+      "latest_session_bars": 7,
+      "latest_session_complete": true,
+      "resampling_methodology": "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
+      "final_provenance_status": "PARTIALLY_VERIFIED",
+      "failure_reasons": []
     },
     "BIRLACABLE": {
       "symbol": "BIRLACABLE",
-      "exchange": "NSE",
-      "providers": [
-        "ParquetCache:BIRLACABLE_NSE_5m.parquet"
-      ],
-      "candle_interval": "5m",
-      "resampling_methodology": "NONE_RAW_5M",
-      "sessions_checked": 56,
-      "total_5m_candles": 4183,
-      "missing_candles": 15,
-      "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:45:39.546318+05:30",
-      "exchange_date_range": "2026-08-25 -> 2026-11-20",
-      "source_files": [
-        "data/intraday/BIRLACABLE_5m.parquet"
-      ],
-      "dataset_sha256_samples": [
-        "04f8d9c91272eb79",
-        "0b3052fe4d02b0e8",
-        "120ebeb7848b1c45",
-        "13b7356dd235245a",
-        "14ece8db8be9d9ea"
-      ],
-      "bad_sessions": []
+      "timeframe": "1h",
+      "provider": "yahoo_finance_1h",
+      "source_file": "data/intraday/BIRLACABLE_1h.parquet",
+      "source_sha256": "42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26",
+      "dataset_fingerprint": "4909d6f64ee23553d47d6f318deb1de838b15ac93acf968cc2d59b04c783c9e3",
+      "first_timestamp": "2025-11-21T09:15:00+05:30",
+      "last_timestamp": "2026-11-20T15:15:00+05:30",
+      "session_count": 247,
+      "valid_session_count": 240,
+      "incomplete_session_count": 7,
+      "missing_interval_count": 41,
+      "duplicate_count": 0,
+      "invalid_ohlc_count": 0,
+      "negative_volume_count": 0,
+      "out_of_session_count": 0,
+      "timezone_validation": "PASS_ASIA_KOLKATA",
+      "latest_session_bars": 7,
+      "latest_session_complete": true,
+      "resampling_methodology": "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
+      "final_provenance_status": "PARTIALLY_VERIFIED",
+      "failure_reasons": []
     },
     "ITC": {
       "symbol": "ITC",
-      "exchange": "NSE",
-      "providers": [
-        "ParquetCache:ITC_NSE_5m.parquet"
-      ],
-      "candle_interval": "5m",
-      "resampling_methodology": "NONE_RAW_5M",
-      "sessions_checked": 56,
-      "total_5m_candles": 4104,
-      "missing_candles": 25,
-      "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:45:39.823672+05:30",
-      "exchange_date_range": "2026-08-25 -> 2026-11-20",
-      "source_files": [
-        "data/intraday/ITC_5m.parquet"
-      ],
-      "dataset_sha256_samples": [
-        "036f89aaf4036e8c",
-        "045fdee7e12d9c90",
-        "04d32e13dc0bc69e",
-        "07e2a16434437d43",
-        "08cfe592e50e2d35"
-      ],
-      "bad_sessions": []
+      "timeframe": "1h",
+      "provider": "yahoo_finance_1h",
+      "source_file": "data/intraday/ITC_1h.parquet",
+      "source_sha256": "2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be",
+      "dataset_fingerprint": "658d138ab83b7f96df53b8a9a69086f658b9472abd760524edef1407048a9617",
+      "first_timestamp": "2025-11-21T09:15:00+05:30",
+      "last_timestamp": "2026-11-20T15:15:00+05:30",
+      "session_count": 247,
+      "valid_session_count": 240,
+      "incomplete_session_count": 7,
+      "missing_interval_count": 46,
+      "duplicate_count": 0,
+      "invalid_ohlc_count": 0,
+      "negative_volume_count": 0,
+      "out_of_session_count": 0,
+      "timezone_validation": "PASS_ASIA_KOLKATA",
+      "latest_session_bars": 7,
+      "latest_session_complete": true,
+      "resampling_methodology": "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
+      "final_provenance_status": "PARTIALLY_VERIFIED",
+      "failure_reasons": []
     },
     "TATAELXSI": {
       "symbol": "TATAELXSI",
-      "exchange": "NSE",
-      "providers": [
-        "ParquetCache:TATAELXSI_NSE_5m.parquet"
-      ],
-      "candle_interval": "5m",
-      "resampling_methodology": "NONE_RAW_5M",
-      "sessions_checked": 56,
-      "total_5m_candles": 4089,
-      "missing_candles": 25,
-      "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:45:40.104773+05:30",
-      "exchange_date_range": "2026-08-25 -> 2026-11-20",
-      "source_files": [
-        "data/intraday/TATAELXSI_5m.parquet"
-      ],
-      "dataset_sha256_samples": [
-        "06e0734df9e51529",
-        "0f7b8a221adb7f0c",
-        "1297dd09c0b49325",
-        "16294357efbae137",
-        "17a35af247c40a6f"
-      ],
-      "bad_sessions": []
+      "timeframe": "1h",
+      "provider": "yahoo_finance_1h",
+      "source_file": "data/intraday/TATAELXSI_1h.parquet",
+      "source_sha256": "e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875",
+      "dataset_fingerprint": "98669333ff127d34e0cfdba8fc0c1c879a1ac8a6e0103c4e0a098ccffd1bbc4e",
+      "first_timestamp": "2025-11-21T09:15:00+05:30",
+      "last_timestamp": "2026-11-20T15:15:00+05:30",
+      "session_count": 247,
+      "valid_session_count": 240,
+      "incomplete_session_count": 7,
+      "missing_interval_count": 59,
+      "duplicate_count": 0,
+      "invalid_ohlc_count": 0,
+      "negative_volume_count": 0,
+      "out_of_session_count": 0,
+      "timezone_validation": "PASS_ASIA_KOLKATA",
+      "latest_session_bars": 7,
+      "latest_session_complete": true,
+      "resampling_methodology": "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
+      "final_provenance_status": "PARTIALLY_VERIFIED",
+      "failure_reasons": []
     }
   }
 }
