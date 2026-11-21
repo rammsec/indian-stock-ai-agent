@@ -642,7 +642,7 @@ class SealedHoldoutGuard:
                     "holdout_consumed": orig_holdout_consumed,
                     "holdout_state": orig_holdout_state,
                     "exposed_dates": orig_exposed_dates,
-                    "newly_exposed_dates": len(orig_exposed_dates),
+                    "newly_exposed_dates": 0,
                     "completed_at": orig_completed_at,
                     "total_sealed_dates": len(reg.get("sealed_dates", [])),
                     "current_unseen_dates": len(iso_dates),

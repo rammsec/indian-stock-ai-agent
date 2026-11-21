@@ -194,3 +194,68 @@ def test_11_new_evaluation_id_with_duplicate_dates_retains_validation_behaviour(
     assert res["status"] == "DUPLICATE_CONSUMED_DATES"
     assert "DUPLICATE_DATES" in res["lifecycle_violations"]
     assert guard.load_registry()["records"]["2026-09-12"]["state"] == "SEALED"
+
+
+def test_12_successful_replay_reports_zero_newly_exposed_dates(tmp_path: Path) -> None:
+    """12. Phase 11.3.6.1: Successful replay returns newly_exposed_dates=0 while preserving exposed_dates and registry."""
+    guard = _make_guard(tmp_path)
+    dates = [date(2026, 9, 13), date(2026, 9, 14)]
+    guard.seal_dates("CYCLE-004", dates, dataset_fingerprint="fp-36-12")
+    guard.mark_evaluation_in_progress("CYCLE-004", dates, dataset_fingerprint="fp-36-12")
+
+    first = guard.complete_evaluation("CYCLE-004", "eval-36-12", "FORMAL_QUALIFICATION", dates, ["S1"], "fp-36-12")
+    assert first["ok"] is True
+    assert first["newly_exposed_dates"] == 2
+
+    before_reg = json.loads(guard.registry_path.read_text(encoding="utf-8"))
+
+    replay = guard.complete_evaluation("CYCLE-004", "eval-36-12", "FORMAL_QUALIFICATION", dates, ["S1"], "fp-36-12")
+    assert replay["ok"] is True
+    assert replay["completion_success"] is True
+    assert replay["evaluation_status"] == "EVALUATION_COMPLETED"
+    assert replay["holdout_consumed"] is True
+    assert replay["holdout_state"] == "EXPOSED"
+    assert replay["exposed_dates"] == ["2026-09-13", "2026-09-14"]
+    assert replay["newly_exposed_dates"] == 0
+    assert replay["completed_at"] == first["completed_at"]
+    assert replay["idempotent_replay"] is True
+
+    after_reg = json.loads(guard.registry_path.read_text(encoding="utf-8"))
+    assert after_reg == before_reg
+    assert len(after_reg["evaluation_history"]) == 1
+    assert len(after_reg["sealed_exposures"]) == 1
+    for d in dates:
+        assert after_reg["records"][d.isoformat()]["previous_exposure_count"] == 1
+
+
+def test_13_failed_replay_reports_zero_newly_exposed_dates(tmp_path: Path) -> None:
+    """13. Phase 11.3.6.1: Failed replay after data access returns newly_exposed_dates=0 while preserving original outcome."""
+    guard = _make_guard(tmp_path)
+    dates = [date(2026, 9, 15)]
+    guard.seal_dates("CYCLE-004", dates, dataset_fingerprint="fp-good-13")
+    guard.mark_evaluation_in_progress("CYCLE-004", dates, dataset_fingerprint="fp-good-13")
+
+    first = guard.complete_evaluation("CYCLE-004", "eval-36-13", "FORMAL_QUALIFICATION", dates, ["S1"], "fp-bad-13")
+    assert first["ok"] is False
+    assert first["holdout_consumed"] is True
+    assert first["newly_exposed_dates"] == 1
+    assert first["exposed_dates"] == ["2026-09-15"]
+
+    before_reg = json.loads(guard.registry_path.read_text(encoding="utf-8"))
+
+    replay = guard.complete_evaluation("CYCLE-004", "eval-36-13", "FORMAL_QUALIFICATION", dates, ["S1"], "fp-bad-13")
+    assert replay["ok"] is False
+    assert replay["completion_success"] is False
+    assert replay["evaluation_status"] == "FAILED_EVALUATION"
+    assert replay["holdout_consumed"] is True
+    assert replay["holdout_state"] == "EXPOSED"
+    assert replay["exposed_dates"] == ["2026-09-15"]
+    assert replay["newly_exposed_dates"] == 0
+    assert replay["completed_at"] == first["completed_at"]
+    assert replay["idempotent_replay"] is True
+
+    after_reg = json.loads(guard.registry_path.read_text(encoding="utf-8"))
+    assert after_reg == before_reg
+    assert len(after_reg["evaluation_history"]) == 1
+    assert after_reg["records"]["2026-09-15"]["previous_exposure_count"] == 1
+
