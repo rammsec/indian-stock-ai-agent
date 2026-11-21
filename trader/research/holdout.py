@@ -513,33 +513,6 @@ class SealedHoldoutGuard:
         now_ist = datetime.now(tz=IST_TZ).isoformat()
         strat_list = list(strategy_ids or [])
 
-        # Check for empty dates or duplicates in the request
-        has_duplicates = len(consumed_dates) != len(set(consumed_dates))
-        is_empty = len(consumed_dates) == 0
-
-        if is_empty or has_duplicates:
-            reason = "No consumed dates provided in completion request" if is_empty else "Duplicate consumed dates in completion request"
-            err_detail = {"date": "EMPTY" if is_empty else "DUPLICATE", "reason": reason}
-            return {
-                "ok": False,
-                "completion_success": False,
-                "evaluation_id": evaluation_id,
-                "cycle_id": cycle_id,
-                "evaluation_type": evaluation_type,
-                "holdout_consumed": False,
-                "holdout_state": "SEALED",
-                "completed_at": now_ist,
-                "invalid_dates": [err_detail],
-                "failure_reasons": [reason],
-                "ownership_violations": [],
-                "fingerprint_mismatches": [],
-                "lifecycle_violations": ["DUPLICATE_DATES" if has_duplicates else "EMPTY_DATES"],
-                "reused_dates": [],
-                "ownership_valid": not has_duplicates,
-                "independent_holdout_valid": False,
-                "status": "DUPLICATE_CONSUMED_DATES" if has_duplicates else "INSUFFICIENT_UNSEEN_DATA",
-            }
-
         with self._locked_registry():
             reg = self.load_registry()
             records = reg["records"]
@@ -547,13 +520,45 @@ class SealedHoldoutGuard:
             normalized_dates = sorted(iso_dates)
             normalized_strats = sorted(strat_list)
 
-            # Idempotency check: if evaluation_id already exists in evaluation_history,
-            # either replay the original authoritative result (exact identity match) or
-            # reject with EVALUATION_ID_CONFLICT without mutating the registry.
-            existing_hist = next(
-                (h for h in reg.get("evaluation_history", []) if h.get("evaluation_id") == evaluation_id),
-                None,
-            )
+            # Idempotency check (must run BEFORE empty/duplicate date validation so malformed retries
+            # cannot bypass evaluation_id identity checks):
+            matching_hist = [
+                h for h in reg.get("evaluation_history", []) if h.get("evaluation_id") == evaluation_id
+            ]
+            if len(matching_hist) > 1:
+                dup_msg = (
+                    f"DUPLICATE_EVALUATION_ID_HISTORY: {len(matching_hist)} evaluation_history records "
+                    f"exist for evaluation_id '{evaluation_id}'"
+                )
+                return {
+                    "ok": False,
+                    "completion_success": False,
+                    "evaluation_id": evaluation_id,
+                    "cycle_id": cycle_id,
+                    "evaluation_type": evaluation_type,
+                    "holdout_consumed": any(
+                        bool(h.get("holdout_consumed", h.get("ok") or bool(h.get("exposed_dates"))))
+                        for h in matching_hist
+                    ),
+                    "holdout_state": "UNKNOWN_CORRUPTED_HISTORY",
+                    "exposed_dates": [],
+                    "newly_exposed_dates": 0,
+                    "completed_at": now_ist,
+                    "invalid_dates": [{"date": "DUPLICATE_HISTORY", "reason": dup_msg}],
+                    "failure_reasons": [dup_msg],
+                    "ownership_violations": [],
+                    "fingerprint_mismatches": [],
+                    "lifecycle_violations": ["DUPLICATE_EVALUATION_ID_HISTORY"],
+                    "reused_dates": [],
+                    "ownership_valid": False,
+                    "independent_holdout_valid": False,
+                    "leakage_detected": True,
+                    "idempotent_replay": False,
+                    "request_applied": False,
+                    "status": "DUPLICATE_EVALUATION_ID_HISTORY",
+                }
+
+            existing_hist = matching_hist[0] if matching_hist else None
             if existing_hist is not None:
                 conflict_fields: list[str] = []
                 if existing_hist.get("cycle_id") != cycle_id:
@@ -567,42 +572,7 @@ class SealedHoldoutGuard:
                 if sorted(existing_hist.get("strategy_ids", [])) != normalized_strats:
                     conflict_fields.append("strategy_ids")
 
-                if conflict_fields:
-                    conflict_msg = (
-                        f"EVALUATION_ID_CONFLICT: evaluation_id '{evaluation_id}' already exists with different "
-                        f"parameters ({', '.join(conflict_fields)})"
-                    )
-                    return {
-                        "ok": False,
-                        "completion_success": False,
-                        "evaluation_id": evaluation_id,
-                        "cycle_id": cycle_id,
-                        "evaluation_type": evaluation_type,
-                        "holdout_consumed": False,
-                        "holdout_state": existing_hist.get("holdout_state")
-                        or existing_hist.get("final_lifecycle_state", "SEALED"),
-                        "exposed_dates": [],
-                        "newly_exposed_dates": 0,
-                        "completed_at": now_ist,
-                        "invalid_dates": [{"date": "CONFLICT", "reason": conflict_msg}],
-                        "failure_reasons": [conflict_msg],
-                        "ownership_violations": [],
-                        "fingerprint_mismatches": [],
-                        "lifecycle_violations": ["EVALUATION_ID_CONFLICT"],
-                        "reused_dates": [],
-                        "ownership_valid": False,
-                        "independent_holdout_valid": False,
-                        "leakage_detected": True,
-                        "idempotent_replay": False,
-                        "conflict_fields": conflict_fields,
-                        "status": "EVALUATION_ID_CONFLICT",
-                    }
-
                 orig_ok = bool(existing_hist.get("ok", existing_hist.get("completion_success", False)))
-                orig_completion_success = bool(existing_hist.get("completion_success", orig_ok))
-                orig_eval_status = existing_hist.get(
-                    "evaluation_status", "EVALUATION_COMPLETED" if orig_ok else "FAILED_EVALUATION"
-                )
                 orig_holdout_state = (
                     existing_hist.get("holdout_state")
                     or existing_hist.get("final_lifecycle_state")
@@ -616,6 +586,42 @@ class SealedHoldoutGuard:
                 )
                 orig_holdout_consumed = bool(
                     existing_hist.get("holdout_consumed", orig_ok or bool(orig_exposed_dates))
+                )
+
+                if conflict_fields:
+                    conflict_msg = (
+                        f"EVALUATION_ID_CONFLICT: evaluation_id '{evaluation_id}' already exists with different "
+                        f"parameters ({', '.join(conflict_fields)})"
+                    )
+                    return {
+                        "ok": False,
+                        "completion_success": False,
+                        "evaluation_id": evaluation_id,
+                        "cycle_id": cycle_id,
+                        "evaluation_type": evaluation_type,
+                        "holdout_consumed": orig_holdout_consumed,
+                        "holdout_state": orig_holdout_state,
+                        "exposed_dates": orig_exposed_dates,
+                        "newly_exposed_dates": 0,
+                        "completed_at": now_ist,
+                        "invalid_dates": [{"date": "CONFLICT", "reason": conflict_msg}],
+                        "failure_reasons": [conflict_msg],
+                        "ownership_violations": [],
+                        "fingerprint_mismatches": [],
+                        "lifecycle_violations": ["EVALUATION_ID_CONFLICT"],
+                        "reused_dates": [],
+                        "ownership_valid": False,
+                        "independent_holdout_valid": False,
+                        "leakage_detected": True,
+                        "idempotent_replay": False,
+                        "request_applied": False,
+                        "conflict_fields": conflict_fields,
+                        "status": "EVALUATION_ID_CONFLICT",
+                    }
+
+                orig_completion_success = bool(existing_hist.get("completion_success", orig_ok))
+                orig_eval_status = existing_hist.get(
+                    "evaluation_status", "EVALUATION_COMPLETED" if orig_ok else "FAILED_EVALUATION"
                 )
                 orig_failure_reasons = list(existing_hist.get("failure_reasons", []))
                 orig_completed_at = existing_hist.get("completed_at", now_ist)
@@ -652,6 +658,37 @@ class SealedHoldoutGuard:
                     "independent_holdout_valid": orig_ok,
                     "idempotent_replay": True,
                     "status": orig_status,
+                }
+
+            # For previously unseen evaluation_id, validate non-empty and non-duplicate consumed dates
+            has_duplicates = len(consumed_dates) != len(set(consumed_dates))
+            is_empty = len(consumed_dates) == 0
+
+            if is_empty or has_duplicates:
+                reason = (
+                    "No consumed dates provided in completion request"
+                    if is_empty
+                    else "Duplicate consumed dates in completion request"
+                )
+                err_detail = {"date": "EMPTY" if is_empty else "DUPLICATE", "reason": reason}
+                return {
+                    "ok": False,
+                    "completion_success": False,
+                    "evaluation_id": evaluation_id,
+                    "cycle_id": cycle_id,
+                    "evaluation_type": evaluation_type,
+                    "holdout_consumed": False,
+                    "holdout_state": "SEALED",
+                    "completed_at": now_ist,
+                    "invalid_dates": [err_detail],
+                    "failure_reasons": [reason],
+                    "ownership_violations": [],
+                    "fingerprint_mismatches": [],
+                    "lifecycle_violations": ["DUPLICATE_DATES" if has_duplicates else "EMPTY_DATES"],
+                    "reused_dates": [],
+                    "ownership_valid": not has_duplicates,
+                    "independent_holdout_valid": False,
+                    "status": "DUPLICATE_CONSUMED_DATES" if has_duplicates else "INSUFFICIENT_UNSEEN_DATA",
                 }
 
             invalid_dates: list[dict[str, str]] = []
