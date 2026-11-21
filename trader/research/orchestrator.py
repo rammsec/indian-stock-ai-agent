@@ -44,6 +44,7 @@ CYCLE_002_REPORT_PATH = Path("data/lab/cycle_002_report.json")
 CYCLE_003_REPORT_PATH = Path("data/lab/cycle_003_report.json")
 CYCLE_003_REASSESSMENT_PATH = Path("data/lab/cycle_003_integrity_reassessment.json")
 CYCLE_003_PHASE11_3_REASSESSMENT_PATH = Path("data/lab/cycle_003_phase11_3_reassessment.json")
+CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH = Path("data/lab/cycle_003_phase11_3_1_reassessment.json")
 CYCLE_004_REPORT_PATH = Path("data/lab/cycle_004_report.json")
 PROVENANCE_REPORT_PATH = Path("data/lab/provenance_report.json")
 ARCHIVE_HEALTH_PATH = Path("data/lab/daily_archive_health.json")
@@ -777,13 +778,14 @@ class ChiefResearchOrchestrator:
         rejected_cnt = sum(1 for q in combined_board if q["final_status"] == "REJECTED")
         best_strat = max(combined_board, key=lambda x: x["net_return_pct"]) if combined_board else None
 
+        prov_1h_strict, _ = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
         cycle_003_out = {
             "cycle_id": "CYCLE-003",
             "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
             "reconciled_eligible_sessions": len(elig_1h),
             "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
             "excluded_dates": excl_1h,
-            "provenance_verified": prov_1h_ok and track_a["provenance_verified"],
+            "provenance_verified": bool(prov_1h_strict and track_a["provenance_verified"]),
             "provenance_1h_symbols": prov_1h_syms,
             "sealed_holdout_status": holdout_1h,
             "dynamic_test_metrics": live_test_metrics,
@@ -859,22 +861,69 @@ class ChiefResearchOrchestrator:
         self,
         test_report: dict[str, Any] | None = None,
         run_live_pytest: bool = True,
+        allow_exploratory_on_blocked: bool = True,
+        registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH,
     ) -> dict[str, Any]:
-        """Execute CYCLE-004: Ultra-Selective 60m, Capital Scaling (₹2L/₹5L) & Multi-Day CNC Delivery Swing."""
+        """Execute CYCLE-004 with strict 5-step lifecycle: Identify -> Seal -> Validate -> Evaluate -> Expose."""
         from ..config import LabRiskConfig
         from ..data.loader_1h import get_available_1h_dates
         from .cycle004 import run_cnc_swing_backtest
 
         live_test_metrics = test_report if test_report is not None else collect_dynamic_test_metrics(run_pytest=run_live_pytest)
+
+        # Step 1: Identify eligible dates & splits (no duplicates, no overlaps)
         elig_1h, excl_1h = get_available_1h_dates(LAB_DEFAULT_UNIVERSE, min_bars_per_stock=6)
         start_1h, end_1h = elig_1h[0], elig_1h[-1]
         n_1h = len(elig_1h)
         t_end_1h = max(1, int(n_1h * 0.60))
         v_end_1h = max(t_end_1h + 1, int(n_1h * 0.80))
+        train_1h_dates = elig_1h[:t_end_1h]
+        val_1h_dates = elig_1h[t_end_1h:v_end_1h]
         unseen_1h_dates = elig_1h[v_end_1h:] or [elig_1h[-1]]
 
-        holdout_guard = SealedHoldoutGuard()
-        holdout_status = holdout_guard.record_exposure("CYCLE-004", unseen_1h_dates, notes="CYCLE-004 240-session evaluation")
+        # Step 2: Validate 1h provenance & reserve unseen dates as SEALED owned by CYCLE-004 (never expose yet)
+        prov_ok_004, prov_rep_004 = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+        dataset_fp = str(prov_rep_004.get("dataset_fingerprint", ""))
+
+        holdout_guard = SealedHoldoutGuard(registry_path=registry_path)
+        seal_res = holdout_guard.seal_dates("CYCLE-004", unseen_1h_dates, dataset_fingerprint=dataset_fp)
+
+        # Step 3: Validate integrity centrally via ResearchIntegrityGuard
+        integrity_guard = ResearchIntegrityGuard(registry_path=registry_path)
+        guard_res = integrity_guard.validate(
+            cycle_id="CYCLE-004",
+            training_dates=train_1h_dates,
+            validation_dates=val_1h_dates,
+            unseen_dates=unseen_1h_dates,
+            dataset_fingerprint=dataset_fp,
+            provenance_result=prov_rep_004,
+        )
+
+        qualification_allowed = bool(guard_res["integrity_passed"] and guard_res["qualification_allowed"])
+
+        # Step 4: Execute formal qualification ONLY if integrity_passed & qualification_allowed
+        if not qualification_allowed and not allow_exploratory_on_blocked:
+            blocked_out = {
+                "cycle_id": "CYCLE-004",
+                "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+                "reconciled_eligible_sessions": len(elig_1h),
+                "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
+                "excluded_dates": excl_1h,
+                "provenance_verified": bool(prov_rep_004.get("verified", False)),
+                "provenance_status": prov_rep_004.get("final_provenance_status", "FAILED"),
+                "qualification_allowed": False,
+                "qualification_blocked": True,
+                "seal_reservation": seal_res,
+                "integrity_guard_result": guard_res,
+                "dynamic_test_metrics": live_test_metrics,
+                "qualification_board": [],
+            }
+            CYCLE_004_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+            CYCLE_004_REPORT_PATH.write_text(json.dumps(blocked_out, indent=2), encoding="utf-8")
+            return blocked_out
+
+        if qualification_allowed:
+            holdout_guard.mark_evaluation_in_progress("CYCLE-004", unseen_1h_dates)
 
         db = HistoricalLabDatabase()
         leaderboard: list[dict[str, Any]] = []
@@ -883,186 +932,192 @@ class ChiefResearchOrchestrator:
         slip_matrix: dict[str, list[dict[str, Any]]] = {}
         slip_all: list[dict[str, Any]] = []
 
-        # Experiment configs: (display_id, base_sid, capital_inr, mode)
-        intraday_configs = [
-            ("STRAT-018-60M-ORB-SELECTIVE", "STRAT-018-60M-ORB-SELECTIVE", 50_000.0),
-            ("STRAT-017-60M-ORB@200K", "STRAT-017-60M-ORB-FILTERED", 200_000.0),
-            ("STRAT-017-60M-ORB@500K", "STRAT-017-60M-ORB-FILTERED", 500_000.0),
-            ("BENCHMARK-CASH-NO-TRADE", "BENCHMARK-CASH-NO-TRADE", 50_000.0),
-        ]
+        try:
+            intraday_configs = [
+                ("STRAT-018-60M-ORB-SELECTIVE", "STRAT-018-60M-ORB-SELECTIVE", 50_000.0),
+                ("STRAT-017-60M-ORB@200K", "STRAT-017-60M-ORB-FILTERED", 200_000.0),
+                ("STRAT-017-60M-ORB@500K", "STRAT-017-60M-ORB-FILTERED", 500_000.0),
+                ("BENCHMARK-CASH-NO-TRADE", "BENCHMARK-CASH-NO-TRADE", 50_000.0),
+            ]
 
-        for disp_id, base_sid, cap in intraday_configs:
-            eng = HistoricalLabReplayEngine(
-                risk_config=LabRiskConfig(initial_capital_inr=cap, max_open_positions=2, risk_per_trade_pct=0.015)
-            )
-            res = eng.run_date_range(
-                start_date=start_1h,
-                end_date=end_1h,
-                strategy_id=base_sid,
-                symbols=LAB_DEFAULT_UNIVERSE,
-                data_mode=DataSourceMode.HISTORICAL_REAL,
-                execution_mode="DETERMINISTIC",
-                db=db,
-                eligible_dates=elig_1h,
-                timeframe_minutes=60,  # type: ignore[arg-type]
-            )
-            res["strategy_id"] = disp_id
-            if cap > 50_000.0:
-                res["strategy_name"] = f"{res['strategy_name']} (₹{int(cap/1000)}K Capital)"
-            orders_by_strat[disp_id] = res.pop("orders", [])
-            res.pop("trades", [])
-
-            if res["total_trades"] > 0:
-                slip_rows = eng.run_slippage_sensitivity(
+            for disp_id, base_sid, cap in intraday_configs:
+                eng = HistoricalLabReplayEngine(
+                    risk_config=LabRiskConfig(initial_capital_inr=cap, max_open_positions=2, risk_per_trade_pct=0.015)
+                )
+                res = eng.run_date_range(
                     start_date=start_1h,
                     end_date=end_1h,
                     strategy_id=base_sid,
-                    slippage_bps_list=(5.0, 10.0, 20.0, 30.0),
                     symbols=LAB_DEFAULT_UNIVERSE,
                     data_mode=DataSourceMode.HISTORICAL_REAL,
+                    execution_mode="DETERMINISTIC",
+                    db=db,
                     eligible_dates=elig_1h,
                     timeframe_minutes=60,  # type: ignore[arg-type]
                 )
-            else:
-                slip_rows = [
-                    {
-                        "slippage_bps": float(b), "gross_return_pct": 0.0, "net_return_pct": 0.0,
-                        "net_pnl_inr": 0.0, "total_fees_inr": 0.0, "total_brokerage_inr": 0.0,
-                        "total_statutory_inr": 0.0, "total_slippage_inr": 0.0, "total_trades": 0, "win_rate_pct": 0.0,
-                    }
-                    for b in (5.0, 10.0, 20.0, 30.0)
-                ]
-            slip_matrix[disp_id] = slip_rows
-            slip_all.extend({"strategy_id": disp_id, **sr} for sr in slip_rows)
-            cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
+                res["strategy_id"] = disp_id
+                if cap > 50_000.0:
+                    res["strategy_name"] = f"{res['strategy_name']} (₹{int(cap/1000)}K Capital)"
+                orders_by_strat[disp_id] = res.pop("orders", [])
+                res.pop("trades", [])
 
-            dr = res["daily_runs"]
-            unseen_slice = dr[v_end_1h:] or [dr[-1]]
-            unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / cap) * 100.0, 2)
-            wf = {
-                "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / cap) * 100.0, 2)},
-                "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / cap) * 100.0, 2)},
-                "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
-            }
-            stat_v, _ = self.stat_agent.validate(res, wf)
-            rt_ok, rt_reason = self.red_team.challenge(disp_id, res, wf)
-            prov_ok_004, prov_rep_004 = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
-            guard_res_004 = ResearchIntegrityGuard().validate(
-                cycle_id="CYCLE-004",
-                training_dates=elig_1h[:t_end_1h],
-                validation_dates=elig_1h[t_end_1h:v_end_1h],
-                unseen_dates=unseen_1h_dates,
-                dataset_fingerprint=prov_rep_004.get("dataset_fingerprint", ""),
-                provenance_result=prov_rep_004,
-            )
-            qual = evaluate_seven_gates(
-                strategy_id=disp_id, strategy_name=res["strategy_name"], multi_day_metrics=res,
-                unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
-                data_provenance_verified=prov_ok_004, stat_validation_verdict=stat_v,
-                red_team_approved=rt_ok, red_team_reason=rt_reason,
-                min_sessions_required=60, min_trades_required=30,
-                independent_holdout_valid=holdout_status.get("independent_holdout_valid", False),
-                provenance_status=prov_rep_004.get("final_provenance_status", "FAILED"),
-                holdout_status=holdout_status.get("status", "UNKNOWN"),
-                integrity_guard_result=guard_res_004,
-            )
-            leaderboard.append(res)
-            qualification_board.append({
-                "strategy_id": disp_id, "strategy_name": res["strategy_name"], "timeframe_minutes": 60,
-                "initial_capital_inr": cap, "final_status": qual.final_status,
-                "passed_gates": f"{qual.passed_gates_count}/{qual.total_gates}",
-                "sessions": res["sessions_evaluated"], "trades": res["total_trades"],
-                "gross_return_pct": res["gross_return_pct"], "net_return_pct": res["total_return_pct"],
-                "conservative_10bps_net_pct": cons_10["net_return_pct"],
-                "alpha_vs_bh_pct": res["alpha_vs_buy_and_hold_pct"],
-                "max_drawdown_pct": res["max_drawdown_pct"], "sharpe_ratio": res["sharpe_ratio"],
-                "sortino_ratio": res["sortino_ratio"], "profit_factor": res["profit_factor"],
-                "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
-                "total_brokerage_inr": res.get("total_brokerage_inr", 0.0),
-                "total_statutory_inr": res.get("total_statutory_inr", 0.0),
-                "total_slippage_inr": res.get("total_slippage_inr", 0.0),
-                "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
-                "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
-                "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
-            })
+                if res["total_trades"] > 0:
+                    slip_rows = eng.run_slippage_sensitivity(
+                        start_date=start_1h,
+                        end_date=end_1h,
+                        strategy_id=base_sid,
+                        slippage_bps_list=(5.0, 10.0, 20.0, 30.0),
+                        symbols=LAB_DEFAULT_UNIVERSE,
+                        data_mode=DataSourceMode.HISTORICAL_REAL,
+                        eligible_dates=elig_1h,
+                        timeframe_minutes=60,  # type: ignore[arg-type]
+                    )
+                else:
+                    slip_rows = [
+                        {
+                            "slippage_bps": float(b), "gross_return_pct": 0.0, "net_return_pct": 0.0,
+                            "net_pnl_inr": 0.0, "total_fees_inr": 0.0, "total_brokerage_inr": 0.0,
+                            "total_statutory_inr": 0.0, "total_slippage_inr": 0.0, "total_trades": 0, "win_rate_pct": 0.0,
+                        }
+                        for b in (5.0, 10.0, 20.0, 30.0)
+                    ]
+                slip_matrix[disp_id] = slip_rows
+                slip_all.extend({"strategy_id": disp_id, **sr} for sr in slip_rows)
+                cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
 
-        # Multi-Day CNC Delivery Swing Experiments (₹0 brokerage on ₹50,000)
-        cnc_configs = [
-            ("STRAT-019-60M-CNC-ORB-SWING", "60m CNC Delivery ORB Swing (₹50K)", "ORB_SWING"),
-            ("STRAT-020-60M-CNC-TREND-SWING", "60m CNC Delivery Trend Swing (₹50K)", "TREND_SWING"),
-        ]
-        for sid, sname, mode in cnc_configs:
-            res = run_cnc_swing_backtest(elig_1h, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=5.0)
-            orders_by_strat[sid] = res.pop("orders", [])
-            slip_rows = []
-            for bps in (5.0, 10.0, 20.0, 30.0):
-                sr_res = run_cnc_swing_backtest(elig_1h, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=bps)
-                slip_rows.append({
-                    "slippage_bps": bps, "gross_return_pct": sr_res["gross_return_pct"],
-                    "net_return_pct": sr_res["total_return_pct"], "net_pnl_inr": sr_res["net_pnl_inr"],
-                    "total_fees_inr": sr_res["total_fees_inr"], "total_brokerage_inr": sr_res["total_brokerage_inr"],
-                    "total_statutory_inr": sr_res["total_statutory_inr"], "total_slippage_inr": sr_res["total_slippage_inr"],
-                    "total_trades": sr_res["total_trades"], "win_rate_pct": sr_res["win_rate_pct"],
+                dr = res["daily_runs"]
+                unseen_slice = dr[v_end_1h:] or [dr[-1]]
+                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / cap) * 100.0, 2)
+                wf = {
+                    "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / cap) * 100.0, 2)},
+                    "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / cap) * 100.0, 2)},
+                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                }
+                stat_v, _ = self.stat_agent.validate(res, wf)
+                rt_ok, rt_reason = self.red_team.challenge(disp_id, res, wf)
+                qual = evaluate_seven_gates(
+                    strategy_id=disp_id, strategy_name=res["strategy_name"], multi_day_metrics=res,
+                    unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
+                    data_provenance_verified=prov_ok_004, stat_validation_verdict=stat_v,
+                    red_team_approved=rt_ok, red_team_reason=rt_reason,
+                    min_sessions_required=60, min_trades_required=30,
+                    independent_holdout_valid=guard_res["integrity_passed"],
+                    provenance_status=prov_rep_004.get("final_provenance_status", "FAILED"),
+                    holdout_status=guard_res.get("holdout_status", "FAILED"),
+                    integrity_guard_result=guard_res,
+                )
+                leaderboard.append(res)
+                qualification_board.append({
+                    "strategy_id": disp_id, "strategy_name": res["strategy_name"], "timeframe_minutes": 60,
+                    "initial_capital_inr": cap, "final_status": qual.final_status,
+                    "passed_gates": f"{qual.passed_gates_count}/{qual.total_gates}",
+                    "sessions": res["sessions_evaluated"], "trades": res["total_trades"],
+                    "gross_return_pct": res["gross_return_pct"], "net_return_pct": res["total_return_pct"],
+                    "conservative_10bps_net_pct": cons_10["net_return_pct"],
+                    "alpha_vs_bh_pct": res["alpha_vs_buy_and_hold_pct"],
+                    "max_drawdown_pct": res["max_drawdown_pct"], "sharpe_ratio": res["sharpe_ratio"],
+                    "sortino_ratio": res["sortino_ratio"], "profit_factor": res["profit_factor"],
+                    "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
+                    "total_brokerage_inr": res.get("total_brokerage_inr", 0.0),
+                    "total_statutory_inr": res.get("total_statutory_inr", 0.0),
+                    "total_slippage_inr": res.get("total_slippage_inr", 0.0),
+                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
+                    "exploratory_only": not qualification_allowed,
+                    "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
                 })
-            slip_matrix[sid] = slip_rows
-            slip_all.extend({"strategy_id": sid, **sr} for sr in slip_rows)
-            cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
 
-            dr = res["daily_runs"]
-            unseen_slice = dr[v_end_1h:] or [dr[-1]]
-            unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / 50_000.0) * 100.0, 2)
-            wf = {
-                "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / 50_000.0) * 100.0, 2)},
-                "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / 50_000.0) * 100.0, 2)},
-                "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+            cnc_configs = [
+                ("STRAT-019-60M-CNC-ORB-SWING", "60m CNC Delivery ORB Swing (₹50K)", "ORB_SWING"),
+                ("STRAT-020-60M-CNC-TREND-SWING", "60m CNC Delivery Trend Swing (₹50K)", "TREND_SWING"),
+            ]
+            for sid, sname, mode in cnc_configs:
+                res = run_cnc_swing_backtest(elig_1h, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=5.0)
+                orders_by_strat[sid] = res.pop("orders", [])
+                slip_rows = []
+                for bps in (5.0, 10.0, 20.0, 30.0):
+                    sr_res = run_cnc_swing_backtest(elig_1h, sid, sname, mode=mode, initial_capital_inr=50_000.0, slippage_bps=bps)
+                    slip_rows.append({
+                        "slippage_bps": bps, "gross_return_pct": sr_res["gross_return_pct"],
+                        "net_return_pct": sr_res["total_return_pct"], "net_pnl_inr": sr_res["net_pnl_inr"],
+                        "total_fees_inr": sr_res["total_fees_inr"], "total_brokerage_inr": sr_res["total_brokerage_inr"],
+                        "total_statutory_inr": sr_res["total_statutory_inr"], "total_slippage_inr": sr_res["total_slippage_inr"],
+                        "total_trades": sr_res["total_trades"], "win_rate_pct": sr_res["win_rate_pct"],
+                    })
+                slip_matrix[sid] = slip_rows
+                slip_all.extend({"strategy_id": sid, **sr} for sr in slip_rows)
+                cons_10 = next((sr for sr in slip_rows if float(sr["slippage_bps"]) == 10.0), slip_rows[0])
+
+                dr = res["daily_runs"]
+                unseen_slice = dr[v_end_1h:] or [dr[-1]]
+                unseen_ret_pct = round((sum(d["net_pnl"] for d in unseen_slice) / 50_000.0) * 100.0, 2)
+                wf = {
+                    "train": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[:t_end_1h]) / 50_000.0) * 100.0, 2)},
+                    "validation": {"total_return_pct": round((sum(d["net_pnl"] for d in dr[t_end_1h:v_end_1h]) / 50_000.0) * 100.0, 2)},
+                    "unseen_test": {"total_return_pct": unseen_ret_pct, "total_trades": sum(d["trades"] for d in unseen_slice)},
+                }
+                stat_v, _ = self.stat_agent.validate(res, wf)
+                rt_ok, rt_reason = self.red_team.challenge(sid, res, wf)
+                qual = evaluate_seven_gates(
+                    strategy_id=sid, strategy_name=sname, multi_day_metrics=res,
+                    unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
+                    data_provenance_verified=prov_ok_004, stat_validation_verdict=stat_v,
+                    red_team_approved=rt_ok, red_team_reason=rt_reason,
+                    min_sessions_required=60, min_trades_required=30,
+                    independent_holdout_valid=guard_res["integrity_passed"],
+                    provenance_status=prov_rep_004.get("final_provenance_status", "FAILED"),
+                    holdout_status=guard_res.get("holdout_status", "FAILED"),
+                    integrity_guard_result=guard_res,
+                )
+                leaderboard.append(res)
+                qualification_board.append({
+                    "strategy_id": sid, "strategy_name": sname, "timeframe_minutes": 60,
+                    "initial_capital_inr": 50_000.0, "final_status": qual.final_status,
+                    "passed_gates": f"{qual.passed_gates_count}/{qual.total_gates}",
+                    "sessions": res["sessions_evaluated"], "trades": res["total_trades"],
+                    "gross_return_pct": res["gross_return_pct"], "net_return_pct": res["total_return_pct"],
+                    "conservative_10bps_net_pct": cons_10["net_return_pct"],
+                    "alpha_vs_bh_pct": res["alpha_vs_buy_and_hold_pct"],
+                    "max_drawdown_pct": res["max_drawdown_pct"], "sharpe_ratio": res["sharpe_ratio"],
+                    "sortino_ratio": res["sortino_ratio"], "profit_factor": res["profit_factor"],
+                    "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
+                    "total_brokerage_inr": res["total_brokerage_inr"], "total_statutory_inr": res["total_statutory_inr"],
+                    "total_slippage_inr": res["total_slippage_inr"],
+                    "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
+                    "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
+                    "exploratory_only": not qualification_allowed,
+                    "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
+                })
+        except Exception as exc:
+            if qualification_allowed:
+                holdout_guard.mark_evaluation_failed("CYCLE-004", unseen_1h_dates, reason=str(exc))
+            raise
+
+        # Step 5: Transition SEALED -> EXPOSED ONLY after evaluation succeeds AND qualification was allowed
+        if qualification_allowed:
+            exposure_status = holdout_guard.record_exposure(
+                "CYCLE-004",
+                unseen_1h_dates,
+                notes="CYCLE-004 completed formal evaluation",
+                dataset_fingerprint=dataset_fp,
+                strategy_ids=[q["strategy_id"] for q in qualification_board],
+                evaluation_ref=str(CYCLE_004_REPORT_PATH),
+            )
+        else:
+            exposure_status = {
+                "status": guard_res["holdout_status"],
+                "independent_holdout_valid": False,
+                "exposed": False,
+                "reason": "Qualification blocked by ResearchIntegrityGuard; dates not exposed.",
             }
-            stat_v, _ = self.stat_agent.validate(res, wf)
-            rt_ok, rt_reason = self.red_team.challenge(sid, res, wf)
-            prov_ok_cnc, prov_rep_cnc = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
-            guard_res_cnc = ResearchIntegrityGuard().validate(
-                cycle_id="CYCLE-004",
-                training_dates=elig_1h[:t_end_1h],
-                validation_dates=elig_1h[t_end_1h:v_end_1h],
-                unseen_dates=unseen_1h_dates,
-                dataset_fingerprint=prov_rep_cnc.get("dataset_fingerprint", ""),
-                provenance_result=prov_rep_cnc,
-            )
-            qual = evaluate_seven_gates(
-                strategy_id=sid, strategy_name=sname, multi_day_metrics=res,
-                unseen_metrics=wf["unseen_test"], conservative_slippage_metrics=cons_10,
-                data_provenance_verified=prov_ok_cnc, stat_validation_verdict=stat_v,
-                red_team_approved=rt_ok, red_team_reason=rt_reason,
-                min_sessions_required=60, min_trades_required=30,
-                independent_holdout_valid=holdout_status.get("independent_holdout_valid", False),
-                provenance_status=prov_rep_cnc.get("final_provenance_status", "FAILED"),
-                holdout_status=holdout_status.get("status", "UNKNOWN"),
-                integrity_guard_result=guard_res_cnc,
-            )
-            leaderboard.append(res)
-            qualification_board.append({
-                "strategy_id": sid, "strategy_name": sname, "timeframe_minutes": 60,
-                "initial_capital_inr": 50_000.0, "final_status": qual.final_status,
-                "passed_gates": f"{qual.passed_gates_count}/{qual.total_gates}",
-                "sessions": res["sessions_evaluated"], "trades": res["total_trades"],
-                "gross_return_pct": res["gross_return_pct"], "net_return_pct": res["total_return_pct"],
-                "conservative_10bps_net_pct": cons_10["net_return_pct"],
-                "alpha_vs_bh_pct": res["alpha_vs_buy_and_hold_pct"],
-                "max_drawdown_pct": res["max_drawdown_pct"], "sharpe_ratio": res["sharpe_ratio"],
-                "sortino_ratio": res["sortino_ratio"], "profit_factor": res["profit_factor"],
-                "expectancy_inr": res["expectancy_inr"], "total_fees_inr": res["total_fees_inr"],
-                "total_brokerage_inr": res["total_brokerage_inr"], "total_statutory_inr": res["total_statutory_inr"],
-                "total_slippage_inr": res["total_slippage_inr"],
-                "unseen_return_pct": unseen_ret_pct, "statistical_verdict": stat_v,
-                "red_team_verdict": "APPROVED" if rt_ok else "REJECTED",
-                "summary": qual.summary, "gates": [asdict(g) for g in qual.gates],
-            })
 
         exec_rep = self.exec_agent.audit_costs(leaderboard, slip_all, orders_by_strategy=orders_by_strat)
         sq_rep = self.sq_agent.review_system(test_report=live_test_metrics)
 
-        qualified_cnt = sum(1 for q in qualification_board if q["final_status"] == "QUALIFIED")
-        rejected_cnt = sum(1 for q in qualification_board if q["final_status"] == "REJECTED")
-        best_strat = max(qualification_board, key=lambda x: x["net_return_pct"]) if qualification_board else None
+        sep_004 = separate_strategies_and_benchmarks(qualification_board, period_label=f"{start_1h.isoformat()} -> {end_1h.isoformat()}")
+        qualified_cnt = sep_004["qualified_active_strategies"]
+        rejected_cnt = sum(1 for q in sep_004["active_strategy_leaderboard"] if q["final_status"] in ("REJECTED", "INVALIDATED", "BLOCKED_INTEGRITY"))
+        best_strat = sep_004["best_active_strategy"]
 
         cycle_004_out = {
             "cycle_id": "CYCLE-004",
@@ -1070,8 +1125,13 @@ class ChiefResearchOrchestrator:
             "reconciled_eligible_sessions": len(elig_1h),
             "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
             "excluded_dates": excl_1h,
-            "provenance_verified": True,
-            "sealed_holdout_status": holdout_status,
+            "provenance_verified": bool(prov_rep_004.get("verified", False)),
+            "provenance_status": prov_rep_004.get("final_provenance_status", "FAILED"),
+            "qualification_allowed": qualification_allowed,
+            "exploratory_research_allowed": bool(guard_res.get("exploratory_research_allowed", False)),
+            "seal_reservation": seal_res,
+            "integrity_guard_result": guard_res,
+            "sealed_holdout_status": exposure_status,
             "dynamic_test_metrics": live_test_metrics,
             "command_centre": {
                 "current_cycle": "CYCLE-004",
@@ -1085,6 +1145,7 @@ class ChiefResearchOrchestrator:
                 "max_tuning_rounds": self.MAX_TUNING_ROUNDS_PER_HYPOTHESIS,
             },
             "qualification_board": sorted(qualification_board, key=lambda x: x["net_return_pct"], reverse=True),
+            "reference_benchmark_leaderboard": sep_004["reference_benchmark_leaderboard"],
             "slippage_sensitivity_matrix": slip_matrix,
             "agent_performance": [asdict(exec_rep), asdict(sq_rep)],
         }
@@ -1347,6 +1408,132 @@ class ChiefResearchOrchestrator:
             LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
 
         return out
+
+    def reassess_cycle_003_phase11_3_1(
+        self,
+        registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH,
+    ) -> dict[str, Any]:
+        """Phase 11.3.1: Reassess CYCLE-003 exclusively via the central ResearchIntegrityGuard."""
+        from ..data.loader_1h import get_available_1h_dates
+
+        if not CYCLE_003_REPORT_PATH.exists():
+            raise FileNotFoundError(f"Missing original CYCLE-003 report: {CYCLE_003_REPORT_PATH}")
+
+        orig = json.loads(CYCLE_003_REPORT_PATH.read_text(encoding="utf-8"))
+        _, prov_1h_report = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
+        PROVENANCE_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        PROVENANCE_REPORT_PATH.write_text(json.dumps(prov_1h_report, indent=2), encoding="utf-8")
+
+        elig_1h, _ = get_available_1h_dates(LAB_DEFAULT_UNIVERSE, min_bars_per_stock=6)
+        n_1h = len(elig_1h)
+        t_end_1h = max(1, int(n_1h * 0.60))
+        v_end_1h = max(t_end_1h + 1, int(n_1h * 0.80))
+        train_1h = elig_1h[:t_end_1h]
+        val_1h = elig_1h[t_end_1h:v_end_1h]
+        unseen_1h = elig_1h[v_end_1h:] or [elig_1h[-1]]
+
+        # Call central ResearchIntegrityGuard (never manually override its output)
+        guard_res = ResearchIntegrityGuard(registry_path=registry_path).validate(
+            cycle_id="CYCLE-003-60M",
+            training_dates=train_1h,
+            validation_dates=val_1h,
+            unseen_dates=unseen_1h,
+            dataset_fingerprint=str(prov_1h_report.get("dataset_fingerprint", "")),
+            provenance_result=prov_1h_report,
+        )
+
+        # Count exact CYCLE-002 / CYCLE-003 overlap from holdout registry
+        holdout_guard = SealedHoldoutGuard(registry_path=registry_path)
+        reg = holdout_guard.load_registry()
+        cycle2_dates: set[str] = set()
+        for exp in reg.get("sealed_exposures", []):
+            if exp.get("cycle_id") == "CYCLE-002":
+                cycle2_dates.update(exp.get("unseen_dates", []))
+        reused_dates = sorted(d.isoformat() for d in unseen_1h if d.isoformat() in cycle2_dates)
+
+        sep = separate_strategies_and_benchmarks(
+            orig.get("qualification_board", []),
+            period_label=orig.get("date_range", ""),
+        )
+
+        recalculated_strategies: list[dict[str, Any]] = []
+        downgrade_explanations: list[dict[str, Any]] = []
+
+        for row in sep["active_strategy_leaderboard"]:
+            sid = row["strategy_id"]
+            orig_status = row.get("final_status", "REJECTED")
+            orig_gates = [dict(g) for g in row.get("gates", [])]
+            g1_passed = bool(guard_res["integrity_passed"] and guard_res["qualification_allowed"])
+            g1_reason = (
+                "Verified provenance and untouched owned holdout."
+                if g1_passed
+                else "; ".join(guard_res["failure_reasons"]) or f"Blocked by guard ({guard_res['holdout_status']})"
+            )
+            new_status = (
+                orig_status
+                if g1_passed
+                else ("INVALIDATED" if guard_res["provenance_verified"] else "BLOCKED_INTEGRITY")
+            )
+
+            for g in orig_gates:
+                if int(g.get("gate_number", 0)) == 1:
+                    g["passed"] = g1_passed
+                    g["status_label"] = "PASS" if g1_passed else "FAIL"
+                    g["reason"] = g1_reason
+
+            passed_cnt = sum(1 for g in orig_gates if g.get("passed"))
+            recalculated_strategies.append({
+                **row,
+                "original_status": orig_status,
+                "reassessed_status": new_status,
+                "passed_gates": f"{passed_cnt}/{len(orig_gates) or 7}",
+                "gate_1_passed": g1_passed,
+                "gate_1_reason": g1_reason,
+                "exploratory_only": not guard_res["qualification_allowed"],
+                "gates": orig_gates,
+            })
+            downgrade_explanations.append({
+                "strategy_id": sid,
+                "original_status": orig_status,
+                "reassessed_status": new_status,
+                "gate_1_passed": g1_passed,
+                "reason": g1_reason,
+            })
+
+        out = {
+            "reassessment_id": "CYCLE-003-PHASE-11-3-1-REASSESSMENT",
+            "original_reassessment_reference": "CYCLE-003-PHASE-11-3-REASSESSMENT",
+            "original_cycle_reference": orig.get("cycle_id", "CYCLE-003"),
+            "guard_version": guard_res["guard_version"],
+            "validation_timestamp": guard_res["validation_timestamp"],
+            "provenance_status": guard_res["provenance_status"],
+            "provenance_verified": guard_res["provenance_verified"],
+            "holdout_status": guard_res["holdout_status"],
+            "holdout_metadata": guard_res["holdout_metadata"],
+            "previously_exposed_dates_count": len(reused_dates),
+            "previously_exposed_dates": reused_dates,
+            "integrity_passed": guard_res["integrity_passed"],
+            "qualification_allowed": guard_res["qualification_allowed"],
+            "exploratory_research_allowed": guard_res["exploratory_research_allowed"],
+            "failure_reasons": guard_res["failure_reasons"],
+            "integrity_guard_result": guard_res,
+            "active_strategy_leaderboard": recalculated_strategies,
+            "reference_benchmark_leaderboard": sep["reference_benchmark_leaderboard"],
+            "downgrade_explanations": downgrade_explanations,
+        }
+
+        CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH.write_text(json.dumps(out, indent=2), encoding="utf-8")
+
+        if LAB_INDEX_PATH.exists():
+            idx = json.loads(LAB_INDEX_PATH.read_text(encoding="utf-8"))
+            idx["cycle_003_phase11_3_1_reassessment"] = out
+            idx["integrity_guard_status"] = guard_res
+            idx["provenance_report_1h"] = prov_1h_report
+            LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
+
+        return out
+
 
 
 

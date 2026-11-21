@@ -1,4 +1,4 @@
-"""Phase 11.3: Central Research Integrity Guard (Fail-Closed Provenance, Holdout & Split Governance)."""
+"""Phase 11.3.1: Central Research Integrity Guard (Fail-Closed Provenance, Holdout Ownership & Split Governance)."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Any
 from ..config import IST_TZ
 from .holdout import SEALED_HOLDOUT_REGISTRY_PATH, SealedHoldoutGuard
 
-GUARD_VERSION = "11.3.0"
+GUARD_VERSION = "11.3.1"
 
 
 class ResearchIntegrityGuard:
@@ -31,10 +31,11 @@ class ResearchIntegrityGuard:
         now_ist = datetime.now(tz=IST_TZ).isoformat()
         failure_reasons: list[str] = []
 
-        # 1. Provenance check (never defaults to True)
+        # 1. Provenance check (never defaults to True; strictly derives from validator output)
         if not provenance_result or not isinstance(provenance_result, dict):
             prov_status = "FAILED"
             prov_valid = False
+            exploratory_allowed = False
             failure_reasons.append("Missing provenance verification result.")
         else:
             prov_status = str(
@@ -42,11 +43,18 @@ class ResearchIntegrityGuard:
                 or provenance_result.get("status")
                 or "FAILED"
             )
-            prov_valid = (prov_status == "VERIFIED") and bool(provenance_result.get("verified", False))
+            prov_valid = (prov_status == "VERIFIED") and (provenance_result.get("verified") is True)
+            exploratory_allowed = prov_status in ("VERIFIED", "PARTIALLY_VERIFIED")
             if not prov_valid:
                 failure_reasons.append(f"Provenance status is {prov_status} (requires VERIFIED).")
 
         # 2. Holdout ownership & split validation (fail closed on exception)
+        holdout_meta: dict[str, Any] = {
+            "state": "UNKNOWN",
+            "owning_cycle_id": None,
+            "reservation_timestamp": None,
+            "exposure_timestamp": None,
+        }
         try:
             split_res = self.holdout_guard.validate_cycle_splits(
                 train_dates=training_dates,
@@ -60,6 +68,17 @@ class ResearchIntegrityGuard:
             split_valid = bool(split_res.get("split_valid", False))
             fp_valid = bool(split_res.get("dataset_fingerprint_valid", False))
             holdout_valid = bool(split_res.get("independent_holdout_valid", False))
+
+            reg = self.holdout_guard.load_registry()
+            records = reg.get("records", {})
+            if unseen_dates:
+                sample_rec = records.get(unseen_dates[0].isoformat(), {})
+                holdout_meta = {
+                    "state": sample_rec.get("state", "AVAILABLE"),
+                    "owning_cycle_id": sample_rec.get("owning_cycle_id"),
+                    "reservation_timestamp": sample_rec.get("reservation_timestamp"),
+                    "exposure_timestamp": sample_rec.get("exposure_timestamp"),
+                }
 
             if not ownership_valid:
                 failure_reasons.append(
@@ -91,8 +110,11 @@ class ResearchIntegrityGuard:
             "cycle_id": cycle_id,
             "integrity_passed": integrity_passed,
             "qualification_allowed": integrity_passed,
+            "exploratory_research_allowed": exploratory_allowed,
             "provenance_status": prov_status,
+            "provenance_verified": prov_valid,
             "holdout_status": holdout_status,
+            "holdout_metadata": holdout_meta,
             "ownership_valid": ownership_valid,
             "split_valid": split_valid,
             "dataset_fingerprint_valid": fp_valid,

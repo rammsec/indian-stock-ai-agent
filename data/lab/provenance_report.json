@@ -1,6 +1,6 @@
 {
   "validator_version": "11.2.0",
-  "verification_timestamp": "2026-11-21T14:57:11.085841+05:30",
+  "verification_timestamp": "2026-11-21T15:14:48.533716+05:30",
   "timeframe": "1h",
   "provider": "yahoo_finance_1h",
   "resampling_methodology": "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",

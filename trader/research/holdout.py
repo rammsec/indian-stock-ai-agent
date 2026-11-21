@@ -2,16 +2,26 @@
 
 from __future__ import annotations
 
+import fcntl
 import json
+import os
 import subprocess
+from contextlib import contextmanager
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Iterator, Literal
 
 from ..config import IST_TZ
 
 HoldoutState = Literal["AVAILABLE", "SEALED", "EXPOSED", "RETIRED"]
-REGISTRY_VERSION = "11.3.0"
+ReservationStatus = Literal[
+    "ACTIVE_RESERVATION",
+    "EVALUATION_IN_PROGRESS",
+    "EVALUATION_COMPLETED",
+    "FAILED_EVALUATION",
+    "RELEASED_RESERVATION",
+]
+REGISTRY_VERSION = "11.3.1"
 SEALED_HOLDOUT_REGISTRY_PATH = Path("data/lab/sealed_holdout_registry.json")
 
 
@@ -29,18 +39,36 @@ class SealedHoldoutGuard:
     def __init__(self, registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH) -> None:
         self.registry_path = registry_path
 
+    @contextmanager
+    def _locked_registry(self) -> Iterator[None]:
+        self.registry_path.parent.mkdir(parents=True, exist_ok=True)
+        lock_path = self.registry_path.with_suffix(".lock")
+        with lock_path.open("a+", encoding="utf-8") as lf:
+            fcntl.flock(lf.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
+
     def load_registry(self) -> dict[str, Any]:
         if self.registry_path.exists():
             reg = json.loads(self.registry_path.read_text(encoding="utf-8"))
             if not isinstance(reg, dict):
                 raise ValueError("Corrupted holdout registry: root must be a JSON object")
         else:
-            reg = {"registry_version": REGISTRY_VERSION, "sealed_exposures": [], "sealed_dates": [], "records": {}}
+            reg = {
+                "registry_version": REGISTRY_VERSION,
+                "sealed_exposures": [],
+                "sealed_dates": [],
+                "records": {},
+                "recovery_log": [],
+            }
 
         reg["registry_version"] = REGISTRY_VERSION
         reg.setdefault("sealed_exposures", [])
         reg.setdefault("sealed_dates", [])
         reg.setdefault("records", {})
+        reg.setdefault("recovery_log", [])
         self._migrate_legacy_exposures(reg)
         return reg
 
@@ -54,6 +82,7 @@ class SealedHoldoutGuard:
                     records[d_str] = {
                         "date": d_str,
                         "state": "EXPOSED",
+                        "reservation_status": "EVALUATION_COMPLETED",
                         "owning_cycle_id": cid,
                         "reservation_timestamp": ts,
                         "first_sealed_cycle": cid,
@@ -69,6 +98,10 @@ class SealedHoldoutGuard:
                     rec = records[d_str]
                     rec.setdefault("owning_cycle_id", rec.get("first_sealed_cycle") or cid)
                     rec.setdefault("reservation_timestamp", rec.get("exposure_timestamp") or ts)
+                    rec.setdefault(
+                        "reservation_status",
+                        "EVALUATION_COMPLETED" if rec.get("state") == "EXPOSED" else "ACTIVE_RESERVATION",
+                    )
                     rec["registry_version"] = REGISTRY_VERSION
 
     def save_registry(self, reg: dict[str, Any]) -> None:
@@ -78,7 +111,9 @@ class SealedHoldoutGuard:
             d for d, rec in records.items() if rec.get("state") in ("SEALED", "EXPOSED", "RETIRED")
         )
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
-        self.registry_path.write_text(json.dumps(reg, indent=2), encoding="utf-8")
+        tmp_path = self.registry_path.with_suffix(".tmp")
+        tmp_path.write_text(json.dumps(reg, indent=2), encoding="utf-8")
+        os.replace(tmp_path, self.registry_path)
 
     def get_date_state(self, d: date | str) -> HoldoutState:
         d_str = d.isoformat() if isinstance(d, date) else str(d)
@@ -95,58 +130,63 @@ class SealedHoldoutGuard:
         dataset_fingerprint: str = "",
     ) -> dict[str, Any]:
         """Atomically reserve AVAILABLE dates as SEALED with explicit owning_cycle_id."""
-        reg = self.load_registry()
-        records = reg["records"]
-        now_ist = datetime.now(tz=IST_TZ).isoformat()
-        blocked: list[dict[str, str]] = []
-        sealed_now: list[str] = []
+        with self._locked_registry():
+            reg = self.load_registry()
+            records = reg["records"]
+            now_ist = datetime.now(tz=IST_TZ).isoformat()
+            blocked: list[dict[str, str]] = []
+            sealed_now: list[str] = []
 
-        # Atomic pre-check: reject entire reservation if any requested date is not AVAILABLE
-        for d in dates:
-            d_str = d.isoformat()
-            rec = records.get(d_str)
-            if rec and rec.get("state") != "AVAILABLE":
-                blocked.append({
+            # Atomic pre-check: reject entire reservation if any requested date is not AVAILABLE
+            for d in dates:
+                d_str = d.isoformat()
+                rec = records.get(d_str)
+                if rec and rec.get("state") != "AVAILABLE":
+                    blocked.append({
+                        "date": d_str,
+                        "state": rec["state"],
+                        "owning_cycle_id": str(rec.get("owning_cycle_id") or ""),
+                    })
+
+            if blocked or not dates:
+                return {
+                    "cycle_id": cycle_id,
+                    "sealed_count": 0,
+                    "blocked_dates": blocked,
+                    "ownership_valid": False,
+                    "independent_holdout_valid": False,
+                    "reservation_status": "ACTIVE_RESERVATION" if not blocked else "REJECTED_RESERVATION",
+                }
+
+            for d in dates:
+                d_str = d.isoformat()
+                records[d_str] = {
                     "date": d_str,
-                    "state": rec["state"],
-                    "owning_cycle_id": str(rec.get("owning_cycle_id") or ""),
-                })
+                    "state": "SEALED",
+                    "reservation_status": "ACTIVE_RESERVATION",
+                    "owning_cycle_id": cycle_id,
+                    "reservation_timestamp": now_ist,
+                    "first_sealed_cycle": cycle_id,
+                    "first_exposed_cycle": None,
+                    "exposure_timestamp": None,
+                    "dataset_fingerprint": dataset_fingerprint,
+                    "strategy_ids_evaluated": [],
+                    "previous_exposure_count": 0,
+                    "reason_for_retirement": None,
+                    "registry_version": REGISTRY_VERSION,
+                }
+                sealed_now.append(d_str)
 
-        if blocked or not dates:
+            self.save_registry(reg)
             return {
                 "cycle_id": cycle_id,
-                "sealed_count": 0,
-                "blocked_dates": blocked,
-                "ownership_valid": False,
-                "independent_holdout_valid": False,
-            }
-
-        for d in dates:
-            d_str = d.isoformat()
-            records[d_str] = {
-                "date": d_str,
-                "state": "SEALED",
-                "owning_cycle_id": cycle_id,
+                "sealed_count": len(sealed_now),
+                "blocked_dates": [],
+                "ownership_valid": True,
+                "independent_holdout_valid": True,
                 "reservation_timestamp": now_ist,
-                "first_sealed_cycle": cycle_id,
-                "first_exposed_cycle": None,
-                "exposure_timestamp": None,
-                "dataset_fingerprint": dataset_fingerprint,
-                "strategy_ids_evaluated": [],
-                "previous_exposure_count": 0,
-                "reason_for_retirement": None,
-                "registry_version": REGISTRY_VERSION,
+                "reservation_status": "ACTIVE_RESERVATION",
             }
-            sealed_now.append(d_str)
-
-        self.save_registry(reg)
-        return {
-            "cycle_id": cycle_id,
-            "sealed_count": len(sealed_now),
-            "blocked_dates": [],
-            "ownership_valid": True,
-            "independent_holdout_valid": True,
-        }
 
     def record_exposure(
         self,
@@ -155,67 +195,72 @@ class SealedHoldoutGuard:
         notes: str = "",
         dataset_fingerprint: str = "",
         strategy_ids: list[str] | None = None,
+        evaluation_ref: str = "",
     ) -> dict[str, Any]:
         """Record final-test exposure. Enforces ownership on SEALED dates and flags EXPOSED/RETIRED reuse."""
-        reg = self.load_registry()
-        records = reg["records"]
-        now_ist = datetime.now(tz=IST_TZ).isoformat()
-        iso_dates = [d.isoformat() for d in unseen_dates]
-        strat_list = list(strategy_ids or [])
+        with self._locked_registry():
+            reg = self.load_registry()
+            records = reg["records"]
+            now_ist = datetime.now(tz=IST_TZ).isoformat()
+            iso_dates = [d.isoformat() for d in unseen_dates]
+            strat_list = list(strategy_ids or [])
 
-        reused_exposed: list[str] = []
-        ownership_violations: list[str] = []
-        fingerprint_mismatches: list[str] = []
-        newly_exposed: list[str] = []
+            reused_exposed: list[str] = []
+            ownership_violations: list[str] = []
+            fingerprint_mismatches: list[str] = []
+            newly_exposed: list[str] = []
 
-        for d_str in iso_dates:
-            rec = records.get(d_str)
-            if rec is None:
-                records[d_str] = {
-                    "date": d_str,
-                    "state": "EXPOSED",
-                    "owning_cycle_id": cycle_id,
-                    "reservation_timestamp": now_ist,
-                    "first_sealed_cycle": cycle_id,
-                    "first_exposed_cycle": cycle_id,
-                    "exposure_timestamp": now_ist,
-                    "dataset_fingerprint": dataset_fingerprint,
-                    "strategy_ids_evaluated": strat_list,
-                    "previous_exposure_count": 1,
-                    "reason_for_retirement": None,
-                    "registry_version": REGISTRY_VERSION,
-                }
-                newly_exposed.append(d_str)
-            else:
-                prev_state = rec.get("state", "AVAILABLE")
-                owner = rec.get("owning_cycle_id") or rec.get("first_sealed_cycle")
-                if prev_state in ("EXPOSED", "RETIRED"):
-                    reused_exposed.append(d_str)
-                    rec["previous_exposure_count"] = int(rec.get("previous_exposure_count", 1)) + 1
-                elif prev_state == "SEALED":
-                    if owner and owner != cycle_id:
-                        ownership_violations.append(d_str)
+            for d_str in iso_dates:
+                rec = records.get(d_str)
+                if rec is None:
+                    records[d_str] = {
+                        "date": d_str,
+                        "state": "EXPOSED",
+                        "reservation_status": "EVALUATION_COMPLETED",
+                        "owning_cycle_id": cycle_id,
+                        "reservation_timestamp": now_ist,
+                        "first_sealed_cycle": cycle_id,
+                        "first_exposed_cycle": cycle_id,
+                        "exposure_timestamp": now_ist,
+                        "dataset_fingerprint": dataset_fingerprint,
+                        "strategy_ids_evaluated": strat_list,
+                        "previous_exposure_count": 1,
+                        "reason_for_retirement": None,
+                        "registry_version": REGISTRY_VERSION,
+                    }
+                    newly_exposed.append(d_str)
+                else:
+                    prev_state = rec.get("state", "AVAILABLE")
+                    owner = rec.get("owning_cycle_id") or rec.get("first_sealed_cycle")
+                    if prev_state in ("EXPOSED", "RETIRED"):
+                        reused_exposed.append(d_str)
+                        rec["previous_exposure_count"] = int(rec.get("previous_exposure_count", 1)) + 1
+                    elif prev_state == "SEALED":
+                        if owner and owner != cycle_id:
+                            ownership_violations.append(d_str)
+                        else:
+                            rec["state"] = "EXPOSED"
+                            rec["reservation_status"] = "EVALUATION_COMPLETED"
+                            rec["first_exposed_cycle"] = rec.get("first_exposed_cycle") or cycle_id
+                            rec["exposure_timestamp"] = rec.get("exposure_timestamp") or now_ist
+                            rec["previous_exposure_count"] = int(rec.get("previous_exposure_count", 0)) + 1
+                            newly_exposed.append(d_str)
                     else:
                         rec["state"] = "EXPOSED"
-                        rec["first_exposed_cycle"] = rec.get("first_exposed_cycle") or cycle_id
-                        rec["exposure_timestamp"] = rec.get("exposure_timestamp") or now_ist
-                        rec["previous_exposure_count"] = int(rec.get("previous_exposure_count", 0)) + 1
+                        rec["reservation_status"] = "EVALUATION_COMPLETED"
+                        rec["owning_cycle_id"] = cycle_id
+                        rec["first_exposed_cycle"] = cycle_id
+                        rec["exposure_timestamp"] = now_ist
+                        rec["previous_exposure_count"] = 1
                         newly_exposed.append(d_str)
-                else:
-                    rec["state"] = "EXPOSED"
-                    rec["owning_cycle_id"] = cycle_id
-                    rec["first_exposed_cycle"] = cycle_id
-                    rec["exposure_timestamp"] = now_ist
-                    rec["previous_exposure_count"] = 1
-                    newly_exposed.append(d_str)
 
-                if dataset_fingerprint and rec.get("dataset_fingerprint") and rec["dataset_fingerprint"] != dataset_fingerprint:
-                    fingerprint_mismatches.append(d_str)
-                if dataset_fingerprint and not rec.get("dataset_fingerprint"):
-                    rec["dataset_fingerprint"] = dataset_fingerprint
-                existing_strats = set(rec.get("strategy_ids_evaluated", []))
-                rec["strategy_ids_evaluated"] = sorted(existing_strats | set(strat_list))
-                rec["registry_version"] = REGISTRY_VERSION
+                    if dataset_fingerprint and rec.get("dataset_fingerprint") and rec["dataset_fingerprint"] != dataset_fingerprint:
+                        fingerprint_mismatches.append(d_str)
+                    if dataset_fingerprint and not rec.get("dataset_fingerprint"):
+                        rec["dataset_fingerprint"] = dataset_fingerprint
+                    existing_strats = set(rec.get("strategy_ids_evaluated", []))
+                    rec["strategy_ids_evaluated"] = sorted(existing_strats | set(strat_list))
+                    rec["registry_version"] = REGISTRY_VERSION
 
         leakage = len(reused_exposed) > 0 or len(fingerprint_mismatches) > 0 or len(ownership_violations) > 0
         independent_valid = (len(iso_dates) > 0) and not leakage
@@ -398,3 +443,85 @@ class SealedHoldoutGuard:
             count += 1
         self.save_registry(reg)
         return count
+
+    def mark_evaluation_in_progress(self, cycle_id: str, dates: list[date]) -> dict[str, Any]:
+        """Transition owned SEALED dates from ACTIVE_RESERVATION to EVALUATION_IN_PROGRESS."""
+        with self._locked_registry():
+            reg = self.load_registry()
+            records = reg["records"]
+            updated: list[str] = []
+            rejected: list[str] = []
+            for d in dates:
+                d_str = d.isoformat()
+                rec = records.get(d_str)
+                if rec and rec.get("state") == "SEALED" and rec.get("owning_cycle_id") == cycle_id:
+                    rec["reservation_status"] = "EVALUATION_IN_PROGRESS"
+                    rec["registry_version"] = REGISTRY_VERSION
+                    updated.append(d_str)
+                else:
+                    rejected.append(d_str)
+            self.save_registry(reg)
+            return {"ok": len(rejected) == 0, "updated": updated, "rejected": rejected}
+
+    def mark_evaluation_failed(self, cycle_id: str, dates: list[date], reason: str) -> dict[str, Any]:
+        """Mark evaluation as FAILED_EVALUATION without exposing SEALED dates."""
+        with self._locked_registry():
+            reg = self.load_registry()
+            records = reg["records"]
+            now_ist = datetime.now(tz=IST_TZ).isoformat()
+            marked: list[str] = []
+            for d in dates:
+                d_str = d.isoformat()
+                rec = records.get(d_str)
+                if rec and rec.get("state") == "SEALED" and rec.get("owning_cycle_id") == cycle_id:
+                    rec["reservation_status"] = "FAILED_EVALUATION"
+                    rec["registry_version"] = REGISTRY_VERSION
+                    marked.append(d_str)
+            reg["recovery_log"].append({
+                "action": "FAILED_EVALUATION",
+                "cycle_id": cycle_id,
+                "dates": marked,
+                "reason": reason,
+                "timestamp": now_ist,
+            })
+            self.save_registry(reg)
+            return {"marked_failed": marked, "timestamp": now_ist}
+
+    def release_reservation(self, cycle_id: str, dates: list[date], reason: str) -> dict[str, Any]:
+        """Safely release unused SEALED reservations back to AVAILABLE (owning cycle only; never EXPOSED/RETIRED)."""
+        with self._locked_registry():
+            reg = self.load_registry()
+            records = reg["records"]
+            now_ist = datetime.now(tz=IST_TZ).isoformat()
+            released: list[str] = []
+            denied: list[dict[str, str]] = []
+
+            for d in dates:
+                d_str = d.isoformat()
+                rec = records.get(d_str)
+                if not rec:
+                    continue
+                state = rec.get("state")
+                owner = rec.get("owning_cycle_id")
+                if state in ("EXPOSED", "RETIRED"):
+                    denied.append({"date": d_str, "reason": f"Cannot release {state} date"})
+                elif state == "SEALED" and owner != cycle_id:
+                    denied.append({"date": d_str, "reason": f"Owned by {owner}, not {cycle_id}"})
+                elif state == "SEALED" and owner == cycle_id:
+                    rec["state"] = "AVAILABLE"
+                    rec["reservation_status"] = "RELEASED_RESERVATION"
+                    rec["owning_cycle_id"] = None
+                    rec["registry_version"] = REGISTRY_VERSION
+                    released.append(d_str)
+
+            reg["recovery_log"].append({
+                "action": "RELEASE_RESERVATION",
+                "cycle_id": cycle_id,
+                "released_dates": released,
+                "denied_dates": denied,
+                "reason": reason,
+                "timestamp": now_ist,
+            })
+            self.save_registry(reg)
+            return {"released": released, "denied": denied, "ok": len(denied) == 0, "timestamp": now_ist}
+
