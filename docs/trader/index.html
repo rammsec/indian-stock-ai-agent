@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BharatAlpha AI Intraday Trading Desk — NSE & BSE</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Institutional Terminal Bar -->
+  <header class="terminal-header">
+    <div class="brand-section">
+      <div class="brand-badge">DESK v1.0</div>
+      <div class="terminal-title">AI Multi-Agent Intraday Trading Terminal</div>
+      <span style="color: var(--text-dim); font-size: 13px;">| NSE & BSE Cash (5m Candles)</span>
+    </div>
+
+    <div class="meta-status-bar">
+      <div class="status-pill simulated">
+        <span class="status-indicator-dot"></span>
+        HISTORICAL REPLAY & SIMULATION ONLY
+      </div>
+      <div id="live-ist-clock" style="font-family: var(--font-mono); font-weight: 600; color: #fff;">
+        --:--:-- IST
+      </div>
+      <a href="../lab/" style="color: var(--accent-green); text-decoration: none; font-size: 12px; margin-left: 12px; font-weight: 600;">
+        Historical AI Trading Lab →
+      </a>
+      <a href="../" style="color: var(--accent-blue); text-decoration: none; font-size: 12px; margin-left: 12px;">
+        ← Back to BharatAlpha Daily Research
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Terminal Layout -->
+  <main class="terminal-container" id="terminal-main">
+
+    <!-- Data Provenance & Execution Attribution Bar -->
+    <section class="card" id="data-provenance-banner" style="padding: 10px 16px; border-left: 3px solid var(--accent-blue); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 12px;">
+      <div>Loading dataset provenance & model attribution...</div>
+    </section>
+
+    <!-- Section A: Market Overview & Posture -->
+    <section>
+      <div class="section-title-bar">
+        <div class="section-title">
+          <span>01. Central Market Intelligence & Council Posture</span>
+          <span class="section-badge">LAYER A</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-dim);">Evaluated hourly & on material events</div>
+      </div>
+
+      <div id="posture-banner-container" style="margin-bottom: 16px;"></div>
+
+      <div class="grid-cols-4">
+        <div class="card" id="nifty-card"></div>
+        <div class="card" id="banknifty-card"></div>
+        <div class="card" id="vix-card"></div>
+        <div class="card" id="breadth-card"></div>
+      </div>
+    </section>
+
+    <!-- Section B: Stock Scanner (5-Minute Charts & Technicals) -->
+    <section>
+      <div class="section-title-bar">
+        <div class="section-title">
+          <span>02. 5-Minute Intraday Stock Scanner & Agent Signals</span>
+          <span class="section-badge">LAYER B</span>
+        </div>
+        <div style="font-size: 12px; color: var(--text-dim);">Live 5m closed candle processing</div>
+      </div>
+
+      <div class="grid-cols-4" id="scanner-cards-container" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <!-- Stock Cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- Section C & D Split: Council Debate & Cross-Exchange Arbitrage -->
+    <div class="grid-cols-2">
+      <!-- Section C: Council Debate -->
+      <section class="card">
+        <div class="section-title-bar">
+          <div class="section-title">
+            <span>03. Central Agent Debate & Evidence Cross-Examination</span>
+          </div>
+          <span class="section-badge">MULTI-AGENT DEBATE</span>
+        </div>
+        <div id="council-debate-container">
+          <!-- Injected by JS -->
+        </div>
+      </section>
+
+      <!-- Section D: Cross-Exchange Arbitrage -->
+      <section class="card">
+        <div class="section-title-bar">
+          <div class="section-title">
+            <span>04. NSE ↔ BSE Cross-Exchange Executable Arbitrage</span>
+          </div>
+          <span class="section-badge">ISIN MATCHED</span>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+          Calculates executable Bid/Ask spread minus all Indian statutory deductions (Brokerage, STT, Exchange fees, GST, Stamp duty, Slippage).
+        </p>
+        <div style="overflow-x: auto;">
+          <table class="terminal-table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th>ISIN</th>
+                <th>Buy Leg</th>
+                <th>Sell Leg</th>
+                <th>Gross Spread</th>
+                <th>Total Friction</th>
+                <th>Net Profit</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="cross-exchange-tbody">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Section E: Paper Trading Portfolio -->
+    <section class="card">
+      <div class="section-title-bar">
+        <div class="section-title">
+          <span>05. Simulated Paper Portfolio & Double-Entry Ledger</span>
+          <span class="section-badge">₹10,00,000 VIRTUAL CAPITAL</span>
+        </div>
+        <div style="font-size: 12px; color: var(--accent-green); font-family: var(--font-mono);">
+          SHA-256 Provenance Verified ✓
+        </div>
+      </div>
+
+      <div class="grid-cols-4" style="margin-bottom: 16px;">
+        <div style="background: #111827; padding: 12px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+          <div class="metric-label">Available Cash</div>
+          <div class="metric-value text-green" id="port-cash">₹--</div>
+        </div>
+        <div style="background: #111827; padding: 12px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+          <div class="metric-label">Total Portfolio Equity</div>
+          <div class="metric-value" id="port-equity">₹--</div>
+        </div>
+        <div style="background: #111827; padding: 12px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+          <div class="metric-label">Realized / Unrealized P&L</div>
+          <div class="metric-value" style="font-size: 16px;">
+            <span id="port-realized" class="text-green">₹--</span> / <span id="port-unrealized" class="text-blue">₹--</span>
+          </div>
+        </div>
+        <div style="background: #111827; padding: 12px; border-radius: 6px; border: 1px solid var(--border-subtle);">
+          <div class="metric-label">Drawdown / Win Rate</div>
+          <div class="metric-value" style="font-size: 16px;">
+            <span id="port-drawdown" class="text-amber">--%</span> / <span id="port-winrate" class="text-green">--%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Open Positions -->
+      <div style="font-weight: 600; font-size: 13px; color: #fff; margin: 12px 0 6px 0;">Open Intraday Positions</div>
+      <div style="overflow-x: auto;">
+        <table class="terminal-table">
+          <thead>
+            <tr>
+              <th>Stock</th>
+              <th>Exchange</th>
+              <th>Qty</th>
+              <th>Entry Price</th>
+              <th>CMP</th>
+              <th>Unrealized P&L</th>
+              <th>Risk Bracket (SL / TP)</th>
+            </tr>
+          </thead>
+          <tbody id="positions-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Closed Trades Ledger -->
+      <div style="font-weight: 600; font-size: 13px; color: #fff; margin: 16px 0 6px 0;">Recent Closed Trades Ledger</div>
+      <div style="overflow-x: auto;">
+        <table class="terminal-table">
+          <thead>
+            <tr>
+              <th>Stock</th>
+              <th>Qty</th>
+              <th>Entry Price</th>
+              <th>Exit Price</th>
+              <th>Friction Paid</th>
+              <th>Net P&L</th>
+            </tr>
+          </thead>
+          <tbody id="trades-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section F & G Split: Strategy Library & AI Cost Monitor -->
+    <div class="grid-cols-2">
+      <!-- Section F: Strategy Library -->
+      <section class="card">
+        <div class="section-title-bar">
+          <div class="section-title">
+            <span>06. Strategy Research Library & Backtests</span>
+          </div>
+          <span class="section-badge">WALK-FORWARD VERIFIED</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="terminal-table">
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Source Origin</th>
+                <th>Status</th>
+                <th>Win Rate</th>
+                <th>Profit Factor</th>
+                <th>Return %</th>
+                <th>Max DD</th>
+                <th>Friction</th>
+              </tr>
+            </thead>
+            <tbody id="strategy-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section G: Cost Monitoring -->
+      <section class="card">
+        <div class="section-title-bar">
+          <div class="section-title">
+            <span>07. AI Model Allocation & Token Budget</span>
+          </div>
+          <span class="section-badge">COST CONTROL</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px;">
+          <div style="background: #111827; padding: 10px; border-radius: 6px;">
+            <div class="metric-label">Daily Spend</div>
+            <div class="metric-value text-green" id="cost-daily-spend" style="font-size: 18px;">$--</div>
+          </div>
+          <div style="background: #111827; padding: 10px; border-radius: 6px;">
+            <div class="metric-label">Daily Budget</div>
+            <div class="metric-value" id="cost-daily-budget" style="font-size: 18px;">$--</div>
+          </div>
+          <div style="background: #111827; padding: 10px; border-radius: 6px;">
+            <div class="metric-label">API Calls</div>
+            <div class="metric-value text-blue" id="cost-calls-count" style="font-size: 18px;">--</div>
+          </div>
+          <div style="background: #111827; padding: 10px; border-radius: 6px;">
+            <div class="metric-label">Tokens</div>
+            <div class="metric-value" id="cost-tokens-count" style="font-size: 18px;">--</div>
+          </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="terminal-table">
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Configured Model Hierarchy</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="agent-costs-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historical AI Trading Lab — ₹50,000 Simulator & Model Evaluation</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+
+  <header class="lab-header">
+    <div class="brand-group">
+      <div class="brand-badge">LAB v1.0</div>
+      <div class="lab-title">Historical AI Trading Lab</div>
+      <span style="color: var(--text-dim); font-size: 12px;">₹50,000 Virtual Capital | 5m NSE | Broker Disabled</span>
+    </div>
+
+    <nav class="top-nav">
+      <button class="nav-tab active" data-view="view-lab">Historical Trading Lab</button>
+      <a class="nav-tab" href="../trader/">Live Paper Trading</a>
+      <button class="nav-tab" data-view="view-research">Strategy Research</button>
+      <button class="nav-tab" data-view="view-leaderboard">Model Comparison</button>
+      <button class="nav-tab" data-view="view-history">Performance History</button>
+    </nav>
+  </header>
+
+  <main class="lab-container">
+
+    <!-- Main Controls -->
+    <section class="card">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="date-select">Historical Date (Verified)</label>
+          <select id="date-select"></select>
+        </div>
+        <div class="control-group">
+          <label for="stock-select">Stock Focus</label>
+          <select id="stock-select">
+            <option value="RELIANCE">RELIANCE (Reliance Industries)</option>
+            <option value="TCS">TCS (Tata Consultancy)</option>
+            <option value="BIRLACABLE">BIRLACABLE (Birla Cable)</option>
+            <option value="ITC">ITC (ITC Ltd)</option>
+            <option value="TATAELXSI">TATAELXSI (Tata Elxsi)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="strategy-select">Model / Strategy</label>
+          <select id="strategy-select"></select>
+        </div>
+        <div class="control-group">
+          <label>Initial Capital</label>
+          <input type="text" value="₹50,000 (Shared)" readonly style="min-width: 130px; color: var(--accent-green); font-weight: 700;">
+        </div>
+        <button class="btn btn-primary" id="btn-run-backtest">Load / Run Replay</button>
+        <button class="btn" id="btn-reset-replay">Reset</button>
+      </div>
+    </section>
+
+    <!-- VIEW 1: HISTORICAL TRADING LAB -->
+    <div id="view-lab" class="section-view active">
+
+      <!-- Data Quality Status -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 style="font-size: 14px; color: #fff;">Data Quality & Provenance (<span id="lbl-selected-date">--</span>)</h3>
+          <span class="badge badge-green" id="lbl-data-mode">HISTORICAL_REAL</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Stock</th>
+                <th>Data Availability</th>
+                <th>Candles</th>
+                <th>Warm-Up Bars</th>
+                <th>Missing</th>
+                <th>Provider</th>
+                <th>Status</th>
+                <th>Quality Details</th>
+              </tr>
+            </thead>
+            <tbody id="data-quality-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Replay Controls -->
+      <section class="replay-toolbar">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="btn-play-pause">▶ Play</button>
+          <button class="btn" id="btn-step-back">◀ -1 Candle</button>
+          <button class="btn" id="btn-step-fwd">+1 Candle ▶</button>
+          <button class="btn" id="btn-restart">⟲ Restart</button>
+          <select id="speed-select" style="background: var(--bg-card); border: 1px solid var(--border-subtle); color: #fff; padding: 6px; border-radius: 6px; font-size: 12px;">
+            <option value="800">1x Speed</option>
+            <option value="400">2x Speed</option>
+            <option value="160">5x Speed</option>
+            <option value="60">10x Speed</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; flex: 1; max-width: 480px;">
+          <span style="font-family: var(--font-mono); color: var(--accent-blue); font-weight: 700;" id="lbl-replay-clock">09:15 IST</span>
+          <input type="range" id="replay-slider" min="0" max="74" value="74" style="flex: 1;">
+          <span style="font-size: 11px; color: var(--text-muted);" id="lbl-bar-counter">Bar 75 / 75</span>
+        </div>
+      </section>
+
+      <!-- Portfolio Overview -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 14px; color: #fff;">₹50,000 Portfolio Overview & Benchmark Comparison</h3>
+          <span style="font-size: 12px; color: var(--text-muted);" id="lbl-benchmark-summary">5-Stock Equal-Weight Buy & Hold: --</span>
+        </div>
+        <div class="metrics-grid" id="portfolio-metrics-grid"></div>
+        <div class="grid-2" style="margin-top: 14px;">
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Portfolio Equity Curve (₹50,000 Base) vs Equal-Weight Benchmark</div>
+            <div id="equity-chart-container" style="height: 200px;"></div>
+          </div>
+          <div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Intraday Drawdown %</div>
+            <div id="drawdown-chart-container" style="height: 200px;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Visual Trading Chart + Decision Detail Panel -->
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+          <h3 style="font-size: 14px; color: #fff;">Interactive 5-Minute Candlestick Chart & Trade Markers (<span id="lbl-chart-symbol">RELIANCE</span>)</h3>
+          <div style="display: flex; gap: 8px; font-size: 11px;">
+            <span class="badge badge-green">▲ BUY</span>
+            <span class="badge badge-red">▼ SELL</span>
+            <span class="badge badge-blue">● EMA9/21</span>
+            <span class="badge badge-amber">● VWAP / REJECTED</span>
+          </div>
+        </div>
+        <div class="chart-split">
+          <div>
+            <div id="candlestick-chart-container" style="height: 420px; border: 1px solid var(--border-subtle); border-radius: 6px;"></div>
+          </div>
+          <div class="decision-detail-box" id="decision-detail-panel">
+            <h4 style="color: var(--accent-blue); margin-bottom: 8px;">Decision Inspector</h4>
+            <p style="color: var(--text-muted); font-size: 12px;">Click any trade marker on the chart or row in the timeline below to inspect full decision provenance, indicator snapshot, council verdict, and execution price.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Five-Stock Comparison Cards -->
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 12px;">Five-Stock Universe Monitor (Synchronized with Replay Clock)</h3>
+        <div class="grid-5" id="five-stock-grid"></div>
+      </section>
+
+      <!-- Agent Decision Timeline -->
+      <section class="card">
+        <h3 style="font-size: 14px; color: #fff; margin-bottom: 10px;">Agent & Strategy Decision Timeline (Click row to inspect)</h3>
+        <div style="overflow-x: auto; max-height: 320px;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Time (IST)</th>
+                <th>Stock</th>
+                <th>Agent / Model</th>
+                <th>Recommendation</th>
+                <th>Confidence</th>
+                <th>Council</th>
+                <th>Reasoning Summary</th>
+              </tr>
+            </thead>
+            <tbody id="decision-timeline-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 2: MODEL COMPARISON LEADERBOARD -->
+    <div id="view-leaderboard" class="section-view">
+      <section class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="font-size: 15px; color: #fff;">Model & Strategy Comparison Leaderboard (Independent ₹50,000 Portfolios)</h3>
+          <span class="badge badge-blue" id="lbl-leaderboard-date">--</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Model / Strategy</th>
+                <th>Mode</th>
+                <th>Start Cap</th>
+                <th>End Cap</th>
+                <th>Net P&L (₹)</th>
+                <th>Net Return %</th>
+                <th>Win Rate</th>
+                <th>Profit Factor</th>
+                <th>Max DD %</th>
+                <th>Sharpe</th>
+                <th>Trades</th>
+                <th>Avg Hold</th>
+                <th>Fees (₹)</th>
+                <th>AI Cost ($)</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW 3: STRATEGY RESEARCH & STAGE B/C -->
+    <div id="view-research" class="section-view">
+      <section class="card">
+        <h3 style="font-size: 15px; color: #fff; margin-bottom: 10px;">Stage B & Stage C — Automated Performance Analysis & Improvement Research</h3>
+        <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 14px;">
+          Strict anti-overfitting rule: Suggestions below are logged as versioned experiments and never automatically overwrite production strategy parameters.
+        </p>
+        <div id="stage-bc-container" class="grid-2"></div>
+      </section>
+    </div>
+
+    <!-- VIEW 4: PERFORMANCE HISTORY -->
+    <div id="view-history" class="section-view">
+      <section class="card">
+        <h3 style="font-size: 15px; color: #fff; margin-bottom: 12px;">Historical Run Database (Multi-Day Performance History)</h3>
+        <div style="overflow-x: auto;">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Strategy / Model</th>
+                <th>Final Equity</th>
+                <th>Net P&L (₹)</th>
+                <th>Return %</th>
+                <th>Win Rate</th>
+                <th>Max DD %</th>
+                <th>Trades</th>
+                <th>Total Fees (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
