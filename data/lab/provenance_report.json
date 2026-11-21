@@ -1,6 +1,6 @@
 {
   "verified": true,
-  "verified_at_ist": "2026-11-21T13:09:13.489793+05:30",
+  "verified_at_ist": "2026-11-21T13:23:09.736421+05:30",
   "sessions_verified": 56,
   "total_missing_candles": 115,
   "total_duplicate_candles": 0,
@@ -18,7 +18,7 @@
       "total_5m_candles": 4103,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:09:12.267087+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:23:08.061456+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/RELIANCE_5m.parquet"
@@ -44,7 +44,7 @@
       "total_5m_candles": 4093,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:09:12.543552+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:23:08.443412+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/TCS_5m.parquet"
@@ -70,7 +70,7 @@
       "total_5m_candles": 4183,
       "missing_candles": 15,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:09:12.822787+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:23:08.830921+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/BIRLACABLE_5m.parquet"
@@ -96,7 +96,7 @@
       "total_5m_candles": 4104,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:09:13.099223+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:23:09.218299+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/ITC_5m.parquet"
@@ -122,7 +122,7 @@
       "total_5m_candles": 4089,
       "missing_candles": 25,
       "duplicate_candles": 0,
-      "latest_retrieval_timestamp": "2026-11-21T13:09:13.377161+05:30",
+      "latest_retrieval_timestamp": "2026-11-21T13:23:09.609517+05:30",
       "exchange_date_range": "2026-08-25 -> 2026-11-20",
       "source_files": [
         "data/intraday/TATAELXSI_5m.parquet"

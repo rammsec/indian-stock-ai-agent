@@ -21,6 +21,28 @@
       "newly_sealed_count": 12,
       "previously_sealed_count": 0,
       "notes": "CYCLE-002 unseen_test evaluation"
+    },
+    {
+      "cycle_id": "CYCLE-002",
+      "recorded_at_ist": "2026-11-21T13:23:09.744361+05:30",
+      "commit_sha": "62cde2795d101e62c143f5b622b4937003cdbff9",
+      "unseen_dates": [
+        "2026-11-02",
+        "2026-11-03",
+        "2026-11-05",
+        "2026-11-06",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13",
+        "2026-11-16",
+        "2026-11-17",
+        "2026-11-18",
+        "2026-11-19",
+        "2026-11-20"
+      ],
+      "newly_sealed_count": 0,
+      "previously_sealed_count": 12,
+      "notes": "CYCLE-002 unseen_test evaluation"
     }
   ],
   "sealed_dates": [

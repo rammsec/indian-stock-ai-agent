@@ -1,6 +1,6 @@
 {
   "cycle_id": "CYCLE-002",
-  "generated_at_ist": "2026-11-21T13:16:27.104282+05:30",
+  "generated_at_ist": "2026-11-21T13:32:55.088304+05:30",
   "reconciled_eligible_sessions": 56,
   "date_range": "2026-08-25 -> 2026-11-20",
   "excluded_dates": [
@@ -30,7 +30,7 @@
   "sealed_holdout_status": {
     "total_sealed_dates": 12,
     "current_unseen_dates": 12,
-    "previously_exposed_dates": 0,
+    "previously_exposed_dates": 12,
     "leakage_detected": false
   },
   "dynamic_test_metrics": {
@@ -38,8 +38,8 @@
     "tests_passed": 159,
     "tests_failed": 0,
     "tests_skipped": 0,
-    "execution_timestamp": "2026-11-21T13:06:54.443625+05:30",
-    "commit_sha": "3a4157cc307459f27ea04b706114819d30240cde",
+    "execution_timestamp": "2026-11-21T13:20:01.169939+05:30",
+    "commit_sha": "62cde2795d101e62c143f5b622b4937003cdbff9",
     "returncode": 0,
     "mode": "LIVE_PYTEST"
   },
@@ -622,7 +622,7 @@
       "role": "CI, Accounting & Lookahead Reviewer",
       "execution_type": "DETERMINISTIC_LOCAL",
       "assigned_task": "Enforce live pytest execution, regression tests & double-entry ledger invariants",
-      "latest_finding": "Executed 159 tests (159 passed, 0 failed, 0 skipped) at commit 3a4157cc.",
+      "latest_finding": "Executed 159 tests (159 passed, 0 failed, 0 skipped) at commit 62cde279.",
       "status": "PASS",
       "proposals_count": 0,
       "rejections_count": 0
