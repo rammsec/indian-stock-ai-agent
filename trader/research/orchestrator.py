@@ -975,16 +975,34 @@ class ChiefResearchOrchestrator:
                 evaluation_type=eval_type,
             )
             if not prog_res.get("ok"):
+                # Evaluation aborted immediately before any holdout data access.
+                # Attempt to safely release the unused reservation back to AVAILABLE (restricted to owning cycle).
+                release_res = holdout_guard.release_reservation(
+                    "CYCLE-004",
+                    consumed_dates,
+                    reason=f"Evaluation aborted before data access: mark_evaluation_in_progress failed ({prog_res.get('reason')})",
+                )
+                cleanup_success = bool(release_res.get("ok") and len(release_res.get("released", [])) == len(consumed_dates))
+                cleanup_status = "RESERVATION_RELEASED" if cleanup_success else "RELEASE_FAILED_RESERVATION_PRESERVED"
+                final_holdout_state = "AVAILABLE" if cleanup_success else "SEALED"
+
+                cleanup_failure_msgs: list[str] = []
+                if not cleanup_success and release_res.get("denied"):
+                    cleanup_failure_msgs.append(f"release_reservation denied: {release_res.get('denied')}")
+
                 aborted_out = {
                     "cycle_id": "CYCLE-004",
                     "evaluation_id": evaluation_id,
                     "generated_at_ist": datetime.now(tz=IST_TZ).isoformat(),
+                    "reconciled_eligible_sessions": len(elig_1h),
+                    "date_range": f"{start_1h.isoformat()} -> {end_1h.isoformat()}",
+                    "excluded_dates": excl_1h,
                     "integrity_passed": False,
                     "qualification_allowed": False,
                     "exploratory_research_allowed": exploratory_allowed,
                     "exploratory_only": not qualification_allowed,
                     "holdout_consumed": False,
-                    "holdout_state": "BLOCKED_TRANSITION",
+                    "holdout_state": final_holdout_state,
                     "evaluation_status": "ABORTED_TRANSITION_FAILED",
                     "evaluation_type": eval_type,
                     "evaluation_started_at": evaluation_started_at,
@@ -992,12 +1010,19 @@ class ChiefResearchOrchestrator:
                     "consumed_holdout_dates": [],
                     "dataset_fingerprint": dataset_fp,
                     "strategy_ids_evaluated": [],
-                    "failure_reasons": guard_res["failure_reasons"] + [f"mark_evaluation_in_progress failed: {prog_res.get('reason')}"],
+                    "failure_reasons": guard_res["failure_reasons"] + [
+                        f"mark_evaluation_in_progress failed: {prog_res.get('reason')}"
+                    ] + cleanup_failure_msgs,
                     "provenance_verified": bool(prov_rep_004.get("verified", False)),
                     "provenance_status": prov_rep_004.get("final_provenance_status", "FAILED"),
                     "qualification_blocked": True,
+                    "seal_reservation": seal_res,
                     "transition_error": prog_res,
+                    "cleanup_result": release_res,
+                    "cleanup_status": cleanup_status,
+                    "stale_recovery": stale_recovery,
                     "integrity_guard_result": guard_res,
+                    "dynamic_test_metrics": live_test_metrics,
                     "qualification_board": [],
                 }
                 output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1191,9 +1216,14 @@ class ChiefResearchOrchestrator:
                 dataset_fingerprint=dataset_fp,
                 evaluation_ref=str(output_path),
             )
-            holdout_consumed = True
-            holdout_state = "EXPOSED"
-            eval_status = "COMPLETED_FORMAL" if qualification_allowed else "COMPLETED_EXPLORATORY_WITH_UNSEEN"
+            completion_ok = bool(exposure_status.get("ok"))
+            holdout_consumed = completion_ok
+            holdout_state = exposure_status.get("holdout_state", "EXPOSED" if completion_ok else "SEALED")
+            eval_status = (
+                ("COMPLETED_FORMAL" if qualification_allowed else "COMPLETED_EXPLORATORY_WITH_UNSEEN")
+                if completion_ok
+                else "COMPLETION_FAILED"
+            )
         else:
             exposure_status = {
                 "status": guard_res["holdout_status"],
@@ -1213,6 +1243,10 @@ class ChiefResearchOrchestrator:
         qualified_cnt = sep_004["qualified_active_strategies"]
         rejected_cnt = sum(1 for q in sep_004["active_strategy_leaderboard"] if q["final_status"] in ("REJECTED", "INVALIDATED", "BLOCKED_INTEGRITY"))
         best_strat = sep_004["best_active_strategy"]
+
+        cycle_failure_reasons = list(guard_res.get("failure_reasons", []))
+        if consumed_dates and not exposure_status.get("ok"):
+            cycle_failure_reasons.extend(exposure_status.get("failure_reasons", ["complete_evaluation failed"]))
 
         cycle_004_out = {
             "cycle_id": "CYCLE-004",
@@ -1234,7 +1268,7 @@ class ChiefResearchOrchestrator:
             "consumed_holdout_dates": [d.isoformat() for d in consumed_dates],
             "dataset_fingerprint": dataset_fp,
             "strategy_ids_evaluated": strategy_ids_evaluated,
-            "failure_reasons": list(guard_res.get("failure_reasons", [])),
+            "failure_reasons": cycle_failure_reasons,
             "provenance_verified": bool(prov_rep_004.get("verified", False)),
             "provenance_status": prov_rep_004.get("final_provenance_status", "FAILED"),
             "seal_reservation": seal_res,

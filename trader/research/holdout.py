@@ -21,7 +21,7 @@ ReservationStatus = Literal[
     "FAILED_EVALUATION",
     "RELEASED_RESERVATION",
 ]
-REGISTRY_VERSION = "11.3.2"
+REGISTRY_VERSION = "11.3.3"
 SEALED_HOLDOUT_REGISTRY_PATH = Path("data/lab/sealed_holdout_registry.json")
 
 
@@ -509,39 +509,251 @@ class SealedHoldoutGuard:
         dataset_fingerprint: str = "",
         evaluation_ref: str = "",
     ) -> dict[str, Any]:
-        """Atomically transition consumed SEALED dates to EXPOSED regardless of qualification outcome."""
-        res = self.record_exposure(
-            cycle_id=cycle_id,
-            unseen_dates=consumed_dates,
-            notes=f"{evaluation_type} completed ({evaluation_id})",
-            dataset_fingerprint=dataset_fingerprint,
-            strategy_ids=strategy_ids,
-            evaluation_ref=evaluation_ref,
-        )
-        now_ist = res.get("exposure_timestamp", datetime.now(tz=IST_TZ).isoformat())
+        """Atomically validate lifecycle & transition consumed SEALED dates to EXPOSED under single lock."""
+        now_ist = datetime.now(tz=IST_TZ).isoformat()
+        strat_list = list(strategy_ids or [])
+
+        # Check for empty dates or duplicates in the request
+        has_duplicates = len(consumed_dates) != len(set(consumed_dates))
+        is_empty = len(consumed_dates) == 0
+
+        if is_empty or has_duplicates:
+            reason = "No consumed dates provided in completion request" if is_empty else "Duplicate consumed dates in completion request"
+            err_detail = {"date": "EMPTY" if is_empty else "DUPLICATE", "reason": reason}
+            return {
+                "ok": False,
+                "completion_success": False,
+                "evaluation_id": evaluation_id,
+                "cycle_id": cycle_id,
+                "evaluation_type": evaluation_type,
+                "holdout_consumed": False,
+                "holdout_state": "SEALED",
+                "completed_at": now_ist,
+                "invalid_dates": [err_detail],
+                "failure_reasons": [reason],
+                "ownership_violations": [],
+                "fingerprint_mismatches": [],
+                "lifecycle_violations": ["DUPLICATE_DATES" if has_duplicates else "EMPTY_DATES"],
+                "reused_dates": [],
+                "ownership_valid": not has_duplicates,
+                "independent_holdout_valid": False,
+                "status": "DUPLICATE_CONSUMED_DATES" if has_duplicates else "INSUFFICIENT_UNSEEN_DATA",
+            }
+
         with self._locked_registry():
             reg = self.load_registry()
+            records = reg["records"]
+            iso_dates = [d.isoformat() for d in consumed_dates]
+
+            invalid_dates: list[dict[str, str]] = []
+            failure_reasons: list[str] = []
+            ownership_violations: list[str] = []
+            fingerprint_mismatches: list[str] = []
+            lifecycle_violations: list[str] = []
+            reused_dates: list[str] = []
+
+            # 1-4. Validate every consumed date: exists, SEALED, owner match, EVALUATION_IN_PROGRESS, fingerprint match, not exposed/retired
+            for d_str in iso_dates:
+                rec = records.get(d_str)
+                if rec is None:
+                    msg = f"Date {d_str} does not exist in registry"
+                    invalid_dates.append({"date": d_str, "reason": msg})
+                    failure_reasons.append(msg)
+                    lifecycle_violations.append(d_str)
+                    continue
+
+                curr_state = rec.get("state")
+                owner = rec.get("owning_cycle_id")
+                res_status = rec.get("reservation_status")
+                rec_fp = rec.get("dataset_fingerprint", "")
+
+                # Must not be already EXPOSED or RETIRED
+                if curr_state in ("EXPOSED", "RETIRED"):
+                    msg = f"Date {d_str} has already been {curr_state}"
+                    invalid_dates.append({"date": d_str, "reason": msg})
+                    failure_reasons.append(msg)
+                    reused_dates.append(d_str)
+                elif curr_state != "SEALED":
+                    msg = f"Date {d_str} is in illegal state '{curr_state}' (expected SEALED)"
+                    invalid_dates.append({"date": d_str, "reason": msg})
+                    failure_reasons.append(msg)
+                    lifecycle_violations.append(d_str)
+
+                # owning_cycle_id must match requesting cycle
+                if owner != cycle_id:
+                    msg = f"Ownership mismatch for {d_str}: owned by '{owner}', requested by '{cycle_id}'"
+                    invalid_dates.append({"date": d_str, "reason": msg})
+                    failure_reasons.append(msg)
+                    ownership_violations.append(d_str)
+
+                # reservation_status must be exactly EVALUATION_IN_PROGRESS
+                if res_status != "EVALUATION_IN_PROGRESS":
+                    msg = f"Reservation status for {d_str} is '{res_status}' (expected 'EVALUATION_IN_PROGRESS')"
+                    invalid_dates.append({"date": d_str, "reason": msg})
+                    failure_reasons.append(msg)
+                    lifecycle_violations.append(d_str)
+
+                # dataset_fingerprint must match reservation fingerprint
+                if dataset_fingerprint and rec_fp and rec_fp != dataset_fingerprint:
+                    msg = f"Dataset fingerprint mismatch for {d_str}: reservation='{rec_fp}', request='{dataset_fingerprint}'"
+                    invalid_dates.append({"date": d_str, "reason": msg})
+                    failure_reasons.append(msg)
+                    fingerprint_mismatches.append(d_str)
+                elif rec_fp and not dataset_fingerprint:
+                    msg = f"Dataset fingerprint missing in completion request for {d_str} (expected '{rec_fp}')"
+                    invalid_dates.append({"date": d_str, "reason": msg})
+                    failure_reasons.append(msg)
+                    fingerprint_mismatches.append(d_str)
+
+            # All-or-nothing: if ANY date fails validation, reject without partial update
+            if invalid_dates:
+                # Determine actual final lifecycle state from existing records
+                existing_states = {records[d_str].get("state") for d_str in iso_dates if d_str in records}
+                if "SEALED" in existing_states:
+                    final_state = "SEALED"
+                elif "EXPOSED" in existing_states:
+                    final_state = "EXPOSED"
+                elif "RETIRED" in existing_states:
+                    final_state = "RETIRED"
+                else:
+                    final_state = "AVAILABLE"
+
+                # Extract started_at from reservation record if available
+                started_at = now_ist
+                for d_str in iso_dates:
+                    if d_str in records and records[d_str].get("evaluation_started_at"):
+                        started_at = records[d_str]["evaluation_started_at"]
+                        break
+
+                # Append failed evaluation history record reflecting ACTUAL registry state
+                reg.setdefault("evaluation_history", []).append({
+                    "evaluation_id": evaluation_id,
+                    "cycle_id": cycle_id,
+                    "evaluation_type": evaluation_type,
+                    "evaluation_status": "FAILED_EVALUATION",
+                    "consumed_dates": iso_dates,
+                    "strategy_ids": strat_list,
+                    "dataset_fingerprint": dataset_fingerprint,
+                    "started_at": started_at,
+                    "completed_at": now_ist,
+                    "final_lifecycle_state": final_state,
+                    "completion_success": False,
+                    "failure_reasons": failure_reasons,
+                    "ok": False,
+                })
+                self.save_registry(reg)
+
+                status = "VALID_UNSEEN"
+                if ownership_violations:
+                    status = "HOLDOUT_OWNERSHIP_VIOLATION"
+                elif reused_dates:
+                    status = "EXPOSED_HOLDOUT_REUSED"
+                elif fingerprint_mismatches:
+                    status = "DATASET_FINGERPRINT_MISMATCH"
+                else:
+                    status = "LIFECYCLE_STATE_VIOLATION"
+
+                return {
+                    "ok": False,
+                    "completion_success": False,
+                    "evaluation_id": evaluation_id,
+                    "cycle_id": cycle_id,
+                    "evaluation_type": evaluation_type,
+                    "holdout_consumed": False,
+                    "holdout_state": final_state,
+                    "completed_at": now_ist,
+                    "invalid_dates": invalid_dates,
+                    "failure_reasons": failure_reasons,
+                    "ownership_violations": ownership_violations,
+                    "fingerprint_mismatches": fingerprint_mismatches,
+                    "lifecycle_violations": lifecycle_violations,
+                    "reused_dates": reused_dates,
+                    "ownership_valid": len(ownership_violations) == 0,
+                    "independent_holdout_valid": False,
+                    "leakage_detected": True,
+                    "status": status,
+                }
+
+            # 5. Transition consumed dates from SEALED to EXPOSED
+            # 6. Update reservation status to EVALUATION_COMPLETED
+            # 7. Record exposure timestamps and first-exposure cycle
+            started_at = now_ist
+            for d_str in iso_dates:
+                rec = records[d_str]
+                if rec.get("evaluation_started_at"):
+                    started_at = rec["evaluation_started_at"]
+                rec["state"] = "EXPOSED"
+                rec["reservation_status"] = "EVALUATION_COMPLETED"
+                rec["first_exposed_cycle"] = rec.get("first_exposed_cycle") or cycle_id
+                rec["exposure_timestamp"] = rec.get("exposure_timestamp") or now_ist
+                rec["previous_exposure_count"] = int(rec.get("previous_exposure_count", 0)) + 1
+                rec["data_accessed"] = True
+                if dataset_fingerprint and not rec.get("dataset_fingerprint"):
+                    rec["dataset_fingerprint"] = dataset_fingerprint
+                existing_strats = set(rec.get("strategy_ids_evaluated", []))
+                rec["strategy_ids_evaluated"] = sorted(existing_strats | set(strat_list))
+                rec["registry_version"] = REGISTRY_VERSION
+
+            # 8. Record evaluation metadata in sealed_exposures
+            reg.setdefault("sealed_exposures", []).append({
+                "cycle_id": cycle_id,
+                "recorded_at_ist": now_ist,
+                "commit_sha": _get_git_commit_sha(),
+                "unseen_dates": iso_dates,
+                "newly_sealed_count": len(iso_dates),
+                "previously_sealed_count": 0,
+                "ownership_violations": [],
+                "leakage_detected": False,
+                "independent_holdout_valid": True,
+                "fingerprint_mismatches": [],
+                "dataset_fingerprint": dataset_fingerprint,
+                "strategy_ids_evaluated": strat_list,
+                "notes": f"{evaluation_type} completed ({evaluation_id})",
+            })
+
+            # 9. Append evaluation history
             reg.setdefault("evaluation_history", []).append({
                 "evaluation_id": evaluation_id,
                 "cycle_id": cycle_id,
                 "evaluation_type": evaluation_type,
-                "strategy_ids": list(strategy_ids),
+                "evaluation_status": "EVALUATION_COMPLETED",
+                "consumed_dates": iso_dates,
+                "strategy_ids": strat_list,
                 "dataset_fingerprint": dataset_fingerprint,
-                "consumed_dates": [d.isoformat() for d in consumed_dates],
+                "started_at": started_at,
                 "completed_at": now_ist,
-                "final_lifecycle_state": "EXPOSED" if consumed_dates else "SEALED",
-                "ok": not res.get("ownership_violations") and not res.get("fingerprint_mismatches"),
+                "final_lifecycle_state": "EXPOSED",
+                "completion_success": True,
+                "failure_reasons": [],
+                "ok": True,
             })
+
+            # 10. Save the registry atomically
             self.save_registry(reg)
-        return {
-            "ok": not res.get("ownership_violations") and not res.get("fingerprint_mismatches"),
-            "evaluation_id": evaluation_id,
-            "evaluation_type": evaluation_type,
-            "holdout_consumed": bool(consumed_dates),
-            "holdout_state": "EXPOSED" if consumed_dates else "SEALED",
-            "completed_at": now_ist,
-            **res,
-        }
+
+            return {
+                "ok": True,
+                "completion_success": True,
+                "evaluation_id": evaluation_id,
+                "cycle_id": cycle_id,
+                "evaluation_type": evaluation_type,
+                "holdout_consumed": True,
+                "holdout_state": "EXPOSED",
+                "completed_at": now_ist,
+                "total_sealed_dates": len(reg["sealed_dates"]),
+                "current_unseen_dates": len(iso_dates),
+                "newly_exposed_dates": len(iso_dates),
+                "previously_exposed_dates": 0,
+                "reused_dates": [],
+                "ownership_violations": [],
+                "fingerprint_mismatches": [],
+                "invalid_dates": [],
+                "failure_reasons": [],
+                "ownership_valid": True,
+                "leakage_detected": False,
+                "independent_holdout_valid": True,
+                "status": "VALID_UNSEEN",
+            }
 
     def mark_evaluation_failed(
         self,
@@ -581,6 +793,22 @@ class SealedHoldoutGuard:
                 "reason": reason,
                 "timestamp": now_ist,
             })
+            if marked:
+                reg.setdefault("evaluation_history", []).append({
+                    "evaluation_id": f"failed_{cycle_id}_{now_ist[:19]}",
+                    "cycle_id": cycle_id,
+                    "evaluation_type": "FAILED_EVALUATION",
+                    "evaluation_status": "FAILED_EVALUATION",
+                    "consumed_dates": marked,
+                    "strategy_ids": [],
+                    "dataset_fingerprint": records[marked[0]].get("dataset_fingerprint", "") if marked else "",
+                    "started_at": records[marked[0]].get("evaluation_started_at", now_ist) if marked else now_ist,
+                    "completed_at": now_ist,
+                    "final_lifecycle_state": "EXPOSED" if exposed_on_fail else "SEALED",
+                    "completion_success": False,
+                    "failure_reasons": [reason],
+                    "ok": False,
+                })
             self.save_registry(reg)
             return {
                 "marked_failed": marked,
