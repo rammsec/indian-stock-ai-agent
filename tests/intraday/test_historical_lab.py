@@ -259,3 +259,42 @@ def test_phase9_cost_aware_filter_wrapper():
     assert "Filtered:" in sig.rationale[0]
 
 
+def test_phase10_daily_5m_archive_merge_dedup(tmp_path, monkeypatch):
+    """Verify daily 5m archiver merges new bars without losing existing historical bars or creating duplicates."""
+    import pandas as pd
+    import scripts.archive_daily_5m as arch
+    from trader.data.schema import DataProvenance
+
+    monkeypatch.setattr(arch, "CACHE_DIR", tmp_path)
+    day1 = date(2026, 11, 19)
+    day2 = date(2026, 11, 20)
+    c1 = generate_synthetic_5m_session("RELIANCE", session_date=day1, num_bars=10)
+    c2 = generate_synthetic_5m_session("RELIANCE", session_date=day2, num_bars=10)
+
+    # Seed existing parquet with day1
+    pd.DataFrame([
+        {"timestamp": c.timestamp, "open": c.open, "high": c.high, "low": c.low, "close": c.close, "volume": c.volume}
+        for c in c1
+    ]).to_parquet(tmp_path / "RELIANCE_NSE_5m.parquet", index=False)
+
+    # Mock fetch returning overlapping last 2 bars of day1 + all 10 bars of day2
+    prov = DataProvenance(
+        source_mode=DataSourceMode.HISTORICAL_REAL,
+        source_name="MockYF",
+        ingested_at=datetime.now(tz=IST_TZ),
+        symbol="RELIANCE",
+        exchange="NSE",
+        bars_count=12,
+        start_timestamp=c1[-2].timestamp,
+        end_timestamp=c2[-1].timestamp,
+        sha256_hash="0" * 64,
+    )
+    monkeypatch.setattr(arch, "load_historical_5m_candles", lambda **kw: (c1[-2:] + c2, prov))
+
+    added = arch.merge_and_archive_symbol("RELIANCE", days=5)
+    assert added == 10
+    merged = pd.read_parquet(tmp_path / "RELIANCE_NSE_5m.parquet")
+    assert len(merged) == 20
+
+
+

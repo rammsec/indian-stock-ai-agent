@@ -13364,5 +13364,115 @@
       "approval_status": "APPROVED_FOR_PAPER",
       "created_at": "2026-11-21T10:53:48.773213+05:30"
     }
+  ],
+  "phase10_sizing_brokerage_study": [
+    {
+      "config_name": "A_Standard_20INR_3Pos",
+      "strategy_id": "STRAT-002-ORB-BREAKOUT",
+      "strategy_name": "Opening Range Breakout",
+      "sessions": 59,
+      "gross_return_pct": -0.52,
+      "net_return_pct": -2.2,
+      "alpha_vs_bh_pct": 10.82,
+      "total_trades": 25,
+      "win_rate_pct": 48.0,
+      "total_fees_inr": 843.63
+    },
+    {
+      "config_name": "A_Standard_20INR_3Pos",
+      "strategy_id": "STRAT-003-EMA-CROSS",
+      "strategy_name": "EMA 9/21 Crossover",
+      "sessions": 59,
+      "gross_return_pct": -3.39,
+      "net_return_pct": -10.83,
+      "alpha_vs_bh_pct": 2.19,
+      "total_trades": 106,
+      "win_rate_pct": 29.25,
+      "total_fees_inr": 3723.36
+    },
+    {
+      "config_name": "A_Standard_20INR_3Pos",
+      "strategy_id": "STRAT-001-VWAP-V2",
+      "strategy_name": "VWAP Pullback (v2.0 Cost-Aware)",
+      "sessions": 59,
+      "gross_return_pct": -12.79,
+      "net_return_pct": -20.62,
+      "alpha_vs_bh_pct": -7.6,
+      "total_trades": 110,
+      "win_rate_pct": 24.55,
+      "total_fees_inr": 3914.18
+    },
+    {
+      "config_name": "B_Concentrated_20INR_1Pos",
+      "strategy_id": "STRAT-002-ORB-BREAKOUT",
+      "strategy_name": "Opening Range Breakout",
+      "sessions": 59,
+      "gross_return_pct": -0.5,
+      "net_return_pct": -2.38,
+      "alpha_vs_bh_pct": 10.64,
+      "total_trades": 25,
+      "win_rate_pct": 48.0,
+      "total_fees_inr": 940.08
+    },
+    {
+      "config_name": "B_Concentrated_20INR_1Pos",
+      "strategy_id": "STRAT-003-EMA-CROSS",
+      "strategy_name": "EMA 9/21 Crossover",
+      "sessions": 59,
+      "gross_return_pct": -3.26,
+      "net_return_pct": -9.35,
+      "alpha_vs_bh_pct": 3.67,
+      "total_trades": 77,
+      "win_rate_pct": 29.87,
+      "total_fees_inr": 3046.8
+    },
+    {
+      "config_name": "B_Concentrated_20INR_1Pos",
+      "strategy_id": "STRAT-001-VWAP-V2",
+      "strategy_name": "VWAP Pullback (v2.0 Cost-Aware)",
+      "sessions": 59,
+      "gross_return_pct": -6.53,
+      "net_return_pct": -11.95,
+      "alpha_vs_bh_pct": 1.07,
+      "total_trades": 68,
+      "win_rate_pct": 32.35,
+      "total_fees_inr": 2709.98
+    },
+    {
+      "config_name": "C_ZeroBrokerage_1Pos",
+      "strategy_id": "STRAT-002-ORB-BREAKOUT",
+      "strategy_name": "Opening Range Breakout",
+      "sessions": 59,
+      "gross_return_pct": -0.5,
+      "net_return_pct": -1.73,
+      "alpha_vs_bh_pct": 7.48,
+      "total_trades": 25,
+      "win_rate_pct": 48.0,
+      "total_fees_inr": 617.04
+    },
+    {
+      "config_name": "C_ZeroBrokerage_1Pos",
+      "strategy_id": "STRAT-003-EMA-CROSS",
+      "strategy_name": "EMA 9/21 Crossover",
+      "sessions": 59,
+      "gross_return_pct": -3.26,
+      "net_return_pct": -7.26,
+      "alpha_vs_bh_pct": 1.95,
+      "total_trades": 77,
+      "win_rate_pct": 29.87,
+      "total_fees_inr": 1999.83
+    },
+    {
+      "config_name": "C_ZeroBrokerage_1Pos",
+      "strategy_id": "STRAT-001-VWAP-V2",
+      "strategy_name": "VWAP Pullback (v2.0 Cost-Aware)",
+      "sessions": 59,
+      "gross_return_pct": -6.53,
+      "net_return_pct": -10.09,
+      "alpha_vs_bh_pct": -0.88,
+      "total_trades": 68,
+      "win_rate_pct": 33.82,
+      "total_fees_inr": 1778.65
+    }
   ]
 }

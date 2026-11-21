@@ -95,6 +95,11 @@ async function loadLabIndex() {
       .join("");
 
     renderPerformanceHistory(LAB_STATE.index.history_runs || []);
+    renderDataQualityAnalytics(LAB_STATE.index.data_quality_analytics);
+    renderMultiDayLeaderboard(LAB_STATE.index.multi_day_leaderboard || [], LAB_STATE.index.coverage_summary);
+    renderSlippageAndWalkForward(LAB_STATE.index.slippage_sensitivity || [], LAB_STATE.index.walk_forward_summary || {});
+    renderExperiments(LAB_STATE.index.phase9_experiments || LAB_STATE.index.experiments || []);
+    renderPhase10Study(LAB_STATE.index.phase10_sizing_brokerage_study || []);
 
     const defaultDate = LAB_STATE.index.available_dates[0].date;
     const defaultStrat = LAB_STATE.index.strategies[0].id;
@@ -668,5 +673,27 @@ function renderExperiments(exps) {
     })
     .join("");
 }
+
+function renderPhase10Study(rows) {
+  const tbody = document.getElementById("phase10-study-tbody");
+  if (!tbody) return;
+  tbody.innerHTML = rows
+    .map(
+      (r) => `
+      <tr>
+        <td style="font-weight: 700; color: #fff;">${r.config_name}</td>
+        <td>${r.strategy_name}</td>
+        <td class="${r.gross_return_pct >= 0 ? "text-green" : "text-red"}">${r.gross_return_pct >= 0 ? "+" : ""}${r.gross_return_pct}%</td>
+        <td class="${r.net_return_pct >= 0 ? "text-green" : "text-red"}">${r.net_return_pct >= 0 ? "+" : ""}${r.net_return_pct}%</td>
+        <td class="${r.alpha_vs_bh_pct >= 0 ? "text-green" : "text-red"}">${r.alpha_vs_bh_pct >= 0 ? "+" : ""}${r.alpha_vs_bh_pct}%</td>
+        <td>${r.total_trades}</td>
+        <td>${r.win_rate_pct}%</td>
+        <td style="color: var(--accent-red);">₹${Number(r.total_fees_inr).toFixed(2)}</td>
+      </tr>
+    `
+    )
+    .join("");
+}
+
 
 
