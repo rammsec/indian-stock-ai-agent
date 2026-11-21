@@ -99,6 +99,15 @@ INSTRUMENT_MASTER: dict[str, InstrumentInfo] = {
         sector="Capital Goods / Infrastructure",
         is_fno_eligible=True,
     ),
+    "BIRLACABLE": InstrumentInfo(
+        symbol="BIRLACABLE",
+        nse_symbol="BIRLACABLE",
+        bse_code="500060",
+        isin="INE800A01015",
+        company_name="Birla Cable Ltd",
+        sector="Cables & Telecom Infrastructure",
+        is_fno_eligible=False,
+    ),
 }
 
 # Lookup indices

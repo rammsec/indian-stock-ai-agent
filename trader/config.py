@@ -63,3 +63,23 @@ class CostConfig:
 
 # Default cost instance
 DEFAULT_COST_CONFIG = CostConfig()
+
+# Historical AI Trading Lab Defaults (₹50,000 Virtual Portfolio & 5-Stock Universe)
+LAB_DEFAULT_UNIVERSE: tuple[str, ...] = ("RELIANCE", "TCS", "BIRLACABLE", "ITC", "TATAELXSI")
+LAB_INITIAL_CAPITAL_INR: float = 50_000.0
+
+
+@dataclass(frozen=True)
+class LabRiskConfig:
+    """Configurable capital-preservation risk parameters for the ₹50,000 Trading Lab."""
+
+    initial_capital_inr: float = 50_000.0
+    risk_per_trade_pct: float = 0.005          # 0.5% per trade
+    max_risk_per_trade_inr: float = 250.0      # ₹250 hard risk cap per trade
+    max_daily_loss_pct: float = 0.02           # 2.0% daily loss circuit breaker
+    max_daily_loss_inr: float = 1_000.0        # ₹1,000 daily loss cap
+    max_open_positions: int = 3                # Maximum concurrent open positions
+    max_portfolio_allocation_pct: float = 0.90 # 90% max capital deployed
+    min_risk_reward_ratio: float = 1.5         # Minimum 1:1.5 R:R
+    square_off_time: time = INTRADAY_MANDATORY_SQUAREOFF_TIME
+
