@@ -1,0 +1,171 @@
+{
+  "cycle_id": "CYCLE-009B",
+  "audit_type": "READ_ONLY_IMPLEMENTATION_READINESS_AUDIT",
+  "source_commit": "1b079c2ac3bfebc2b49ad09e9bd9e85c4ee6c827",
+  "generated_date": "2026-11-22",
+  "readiness_classification": "READY",
+  "feature_families": [
+    {
+      "family": "ATR",
+      "implementation_count": 5,
+      "implementations": [
+        {
+          "id": "atr_1a",
+          "file": "trader/features/indicators.py",
+          "lines": "73-91",
+          "symbol": "compute_atr",
+          "formula": "TR = max(H-L, |H-C_{t-1}|, |L-C_{t-1}|); TR.ewm(alpha=1/14, adjust=False).mean() (Wilder EWM)",
+          "input_type": "pd.Series x3",
+          "warmup_bars": "min_periods=1 (full convergence ~42 bars)",
+          "missing_data_behavior": "No NaNs after bar 0; no bfill",
+          "timezone_assumption": "Order-dependent",
+          "callers": ["compute_all_features", "trader/strategies/*", "trader/lab/replay_engine.py", "trader/research/cycle004.py"]
+        },
+        {
+          "id": "atr_1b",
+          "file": "backend/technical_engine.py",
+          "lines": "62-75",
+          "symbol": "compute_atr",
+          "formula": "Wilder EWM (alpha=1/14, min_periods=5, adjust=False)",
+          "input_type": "pd.DataFrame",
+          "warmup_bars": "min_periods=5 (bars 0..3 NaN)",
+          "missing_data_behavior": "build_technical_snapshot falls back to cur_price * 0.018",
+          "timezone_assumption": "Daily date-sorted",
+          "callers": ["build_technical_snapshot", "tests/test_engine.py"]
+        },
+        {
+          "id": "atr_1c",
+          "file": "backend/features/feature_engine.py",
+          "lines": "93-103",
+          "symbol": "_compute_atr_series",
+          "formula": "Wilder EWM (alpha=1/period, min_periods=max(3, period//2), adjust=False)",
+          "input_type": "pd.Series x3",
+          "warmup_bars": "min_periods=7 for period=14",
+          "missing_data_behavior": "Preserves NaN during warmup",
+          "timezone_assumption": "Daily observation_date",
+          "callers": ["build_features_for_symbol", "tests/test_phase2_features.py"]
+        },
+        {
+          "id": "atr_1d",
+          "file": "trader/timing/candle_intelligence.py",
+          "lines": "521-539",
+          "symbol": "_compute_atr",
+          "formula": "Simple arithmetic mean np.mean(TR[-min(14, len):]) (SMA ATR — diverges from Wilder!)",
+          "input_type": "pd.DataFrame (validated OHLCV)",
+          "warmup_bars": "Scalar for len>=1; full window at len>=14",
+          "missing_data_behavior": "Empty/non-finite -> None; candle_timing_agent falls back to entry_price * 0.01",
+          "timezone_assumption": "Strict IST monotonic",
+          "callers": ["CandleIntelligenceEngine", "CandleTimingAgent", "Cycle007Pipeline", "Cycle008WalkForwardEvaluator"]
+        },
+        {
+          "id": "atr_1e",
+          "file": "trader/strategies/supertrend.py",
+          "lines": "15",
+          "symbol": "compute_supertrend (fallback)",
+          "formula": "df['atr_14'] if present (ignoring period=10), else (H-L).rolling(10).mean() (omits prior-close gaps)",
+          "input_type": "pd.DataFrame",
+          "warmup_bars": "10 bars if fallback",
+          "missing_data_behavior": "First 9 bars NaN; currently dead code (unused by SupertrendStrategy.evaluate_bar)",
+          "timezone_assumption": "None",
+          "callers": ["Unused in SupertrendStrategy.evaluate_bar"]
+        }
+      ]
+    },
+    {
+      "family": "EMA",
+      "implementation_count": 5,
+      "implementations": [
+        {"id": "ema_2a", "file": "trader/features/indicators.py", "lines": "34-36", "symbol": "compute_ema", "formula": "series.ewm(span=span, adjust=False).mean()", "warmup_bars": "min_periods=1", "callers": ["compute_all_features", "compute_macd"]},
+        {"id": "ema_2b", "file": "backend/technical_engine.py", "lines": "43-46, 161", "symbol": "compute_macd / build_technical_snapshot", "formula": "close.ewm(span=..., adjust=False).mean()", "warmup_bars": "min_periods=1", "callers": ["build_technical_snapshot"]},
+        {"id": "ema_2c", "file": "backend/features/feature_engine.py", "lines": "471, 494-495", "symbol": "build_features_for_symbol", "formula": "close.ewm(span=w, min_periods=max(3, w//2), adjust=False).mean()", "warmup_bars": "max(3, w//2)", "callers": ["build_historical_feature_matrix"]},
+        {"id": "ema_2d", "file": "trader/timing/candle_intelligence.py", "lines": "685-686", "symbol": "CandleIntelligenceEngine.analyze_timeframe", "formula": "closes.ewm(span=9/21, adjust=False).mean().iloc[-1]", "warmup_bars": "min_bars=5", "callers": ["CandleTimingAgent", "Cycle007Pipeline", "Cycle008WalkForwardEvaluator"]},
+        {"id": "ema_2e", "file": "trader/evaluation/walk_forward.py", "lines": "726-728", "symbol": "_make_simple_technical_baseline_signal_fn", "formula": "closes.ewm(span=9/21, adjust=False).mean().iloc[-1]", "warmup_bars": "len >= 22", "callers": ["Cycle008WalkForwardEvaluator"]}
+      ]
+    },
+    {
+      "family": "VWAP",
+      "implementation_count": 3,
+      "implementations": [
+        {"id": "vwap_3a", "file": "trader/features/indicators.py", "lines": "11-31", "symbol": "compute_intraday_vwap", "formula": "Session-resetting IST cumsum(TP*V)/cumsum(V)", "missing_data_behavior": "Zero-vol -> typical_price + ffill()", "timezone_assumption": "Converts to Asia/Kolkata"},
+        {"id": "vwap_3b", "file": "trader/timing/candle_intelligence.py", "lines": "542-563", "symbol": "_compute_session_vwap", "formula": "Latest-session IST scalar sum(TP*V)/sum(V)", "missing_data_behavior": "Zero-vol -> (None, 'UNAVAILABLE', None)", "timezone_assumption": "Pre-validated IST"},
+        {"id": "vwap_3c", "file": "backend/features/feature_engine.py", "lines": "622", "symbol": "vd_vwap_dist_pct", "formula": "(close / nse_bhavcopy_avg_price - 1) * 100", "missing_data_behavior": "NaN when NSE AVG_PRICE absent", "timezone_assumption": "Daily observation_date"}
+      ]
+    },
+    {
+      "family": "RSI",
+      "implementation_count": 3,
+      "implementations": [
+        {"id": "rsi_4a", "file": "trader/features/indicators.py", "lines": "39-51", "symbol": "compute_rsi", "formula": "Wilder EWM alpha=1/14, min_periods=14, fillna(50.0)", "missing_data_behavior": "BUG: avg_loss==0 & avg_gain>0 maps to 50.0 instead of 100.0"},
+        {"id": "rsi_4b", "file": "backend/technical_engine.py", "lines": "27-36", "symbol": "compute_rsi", "formula": "Identical to rsi_4a (same avg_loss==0 -> 50.0 bug)", "missing_data_behavior": "Same 50.0 bug"},
+        {"id": "rsi_4c", "file": "backend/features/feature_engine.py", "lines": "83-90", "symbol": "_wilder_rsi", "formula": "Wilder EWM alpha=1/period, min_periods=period, no fillna", "missing_data_behavior": "avg_loss==0 -> NaN"}
+      ]
+    },
+    {
+      "family": "Volume_and_RVOL",
+      "implementation_count": 6,
+      "implementations": [
+        {"id": "rvol_5a", "file": "trader/features/indicators.py", "lines": "160-161", "symbol": "volume_ratio", "formula": "V_t / V.rolling(20, min_periods=1).mean() (INCLUSIVE current bar)"},
+        {"id": "rvol_5b", "file": "trader/timing/candle_intelligence.py", "lines": "724-734", "symbol": "relative_volume_ratio", "formula": "V_t / mean(prior_14[V > 0]) (EXCLUSIVE non-zero)"},
+        {"id": "rvol_5c", "file": "trader/strategies/mtf_strategies.py", "lines": "307,357,402,491,542", "symbol": "inline avg_vol", "formula": "V_t / max(1.0, mean(prior_10)) (EXCLUSIVE)"},
+        {"id": "rvol_5d", "file": "backend/features/feature_engine.py", "lines": "574-576", "symbol": "vd_rel_vol_{w}d", "formula": "V_t / V.rolling(w).mean() (INCLUSIVE, w in 5,10,20,50,100)"},
+        {"id": "rvol_5e", "file": "backend/technical_engine.py", "lines": "193-195", "symbol": "volume_surge_ratio", "formula": "round(V_t / mean(V.iloc[-20:]), 2) (INCLUSIVE)"},
+        {"id": "rvol_5f", "file": "backend/intel_engine.py + nse_corporate_collector.py", "lines": "177-192 / 244", "symbol": "volume_surge_ratio / rel_vol", "formula": "Mixed: all-prior exclusive vs 20d inclusive"}
+      ]
+    },
+    {
+      "family": "Candle_Anatomy_and_Patterns",
+      "implementation_count": 2,
+      "implementations": [
+        {"id": "candle_6a", "file": "trader/timing/candle_intelligence.py", "lines": "370-496", "symbol": "compute_candle_anatomy + detect_candle_patterns", "formula": "Unsigned body_ratio [0,1], CLV [0,1], range/open, 10 deterministic patterns"},
+        {"id": "candle_6b", "file": "backend/features/feature_engine.py", "lines": "550-557", "symbol": "pm_body_to_range / pm_close_location_value", "formula": "Signed body_to_range [-1,1], CLV [-1,1] (= 2*CLV_01 - 1), range/close"}
+      ]
+    },
+    {
+      "family": "Trend_and_Momentum",
+      "implementation_count": 5,
+      "implementations": [
+        {"id": "trend_7a", "file": "trader/features/indicators.py + backend/technical_engine.py + feature_engine.py", "lines": "54-70 / 39-48 / 493-501", "symbol": "compute_macd", "formula": "EMA(12)-EMA(26), signal EMA(9); feature_engine normalizes / close * 100"},
+        {"id": "trend_7b", "file": "trader/strategies/supertrend.py", "lines": "12-53", "symbol": "compute_supertrend", "formula": "hl2 +/- 3*atr (uses atr_14 or H-L SMA); dead code in SupertrendStrategy"},
+        {"id": "trend_7c", "file": "trader/timing/candle_intelligence.py", "lines": "499-518", "symbol": "_compute_swing_structure", "formula": "2-half split over 12 bars: HH/HL -> UPTREND, LH/LL -> DOWNTREND"},
+        {"id": "trend_7d", "file": "candle_intelligence.py / volume_breakout.py / mtf_strategies.py / orb_breakout.py / walk_forward.py", "lines": "multiple", "symbol": "breakout lookbacks", "formula": "5 different windows (3, 4, 5, 6, 10 bars) + Donchian 20/55/252D"},
+        {"id": "trend_7e", "file": "trader/features/indicators.py + backend/technical_engine.py", "lines": "94-125 / 203-217", "symbol": "compute_cpr_pivots / floor pivots", "formula": "Standard P/BC/TC/R1/S1/R2/S2; technical_engine adds ATR clamping"}
+      ]
+    },
+    {
+      "family": "Market_Regime",
+      "implementation_count": 6,
+      "implementations": [
+        {"id": "regime_8a", "file": "backend/collectors/market_regime_collector.py", "lines": "103-224", "symbol": "classify_market_regime", "formula": "5-class EOD Nifty/DMA/VIX>=21/A-D -> docs/data/regime.json"},
+        {"id": "regime_8b", "file": "trader/agents/market_intelligence.py", "lines": "24-133", "symbol": "MarketIntelligenceAgent.analyze_market", "formula": "Intraday Nifty/BankNifty/VIX>24/A-D/FII-DII score"},
+        {"id": "regime_8c", "file": "trader/evaluation/walk_forward.py", "lines": "222-241", "symbol": "_compute_pre_cutoff_regime_proxy", "formula": "4-class median 20-bar 1h return across 5-stock universe (+/-1%)"},
+        {"id": "regime_8d", "file": "backend/backtesting/walk_forward.py", "lines": "37-51", "symbol": "_infer_row_regime_label", "formula": "5-class on ms_* columns with different thresholds than 8a"},
+        {"id": "regime_8e", "file": "backend/features/feature_engine.py", "lines": "689-693", "symbol": "ms_regime_score", "formula": "Continuous scalar in {-2, -1, 0, +1, +2}"},
+        {"id": "regime_8f", "file": "backend/technical_engine.py + backend/phase6/risk.py", "lines": "220-231 / 103-127", "symbol": "trend_regime / Phase 6 stress", "formula": "Per-stock 50/200 DMA + VIX>=25 stress"}
+      ]
+    },
+    {
+      "family": "Multi_Timeframe_Alignment",
+      "implementation_count": 3,
+      "implementations": [
+        {"id": "mtf_9a", "file": "trader/data/resampler.py", "lines": "31-96", "symbol": "resample_5m_candles", "formula": "09:15 IST anchored buckets; BUG: fixed expected_sub_bars=12 drops valid 15:15-15:30 1h bar (3x5m)"},
+        {"id": "mtf_9b", "file": "trader/strategies/mtf_strategies.py", "lines": "11-561", "symbol": "STRAT-008..018", "formula": "Single pre-resampled TF; lines 499,549 use .dt.date without tz_convert('Asia/Kolkata')"},
+        {"id": "mtf_9c", "file": "trader/timing/candle_intelligence.py", "lines": "823-883", "symbol": "CandleIntelligenceEngine.analyze", "formula": "70% primary + 30% mean confirming TFs; marks absent TFs UNAVAILABLE"}
+      ]
+    }
+  ],
+  "private_helper_cross_imports": [
+    {"importer": "trader/timing/central_directional_agent.py:19-25", "source": "trader/paper/cycle006b.py", "symbols": ["_load_json_strict", "_parse_finite_float", "_parse_iso_to_ist", "_parse_obs_date"]},
+    {"importer": "trader/data/loader_1h.py:13", "source": "trader/data/loader.py", "symbols": ["_compute_candle_series_hash"]},
+    {"importer": "trader/lab/data_service.py:12", "source": "trader/data/loader.py", "symbols": ["_compute_candle_series_hash"]},
+    {"importer": "trader/research/orchestrator.py:38", "source": "trader/research/holdout.py", "symbols": ["_get_git_commit_sha"]}
+  ],
+  "critical_pre_implementation_hazards": [
+    "Intraday bar-open vs bar-close lookahead (ts_open < as_of_ist leaks unclosed 1h bars at intraday cutoffs -> must gate on ts_close_ist <= as_of_ist AND ts_init_ist <= as_of_ist)",
+    "trader/data/resampler.py:75-77 drops NSE's valid 15:15-15:30 1h bar (3x5m) by requiring 12 sub-bars",
+    "trader/data/provenance_1h.py:196-205 lacks Yahoo Finance authority cap (could emit VERIFIED if 0 incomplete sessions)",
+    "trader/risk/engine.py:91-129 checks is_daily_halted and >=15:15 IST before side=='SELL', blocking exits during halt/square-off",
+    "tests/intraday/test_cycle007_candle_timing.py:1275-1284 hard-asserts exact 6 paths in CYCLE007_IMPLEMENTATION_MODULES",
+    "trader/evaluation/walk_forward.py:365,796 directly mutates risk_engine.is_daily_halted = False",
+    ".github/workflows/intraday-lab-tests.yml installs only pytest httpx pydantic pandas numpy pyarrow yfinance (no scipy/duckdb/scikit-learn)"
+  ]
+}
