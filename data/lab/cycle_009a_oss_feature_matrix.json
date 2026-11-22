@@ -1,0 +1,294 @@
+{
+  "cycle_id": "CYCLE-009A",
+  "title": "Open-Source Quantitative Trading Intelligence Research Audit",
+  "audit_type": "READ_ONLY_RESEARCH_AUDIT",
+  "bharatalpha_baseline_commit": "1b079c2ac3bfebc2b49ad09e9bd9e85c4ee6c827",
+  "generated_date": "2026-11-22",
+  "final_classification": "RESEARCH_COMPLETE",
+  "governance": {
+    "source_code_modified": false,
+    "new_dependencies_added": false,
+    "broker_integrations_added": false,
+    "live_trading_enabled": false,
+    "paid_api_calls": 0,
+    "external_data_downloaded": false,
+    "holdout_registry_touched": false,
+    "protected_files_modified": false,
+    "pr_or_merge_created": false,
+    "qualification_allowed": false,
+    "confidence_calibration_status": "UNCALIBRATED"
+  },
+  "repositories_audited": [
+    {
+      "name": "NautilusTrader",
+      "repo": "nautechsystems/nautilus_trader",
+      "url": "https://github.com/nautechsystems/nautilus_trader",
+      "default_branch": "develop",
+      "stars": 31736,
+      "license_spdx": "LGPL-3.0-only",
+      "copyleft_risk": "WEAK_COPYLEFT_ON_CORE_CUSTOMIZATION",
+      "direct_dependency_verdict": "REJECT",
+      "overall_research_verdict": "ADAPT_PATTERNS_NATIVE"
+    },
+    {
+      "name": "vn.py",
+      "repo": "vnpy/vnpy",
+      "url": "https://github.com/vnpy/vnpy",
+      "default_branch": "master",
+      "stars": 46454,
+      "license_spdx": "MIT",
+      "copyleft_risk": "NONE_PERMISSIVE",
+      "direct_dependency_verdict": "REJECT",
+      "overall_research_verdict": "ADAPT_PATTERNS_NATIVE"
+    },
+    {
+      "name": "OpenAlgo",
+      "repo": "marketcalls/openalgo",
+      "url": "https://github.com/marketcalls/openalgo",
+      "default_branch": "main",
+      "stars": 3031,
+      "license_spdx": "AGPL-3.0",
+      "copyleft_risk": "CRITICAL_NETWORK_COPYLEFT_SECTION_13",
+      "direct_dependency_verdict": "REJECT",
+      "overall_research_verdict": "STUDY_CONCEPTS_CLEAN_ROOM_ONLY"
+    },
+    {
+      "name": "Freqtrade",
+      "repo": "freqtrade/freqtrade",
+      "url": "https://github.com/freqtrade/freqtrade",
+      "default_branch": "develop",
+      "stars": 57154,
+      "license_spdx": "GPL-3.0-only",
+      "copyleft_risk": "CRITICAL_STRONG_COPYLEFT",
+      "direct_dependency_verdict": "REJECT",
+      "overall_research_verdict": "STUDY_CONCEPTS_CLEAN_ROOM_ONLY"
+    },
+    {
+      "name": "quant-trading",
+      "repo": "je-suis-tm/quant-trading",
+      "url": "https://github.com/je-suis-tm/quant-trading",
+      "default_branch": "master",
+      "stars": 11332,
+      "license_spdx": "Apache-2.0",
+      "copyleft_risk": "NONE_PERMISSIVE_WITH_NOTICE",
+      "direct_dependency_verdict": "REJECT",
+      "overall_research_verdict": "STUDY_CONCEPTS_CLEAN_ROOM_ONLY"
+    },
+    {
+      "name": "lightweight-charts-python",
+      "repo": "louisnw01/lightweight-charts-python",
+      "url": "https://github.com/louisnw01/lightweight-charts-python",
+      "default_branch": "main",
+      "stars": 2173,
+      "license_spdx": "MIT (wrapper) + Apache-2.0 (bundled LWC v4.1.3)",
+      "copyleft_risk": "NONE_PERMISSIVE_MISSING_NOTICE",
+      "direct_dependency_verdict": "REJECT",
+      "overall_research_verdict": "REJECT_USE_NATIVE_LWC_JS"
+    }
+  ],
+  "comparative_feature_matrix": [
+    {
+      "id": "F-01",
+      "priority": "P0",
+      "feature": "Automated Lookahead & Recursive Indicator Convergence CI Validator",
+      "source_repo": "freqtrade/freqtrade",
+      "source_ref": "freqtrade/optimize/analysis/lookahead.py, freqtrade/optimize/analysis/recursive.py",
+      "bharatalpha_target": "trader/evaluation/bias_auditor.py",
+      "bharatalpha_current": "Manual unit tests & pre-cutoff slice assertions; no automated bar-truncation + warmup-convergence CI gate",
+      "nse_suitability": "HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "STUDY",
+      "complexity": "MEDIUM"
+    },
+    {
+      "id": "F-02",
+      "priority": "P0",
+      "feature": "Dual-Timestamp (ts_event vs ts_init) & Monotonic VirtualClock Replay Contract",
+      "source_repo": "nautechsystems/nautilus_trader",
+      "source_ref": "crates/backtest/src/engine.rs, crates/common/src/clock/virtual.rs",
+      "bharatalpha_target": "trader/intelligence/data_contract.py",
+      "bharatalpha_current": "CYCLE-006C checks publication_timestamp & collection_timestamp on events, but OHLCV/news/regime lack unified ts_event/ts_init contract",
+      "nse_suitability": "HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "ADAPT",
+      "complexity": "LOW_MEDIUM"
+    },
+    {
+      "id": "F-03",
+      "priority": "P0",
+      "feature": "3-State RiskEngine (ACTIVE / REDUCING / HALTED) + Pending Cash Reservations + Order-Rate Throttler",
+      "source_repo": "nautechsystems/nautilus_trader",
+      "source_ref": "crates/risk/src/engine/mod.rs, crates/common/src/throttler.rs",
+      "bharatalpha_target": "trader/risk/engine.py",
+      "bharatalpha_current": "DeterministicRiskEngine has binary daily halt & static cutoffs; no REDUCING wind-down state, pending cash reservations, or SEBI/NSE order-rate throttler",
+      "nse_suitability": "VERY_HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "ADAPT",
+      "complexity": "LOW"
+    },
+    {
+      "id": "F-04",
+      "priority": "P0",
+      "feature": "Single-Source-of-Truth Shared Intelligence & Feature Engine (Eliminate 4x Indicator Drift)",
+      "source_repo": "vnpy/vnpy + BharatAlpha Phase 1 Audit",
+      "source_ref": "vnpy/alpha/dataset/template.py, trader/features/indicators.py vs trader/timing/candle_intelligence.py",
+      "bharatalpha_target": "trader/intelligence/features.py",
+      "bharatalpha_current": "4 duplicate indicator/ATR/EMA/VWAP implementations (Wilder vs SMA ATR mathematical drift) and private _-helper cross-imports",
+      "nse_suitability": "VERY_HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "ADAPT",
+      "complexity": "MEDIUM"
+    },
+    {
+      "id": "F-05",
+      "priority": "P0",
+      "feature": "IST Bar-Close Multi-Timeframe Merger (merge_asof backward on IST close timestamps)",
+      "source_repo": "freqtrade/freqtrade + nautechsystems/nautilus_trader",
+      "source_ref": "freqtrade/strategy/strategy_helper.py (merge_informative_pair), crates/data/src/aggregation.rs (timestamp_on_close)",
+      "bharatalpha_target": "trader/intelligence/mtf_aligner.py",
+      "bharatalpha_current": "trader/data/resampler.py resamples 5m->15m/60m, but no unified causal HTF->LTF merger handling NSE 15:15-15:30 15-min final hourly bar",
+      "nse_suitability": "VERY_HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "ADAPT",
+      "complexity": "LOW"
+    },
+    {
+      "id": "F-06",
+      "priority": "P1",
+      "feature": "Feature-Space Out-of-Distribution (Dissimilarity Index) Abstention Gate & Rolling Score Calibration",
+      "source_repo": "freqtrade/freqtrade",
+      "source_ref": "freqtrade/freqai/freqai_interface.py (define_data_pipeline, DissimilarityIndex, do_predict)",
+      "bharatalpha_target": "trader/intelligence/calibration_and_ood.py",
+      "bharatalpha_current": "CentralDirectionalAgent confidence is UNCALIBRATED with no OOD regime-shift abstention mask",
+      "nse_suitability": "HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "STUDY",
+      "complexity": "MEDIUM"
+    },
+    {
+      "id": "F-07",
+      "priority": "P1",
+      "feature": "MTM-Aware Risk-Guard Plugins (StoplossGuard, Cooldown, Intraday MTM Drawdown Lock)",
+      "source_repo": "freqtrade/freqtrade",
+      "source_ref": "freqtrade/plugins/protections/ (stoploss_guard.py, cooldown_period.py, max_drawdown_protection.py)",
+      "bharatalpha_target": "trader/risk/protections.py",
+      "bharatalpha_current": "Only single daily loss halt; no per-symbol cooldown, consecutive-SL lockout, or intraday unrealized MTM drawdown guard",
+      "nse_suitability": "HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "STUDY",
+      "complexity": "LOW_MEDIUM"
+    },
+    {
+      "id": "F-08",
+      "priority": "P1",
+      "feature": "Adaptive OHLC Bar-Path Fill Model + Seeded Tick Slippage (₹0.05) + Circuit-Limit Gate",
+      "source_repo": "nautechsystems/nautilus_trader + vnpy/vnpy",
+      "source_ref": "crates/execution/src/matching_engine/mod.rs (bar_high_first), crates/execution/src/models/fill.rs, vnpy/trader/utility.py (round_to)",
+      "bharatalpha_target": "trader/portfolio/execution_model.py",
+      "bharatalpha_current": "Fixed 5 bps slippage without ₹0.05 Decimal tick snapping, adaptive OHLC traversal, or NSE upper/lower circuit-limit fill rejection",
+      "nse_suitability": "VERY_HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "ADAPT",
+      "complexity": "LOW_MEDIUM"
+    },
+    {
+      "id": "F-09",
+      "priority": "P2",
+      "feature": "Clean-Room NSE Intraday ORB / Causal Dual Thrust & Volatility Squeeze Strategy Candidates",
+      "source_repo": "je-suis-tm/quant-trading",
+      "source_ref": "Dual Thrust backtest.py, London Breakout backtest.py, Bollinger Bands Pattern Recognition backtest.py",
+      "bharatalpha_target": "trader/strategies/causal_dual_thrust.py, trader/strategies/bb_squeeze.py",
+      "bharatalpha_current": "Basic orb_breakout.py exists; no causal Dual Thrust or percentile BB squeeze with RVOL + India VIX regime gating",
+      "nse_suitability": "HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "ADAPT",
+      "complexity": "LOW_MEDIUM"
+    },
+    {
+      "id": "F-10",
+      "priority": "P3",
+      "feature": "Self-Hosted Native TradingView Lightweight Charts JS (v5 / v4.2.1) with IST & ₹ Formatters",
+      "source_repo": "louisnw01/lightweight-charts-python (REJECTED) -> native tradingview/lightweight-charts JS",
+      "source_ref": "docs/lab/index.html (already uses lightweight-charts@4.2.1 CDN)",
+      "bharatalpha_target": "docs/vendor/lightweight-charts.standalone.production.js, docs/lab/app.js",
+      "bharatalpha_current": "docs/lab/index.html loads LWC v4.2.1 from unpkg CDN; no local vendoring, no Apache-2.0 NOTICE file, no unified IST/₹ price-line helper",
+      "nse_suitability": "HIGH",
+      "implementation_mode": "EXTERNAL_JS_APACHE_2_0_VENDORED",
+      "recommendation": "ADAPT",
+      "complexity": "LOW"
+    },
+    {
+      "id": "F-11",
+      "priority": "P2",
+      "feature": "Canonical NSE Master-Contract Registry & Point-in-Time Constituent Filter",
+      "source_repo": "marketcalls/openalgo (concept) + vnpy/vnpy",
+      "source_ref": "database/symbol.py (SymToken concept), vnpy/alpha/dataset/template.py (filters)",
+      "bharatalpha_target": "trader/data/instruments.py",
+      "bharatalpha_current": "Static 5-symbol LAB_DEFAULT_UNIVERSE; no historical constituent survivorship filter or tick/lot/circuit metadata table",
+      "nse_suitability": "VERY_HIGH",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "STUDY",
+      "complexity": "MEDIUM"
+    },
+    {
+      "id": "F-12",
+      "priority": "P4",
+      "feature": "Hash-Chained Redb Event Store & Snapshot+Tail Crash Recovery",
+      "source_repo": "nautechsystems/nautilus_trader",
+      "source_ref": "crates/event_store/src/lib.rs",
+      "bharatalpha_target": "Deferred until live broker execution phase",
+      "bharatalpha_current": "IntradayPaperPortfolio already maintains SHA-256 hash-chained event_ledger in memory/JSON",
+      "nse_suitability": "MEDIUM",
+      "implementation_mode": "NATIVE_CLEAN_ROOM",
+      "recommendation": "DEFER",
+      "complexity": "HIGH"
+    }
+  ],
+  "top_10_recommendations": [
+    "F-04: Single-Source-of-Truth Shared Intelligence & Feature Engine (P0)",
+    "F-01: Automated Lookahead & Recursive Indicator Convergence CI Validator (P0)",
+    "F-02: Dual-Timestamp (ts_event vs ts_init) & Monotonic VirtualClock Contract (P0)",
+    "F-03: 3-State RiskEngine (ACTIVE / REDUCING / HALTED) + Cash Reservations + Rate Throttler (P0)",
+    "F-05: IST Bar-Close Multi-Timeframe Merger (P0)",
+    "F-08: Adaptive OHLC Bar-Path Fill Model + ₹0.05 Decimal Tick Snapping + Circuit-Limit Gate (P1)",
+    "F-06: Feature-Space OOD Abstention (Dissimilarity Index) & Walk-Forward Probability Calibration (P1)",
+    "F-07: MTM-Aware Risk-Guard Plugins (StoplossGuard, Cooldown, Intraday MTM Drawdown) (P1)",
+    "F-09: Clean-Room NSE Causal Dual Thrust / ORB & Volatility Squeeze Candidates (P2)",
+    "F-10: Self-Hosted Native TradingView Lightweight Charts JS (Apache-2.0) with IST & ₹ Formatters (P3)"
+  ],
+  "do_not_adopt_list": [
+    {
+      "item": "marketcalls/openalgo codebase / Python imports / broker adapters",
+      "reason": "AGPL-3.0 Section 13 network copyleft legal blocker; 100+ pinned deps retail Flask/React monolith"
+    },
+    {
+      "item": "freqtrade/freqtrade codebase / pip package / backtester / 365-day Sharpe loss",
+      "reason": "GPL-3.0-only strong copyleft blocker; 24/7 crypto assumptions, funding fees, fractional shares, zero NSE statutory taxes"
+    },
+    {
+      "item": "nautechsystems/nautilus_trader v2 Rust/PyO3 runtime dependency",
+      "reason": "LGPL-3.0-only copyleft on core modifications; Rust 1.100 + Python 3.13+ build weight; zero NSE/Indian broker adapters"
+    },
+    {
+      "item": "vnpy/vnpy core package as runtime dependency",
+      "reason": "Unconditional PySide6/pyqtgraph/ta-lib GUI weight; os.chdir() side effect in MainEngine; Chinese enum strings; Exchange.BSE is Beijing Stock Exchange"
+    },
+    {
+      "item": "louisnw01/lightweight-charts-python package",
+      "reason": "Unmaintained >25 months (stale LWC v4.1.3), pywebview import-time side effects, eval(str(e)), UTC vs local-OS marker timezone bug, dead StaticLWC callbacks"
+    },
+    {
+      "item": "je-suis-tm/quant-trading source scripts verbatim (Dual Thrust, Shooting Star, Pair Trading, Heikin-Ashi stats, VIX Calculator, Options Straddle)",
+      "reason": "Fatal lookahead bugs (unshifted rolling, shift(-1), global max(price)), broken Student-t omega/sortino math, zero costs, unadjusted prices, out-of-scope FX/commodity/CME scripts"
+    },
+    {
+      "item": "FreqAI Reinforcement Learning (freqai_rl / PyTorch SB3) & OpenAlgo LLM/MCP chat agents",
+      "reason": "Premature complexity (P4) while BharatAlpha still has only 3 Stage 1 archive dates, 0 unexposed holdout dates, and negative 1h OOS expectancy"
+    }
+  ],
+  "single_most_valuable_next_cycle": {
+    "cycle_id": "CYCLE-009B",
+    "title": "Shared BharatAlpha Intelligence Layer + Automated Lookahead/Convergence CI Gate + 3-State RiskEngine Hardening",
+    "rationale": "CYCLE-008 proved that BharatAlpha's #1 bottleneck is NOT a shortage of strategies or UI polish — it is (1) fragmented/drifting indicator & regime math across 4 duplicate codepaths, (2) only 3 committed Stage 1 archive dates & 0 unexposed holdout dates, and (3) uncalibrated confidence with no automated lookahead/convergence CI validator. Building the single-source-of-truth Intelligence Layer (F-04 + F-02 + F-05) with the automated bias/convergence CI gate (F-01) and clean-room 3-state RiskEngine upgrade (F-03) directly eliminates structural debt and establishes the prerequisite foundation for valid multi-month out-of-sample evaluation."
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "cycle_id": "CYCLE-009B",
+  "audit_type": "MIGRATION_PARITY_MATRIX",
+  "source_commit": "1b079c2ac3bfebc2b49ad09e9bd9e85c4ee6c827",
+  "generated_date": "2026-11-22",
+  "historical_results_policy": "NEVER_OVERWRITE_FROZEN_CYCLE_001_TO_CYCLE_008_REPORTS",
+  "parity_entries": [
+    {
+      "feature_family": "ATR",
+      "legacy_implementations": ["trader/features/indicators.py::compute_atr", "backend/technical_engine.py::compute_atr", "backend/features/feature_engine.py::_compute_atr_series", "trader/timing/candle_intelligence.py::_compute_atr"],
+      "canonical_registry_variants": ["atr_wilder_14 (canonical default, alpha=1/14)", "atr_sma_14 (explicit legacy variant for CYCLE-007/008 parity)"],
+      "empirical_divergence_1h_nse": "Wilder-14 vs SMA-14: median 6.81%, p90 17.13%, p95 21.20%, max 50.51% (n=1,673). Wilder-14 across 3 files: 0.0 for bar >= 14.",
+      "parity_tolerance": {"atol": 1e-12, "rtol": 1e-12},
+      "historical_cycles_affected": "CYCLE-001..008 remain frozen with exact 0-diff parity by retaining both explicit variants; versioned rerun required ONLY if CandleTimingAgent intentionally migrates from atr_sma_14 to atr_wilder_14."
+    },
+    {
+      "feature_family": "EMA",
+      "legacy_implementations": ["indicators.py::compute_ema", "technical_engine.py", "feature_engine.py", "candle_intelligence.py:685-686", "walk_forward.py:726-728"],
+      "canonical_registry_variants": ["ema(span, min_periods=1, adjust=False)"],
+      "empirical_divergence_1h_nse": "0.0 once bar >= min_periods across all 5 implementations.",
+      "parity_tolerance": {"atol": 1e-12, "rtol": 1e-12},
+      "historical_cycles_affected": "Zero-diff migration; all CYCLE-001..008 reports remain frozen."
+    },
+    {
+      "feature_family": "VWAP",
+      "legacy_implementations": ["indicators.py::compute_intraday_vwap", "candle_intelligence.py::_compute_session_vwap"],
+      "canonical_registry_variants": ["session_vwap_ist(zero_vol_policy='typical_price'|'unavailable')"],
+      "empirical_divergence_1h_nse": "1.82e-12 max abs diff on non-zero-vol sessions; diverges only on zero-volume sessions (typical_price fallback vs None/UNAVAILABLE).",
+      "parity_tolerance": {"atol": 1e-10, "rtol": 1e-12},
+      "historical_cycles_affected": "Zero-diff migration by exposing explicit zero_vol_policy."
+    },
+    {
+      "feature_family": "RSI",
+      "legacy_implementations": ["indicators.py::compute_rsi", "backend/technical_engine.py::compute_rsi", "backend/features/feature_engine.py::_wilder_rsi"],
+      "canonical_registry_variants": ["rsi_wilder(period=14, warmup_fill=50.0|None, zero_loss_mode='legacy_50'|'strict_100')"],
+      "empirical_divergence_1h_nse": "0.0 on normal bars (bar >= 20); 50-point divergence on pure monotonic up-streaks (legacy 50.0 bug vs strict 100.0).",
+      "parity_tolerance": {"atol": 1e-12, "rtol": 1e-12},
+      "historical_cycles_affected": "CYCLE-001..006C frozen via legacy_50; new CYCLE-010+ strategies opt into strict_100."
+    },
+    {
+      "feature_family": "Volume_and_RVOL",
+      "legacy_implementations": ["indicators.py:160-161", "candle_intelligence.py:724-734", "mtf_strategies.py"],
+      "canonical_registry_variants": ["rvol_inclusive_20", "rvol_prior_nonzero_14", "rvol_prior_10"],
+      "empirical_divergence_1h_nse": "inc-20 vs ex-14: median 16.11%, p90 27.63%, p95 31.94%, max 1234.94% (n=1,450).",
+      "parity_tolerance": {"atol": 1e-12, "rtol": 1e-12},
+      "historical_cycles_affected": "CYCLE-001..008 frozen via explicit named variants; versioned rerun required only if legacy strategies switch from inclusive to exclusive RVOL."
+    },
+    {
+      "feature_family": "Candle_Anatomy_and_Patterns",
+      "legacy_implementations": ["candle_intelligence.py:370-496", "backend/features/feature_engine.py:550-557"],
+      "canonical_registry_variants": ["candle_anatomy_v1 ([0,1] + derived signed [-1,1] aliases)", "candle_patterns_10_v1"],
+      "empirical_divergence_1h_nse": "Exact algebraic mapping (clv_m1_1 = 2 * clv_0_1 - 1); zero-range: 0.5 vs NaN.",
+      "parity_tolerance": {"atol": 1e-12, "rtol": 1e-12},
+      "historical_cycles_affected": "Zero-diff migration for CYCLE-007/008 and Phase 2/3 ML."
+    },
+    {
+      "feature_family": "Trend_and_Momentum",
+      "legacy_implementations": ["indicators.py::compute_macd/compute_cpr_pivots", "supertrend.py::compute_supertrend", "candle_intelligence.py::_compute_swing_structure"],
+      "canonical_registry_variants": ["macd_12_26_9", "cpr_pivots(atr_clamp=False|True)", "swing_structure_12", "supertrend(period, mult, atr_variant)"],
+      "empirical_divergence_1h_nse": "0.0 for MACD & CPR; Supertrend is currently dead code in STRAT-004.",
+      "parity_tolerance": {"atol": 1e-12, "rtol": 1e-12},
+      "historical_cycles_affected": "Frozen; versioned rerun required ONLY if STRAT-004 is intentionally wired to call compute_supertrend."
+    },
+    {
+      "feature_family": "Market_Regime",
+      "legacy_implementations": ["market_regime_collector.py", "market_intelligence.py", "trader/evaluation/walk_forward.py", "backend/backtesting/walk_forward.py", "feature_engine.py", "phase6/risk.py"],
+      "canonical_registry_variants": ["daily_eod_regime_v1", "intraday_macro_regime_v1", "intraday_1h_proxy_regime_v1"],
+      "empirical_divergence_1h_nse": "Discrete label disagreement on boundary days between 8a and 8d (VIX thresholds 18.5/21/24/25).",
+      "parity_tolerance": {"discrete_exact_match": true},
+      "historical_cycles_affected": "CYCLE-006B..008 frozen via explicit tiered regime contracts."
+    },
+    {
+      "feature_family": "Multi_Timeframe_Alignment",
+      "legacy_implementations": ["trader/data/resampler.py", "trader/timing/candle_intelligence.py::analyze"],
+      "canonical_registry_variants": ["resample_ohlcv_ist_v2 (dynamic expected_bar_count for 15:15-15:30 1h bar)", "mtf_align_backward_ist (merge_asof backward on ts_close_ist)"],
+      "empirical_divergence_1h_nse": "0.0 on completed 09:15-15:15 buckets; fixes silent drop of valid 15:15-15:30 closing 1h bar.",
+      "parity_tolerance": {"atol": 1e-12, "rtol": 1e-12},
+      "historical_cycles_affected": "CYCLE-002..008 remain frozen; new 5m->1h resampled runs gain valid closing 15:15-15:30 bar."
+    }
+  ]
+}
