@@ -16,6 +16,7 @@ MARKET_CLOSE_TIME = time(15, 30)
 
 # Intraday Execution Timings (IST)
 INTRADAY_ENTRY_CUTOFF_TIME = time(14, 45)      # No new positions permitted after 14:45 IST
+INTRADAY_REDUCING_WIND_DOWN_TIME = time(15, 5) # Wind-down state: blocks BUY, allows SELL exits
 INTRADAY_MANDATORY_SQUAREOFF_TIME = time(15, 15) # Force-close all intraday positions at 15:15 IST
 
 # Official NSE Trading Holidays (YYYY-MM-DD)
@@ -43,7 +44,9 @@ MAX_RISK_PER_TRADE_PCT = 0.01              # 1.0% maximum portfolio risk per tra
 MAX_POSITION_WEIGHT_PCT = 0.15             # 15.0% maximum allocation per single stock
 MAX_PORTFOLIO_EXPOSURE_PCT = 0.80          # 80.0% maximum total capital invested
 MAX_DAILY_LOSS_PCT = 0.025                 # 2.5% daily drawdown circuit breaker (HALT_TRADING_TODAY)
+MAX_INTRADAY_MTM_DRAWDOWN_PCT = 0.03       # 3.0% intraday peak-to-trough MTM drawdown halt
 MAX_CONCURRENT_POSITIONS = 5               # Maximum open positions at any time
+MAX_ORDERS_PER_MINUTE = 30                 # Sliding-window order rate throttle
 
 
 @dataclass(frozen=True)

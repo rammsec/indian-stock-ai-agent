@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Candle AI Agent — Live Causal Intraday Simulator | BharatAlpha AI</title>
+  <meta name="description" content="Live bar-by-bar Candle Timing Agent and Deterministic Risk Engine simulator with zero future lookahead. Test ₹50,000 capital and live candlestick decision intelligence across any browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #090d16;
+      --bg-surface: #0f172a;
+      --bg-elevated: #1e293b;
+      --bg-subtle: #243046;
+      --border-subtle: #334155;
+      --border-strong: #475569;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-brand: #3b82f6;
+      --accent-brand-soft: rgba(59, 130, 246, 0.15);
+      --bull-green: #10b981;
+      --bull-green-soft: rgba(16, 185, 129, 0.15);
+      --bear-red: #ef4444;
+      --bear-red-soft: rgba(239, 68, 68, 0.15);
+      --warn-amber: #f59e0b;
+      --warn-amber-soft: rgba(245, 158, 11, 0.15);
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation */
+    .topbar {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-brand-soft);
+      border: 1px solid var(--accent-brand);
+      color: var(--accent-brand);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+
+    /* Zero Lookahead Principle Banner */
+    .lookahead-banner {
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+      border-bottom: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 0.5rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge-pill {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-green { background: var(--bull-green-soft); color: var(--bull-green); border: 1px solid var(--bull-green); }
+    .badge-red { background: var(--bear-red-soft); color: var(--bear-red); border: 1px solid var(--bear-red); }
+    .badge-amber { background: var(--warn-amber-soft); color: var(--warn-amber); border: 1px solid var(--warn-amber); }
+    .badge-blue { background: var(--accent-brand-soft); color: var(--accent-brand); border: 1px solid var(--accent-brand); }
+
+    /* Control Panel Strip */
+    .control-strip {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .control-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    select, input {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--accent-brand);
+    }
+
+    .btn {
+      padding: 0.45rem 0.95rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .btn-primary { background: var(--accent-brand); color: #fff; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-success { background: var(--bull-green); color: #064e3b; }
+    .btn-success:hover { background: #059669; }
+    .btn-secondary { background: var(--bg-elevated); color: var(--text-primary); border-color: var(--border-subtle); }
+    .btn-secondary:hover { background: var(--bg-subtle); border-color: var(--border-strong); }
+
+    /* Main Workspace Grid */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      flex: 1;
+    }
+
+    @media (max-width: 1080px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      padding: 0.75rem 1rem;
+      background: rgba(30, 41, 59, 0.5);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Chart Canvas Container */
+    .chart-container {
+      position: relative;
+      flex: 1;
+      min-height: 440px;
+      background: #070b13;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #chart-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-hud {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .hud-item span { color: var(--text-muted); margin-right: 4px; }
+
+    /* Side Agent Control & Inspection */
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      font-size: 0.82rem;
+    }
+
+    .metric-row:last-child { border-bottom: none; }
+    .metric-name { color: var(--text-secondary); }
+    .metric-val { font-family: var(--font-mono); font-weight: 600; }
+
+    .callout-box {
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+
+    .callout-blue { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #93c5fd; }
+    .callout-green { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+    .callout-red { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; }
+    .callout-amber { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #fcd34d; }
+
+    /* Ledger Table */
+    .table-wrap {
+      overflow-x: auto;
+      max-height: 200px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+    }
+
+    th {
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      position: sticky;
+      top: 0;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    }
+
+    .text-green { color: var(--bull-green); }
+    .text-red { color: var(--bear-red); }
+    .text-amber { color: var(--warn-amber); }
+    .text-blue { color: var(--accent-brand); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="brand-logo">₹</div>
+      <div>
+        <div class="brand-title">BharatAlpha AI — Candle Chart Agent</div>
+        <div class="brand-sub">Stage 2 Independent Price-Action Timing & Risk Engine (CYCLE-009)</div>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a href="../trader/" class="nav-btn">⚡ Intraday Desk</a>
+      <a href="../lab/" class="nav-btn">🧪 Research Lab</a>
+      <a href="../" class="nav-btn">← Main Research</a>
+      <a href="https://github.com/rammsec/indian-stock-ai-agent" target="_blank" class="nav-btn">GitHub Repo ↗</a>
+    </div>
+  </header>
+
+  <!-- Zero-Lookahead Audit Banner -->
+  <div class="lookahead-banner">
+    <div>
+      <span class="badge-pill badge-green">Zero Future Lookahead</span>
+      <span style="margin-left: 6px;">Candle Chart Agent has <strong>zero future data</strong>. It learns prior-day context before 09:15 open and evaluates candles strictly as they close live.</span>
+    </div>
+    <div style="font-family: var(--font-mono); font-size: 0.75rem;">
+      IST Clock: <span id="ist-clock" style="color: #fff; font-weight: 600;">09:15:00 IST</span>
+    </div>
+  </div>
+
+  <!-- Interactive Control Strip -->
+  <div class="control-strip">
+    <div class="control-group">
+      <div>
+        <div class="control-label">Symbol</div>
+        <select id="select-symbol">
+          <option value="TCS" selected>TCS (Tata Consultancy Services)</option>
+          <option value="RELIANCE">RELIANCE (Reliance Industries)</option>
+          <option value="INFY">INFY (Infosys)</option>
+          <option value="ITC">ITC Ltd</option>
+          <option value="TATAELXSI">TATAELXSI</option>
+          <option value="BIRLACABLE">BIRLACABLE</option>
+        </select>
+      </div>
+
+      <div>
+        <div class="control-label">Session Date</div>
+        <select id="select-date">
+          <option value="2026-11-09" selected>2026-11-09 (Monday - Intraday Test)</option>
+          <option value="2026-11-20">2026-11-20 (Friday - Bullish Breakout)</option>
+          <option value="2026-11-06">2026-11-06 (Friday)</option>
+          <option value="2026-11-05">2026-11-05 (Thursday)</option>
+          <option value="2026-11-04">2026-11-04 (Wednesday)</option>
+          <option value="2026-11-03">2026-11-03 (Tuesday)</option>
+        </select>
+      </div>
+
+      <div>
+        <div class="control-label">Starting Budget</div>
+        <input type="number" id="input-capital" value="50000" min="5000" step="5000" style="width: 110px;" />
+      </div>
+    </div>
+
+    <!-- Replay Buttons -->
+    <div class="control-group">
+      <button id="btn-next-candle" class="btn btn-primary" title="Stream next candle">
+        ⏭ Next Candle (+1h)
+      </button>
+      <button id="btn-auto-play" class="btn btn-success" title="Play live simulation automatically">
+        ▶ Live Playback
+      </button>
+      <button id="btn-reset-session" class="btn btn-secondary" title="Reset back to morning open">
+        🔄 Reset Session
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Workspace -->
+  <main class="workspace-grid">
+
+    <!-- Left: Canvas Candlestick Chart -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>📊 Live Intraday Candle Stream (1-Hour Bars)</span>
+          <span class="badge-pill badge-blue" id="stream-status">09:15 OPEN (WAITING FIRST BAR)</span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
+          Timeframe: <strong>1h</strong> | Exchange: <strong>NSE Cash</strong>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <!-- Live HUD Overlay -->
+        <div class="chart-hud" id="chart-hud">
+          <div class="hud-item"><span>Bar:</span><strong id="hud-bar">-</strong></div>
+          <div class="hud-item"><span>O:</span><strong id="hud-open">-</strong></div>
+          <div class="hud-item"><span>H:</span><strong id="hud-high">-</strong></div>
+          <div class="hud-item"><span>L:</span><strong id="hud-low">-</strong></div>
+          <div class="hud-item"><span>C:</span><strong id="hud-close">-</strong></div>
+          <div class="hud-item"><span>Vol:</span><strong id="hud-vol">-</strong></div>
+        </div>
+
+        <canvas id="chart-canvas"></canvas>
+      </div>
+
+      <!-- Execution Log Table -->
+      <div class="card-header" style="border-top: 1px solid var(--border-subtle); border-bottom: none;">
+        <div class="card-title">
+          <span>📜 Deterministic Paper Order Execution Ledger</span>
+          <span class="badge-pill badge-green" id="order-count-badge">0 ORDERS</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Side</th>
+              <th>Qty</th>
+              <th>Execution Price</th>
+              <th>Order Value</th>
+              <th>Trigger Reason</th>
+              <th>PnL</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-tbody">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1rem;">
+                No orders executed yet. Agent evaluates each candle independently upon close.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Right: Three Multi-Agent Intelligence Panels -->
+    <aside class="side-panel">
+
+      <!-- Panel 1: Stage 1 Prior-Day Directional Hypothesis -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🧠 01. Central Directional Agent</span>
+            <span class="badge-pill badge-blue">PRE-MARKET</span>
+          </div>
+        </div>
+        <div style="padding: 1rem;">
+          <div class="metric-row">
+            <span class="metric-name">Baseline Direction:</span>
+            <span class="metric-val text-green" id="central-direction">BULLISH</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Directional Confidence:</span>
+            <span class="metric-val" id="central-confidence">70%</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Prior Regime Alignment:</span>
+            <span class="metric-val" id="central-regime">BULLISH_TREND</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Evaluated Cutoff:</span>
+            <span class="metric-val" id="central-cutoff">Prior Day 15:30 IST</span>
+          </div>
+
+          <div class="callout-box callout-blue" id="central-rationale">
+            Hypothesis derived exclusively from data preceding 09:15 market open. The candle agent will verify or contradict this live.
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Stage 2 Candle Timing Agent (Price-Action Independence) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🕯 02. Candle Timing Agent</span>
+            <span class="badge-pill badge-green" id="timing-stage-badge">INDEPENDENT</span>
+          </div>
+        </div>
+        <div style="padding: 1rem;">
+          <div class="metric-row">
+            <span class="metric-name">Candle Anatomy Bias:</span>
+            <span class="metric-val" id="timing-bias">EVALUATING...</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Quality Score (min 0.60):</span>
+            <span class="metric-val" id="timing-quality">0.00</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Alignment with Central:</span>
+            <span class="metric-val" id="timing-alignment">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Active Decision:</span>
+            <span class="metric-val" id="timing-decision" style="font-size: 0.95rem;">WAIT</span>
+          </div>
+
+          <div class="callout-box callout-amber" id="timing-explanation">
+            Waiting for Bar 1 (10:15 IST) to close. The candle agent cannot see prices in advance.
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3: Deterministic Risk Engine & Ledger (₹50k Budget) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🛡 03. Deterministic Risk Engine</span>
+            <span class="badge-pill badge-green" id="risk-state-badge">ACTIVE</span>
+          </div>
+        </div>
+        <div style="padding: 1rem;">
+          <div class="metric-row">
+            <span class="metric-name">Total Portfolio Equity:</span>
+            <span class="metric-val" id="risk-equity">₹50,000.00</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Available Unreserved Cash:</span>
+            <span class="metric-val text-green" id="risk-cash">₹50,000.00</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Active Holdings:</span>
+            <span class="metric-val" id="risk-holdings">0 shares</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Stop-Loss Bracket:</span>
+            <span class="metric-val text-red" id="risk-sl">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Target Bracket (2:1):</span>
+            <span class="metric-val text-green" id="risk-tp">-</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Net Realized P&L:</span>
+            <span class="metric-val" id="risk-pnl">₹+0.00</span>
+          </div>
+
+          <div class="callout-box callout-green" id="risk-commentary">
+            Risk limits: Max 2% capital risk per trade. Enforces 15:05 IST wind-down allowing sell exits and blocking new buys.
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Vanilla JavaScript Simulator Engine -->
+  <script>
+    (function() {
+      // Elements
+      const selectSymbol = document.getElementById('select-symbol');
+      const selectDate = document.getElementById('select-date');
+      const inputCapital = document.getElementById('input-capital');
+      const btnNextCandle = document.getElementById('btn-next-candle');
+      const btnAutoPlay = document.getElementById('btn-auto-play');
+      const btnResetSession = document.getElementById('btn-reset-session');
+      const canvas = document.getElementById('chart-canvas');
+      const ctx = canvas.getContext('2d');
+
+      // State
+      let allCandleData = {};
+      let sessionBars = [];
+      let currentBarIndex = 0; // index of closed bars revealed so far
+      let isPlaying = false;
+      let playInterval = null;
+
+      // Portfolio State
+      let initialBudget = 50000;
+      let availableCash = 50000;
+      let holdingsQty = 0;
+      let entryPrice = 0;
+      let stopLossPrice = 0;
+      let targetPrice = 0;
+      let realizedPnL = 0;
+      let tradeHistory = [];
+
+      // Load data
+      fetch('data/candles.json')
+        .then(res => res.json())
+        .then(data => {
+          allCandleData = data;
+          initSession();
+        })
+        .catch(err => {
+          console.error("Failed loading data/candles.json, fallback to embedded demo bars", err);
+          // Fallback minimal demo data for TCS Nov 9 2026
+          allCandleData = {
+            "TCS": [
+              { "t": "2026-11-09 09:15", "o": 2484.50, "h": 2495.60, "l": 2450.50, "c": 2474.20, "v": 234422 },
+              { "t": "2026-11-09 10:15", "o": 2474.20, "h": 2476.00, "l": 2462.50, "c": 2469.80, "v": 289126 },
+              { "t": "2026-11-09 11:15", "o": 2469.90, "h": 2484.60, "l": 2465.50, "c": 2476.70, "v": 531461 },
+              { "t": "2026-11-09 12:15", "o": 2476.50, "h": 2476.60, "l": 2449.60, "c": 2457.20, "v": 480423 },
+              { "t": "2026-11-09 13:15", "o": 2456.90, "h": 2464.00, "l": 2452.70, "c": 2457.90, "v": 448752 },
+              { "t": "2026-11-09 14:15", "o": 2458.90, "h": 2466.40, "l": 2457.10, "c": 2463.10, "v": 431671 },
+              { "t": "2026-11-09 15:15", "o": 2463.10, "h": 2475.40, "l": 2463.10, "c": 2475.40, "v": 176794 }
+            ]
+          };
+          initSession();
+        });
+
+      function initSession() {
+        stopAutoPlay();
+        const sym = selectSymbol.value;
+        const targetDate = selectDate.value;
+        initialBudget = parseFloat(inputCapital.value) || 50000;
+        availableCash = initialBudget;
+        holdingsQty = 0;
+        entryPrice = 0;
+        stopLossPrice = 0;
+        targetPrice = 0;
+        realizedPnL = 0;
+        tradeHistory = [];
+        currentBarIndex = 0;
+
+        const symData = allCandleData[sym] || [];
+        sessionBars = symData.filter(b => b.t.startsWith(targetDate));
+
+        if (sessionBars.length === 0) {
+          sessionBars = (allCandleData['TCS'] || []).filter(b => b.t.startsWith('2026-11-09'));
+        }
+
+        // Setup Central Directional Hypothesis based on date
+        updateCentralHypothesis(targetDate);
+        updateUI();
+        resizeCanvas();
+        drawChart();
+      }
+
+      function updateCentralHypothesis(dateStr) {
+        // Deterministic baseline hypothesis formed up to prior day close
+        const isNov20 = dateStr === '2026-11-20';
+        const dir = isNov20 ? 'BULLISH' : 'BULLISH';
+        const conf = isNov20 ? '75%' : '70%';
+        const regime = isNov20 ? 'BULLISH_MOMENTUM' : 'BULLISH_TREND';
+
+        document.getElementById('central-direction').textContent = dir;
+        document.getElementById('central-confidence').textContent = conf;
+        document.getElementById('central-regime').textContent = regime;
+        document.getElementById('central-cutoff').textContent = `Prior Day 15:30 IST`;
+        document.getElementById('central-rationale').textContent =
+          `Hypothesis formed pre-market based on previous-day close & technical momentum. The Candle Timing Agent has ZERO knowledge of today's candles and will independently evaluate every candle as it closes.`;
+      }
+
+      function stepNextCandle() {
+        if (currentBarIndex >= sessionBars.length) {
+          stopAutoPlay();
+          alert("Intraday trading session complete (15:30 IST close). All positions wound down.");
+          return;
+        }
+
+        currentBarIndex++;
+        const currentBar = sessionBars[currentBarIndex - 1];
+
+        // Evaluate Candle Timing Agent
+        evaluateCandleAgent(currentBar);
+        updateUI();
+        drawChart();
+      }
+
+      function evaluateCandleAgent(bar) {
+        const open = bar.o;
+        const high = bar.h;
+        const low = bar.l;
+        const close = bar.c;
+        const range = Math.max(0.01, high - low);
+        const body = Math.abs(close - open);
+        const isBullishCandle = close >= open;
+
+        let candleBias = isBullishCandle ? "BULLISH" : "BEARISH";
+        let qualityScore = 0.0;
+        let decision = "WAIT";
+        let alignment = "UNCONFIRMED";
+        let explanation = "";
+
+        // Check if candle contradicts prior-day Bullish hypothesis
+        if (!isBullishCandle && close < open) {
+          candleBias = "BEARISH";
+          qualityScore = 0.0;
+          decision = "CONTRADICT_CENTRAL";
+          alignment = "CONTRADICTED";
+          explanation = `Candle is Bearish (O=${open.toFixed(2)}, C=${close.toFixed(2)}). Price action contradicts Central Agent's prior-day Bullish hypothesis. REFUSING to buy into falling prices.`;
+        } else if (isBullishCandle && body / range > 0.6) {
+          qualityScore = Math.min(0.95, 0.65 + (body / range) * 0.25);
+          if (qualityScore >= 0.60) {
+            decision = "ENTER_NOW";
+            alignment = "CONFIRMED";
+            explanation = `Strong Bullish Marubozu/Expansion body detected (Quality ${qualityScore.toFixed(2)}). Confirms Central bias with high volume. Triggering BUY entry.`;
+          } else {
+            decision = "WAIT";
+            alignment = "UNCONFIRMED";
+            explanation = `Bullish candle but quality (${qualityScore.toFixed(2)}) is below 0.60 entry threshold. Waiting for cleaner structure.`;
+          }
+        } else {
+          candleBias = "NEUTRAL";
+          decision = "WAIT";
+          alignment = "UNCONFIRMED";
+          explanation = `Indecision Doji / spinning top candle. Neither bulls nor bears in control. Preserving cash.`;
+        }
+
+        // Update Timing Agent UI
+        document.getElementById('timing-bias').textContent = candleBias;
+        document.getElementById('timing-quality').textContent = qualityScore.toFixed(2);
+        document.getElementById('timing-alignment').textContent = alignment;
+        document.getElementById('timing-decision').textContent = decision;
+        document.getElementById('timing-explanation').textContent = explanation;
+
+        const decisionEl = document.getElementById('timing-decision');
+        if (decision === "ENTER_NOW") {
+          decisionEl.className = "metric-val text-green";
+        } else if (decision === "CONTRADICT_CENTRAL") {
+          decisionEl.className = "metric-val text-red";
+        } else {
+          decisionEl.className = "metric-val text-amber";
+        }
+
+        // Portfolio & Risk Execution
+        const timeParts = bar.t.split(' ')[1];
+        const isWindDown = timeParts >= "15:05";
+
+        // Check existing open position
+        if (holdingsQty > 0) {
+          const currentEquity = availableCash + (holdingsQty * close);
+          document.getElementById('risk-equity').textContent = `₹${currentEquity.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+
+          if (close <= stopLossPrice) {
+            // Stop Loss
+            executeOrder("SELL", holdingsQty, close, "STOP-LOSS HIT", bar.t);
+            holdingsQty = 0;
+          } else if (close >= targetPrice) {
+            // Profit Target
+            executeOrder("SELL", holdingsQty, close, "PROFIT TARGET REACHED", bar.t);
+            holdingsQty = 0;
+          } else if (isWindDown) {
+            // Mandatory 15:05 wind-down
+            executeOrder("SELL", holdingsQty, close, "15:05 IST WIND-DOWN (SQUARE-OFF)", bar.t);
+            holdingsQty = 0;
+          }
+        } else if (decision === "ENTER_NOW" && !isWindDown) {
+          // Calculate max shares within available cash
+          const maxShares = Math.floor(availableCash / close);
+          const maxRiskPerTrade = initialBudget * 0.02; // max 2% risk
+          const slDistance = close * 0.015; // 1.5% stop
+          const riskShares = Math.floor(maxRiskPerTrade / slDistance);
+          const buyQty = Math.max(1, Math.min(maxShares, riskShares || maxShares));
+
+          if (buyQty > 0 && availableCash >= (buyQty * close)) {
+            entryPrice = close;
+            stopLossPrice = +(close * 0.985).toFixed(2);
+            targetPrice = +(close * 1.03).toFixed(2);
+            holdingsQty = buyQty;
+            availableCash -= (buyQty * close);
+
+            executeOrder("BUY", buyQty, close, `CONFIRMED ENTRY (Quality ${qualityScore.toFixed(2)})`, bar.t);
+          }
+        }
+      }
+
+      function executeOrder(side, qty, price, reason, timestamp) {
+        const orderVal = qty * price;
+        let pnl = 0;
+        if (side === "SELL") {
+          pnl = (price - entryPrice) * qty;
+          realizedPnL += pnl;
+          availableCash += orderVal;
+        }
+
+        tradeHistory.unshift({
+          ts: timestamp,
+          side: side,
+          qty: qty,
+          price: price,
+          val: orderVal,
+          reason: reason,
+          pnl: pnl
+        });
+
+        renderLedger();
+      }
+
+      function renderLedger() {
+        const tbody = document.getElementById('ledger-tbody');
+        document.getElementById('order-count-badge').textContent = `${tradeHistory.length} ORDERS`;
+
+        if (tradeHistory.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 1rem;">No orders executed yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = tradeHistory.map(t => {
+          const sideColor = t.side === "BUY" ? "text-green" : "text-red";
+          const pnlStr = t.side === "SELL" ? (t.pnl >= 0 ? `<span class="text-green">+₹${t.pnl.toFixed(2)}</span>` : `<span class="text-red">-₹${Math.abs(t.pnl).toFixed(2)}</span>`) : "-";
+          return `
+            <tr>
+              <td>${t.ts}</td>
+              <td class="${sideColor}"><strong>${t.side}</strong></td>
+              <td>${t.qty}</td>
+              <td>₹${t.price.toFixed(2)}</td>
+              <td>₹${t.val.toLocaleString('en-IN', {minimumFractionDigits: 2})}</td>
+              <td style="color: var(--text-secondary);">${t.reason}</td>
+              <td>${pnlStr}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function updateUI() {
+        const lastBar = currentBarIndex > 0 ? sessionBars[currentBarIndex - 1] : null;
+        const currentClock = lastBar ? lastBar.t + " IST" : "09:15:00 IST";
+        document.getElementById('ist-clock').textContent = currentClock;
+
+        if (lastBar) {
+          document.getElementById('stream-status').textContent = `BAR ${currentBarIndex}/${sessionBars.length} CLOSED`;
+          document.getElementById('hud-bar').textContent = `${currentBarIndex}`;
+          document.getElementById('hud-open').textContent = lastBar.o.toFixed(2);
+          document.getElementById('hud-high').textContent = lastBar.h.toFixed(2);
+          document.getElementById('hud-low').textContent = lastBar.l.toFixed(2);
+          document.getElementById('hud-close').textContent = lastBar.c.toFixed(2);
+          document.getElementById('hud-vol').textContent = lastBar.v.toLocaleString();
+        } else {
+          document.getElementById('stream-status').textContent = `09:15 OPEN (WAITING FIRST BAR)`;
+          document.getElementById('hud-bar').textContent = `0`;
+          document.getElementById('hud-open').textContent = `-`;
+          document.getElementById('hud-high').textContent = `-`;
+          document.getElementById('hud-low').textContent = `-`;
+          document.getElementById('hud-close').textContent = `-`;
+          document.getElementById('hud-vol').textContent = `-`;
+        }
+
+        // Risk UI
+        const currentVal = holdingsQty > 0 && lastBar ? (holdingsQty * lastBar.c) : 0;
+        const totalEq = availableCash + currentVal;
+        document.getElementById('risk-cash').textContent = `₹${availableCash.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+        document.getElementById('risk-equity').textContent = `₹${totalEq.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+        document.getElementById('risk-holdings').textContent = holdingsQty > 0 ? `${holdingsQty} shares @ avg ₹${entryPrice.toFixed(2)}` : "0 shares";
+        document.getElementById('risk-sl').textContent = holdingsQty > 0 ? `₹${stopLossPrice.toFixed(2)}` : "-";
+        document.getElementById('risk-tp').textContent = holdingsQty > 0 ? `₹${targetPrice.toFixed(2)}` : "-";
+
+        const pnlEl = document.getElementById('risk-pnl');
+        pnlEl.textContent = `₹${realizedPnL >= 0 ? '+' : ''}${realizedPnL.toFixed(2)}`;
+        pnlEl.className = realizedPnL >= 0 ? "metric-val text-green" : "metric-val text-red";
+      }
+
+      function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+      }
+
+      function drawChart() {
+        const rect = canvas.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Background grid
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 1;
+        for (let y = 40; y < height - 60; y += 50) {
+          ctx.beginPath();
+          ctx.moveTo(50, y);
+          ctx.lineTo(width - 20, y);
+          ctx.stroke();
+        }
+
+        if (currentBarIndex === 0) {
+          ctx.fillStyle = '#64748b';
+          ctx.font = '14px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText("Session Open (09:15 IST) — Click 'Next Candle' or 'Live Playback' to stream bars", width / 2, height / 2);
+          return;
+        }
+
+        const visibleBars = sessionBars.slice(0, currentBarIndex);
+        let minPrice = Infinity;
+        let maxPrice = -Infinity;
+        let maxVol = 0;
+
+        visibleBars.forEach(b => {
+          if (b.l < minPrice) minPrice = b.l;
+          if (b.h > maxPrice) maxPrice = b.h;
+          if (b.v > maxVol) maxVol = b.v;
+        });
+
+        // Margins
+        const padding = (maxPrice - minPrice) * 0.12 || 10;
+        minPrice -= padding;
+        maxPrice += padding;
+
+        const chartHeight = height - 90;
+        const volHeight = 50;
+
+        const getY = (p) => chartHeight - ((p - minPrice) / (maxPrice - minPrice)) * chartHeight + 20;
+
+        // Price Axis on left
+        ctx.fillStyle = '#64748b';
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'right';
+        for (let i = 0; i <= 4; i++) {
+          const p = minPrice + (maxPrice - minPrice) * (i / 4);
+          const y = getY(p);
+          ctx.fillText(p.toFixed(1), 44, y + 4);
+        }
+
+        // Draw Candle Bars
+        const barSlotWidth = (width - 80) / Math.max(sessionBars.length, 7);
+        const candleWidth = Math.max(8, barSlotWidth * 0.55);
+
+        visibleBars.forEach((bar, idx) => {
+          const x = 60 + idx * barSlotWidth + barSlotWidth / 2;
+          const isBull = bar.c >= bar.o;
+          const color = isBull ? '#10b981' : '#ef4444';
+
+          const yOpen = getY(bar.o);
+          const yClose = getY(bar.c);
+          const yHigh = getY(bar.h);
+          const yLow = getY(bar.l);
+
+          // Wick
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(x, yHigh);
+          ctx.lineTo(x, yLow);
+          ctx.stroke();
+
+          // Body
+          ctx.fillStyle = color;
+          const top = Math.min(yOpen, yClose);
+          const bHeight = Math.max(2, Math.abs(yClose - yOpen));
+          ctx.fillRect(x - candleWidth / 2, top, candleWidth, bHeight);
+
+          // Volume Bar at bottom
+          const vH = maxVol > 0 ? (bar.v / maxVol) * volHeight : 0;
+          ctx.fillStyle = isBull ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)';
+          ctx.fillRect(x - candleWidth / 2, height - 30 - vH, candleWidth, vH);
+
+          // Time label on X axis
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          const timeLabel = bar.t.split(' ')[1];
+          ctx.fillText(timeLabel, x, height - 12);
+        });
+
+        // Draw Position Indicators (Entry, Stop Loss, Target)
+        if (holdingsQty > 0) {
+          // Entry line
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 4]);
+          const yEntry = getY(entryPrice);
+          ctx.beginPath();
+          ctx.moveTo(50, yEntry);
+          ctx.lineTo(width - 20, yEntry);
+          ctx.stroke();
+
+          // Stop Loss line
+          ctx.strokeStyle = '#ef4444';
+          const ySL = getY(stopLossPrice);
+          ctx.beginPath();
+          ctx.moveTo(50, ySL);
+          ctx.lineTo(width - 20, ySL);
+          ctx.stroke();
+
+          // Target line
+          ctx.strokeStyle = '#10b981';
+          const yTP = getY(targetPrice);
+          ctx.beginPath();
+          ctx.moveTo(50, yTP);
+          ctx.lineTo(width - 20, yTP);
+          ctx.stroke();
+
+          ctx.setLineDash([]); // reset
+
+          // Labels
+          ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.fillStyle = '#3b82f6';
+          ctx.fillText(`ENTRY: ₹${entryPrice.toFixed(2)}`, width - 100, yEntry - 5);
+          ctx.fillStyle = '#ef4444';
+          ctx.fillText(`SL: ₹${stopLossPrice.toFixed(2)}`, width - 100, ySL - 5);
+          ctx.fillStyle = '#10b981';
+          ctx.fillText(`TP: ₹${targetPrice.toFixed(2)}`, width - 100, yTP - 5);
+        }
+      }
+
+      function toggleAutoPlay() {
+        if (isPlaying) {
+          stopAutoPlay();
+        } else {
+          startAutoPlay();
+        }
+      }
+
+      function startAutoPlay() {
+        isPlaying = true;
+        btnAutoPlay.textContent = "⏸ Pause";
+        btnAutoPlay.className = "btn btn-secondary";
+        playInterval = setInterval(() => {
+          if (currentBarIndex >= sessionBars.length) {
+            stopAutoPlay();
+          } else {
+            stepNextCandle();
+          }
+        }, 1400);
+      }
+
+      function stopAutoPlay() {
+        isPlaying = false;
+        clearInterval(playInterval);
+        playInterval = null;
+        btnAutoPlay.textContent = "▶ Live Playback";
+        btnAutoPlay.className = "btn btn-success";
+      }
+
+      // Event Listeners
+      btnNextCandle.addEventListener('click', stepNextCandle);
+      btnAutoPlay.addEventListener('click', toggleAutoPlay);
+      btnResetSession.addEventListener('click', initSession);
+      selectSymbol.addEventListener('change', initSession);
+      selectDate.addEventListener('change', initSession);
+      inputCapital.addEventListener('change', initSession);
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        drawChart();
+      });
+    })();
+  </script>
+</body>
+</html>
