@@ -1,4 +1,12 @@
-"""Isolated unit and integration tests for CYCLE-006B Paper-Trading Infrastructure."""
+"""Isolated unit and integration tests for CYCLE-006B Paper-Trading Infrastructure.
+
+Note on test fixtures:
+    These isolated unit tests generate controlled synthetic 1h OHLCV parquet
+    fixtures inside pytest's ``tmp_path`` solely to test validation, risk,
+    portfolio, and ledger semantics without mutating repository data.
+    The CYCLE-006B runtime (``Cycle006BPaperTradingRunner``) NEVER generates
+    synthetic candles and strictly rejects missing or invalid parquet archives.
+"""
 
 from __future__ import annotations
 
@@ -603,4 +611,106 @@ def test_40_cli_invalid_date_and_bad_config_fail_closed_cleanly(tmp_path: Path, 
     rc_cap = cli_main(["--session-date", "2026-11-20", "--capital", "-500"])
     assert rc_cap == 2
     assert "configuration error" in capsys.readouterr().err.lower()
+
+
+def test_41_observation_date_freshness_independent_of_generated_at(tmp_path: Path) -> None:
+    """Fresh generated_at must NOT mask stale underlying prediction, intelligence, or regime observation_date."""
+    # Case A: Stale prediction observation_date (2026-11-10) with fresh generated_at (2026-11-19)
+    cfg_pred = _make_valid_config(tmp_path / "stale_pred_obs")
+    p_data = json.loads(cfg_pred.predictions_path.read_text(encoding="utf-8"))
+    p_data["predictions"][0]["observation_date"] = "2026-11-10"
+    cfg_pred.predictions_path.write_text(json.dumps(p_data), encoding="utf-8")
+    rep_pred = Cycle006BPaperTradingRunner(cfg_pred).run()
+    assert rep_pred["run_status"] == "BLOCKED_INPUT_VALIDATION"
+    assert any("Stale prediction observation_date" in r for r in rep_pred["rejection_reasons"])
+
+    # Case B: Stale intelligence observation_date (2026-11-10) with fresh generated_at (2026-11-19)
+    cfg_intel = _make_valid_config(tmp_path / "stale_intel_obs")
+    i_data = json.loads(cfg_intel.intelligence_path.read_text(encoding="utf-8"))
+    i_data["stocks"]["RELIANCE"]["observation_date"] = "2026-11-10"
+    cfg_intel.intelligence_path.write_text(json.dumps(i_data), encoding="utf-8")
+    rep_intel = Cycle006BPaperTradingRunner(cfg_intel).run()
+    assert rep_intel["run_status"] == "BLOCKED_INPUT_VALIDATION"
+    assert any("Stale intelligence observation_date" in r for r in rep_intel["rejection_reasons"])
+
+    # Case B2: Stale regime observation_date (2026-11-10) with fresh generated_at (2026-11-19)
+    cfg_reg = _make_valid_config(tmp_path / "stale_regime_obs")
+    r_data = json.loads(cfg_reg.regime_path.read_text(encoding="utf-8"))
+    r_data["observation_date"] = "2026-11-10"
+    r_data["generated_at"] = "2026-11-19T18:00:00+05:30"
+    cfg_reg.regime_path.write_text(json.dumps(r_data), encoding="utf-8")
+    rep_reg = Cycle006BPaperTradingRunner(cfg_reg).run()
+    assert rep_reg["run_status"] == "BLOCKED_INPUT_VALIDATION"
+    assert any("Stale regime observation_date" in r for r in rep_reg["rejection_reasons"])
+
+    # Case C: Valid historical pre-market observations (2026-11-19 EOD for 2026-11-20 09:15 IST as_of)
+    cfg_ok = _make_valid_config(tmp_path / "valid_premarket")
+    rep_ok = Cycle006BPaperTradingRunner(cfg_ok).run()
+    assert rep_ok["run_status"] == "COMPLETED"
+    obs_f = rep_ok["input_freshness"]["observation_freshness"]
+    assert obs_f["regime"]["observation_date"] == "2026-11-19"
+    assert obs_f["regime"]["age_hours"] == 17.75
+    assert obs_f["predictions"]["RELIANCE"]["observation_date"] == "2026-11-19"
+    assert obs_f["intelligence"]["RELIANCE"]["observation_date"] == "2026-11-19"
+    assert obs_f["predictions"]["RELIANCE"]["age_hours"] == 17.75
+
+
+def test_42_timezone_safe_observation_date_parsing_around_ist_midnight(tmp_path: Path) -> None:
+    """Observation-date timestamps must be tz-aware and converted to IST before extracting date."""
+    from trader.paper.cycle006b import _parse_obs_date
+
+    # Negative UTC offset crossing IST midnight forward: 2026-11-19T18:00:00-05:00 == 2026-11-20T04:30:00+05:30 -> 2026-11-20
+    assert _parse_obs_date("2026-11-19T18:00:00-05:00", "neg_offset") == date(2026, 11, 20)
+    # UTC crossing IST midnight forward: 2026-11-19T20:00:00Z == 2026-11-20T01:30:00+05:30 -> 2026-11-20
+    assert _parse_obs_date("2026-11-19T20:00:00Z", "utc_midnight") == date(2026, 11, 20)
+    # Positive offset (+09:00 JST) crossing backward into previous IST day: 2026-11-20T02:00:00+09:00 == 2026-11-19T22:30:00+05:30 -> 2026-11-19
+    assert _parse_obs_date("2026-11-20T02:00:00+09:00", "pos_offset") == date(2026, 11, 19)
+
+    # Timezone-naive timestamp must be rejected
+    with pytest.raises(ValueError, match="Timezone-naive"):
+        _parse_obs_date("2026-11-19T20:00:00", "naive_ts")
+
+    # End-to-end: negative UTC offset crossing IST midnight into session_date (2026-11-20 EOD > 09:15 IST) must be rejected as future-dated
+    cfg_fut = _make_valid_config(tmp_path / "tz_future")
+    p_data = json.loads(cfg_fut.predictions_path.read_text(encoding="utf-8"))
+    p_data["predictions"][0]["observation_date"] = "2026-11-19T18:00:00-05:00"
+    cfg_fut.predictions_path.write_text(json.dumps(p_data), encoding="utf-8")
+    rep_fut = Cycle006BPaperTradingRunner(cfg_fut).run()
+    assert rep_fut["run_status"] == "BLOCKED_INPUT_VALIDATION"
+    assert any("Future-dated prediction observation_date" in r for r in rep_fut["rejection_reasons"])
+
+    # End-to-end: positive +09:00 timestamp converting to 2026-11-19 IST is valid pre-market for 2026-11-20
+    cfg_pos = _make_valid_config(tmp_path / "tz_valid_pos")
+    p_data2 = json.loads(cfg_pos.predictions_path.read_text(encoding="utf-8"))
+    p_data2["predictions"][0]["observation_date"] = "2026-11-20T02:00:00+09:00"
+    cfg_pos.predictions_path.write_text(json.dumps(p_data2), encoding="utf-8")
+    rep_pos = Cycle006BPaperTradingRunner(cfg_pos).run()
+    assert rep_pos["run_status"] == "COMPLETED"
+    assert rep_pos["input_freshness"]["observation_freshness"]["predictions"]["RELIANCE"]["observation_date"] == "2026-11-19"
+
+
+def test_43_honest_network_and_broker_instrumentation_semantics(tmp_path: Path) -> None:
+    """Report must honestly describe Python stdlib network guard scope and absence of broker/paid-API adapters."""
+    import urllib.request
+
+    # Verify urllib.request.urlopen is intercepted and counted
+    inst = ExecutionInstrumentation()
+    with OfflineExecutionGuard(inst):
+        with pytest.raises(ExternalNetworkBlockedError):
+            urllib.request.urlopen("https://example.com")
+    assert inst.external_api_calls == 1
+    assert len(inst.blocked_network_attempts) == 1
+
+    cfg = _make_valid_config(tmp_path)
+    rep = Cycle006BPaperTradingRunner(cfg).run()
+    instr = rep["instrumentation"]
+    assert instr["network_guard_active"] is True
+    assert instr["network_guard_scope"] == "python_stdlib_socket_and_urllib_only_not_os_sandbox"
+    assert instr["intercepted_network_attempts"] == 0
+    assert instr["broker_adapters_configured"] == 0
+    assert instr["broker_connections_verification"] == "NO_BROKER_ADAPTER_IN_EXECUTION_PATH"
+    assert instr["paid_llm_providers_configured"] == 0
+    assert instr["paid_api_cost_verification"] == "NO_PAID_API_CLIENT_IN_EXECUTION_PATH_AND_PYTHON_NET_GUARD_ACTIVE"
+    assert instr["market_data_generation_mode"] == "READ_ONLY_EXISTING_PARQUET_NO_SYNTHETIC_CANDLE_GENERATION"
+
 

@@ -45,17 +45,27 @@ class ExternalNetworkBlockedError(RuntimeError):
 
 @dataclass
 class ExecutionInstrumentation:
-    """Actual runtime instrumentation counters (never hardcoded without active guards)."""
+    """Actual runtime instrumentation counters and explicit verification semantics.
+
+    Distinguishes actively intercepted Python socket/urllib network attempts
+    from structural absence of broker adapters and paid API clients in the
+    CYCLE-006B execution path.
+    """
 
     network_guard_active: bool = False
+    network_guard_scope: str = "python_stdlib_socket_and_urllib_only_not_os_sandbox"
     external_api_calls: int = 0
+    broker_adapters_configured: int = 0
     broker_connections: int = 0
+    broker_connections_verification: str = "NO_BROKER_ADAPTER_IN_EXECUTION_PATH"
+    paid_llm_providers_configured: int = 0
     paid_api_cost_usd: float = 0.0
+    paid_api_cost_verification: str = "NO_PAID_API_CLIENT_IN_EXECUTION_PATH_AND_PYTHON_NET_GUARD_ACTIVE"
     blocked_network_attempts: list[str] = field(default_factory=list)
 
 
 class OfflineExecutionGuard:
-    """Context manager that blocks and counts any attempted outbound network/API calls."""
+    """Intercepts selected Python stdlib socket/urllib calls (not a full OS network sandbox)."""
 
     def __init__(self, instrumentation: ExecutionInstrumentation) -> None:
         self._inst = instrumentation
@@ -180,14 +190,16 @@ def _parse_iso_to_ist(raw: Any, label: str) -> datetime:
 
 
 def _parse_obs_date(raw: Any, label: str) -> date:
+    """Parse observation_date safely: accept strict YYYY-MM-DD or tz-aware ISO timestamp normalized to IST."""
     if not isinstance(raw, str) or not raw.strip():
         raise ValueError(f"Missing or empty observation_date for {label}")
     text = raw.strip()
-    if len(text) == 10:
+    if len(text) == 10 and text[4] == "-" and text[7] == "-":
         return date.fromisoformat(text)
-    if text.endswith("Z"):
-        text = text[:-1] + "+00:00"
-    return datetime.fromisoformat(text).date()
+    # Timestamp strings MUST carry explicit timezone info and are normalized to IST
+    # before extracting the calendar date so UTC/negative-offset crossings around
+    # IST midnight cannot make a future observation appear historical.
+    return _parse_iso_to_ist(text, label).date()
 
 
 def _parse_finite_float(raw: Any, label: str) -> float:
@@ -441,9 +453,17 @@ class Cycle006BPaperTradingRunner:
                     f"Stale input rejected ({name}): age={age_hours:.2f}h > max_staleness_hours={cfg.max_staleness_hours}"
                 )
 
-        if regime_obs_date > cfg.session_date:
+        regime_obs_dt = datetime.combine(regime_obs_date, dt_time(15, 30), tzinfo=IST_TZ)
+        regime_obs_age_hours = round((self.as_of_ist - regime_obs_dt).total_seconds() / 3600.0, 4)
+        if regime_obs_date > cfg.session_date or regime_obs_dt > self.as_of_ist:
             raise ValueError(
-                f"Future-dated regime observation_date rejected: {regime_obs_date} > {cfg.session_date}"
+                f"Future-dated regime observation_date rejected: {regime_obs_date} "
+                f"(EOD {regime_obs_dt.isoformat()} > as_of {self.as_of_ist.isoformat()})"
+            )
+        if regime_obs_age_hours > cfg.max_staleness_hours:
+            raise ValueError(
+                f"Stale regime observation_date rejected: {regime_obs_date} "
+                f"(age={regime_obs_age_hours:.2f}h > max_staleness_hours={cfg.max_staleness_hours})"
             )
 
         # Check cross-source timestamp spread (conflicting timestamps)
@@ -465,9 +485,18 @@ class Cycle006BPaperTradingRunner:
             if isinstance(val, dict):
                 intel_by_sym[norm_k] = val
 
-        # 5. Instrument coverage & field integrity
+        # 5. Instrument coverage, independent observation-date freshness & field integrity
         matched_preds: dict[str, dict[str, Any]] = {}
         matched_intel: dict[str, dict[str, Any]] = {}
+        obs_freshness: dict[str, Any] = {
+            "regime": {
+                "observation_date": regime_obs_date.isoformat(),
+                "eod_ist": regime_obs_dt.isoformat(),
+                "age_hours": regime_obs_age_hours,
+            },
+            "predictions": {},
+            "intelligence": {},
+        }
         for sym in cfg.symbols:
             norm_sym = sym.strip().upper()
             if norm_sym not in pred_by_sym:
@@ -480,10 +509,43 @@ class Cycle006BPaperTradingRunner:
 
             p_obs = _parse_obs_date(p_row.get("observation_date"), f"prediction[{sym}].observation_date")
             i_obs = _parse_obs_date(i_row.get("observation_date"), f"intelligence[{sym}].observation_date")
-            if p_obs > cfg.session_date:
-                raise ValueError(f"Future-dated prediction observation_date for {sym}: {p_obs} > {cfg.session_date}")
-            if i_obs > cfg.session_date:
-                raise ValueError(f"Future-dated intelligence observation_date for {sym}: {i_obs} > {cfg.session_date}")
+
+            p_obs_dt = datetime.combine(p_obs, dt_time(15, 30), tzinfo=IST_TZ)
+            i_obs_dt = datetime.combine(i_obs, dt_time(15, 30), tzinfo=IST_TZ)
+            p_obs_age = round((self.as_of_ist - p_obs_dt).total_seconds() / 3600.0, 4)
+            i_obs_age = round((self.as_of_ist - i_obs_dt).total_seconds() / 3600.0, 4)
+
+            if p_obs > cfg.session_date or p_obs_dt > self.as_of_ist:
+                raise ValueError(
+                    f"Future-dated prediction observation_date for {sym}: {p_obs} "
+                    f"(EOD {p_obs_dt.isoformat()} > as_of {self.as_of_ist.isoformat()})"
+                )
+            if p_obs_age > cfg.max_staleness_hours:
+                raise ValueError(
+                    f"Stale prediction observation_date rejected for {sym}: {p_obs} "
+                    f"(age={p_obs_age:.2f}h > max_staleness_hours={cfg.max_staleness_hours})"
+                )
+            if i_obs > cfg.session_date or i_obs_dt > self.as_of_ist:
+                raise ValueError(
+                    f"Future-dated intelligence observation_date for {sym}: {i_obs} "
+                    f"(EOD {i_obs_dt.isoformat()} > as_of {self.as_of_ist.isoformat()})"
+                )
+            if i_obs_age > cfg.max_staleness_hours:
+                raise ValueError(
+                    f"Stale intelligence observation_date rejected for {sym}: {i_obs} "
+                    f"(age={i_obs_age:.2f}h > max_staleness_hours={cfg.max_staleness_hours})"
+                )
+
+            obs_freshness["predictions"][norm_sym] = {
+                "observation_date": p_obs.isoformat(),
+                "eod_ist": p_obs_dt.isoformat(),
+                "age_hours": p_obs_age,
+            }
+            obs_freshness["intelligence"][norm_sym] = {
+                "observation_date": i_obs.isoformat(),
+                "eod_ist": i_obs_dt.isoformat(),
+                "age_hours": i_obs_age,
+            }
 
             prob_up = _parse_finite_float(p_row.get("prob_next_day_up"), f"prediction[{sym}].prob_next_day_up")
             if not (0.0 <= prob_up <= 1.0):
@@ -500,6 +562,7 @@ class Cycle006BPaperTradingRunner:
             matched_preds[sym] = p_row
             matched_intel[sym] = i_row
 
+        freshness["observation_freshness"] = obs_freshness
         return matched_preds, matched_intel, regime_raw, freshness, file_hashes
 
     def run(self) -> dict[str, Any]:
@@ -793,7 +856,14 @@ class Cycle006BPaperTradingRunner:
             "paid_api_cost": self.instrumentation.paid_api_cost_usd,
             "instrumentation": {
                 "network_guard_active": self.instrumentation.network_guard_active,
+                "network_guard_scope": self.instrumentation.network_guard_scope,
+                "intercepted_network_attempts": self.instrumentation.external_api_calls,
                 "blocked_network_attempts": list(self.instrumentation.blocked_network_attempts),
+                "broker_adapters_configured": self.instrumentation.broker_adapters_configured,
+                "broker_connections_verification": self.instrumentation.broker_connections_verification,
+                "paid_llm_providers_configured": self.instrumentation.paid_llm_providers_configured,
+                "paid_api_cost_verification": self.instrumentation.paid_api_cost_verification,
+                "market_data_generation_mode": "READ_ONLY_EXISTING_PARQUET_NO_SYNTHETIC_CANDLE_GENERATION",
             },
             "started_at_ist": started_at.isoformat(),
             "completed_at_ist": completed_at.isoformat(),
