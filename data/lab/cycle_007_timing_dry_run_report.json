@@ -1,0 +1,1477 @@
+{
+  "cycle_id": "CYCLE-007",
+  "phase": "DIRECTIONAL_PREDICTION_AND_INTELLIGENT_ENTRY_TIMING_NUMERICAL",
+  "run_mode": "HISTORICAL_PAPER_TRADING_DRY_RUN",
+  "run_status": "COMPLETED",
+  "qualification_allowed": false,
+  "unseen_evaluation_status": "NOT_EVALUATED",
+  "unseen_return_pct": null,
+  "live_trading_enabled": false,
+  "real_money_trading": false,
+  "visual_ai_enabled": false,
+  "synthetic_candles_used": 0,
+  "confidence_calibration_status": "UNCALIBRATED",
+  "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+  "broker_connections": 0,
+  "external_api_calls": 0,
+  "paid_api_cost": 0.0,
+  "instrumentation": {
+    "network_guard_active": true,
+    "network_guard_scope": "python_stdlib_socket_and_urllib_only_not_os_sandbox",
+    "intercepted_network_attempts": 0,
+    "blocked_network_attempts": [],
+    "broker_adapters_configured": 0,
+    "broker_connections_verification": "NO_BROKER_ADAPTER_IN_EXECUTION_PATH",
+    "paid_llm_providers_configured": 0,
+    "paid_api_cost_verification": "NO_PAID_API_CLIENT_IN_EXECUTION_PATH_AND_PYTHON_NET_GUARD_ACTIVE",
+    "market_data_generation_mode": "READ_ONLY_COMMITTED_1H_PARQUET_NO_SYNTHETIC_CANDLES"
+  },
+  "started_at_ist": "2026-11-22T15:13:37.711544+05:30",
+  "completed_at_ist": "2026-11-22T15:13:38.625917+05:30",
+  "code_commit_sha": "8a1b3002c2b9dfb027e7d51800d0c53cf0fa166c",
+  "execution_provenance": {
+    "implementation_commit_sha": "8a1b3002c2b9dfb027e7d51800d0c53cf0fa166c",
+    "working_tree_clean_at_execution": true,
+    "dirty_paths_at_execution": [],
+    "implementation_file_hashes": {
+      "trader/timing/__init__.py": "5828e206349c25f7690af04362182a91609ba49031be74efa692d31f9184f088",
+      "trader/timing/candle_intelligence.py": "e58a4b719464904de1302775f7542a5f5f54cff9c8cc8ccc8766d0212c5ae483",
+      "trader/timing/central_directional_agent.py": "2780777f00848c577dc894cc9e7b9d691d949334328b9239248ba17a0a432c69",
+      "trader/timing/candle_timing_agent.py": "c65918d58071c7f6fc168dffb8d490f8c27a7b0e2987547b057a23a696e78d2d",
+      "trader/timing/cycle007_pipeline.py": "befa3b949831e5ccb5c9b15a9be190ad12d66b872142d06bad932403b866a1a3",
+      "scripts/run_cycle_007_timing_dry_run.py": "8bdbb49090cf9221f2ca1107f1b296a3d836b3332ff1ab0514e23b7d086b37d8"
+    },
+    "report_commit_distinction": "implementation_commit_sha identifies the committed source revision executed to produce this report; the subsequent commit recording updated JSON/Markdown report files is necessarily a descendant commit."
+  },
+  "session_date": "2026-11-19",
+  "as_of_ist": "2026-11-19T09:15:00+05:30",
+  "symbols": [
+    "RELIANCE",
+    "TCS",
+    "BIRLACABLE",
+    "ITC",
+    "TATAELXSI"
+  ],
+  "market_regime": "Weak Bull",
+  "market_data_provenance": {
+    "data_classification": "HISTORICAL_1H_PARQUET_ARCHIVE_NOT_LIVE",
+    "provenance_status": "PARTIALLY_VERIFIED",
+    "provenance_verified": false,
+    "dataset_fingerprint": "e508f71047493e5db1aaaee3ceb16d4db0eb2199a41a842743b077b7bb986394",
+    "session_date": "2026-11-19",
+    "timeframe_provenance": {
+      "1h": {
+        "classification": "PARTIALLY_VERIFIED",
+        "verified": false,
+        "source": "committed_repo_yahoo_finance_1h_parquet",
+        "dataset_fingerprint": "e508f71047493e5db1aaaee3ceb16d4db0eb2199a41a842743b077b7bb986394"
+      },
+      "5m": {
+        "classification": "UNAVAILABLE",
+        "committed_in_repo": false,
+        "committed_files": [],
+        "reason": "No 5m parquet archives exist in committed data/intraday/."
+      },
+      "15m": {
+        "classification": "UNAVAILABLE",
+        "committed_in_repo": false,
+        "reason": "No direct 15m archive or committed 5m source available for aggregation."
+      }
+    },
+    "symbols": {
+      "RELIANCE": {
+        "file": "RELIANCE_1h.parquet",
+        "sha256": "f8931a85587e923a77214e344e0dde35c8db06db57a810c47ad939a48123dcfe",
+        "pre_cutoff_bars": 1689,
+        "last_pre_cutoff_candle_ist": "2026-11-18T15:15:00+05:30",
+        "session_bars": 7,
+        "first_session_candle_ist": "2026-11-19T09:15:00+05:30",
+        "latest_session_candle_ist": "2026-11-19T15:15:00+05:30",
+        "timezone": "Asia/Kolkata"
+      },
+      "TCS": {
+        "file": "TCS_1h.parquet",
+        "sha256": "542d5c0b8408957568f9c1354c5500f9a93eba45a15b2e70b9156fa8087dbbf4",
+        "pre_cutoff_bars": 1682,
+        "last_pre_cutoff_candle_ist": "2026-11-18T15:15:00+05:30",
+        "session_bars": 7,
+        "first_session_candle_ist": "2026-11-19T09:15:00+05:30",
+        "latest_session_candle_ist": "2026-11-19T15:15:00+05:30",
+        "timezone": "Asia/Kolkata"
+      },
+      "BIRLACABLE": {
+        "file": "BIRLACABLE_1h.parquet",
+        "sha256": "42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26",
+        "pre_cutoff_bars": 1695,
+        "last_pre_cutoff_candle_ist": "2026-11-18T15:15:00+05:30",
+        "session_bars": 7,
+        "first_session_candle_ist": "2026-11-19T09:15:00+05:30",
+        "latest_session_candle_ist": "2026-11-19T15:15:00+05:30",
+        "timezone": "Asia/Kolkata"
+      },
+      "ITC": {
+        "file": "ITC_1h.parquet",
+        "sha256": "2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be",
+        "pre_cutoff_bars": 1690,
+        "last_pre_cutoff_candle_ist": "2026-11-18T15:15:00+05:30",
+        "session_bars": 7,
+        "first_session_candle_ist": "2026-11-19T09:15:00+05:30",
+        "latest_session_candle_ist": "2026-11-19T15:15:00+05:30",
+        "timezone": "Asia/Kolkata"
+      },
+      "TATAELXSI": {
+        "file": "TATAELXSI_1h.parquet",
+        "sha256": "e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875",
+        "pre_cutoff_bars": 1677,
+        "last_pre_cutoff_candle_ist": "2026-11-18T15:15:00+05:30",
+        "session_bars": 7,
+        "first_session_candle_ist": "2026-11-19T09:15:00+05:30",
+        "latest_session_candle_ist": "2026-11-19T15:15:00+05:30",
+        "timezone": "Asia/Kolkata"
+      }
+    }
+  },
+  "input_freshness": {
+    "as_of_ist": "2026-11-19T09:15:00+05:30",
+    "max_staleness_hours": 72.0,
+    "max_input_spread_hours": 48.0,
+    "sources": {
+      "latest_predictions": {
+        "timestamp_ist": "2026-11-19T02:34:26.591210+05:30",
+        "age_hours": 6.6759
+      },
+      "phase5_intelligence": {
+        "timestamp_ist": "2026-11-19T02:34:53.810677+05:30",
+        "age_hours": 6.6684
+      },
+      "regime": {
+        "timestamp_ist": "2026-11-19T02:34:26.591210+05:30",
+        "age_hours": 6.6759
+      }
+    },
+    "cross_source_spread_hours": 0.0076,
+    "observation_freshness": {
+      "regime": {
+        "observation_date": "2026-11-18",
+        "eod_ist": "2026-11-18T15:30:00+05:30",
+        "age_hours": 17.75
+      },
+      "predictions": {
+        "RELIANCE": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "TCS": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "BIRLACABLE": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "ITC": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "TATAELXSI": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        }
+      },
+      "intelligence": {
+        "RELIANCE": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "TCS": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "BIRLACABLE": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "ITC": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "TATAELXSI": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        }
+      }
+    }
+  },
+  "snapshot_manifest": {
+    "cycle_id": "CYCLE-006C",
+    "snapshot_status": "RECONSTRUCTED_FROM_ARCHIVES",
+    "session_date": "2026-11-19",
+    "as_of_cutoff_ist": "2026-11-19T09:15:00+05:30",
+    "target_observation_date": "2026-11-18",
+    "symbols": [
+      "RELIANCE",
+      "TCS",
+      "BIRLACABLE",
+      "ITC",
+      "TATAELXSI"
+    ],
+    "source_file_hashes": {
+      "data/predictions/prediction_log.parquet": "e43c7c8310baf0bbde1d387096edf399b6e4186afcd6bd42e6f41dc0f8a07e4f",
+      "data/processed/market_regimes.parquet": "c48a68736993729ee6616ef69b12662602645dd4bcabc0e24c76e262af589a5b",
+      "data/predictions/forward_predictions.parquet": "2106caf6943427d498104a8a27088c5c9091a50fa24ae7973da795064edcafeb",
+      "data/predictions/structured_events.parquet": "9fa15f2f7a22f654a3c75f071a015d2fcc34f5e1994ea523e1399910a933844e"
+    },
+    "output_files": {
+      "predictions_path": "/tmp/cycle_007_snapshot/latest_predictions.json",
+      "intelligence_path": "/tmp/cycle_007_snapshot/phase5_intelligence.json",
+      "regime_path": "/tmp/cycle_007_snapshot/regime.json"
+    },
+    "output_file_hashes": {
+      "latest_predictions.json": "66ac08320d597a9072f8f2f42b46a420e21b80ceb3fa29f8f6d00fb0eb0c1a87",
+      "phase5_intelligence.json": "94d15df951781258b443c3b22227e3e62c09831c48b7ba1b66b16c98fd972649",
+      "regime.json": "8902b0fae7abe33a51d69e7bbd947db265fb744a83d7ac72d76f57a964488b9b"
+    },
+    "timestamps": {
+      "prediction_generated_at_ist": "2026-11-19T02:34:26.591210+05:30",
+      "regime_availability_ist": "2026-11-19T02:34:26.591210+05:30",
+      "intelligence_generated_at_ist": "2026-11-19T02:34:53.810677+05:30",
+      "max_verified_event_collection_ist": "2026-11-19T02:34:53.810677+05:30"
+    },
+    "structured_events_audit": {
+      "total_archive_events": 280,
+      "included_verified_events": 81,
+      "included_by_symbol": {
+        "RELIANCE": 19,
+        "TCS": 31,
+        "BIRLACABLE": 9,
+        "ITC": 15,
+        "TATAELXSI": 7
+      },
+      "excluded_reasons": {
+        "missing_collection_timestamp": 156,
+        "missing_publication_timestamp": 0,
+        "published_after_cutoff": 4,
+        "collected_after_cutoff": 39,
+        "outside_target_universe": 0
+      }
+    },
+    "provenance_classification": "ARCHIVED_PRE_CUTOFF_RECONSTRUCTED",
+    "manifest_path": "/tmp/cycle_007_snapshot/snapshot_manifest.json"
+  },
+  "input_file_hashes": {
+    "data/intraday/RELIANCE_1h.parquet": "f8931a85587e923a77214e344e0dde35c8db06db57a810c47ad939a48123dcfe",
+    "data/intraday/TCS_1h.parquet": "542d5c0b8408957568f9c1354c5500f9a93eba45a15b2e70b9156fa8087dbbf4",
+    "data/intraday/BIRLACABLE_1h.parquet": "42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26",
+    "data/intraday/ITC_1h.parquet": "2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be",
+    "data/intraday/TATAELXSI_1h.parquet": "e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875",
+    "/tmp/cycle_007_snapshot/latest_predictions.json": "66ac08320d597a9072f8f2f42b46a420e21b80ceb3fa29f8f6d00fb0eb0c1a87",
+    "/tmp/cycle_007_snapshot/phase5_intelligence.json": "94d15df951781258b443c3b22227e3e62c09831c48b7ba1b66b16c98fd972649",
+    "/tmp/cycle_007_snapshot/regime.json": "8902b0fae7abe33a51d69e7bbd947db265fb744a83d7ac72d76f57a964488b9b"
+  },
+  "stage1_central_hypotheses": {
+    "RELIANCE": {
+      "symbol": "RELIANCE",
+      "direction": "NEUTRAL",
+      "confidence": 0.4902,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "prob_next_day_up": 0.5049,
+      "expected_next_day_return_pct": 0.0226,
+      "news_sentiment_score": 0.0,
+      "market_regime": "Weak Bull",
+      "observation_date": "2026-11-18",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "rationale": [
+        "NEUTRAL hypothesis: thresholds not met (prob_up=0.5049, exp_ret=+0.0226%, news_sent=+0.0000, regime=Weak Bull)"
+      ]
+    },
+    "TCS": {
+      "symbol": "TCS",
+      "direction": "NEUTRAL",
+      "confidence": 0.4236,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "prob_next_day_up": 0.4618,
+      "expected_next_day_return_pct": -0.1679,
+      "news_sentiment_score": 0.0,
+      "market_regime": "Weak Bull",
+      "observation_date": "2026-11-18",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "rationale": [
+        "NEUTRAL hypothesis: thresholds not met (prob_up=0.4618, exp_ret=-0.1679%, news_sent=+0.0000, regime=Weak Bull)"
+      ]
+    },
+    "BIRLACABLE": {
+      "symbol": "BIRLACABLE",
+      "direction": "NEUTRAL",
+      "confidence": 0.4362,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "prob_next_day_up": 0.4681,
+      "expected_next_day_return_pct": -0.4444,
+      "news_sentiment_score": 0.1324,
+      "market_regime": "Weak Bull",
+      "observation_date": "2026-11-18",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "rationale": [
+        "NEUTRAL hypothesis: thresholds not met (prob_up=0.4681, exp_ret=-0.4444%, news_sent=+0.1324, regime=Weak Bull)"
+      ]
+    },
+    "ITC": {
+      "symbol": "ITC",
+      "direction": "NEUTRAL",
+      "confidence": 0.4992,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "prob_next_day_up": 0.4996,
+      "expected_next_day_return_pct": 0.0183,
+      "news_sentiment_score": 0.0446,
+      "market_regime": "Weak Bull",
+      "observation_date": "2026-11-18",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "rationale": [
+        "NEUTRAL hypothesis: thresholds not met (prob_up=0.4996, exp_ret=+0.0183%, news_sent=+0.0446, regime=Weak Bull)"
+      ]
+    },
+    "TATAELXSI": {
+      "symbol": "TATAELXSI",
+      "direction": "NEUTRAL",
+      "confidence": 0.4362,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "prob_next_day_up": 0.4681,
+      "expected_next_day_return_pct": -0.1595,
+      "news_sentiment_score": 0.0,
+      "market_regime": "Weak Bull",
+      "observation_date": "2026-11-18",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "rationale": [
+        "NEUTRAL hypothesis: thresholds not met (prob_up=0.4681, exp_ret=-0.1595%, news_sent=+0.0000, regime=Weak Bull)"
+      ]
+    }
+  },
+  "stage2_timing_assessments": {
+    "RELIANCE": {
+      "symbol": "RELIANCE",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "decision": "NO_TRADE",
+      "alignment_status": "NEUTRAL_CENTRAL",
+      "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
+      "candle_bias": "NEUTRAL",
+      "timing_quality_score": 0.04,
+      "price_action_score": 0.08,
+      "entry_price": 1363.0,
+      "invalidation_price": null,
+      "target_price": null,
+      "risk_reward_ratio": null,
+      "detected_patterns": [
+        "BEARISH_MARUBOZU",
+        "INSIDE_BAR"
+      ],
+      "timeframe_statuses": {
+        "1h": "AVAILABLE",
+        "15m": "UNAVAILABLE",
+        "5m": "UNAVAILABLE"
+      },
+      "contradiction_reasons": [],
+      "rationale": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.080)."
+      ],
+      "intelligence_report": {
+        "symbol": "RELIANCE",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "primary_timeframe": "1h",
+        "primary": {
+          "timeframe": "1h",
+          "timeframe_status": "AVAILABLE",
+          "bar_count": 1689,
+          "latest_timestamp_ist": "2026-11-18T15:15:00+05:30",
+          "latest_candle": {
+            "timestamp_ist": "2026-11-18T15:15:00+05:30",
+            "open": 1364.2,
+            "high": 1364.2,
+            "low": 1363.0,
+            "close": 1363.0,
+            "volume": 623778.0,
+            "body_size": 1.2,
+            "candle_range": 1.2,
+            "body_ratio": 1.0,
+            "upper_wick_ratio": 0.0,
+            "lower_wick_ratio": 0.0,
+            "range_pct": 0.088,
+            "close_location_value": 0.0,
+            "is_bullish": false,
+            "is_bearish": true
+          },
+          "detected_patterns": [
+            "BEARISH_MARUBOZU",
+            "INSIDE_BAR"
+          ],
+          "swing_structure": "UPTREND",
+          "ema_short": 1361.5815,
+          "ema_medium": 1354.8893,
+          "ema_alignment": "BULLISH",
+          "session_vwap": 1362.7497,
+          "vwap_position": "AT",
+          "vwap_distance_pct": 0.0184,
+          "breakout_state": "INSIDE_RANGE",
+          "recent_swing_high": 1376.1,
+          "recent_swing_low": 1342.5,
+          "atr": 9.6786,
+          "atr_pct": 0.7101,
+          "relative_volume_ratio": 0.2577,
+          "price_action_score": 0.08,
+          "directional_lean": "NEUTRAL",
+          "evidence": [
+            "Patterns(1h): BEARISH_MARUBOZU, INSIDE_BAR",
+            "Swing structure(1h): UPTREND (HH/HL)",
+            "EMA alignment(1h): BULLISH (close > EMA9 > EMA21)"
+          ],
+          "warnings": []
+        },
+        "confirming_timeframes": {
+          "15m": {
+            "timeframe": "15m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "15m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          },
+          "5m": {
+            "timeframe": "5m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "5m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          }
+        },
+        "composite_price_action_score": 0.08,
+        "directional_lean": "NEUTRAL",
+        "evidence": [
+          "Patterns(1h): BEARISH_MARUBOZU, INSIDE_BAR",
+          "Swing structure(1h): UPTREND (HH/HL)",
+          "EMA alignment(1h): BULLISH (close > EMA9 > EMA21)"
+        ]
+      }
+    },
+    "TCS": {
+      "symbol": "TCS",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "decision": "NO_TRADE",
+      "alignment_status": "NEUTRAL_CENTRAL",
+      "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
+      "candle_bias": "BEARISH",
+      "timing_quality_score": 0.325,
+      "price_action_score": -0.65,
+      "entry_price": 2379.5,
+      "invalidation_price": null,
+      "target_price": null,
+      "risk_reward_ratio": null,
+      "detected_patterns": [
+        "DOJI"
+      ],
+      "timeframe_statuses": {
+        "1h": "AVAILABLE",
+        "15m": "UNAVAILABLE",
+        "5m": "UNAVAILABLE"
+      },
+      "contradiction_reasons": [],
+      "rationale": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BEARISH, score=-0.650)."
+      ],
+      "intelligence_report": {
+        "symbol": "TCS",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "primary_timeframe": "1h",
+        "primary": {
+          "timeframe": "1h",
+          "timeframe_status": "AVAILABLE",
+          "bar_count": 1682,
+          "latest_timestamp_ist": "2026-11-18T15:15:00+05:30",
+          "latest_candle": {
+            "timestamp_ist": "2026-11-18T15:15:00+05:30",
+            "open": 2379.5,
+            "high": 2379.5,
+            "low": 2379.5,
+            "close": 2379.5,
+            "volume": 156384.0,
+            "body_size": 0.0,
+            "candle_range": 0.0,
+            "body_ratio": 0.0,
+            "upper_wick_ratio": 0.0,
+            "lower_wick_ratio": 0.0,
+            "range_pct": 0.0,
+            "close_location_value": 0.5,
+            "is_bullish": false,
+            "is_bearish": false
+          },
+          "detected_patterns": [
+            "DOJI"
+          ],
+          "swing_structure": "DOWNTREND",
+          "ema_short": 2393.4014,
+          "ema_medium": 2404.4509,
+          "ema_alignment": "BEARISH",
+          "session_vwap": 2389.2644,
+          "vwap_position": "BELOW",
+          "vwap_distance_pct": -0.4087,
+          "breakout_state": "BREAKDOWN_LOW",
+          "recent_swing_high": 2446.7,
+          "recent_swing_low": 2379.5,
+          "atr": 16.7785,
+          "atr_pct": 0.7051,
+          "relative_volume_ratio": 0.5785,
+          "price_action_score": -0.65,
+          "directional_lean": "BEARISH",
+          "evidence": [
+            "Patterns(1h): DOJI",
+            "Swing structure(1h): DOWNTREND (LH/LL)",
+            "EMA alignment(1h): BEARISH (close < EMA9 < EMA21)",
+            "VWAP(1h): BELOW (-0.41%)",
+            "Range state(1h): BREAKDOWN_LOW"
+          ],
+          "warnings": []
+        },
+        "confirming_timeframes": {
+          "15m": {
+            "timeframe": "15m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "15m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          },
+          "5m": {
+            "timeframe": "5m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "5m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          }
+        },
+        "composite_price_action_score": -0.65,
+        "directional_lean": "BEARISH",
+        "evidence": [
+          "Patterns(1h): DOJI",
+          "Swing structure(1h): DOWNTREND (LH/LL)",
+          "EMA alignment(1h): BEARISH (close < EMA9 < EMA21)",
+          "VWAP(1h): BELOW (-0.41%)",
+          "Range state(1h): BREAKDOWN_LOW"
+        ]
+      }
+    },
+    "BIRLACABLE": {
+      "symbol": "BIRLACABLE",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "decision": "NO_TRADE",
+      "alignment_status": "NEUTRAL_CENTRAL",
+      "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
+      "candle_bias": "BULLISH",
+      "timing_quality_score": 0.2,
+      "price_action_score": 0.4,
+      "entry_price": 305.0,
+      "invalidation_price": null,
+      "target_price": null,
+      "risk_reward_ratio": null,
+      "detected_patterns": [
+        "INSIDE_BAR"
+      ],
+      "timeframe_statuses": {
+        "1h": "AVAILABLE",
+        "15m": "UNAVAILABLE",
+        "5m": "UNAVAILABLE"
+      },
+      "contradiction_reasons": [],
+      "rationale": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BULLISH, score=+0.400)."
+      ],
+      "intelligence_report": {
+        "symbol": "BIRLACABLE",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "primary_timeframe": "1h",
+        "primary": {
+          "timeframe": "1h",
+          "timeframe_status": "AVAILABLE",
+          "bar_count": 1695,
+          "latest_timestamp_ist": "2026-11-18T15:15:00+05:30",
+          "latest_candle": {
+            "timestamp_ist": "2026-11-18T15:15:00+05:30",
+            "open": 302.35,
+            "high": 305.0,
+            "low": 302.0,
+            "close": 305.0,
+            "volume": 14879.0,
+            "body_size": 2.65,
+            "candle_range": 3.0,
+            "body_ratio": 0.8833,
+            "upper_wick_ratio": 0.0,
+            "lower_wick_ratio": 0.1167,
+            "range_pct": 0.9922,
+            "close_location_value": 1.0,
+            "is_bullish": true,
+            "is_bearish": false
+          },
+          "detected_patterns": [
+            "INSIDE_BAR"
+          ],
+          "swing_structure": "UPTREND",
+          "ema_short": 303.1754,
+          "ema_medium": 306.2286,
+          "ema_alignment": "NEUTRAL",
+          "session_vwap": 304.4707,
+          "vwap_position": "ABOVE",
+          "vwap_distance_pct": 0.1739,
+          "breakout_state": "INSIDE_RANGE",
+          "recent_swing_high": 309.0,
+          "recent_swing_low": 293.55,
+          "atr": 5.5107,
+          "atr_pct": 1.8068,
+          "relative_volume_ratio": 0.276,
+          "price_action_score": 0.4,
+          "directional_lean": "BULLISH",
+          "evidence": [
+            "Patterns(1h): INSIDE_BAR",
+            "Swing structure(1h): UPTREND (HH/HL)",
+            "VWAP(1h): ABOVE (+0.17%)"
+          ],
+          "warnings": []
+        },
+        "confirming_timeframes": {
+          "15m": {
+            "timeframe": "15m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "15m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          },
+          "5m": {
+            "timeframe": "5m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "5m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          }
+        },
+        "composite_price_action_score": 0.4,
+        "directional_lean": "BULLISH",
+        "evidence": [
+          "Patterns(1h): INSIDE_BAR",
+          "Swing structure(1h): UPTREND (HH/HL)",
+          "VWAP(1h): ABOVE (+0.17%)"
+        ]
+      }
+    },
+    "ITC": {
+      "symbol": "ITC",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "decision": "NO_TRADE",
+      "alignment_status": "NEUTRAL_CENTRAL",
+      "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
+      "candle_bias": "NEUTRAL",
+      "timing_quality_score": 0.01,
+      "price_action_score": -0.02,
+      "entry_price": 296.6,
+      "invalidation_price": null,
+      "target_price": null,
+      "risk_reward_ratio": null,
+      "detected_patterns": [
+        "BEARISH_MARUBOZU",
+        "INSIDE_BAR"
+      ],
+      "timeframe_statuses": {
+        "1h": "AVAILABLE",
+        "15m": "UNAVAILABLE",
+        "5m": "UNAVAILABLE"
+      },
+      "contradiction_reasons": [],
+      "rationale": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=-0.020)."
+      ],
+      "intelligence_report": {
+        "symbol": "ITC",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "primary_timeframe": "1h",
+        "primary": {
+          "timeframe": "1h",
+          "timeframe_status": "AVAILABLE",
+          "bar_count": 1690,
+          "latest_timestamp_ist": "2026-11-18T15:15:00+05:30",
+          "latest_candle": {
+            "timestamp_ist": "2026-11-18T15:15:00+05:30",
+            "open": 297.5,
+            "high": 297.5,
+            "low": 296.6,
+            "close": 296.6,
+            "volume": 425191.0,
+            "body_size": 0.9,
+            "candle_range": 0.9,
+            "body_ratio": 1.0,
+            "upper_wick_ratio": 0.0,
+            "lower_wick_ratio": 0.0,
+            "range_pct": 0.3025,
+            "close_location_value": 0.0,
+            "is_bullish": false,
+            "is_bearish": true
+          },
+          "detected_patterns": [
+            "BEARISH_MARUBOZU",
+            "INSIDE_BAR"
+          ],
+          "swing_structure": "RANGE",
+          "ema_short": 293.976,
+          "ema_medium": 292.3879,
+          "ema_alignment": "BULLISH",
+          "session_vwap": 294.3429,
+          "vwap_position": "ABOVE",
+          "vwap_distance_pct": 0.7668,
+          "breakout_state": "INSIDE_RANGE",
+          "recent_swing_high": 298.0,
+          "recent_swing_low": 288.95,
+          "atr": 2.0393,
+          "atr_pct": 0.6876,
+          "relative_volume_ratio": 0.1964,
+          "price_action_score": -0.02,
+          "directional_lean": "NEUTRAL",
+          "evidence": [
+            "Patterns(1h): BEARISH_MARUBOZU, INSIDE_BAR",
+            "Swing structure(1h): RANGE",
+            "EMA alignment(1h): BULLISH (close > EMA9 > EMA21)",
+            "VWAP(1h): ABOVE (+0.77%)"
+          ],
+          "warnings": []
+        },
+        "confirming_timeframes": {
+          "15m": {
+            "timeframe": "15m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "15m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          },
+          "5m": {
+            "timeframe": "5m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "5m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          }
+        },
+        "composite_price_action_score": -0.02,
+        "directional_lean": "NEUTRAL",
+        "evidence": [
+          "Patterns(1h): BEARISH_MARUBOZU, INSIDE_BAR",
+          "Swing structure(1h): RANGE",
+          "EMA alignment(1h): BULLISH (close > EMA9 > EMA21)",
+          "VWAP(1h): ABOVE (+0.77%)"
+        ]
+      }
+    },
+    "TATAELXSI": {
+      "symbol": "TATAELXSI",
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "decision": "NO_TRADE",
+      "alignment_status": "NEUTRAL_CENTRAL",
+      "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
+      "candle_bias": "NEUTRAL",
+      "timing_quality_score": 0.01,
+      "price_action_score": 0.02,
+      "entry_price": 3670.0,
+      "invalidation_price": null,
+      "target_price": null,
+      "risk_reward_ratio": null,
+      "detected_patterns": [
+        "BULLISH_MARUBOZU",
+        "INSIDE_BAR"
+      ],
+      "timeframe_statuses": {
+        "1h": "AVAILABLE",
+        "15m": "UNAVAILABLE",
+        "5m": "UNAVAILABLE"
+      },
+      "contradiction_reasons": [],
+      "rationale": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.020)."
+      ],
+      "intelligence_report": {
+        "symbol": "TATAELXSI",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "primary_timeframe": "1h",
+        "primary": {
+          "timeframe": "1h",
+          "timeframe_status": "AVAILABLE",
+          "bar_count": 1677,
+          "latest_timestamp_ist": "2026-11-18T15:15:00+05:30",
+          "latest_candle": {
+            "timestamp_ist": "2026-11-18T15:15:00+05:30",
+            "open": 3660.0,
+            "high": 3670.0,
+            "low": 3660.0,
+            "close": 3670.0,
+            "volume": 1609.0,
+            "body_size": 10.0,
+            "candle_range": 10.0,
+            "body_ratio": 1.0,
+            "upper_wick_ratio": 0.0,
+            "lower_wick_ratio": 0.0,
+            "range_pct": 0.2732,
+            "close_location_value": 1.0,
+            "is_bullish": true,
+            "is_bearish": false
+          },
+          "detected_patterns": [
+            "BULLISH_MARUBOZU",
+            "INSIDE_BAR"
+          ],
+          "swing_structure": "RANGE",
+          "ema_short": 3686.8286,
+          "ema_medium": 3722.9635,
+          "ema_alignment": "BEARISH",
+          "session_vwap": 3676.276,
+          "vwap_position": "BELOW",
+          "vwap_distance_pct": -0.1707,
+          "breakout_state": "INSIDE_RANGE",
+          "recent_swing_high": 3763.6001,
+          "recent_swing_low": 3656.0,
+          "atr": 25.0143,
+          "atr_pct": 0.6816,
+          "relative_volume_ratio": 0.1304,
+          "price_action_score": 0.02,
+          "directional_lean": "NEUTRAL",
+          "evidence": [
+            "Patterns(1h): BULLISH_MARUBOZU, INSIDE_BAR",
+            "Swing structure(1h): RANGE",
+            "EMA alignment(1h): BEARISH (close < EMA9 < EMA21)",
+            "VWAP(1h): BELOW (-0.17%)"
+          ],
+          "warnings": []
+        },
+        "confirming_timeframes": {
+          "15m": {
+            "timeframe": "15m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "15m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          },
+          "5m": {
+            "timeframe": "5m",
+            "timeframe_status": "UNAVAILABLE",
+            "bar_count": 0,
+            "latest_timestamp_ist": null,
+            "latest_candle": null,
+            "detected_patterns": [],
+            "swing_structure": "RANGE",
+            "ema_short": null,
+            "ema_medium": null,
+            "ema_alignment": "NEUTRAL",
+            "session_vwap": null,
+            "vwap_position": "UNAVAILABLE",
+            "vwap_distance_pct": null,
+            "breakout_state": "UNAVAILABLE",
+            "recent_swing_high": null,
+            "recent_swing_low": null,
+            "atr": null,
+            "atr_pct": null,
+            "relative_volume_ratio": null,
+            "price_action_score": 0.0,
+            "directional_lean": "NEUTRAL",
+            "evidence": [],
+            "warnings": [
+              "5m OHLCV bars not provided (UNAVAILABLE; never fabricated)"
+            ]
+          }
+        },
+        "composite_price_action_score": 0.02,
+        "directional_lean": "NEUTRAL",
+        "evidence": [
+          "Patterns(1h): BULLISH_MARUBOZU, INSIDE_BAR",
+          "Swing structure(1h): RANGE",
+          "EMA alignment(1h): BEARISH (close < EMA9 < EMA21)",
+          "VWAP(1h): BELOW (-0.17%)"
+        ]
+      }
+    }
+  },
+  "per_symbol_decisions": [
+    {
+      "symbol": "RELIANCE",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "stage1_central": {
+        "symbol": "RELIANCE",
+        "direction": "NEUTRAL",
+        "confidence": 0.4902,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+        "prob_next_day_up": 0.5049,
+        "expected_next_day_return_pct": 0.0226,
+        "news_sentiment_score": 0.0,
+        "market_regime": "Weak Bull",
+        "observation_date": "2026-11-18",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "rationale": [
+          "NEUTRAL hypothesis: thresholds not met (prob_up=0.5049, exp_ret=+0.0226%, news_sent=+0.0000, regime=Weak Bull)"
+        ]
+      },
+      "stage2_timing": {
+        "decision": "NO_TRADE",
+        "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
+        "candle_bias": "NEUTRAL",
+        "timing_quality_score": 0.04,
+        "price_action_score": 0.08,
+        "entry_price": 1363.0,
+        "invalidation_price": null,
+        "target_price": null,
+        "risk_reward_ratio": null,
+        "detected_patterns": [
+          "BEARISH_MARUBOZU",
+          "INSIDE_BAR"
+        ],
+        "timeframe_statuses": {
+          "1h": "AVAILABLE",
+          "15m": "UNAVAILABLE",
+          "5m": "UNAVAILABLE"
+        },
+        "contradiction_reasons": [],
+        "rationale": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.080)."
+        ]
+      },
+      "risk_decision": {
+        "symbol": "RELIANCE",
+        "stage": "STAGE2_TIMING_GATE",
+        "approved": false,
+        "status": "TIMING_NO_TRADE",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.080)."
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      }
+    },
+    {
+      "symbol": "TCS",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "stage1_central": {
+        "symbol": "TCS",
+        "direction": "NEUTRAL",
+        "confidence": 0.4236,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+        "prob_next_day_up": 0.4618,
+        "expected_next_day_return_pct": -0.1679,
+        "news_sentiment_score": 0.0,
+        "market_regime": "Weak Bull",
+        "observation_date": "2026-11-18",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "rationale": [
+          "NEUTRAL hypothesis: thresholds not met (prob_up=0.4618, exp_ret=-0.1679%, news_sent=+0.0000, regime=Weak Bull)"
+        ]
+      },
+      "stage2_timing": {
+        "decision": "NO_TRADE",
+        "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
+        "candle_bias": "BEARISH",
+        "timing_quality_score": 0.325,
+        "price_action_score": -0.65,
+        "entry_price": 2379.5,
+        "invalidation_price": null,
+        "target_price": null,
+        "risk_reward_ratio": null,
+        "detected_patterns": [
+          "DOJI"
+        ],
+        "timeframe_statuses": {
+          "1h": "AVAILABLE",
+          "15m": "UNAVAILABLE",
+          "5m": "UNAVAILABLE"
+        },
+        "contradiction_reasons": [],
+        "rationale": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BEARISH, score=-0.650)."
+        ]
+      },
+      "risk_decision": {
+        "symbol": "TCS",
+        "stage": "STAGE2_TIMING_GATE",
+        "approved": false,
+        "status": "TIMING_NO_TRADE",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BEARISH, score=-0.650)."
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      }
+    },
+    {
+      "symbol": "BIRLACABLE",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "stage1_central": {
+        "symbol": "BIRLACABLE",
+        "direction": "NEUTRAL",
+        "confidence": 0.4362,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+        "prob_next_day_up": 0.4681,
+        "expected_next_day_return_pct": -0.4444,
+        "news_sentiment_score": 0.1324,
+        "market_regime": "Weak Bull",
+        "observation_date": "2026-11-18",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "rationale": [
+          "NEUTRAL hypothesis: thresholds not met (prob_up=0.4681, exp_ret=-0.4444%, news_sent=+0.1324, regime=Weak Bull)"
+        ]
+      },
+      "stage2_timing": {
+        "decision": "NO_TRADE",
+        "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
+        "candle_bias": "BULLISH",
+        "timing_quality_score": 0.2,
+        "price_action_score": 0.4,
+        "entry_price": 305.0,
+        "invalidation_price": null,
+        "target_price": null,
+        "risk_reward_ratio": null,
+        "detected_patterns": [
+          "INSIDE_BAR"
+        ],
+        "timeframe_statuses": {
+          "1h": "AVAILABLE",
+          "15m": "UNAVAILABLE",
+          "5m": "UNAVAILABLE"
+        },
+        "contradiction_reasons": [],
+        "rationale": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BULLISH, score=+0.400)."
+        ]
+      },
+      "risk_decision": {
+        "symbol": "BIRLACABLE",
+        "stage": "STAGE2_TIMING_GATE",
+        "approved": false,
+        "status": "TIMING_NO_TRADE",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BULLISH, score=+0.400)."
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      }
+    },
+    {
+      "symbol": "ITC",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "stage1_central": {
+        "symbol": "ITC",
+        "direction": "NEUTRAL",
+        "confidence": 0.4992,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+        "prob_next_day_up": 0.4996,
+        "expected_next_day_return_pct": 0.0183,
+        "news_sentiment_score": 0.0446,
+        "market_regime": "Weak Bull",
+        "observation_date": "2026-11-18",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "rationale": [
+          "NEUTRAL hypothesis: thresholds not met (prob_up=0.4996, exp_ret=+0.0183%, news_sent=+0.0446, regime=Weak Bull)"
+        ]
+      },
+      "stage2_timing": {
+        "decision": "NO_TRADE",
+        "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
+        "candle_bias": "NEUTRAL",
+        "timing_quality_score": 0.01,
+        "price_action_score": -0.02,
+        "entry_price": 296.6,
+        "invalidation_price": null,
+        "target_price": null,
+        "risk_reward_ratio": null,
+        "detected_patterns": [
+          "BEARISH_MARUBOZU",
+          "INSIDE_BAR"
+        ],
+        "timeframe_statuses": {
+          "1h": "AVAILABLE",
+          "15m": "UNAVAILABLE",
+          "5m": "UNAVAILABLE"
+        },
+        "contradiction_reasons": [],
+        "rationale": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=-0.020)."
+        ]
+      },
+      "risk_decision": {
+        "symbol": "ITC",
+        "stage": "STAGE2_TIMING_GATE",
+        "approved": false,
+        "status": "TIMING_NO_TRADE",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=-0.020)."
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      }
+    },
+    {
+      "symbol": "TATAELXSI",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+      "stage1_central": {
+        "symbol": "TATAELXSI",
+        "direction": "NEUTRAL",
+        "confidence": 0.4362,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+        "prob_next_day_up": 0.4681,
+        "expected_next_day_return_pct": -0.1595,
+        "news_sentiment_score": 0.0,
+        "market_regime": "Weak Bull",
+        "observation_date": "2026-11-18",
+        "as_of_ist": "2026-11-19T09:15:00+05:30",
+        "rationale": [
+          "NEUTRAL hypothesis: thresholds not met (prob_up=0.4681, exp_ret=-0.1595%, news_sent=+0.0000, regime=Weak Bull)"
+        ]
+      },
+      "stage2_timing": {
+        "decision": "NO_TRADE",
+        "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
+        "candle_bias": "NEUTRAL",
+        "timing_quality_score": 0.01,
+        "price_action_score": 0.02,
+        "entry_price": 3670.0,
+        "invalidation_price": null,
+        "target_price": null,
+        "risk_reward_ratio": null,
+        "detected_patterns": [
+          "BULLISH_MARUBOZU",
+          "INSIDE_BAR"
+        ],
+        "timeframe_statuses": {
+          "1h": "AVAILABLE",
+          "15m": "UNAVAILABLE",
+          "5m": "UNAVAILABLE"
+        },
+        "contradiction_reasons": [],
+        "rationale": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.020)."
+        ]
+      },
+      "risk_decision": {
+        "symbol": "TATAELXSI",
+        "stage": "STAGE2_TIMING_GATE",
+        "approved": false,
+        "status": "TIMING_NO_TRADE",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.020)."
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      }
+    }
+  ],
+  "risk_decisions": [
+    {
+      "symbol": "RELIANCE",
+      "stage": "STAGE2_TIMING_GATE",
+      "approved": false,
+      "status": "TIMING_NO_TRADE",
+      "approved_quantity": 0,
+      "requested_quantity": 0,
+      "rejection_reasons": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.080)."
+      ],
+      "timestamp_ist": "2026-11-19T09:15:00+05:30"
+    },
+    {
+      "symbol": "TCS",
+      "stage": "STAGE2_TIMING_GATE",
+      "approved": false,
+      "status": "TIMING_NO_TRADE",
+      "approved_quantity": 0,
+      "requested_quantity": 0,
+      "rejection_reasons": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BEARISH, score=-0.650)."
+      ],
+      "timestamp_ist": "2026-11-19T09:15:00+05:30"
+    },
+    {
+      "symbol": "BIRLACABLE",
+      "stage": "STAGE2_TIMING_GATE",
+      "approved": false,
+      "status": "TIMING_NO_TRADE",
+      "approved_quantity": 0,
+      "requested_quantity": 0,
+      "rejection_reasons": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=BULLISH, score=+0.400)."
+      ],
+      "timestamp_ist": "2026-11-19T09:15:00+05:30"
+    },
+    {
+      "symbol": "ITC",
+      "stage": "STAGE2_TIMING_GATE",
+      "approved": false,
+      "status": "TIMING_NO_TRADE",
+      "approved_quantity": 0,
+      "requested_quantity": 0,
+      "rejection_reasons": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=-0.020)."
+      ],
+      "timestamp_ist": "2026-11-19T09:15:00+05:30"
+    },
+    {
+      "symbol": "TATAELXSI",
+      "stage": "STAGE2_TIMING_GATE",
+      "approved": false,
+      "status": "TIMING_NO_TRADE",
+      "approved_quantity": 0,
+      "requested_quantity": 0,
+      "rejection_reasons": [
+        "Central Directional Agent is NEUTRAL; standing aside (independent candle_bias=NEUTRAL, score=+0.020)."
+      ],
+      "timestamp_ist": "2026-11-19T09:15:00+05:30"
+    }
+  ],
+  "orders": [],
+  "order_count": 0,
+  "filled_order_count": 0,
+  "open_positions_count": 0,
+  "closed_trades_count": 0,
+  "portfolio_results": {
+    "initial_capital_inr": 50000.0,
+    "ending_cash_inr": 50000.0,
+    "invested_capital_inr": 0.0,
+    "ending_equity_inr": 50000.0,
+    "gross_pnl_inr": 0.0,
+    "net_pnl_inr": 0.0,
+    "gross_return_pct": 0.0,
+    "net_return_pct": 0.0
+  },
+  "cost_accounting": {
+    "brokerage_inr": 0.0,
+    "statutory_charges_inr": 0.0,
+    "slippage_inr": 0.0,
+    "total_friction_inr": 0.0
+  },
+  "ledger_reconciliation": {
+    "sha256_chain_valid": true,
+    "verification_message": "Ledger integrity and capital conservation 100% verified",
+    "ledger_event_count": 2,
+    "cash_plus_invested_matches_equity": true,
+    "equity_reconciliation_diff_inr": 0.0
+  },
+  "holdout_registry_integrity": {
+    "path": "data/lab/sealed_holdout_registry.json",
+    "sha256_before": "5fc9013346b5e4209576b98f7f035f8179f0f7c10173acf289badd3faa60e352",
+    "sha256_after": "5fc9013346b5e4209576b98f7f035f8179f0f7c10173acf289badd3faa60e352",
+    "unchanged": true
+  },
+  "rejection_reasons": [],
+  "output_report_sha256": "eb88a3d72f350b38e962fd09fa73b0de7a52d40e0b55bee08c3549caa891bc88"
+}
