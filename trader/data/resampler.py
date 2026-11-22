@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from typing import Literal
 
 from ..config import IST_TZ
+from ..intelligence.mtf_aligner import expected_5m_sub_bars_for_bucket
 from .schema import Candle5M
 
 
@@ -46,7 +47,6 @@ def resample_5m_candles(
     if not candles_5m:
         return []
 
-    expected_sub_bars = target_minutes // 5
     # Deduplicate and sort strictly chronologically
     seen_ts: set[datetime] = set()
     clean_bars: list[Candle5M] = []
@@ -72,6 +72,11 @@ def resample_5m_candles(
     resampled: list[ResampledCandle] = []
     for (_, bucket_start), bars in sorted(buckets.items(), key=lambda x: x[0][1]):
         bars_sorted = sorted(bars, key=lambda x: x.timestamp)
+        expected_sub_bars = (
+            expected_5m_sub_bars_for_bucket(bucket_start, target_minutes)
+            if target_minutes == 60
+            else target_minutes // 5
+        )
         is_complete = len(bars_sorted) == expected_sub_bars
         if not include_incomplete and not is_complete:
             continue

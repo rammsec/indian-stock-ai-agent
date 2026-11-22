@@ -9,8 +9,9 @@ from typing import Any, Literal
 import pandas as pd
 
 from ..config import IST_TZ, LAB_DEFAULT_UNIVERSE, is_nse_trading_day
-from ..data.loader import CACHE_DIR, DataUnavailableError, _compute_candle_series_hash, load_historical_5m_candles
+from ..data.loader import CACHE_DIR, DataUnavailableError, load_historical_5m_candles
 from ..data.schema import Candle5M, DataProvenance, DataSourceMode
+from ..intelligence.parsing import compute_candle_series_hash
 from ..data.validator import detect_missing_candles
 
 EXPECTED_SESSION_BARS = 75  # 09:15 to 15:25 IST inclusive (75 x 5m intervals)
@@ -121,7 +122,7 @@ def _classify_stock_quality(
         missing_intervals_detail=missing,
         status=status,
         quality_reason=reason,
-        sha256_hash=_compute_candle_series_hash(session_candles),
+        sha256_hash=compute_candle_series_hash(session_candles),
     )
 
 

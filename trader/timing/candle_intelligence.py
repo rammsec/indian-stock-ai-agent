@@ -22,6 +22,12 @@ import numpy as np
 import pandas as pd
 
 from trader.config import IST_TZ
+from trader.intelligence.registry import (
+    compute_atr_series,
+    compute_ema_series,
+    compute_latest_session_vwap,
+    compute_rvol_series,
+)
 
 REQUIRED_OHLCV_COLUMNS: frozenset[str] = frozenset(
     {"timestamp", "open", "high", "low", "close", "volume"}
@@ -522,45 +528,16 @@ def _compute_atr(df: pd.DataFrame, period: int = 14) -> float | None:
     """Compute Average True Range over ``min(period, len(df))`` bars."""
     if df.empty:
         return None
-    highs = df["high"].to_numpy(dtype=float)
-    lows = df["low"].to_numpy(dtype=float)
-    closes = df["close"].to_numpy(dtype=float)
-    if len(df) == 1:
-        return float(highs[0] - lows[0])
-
-    prev_closes = np.roll(closes, 1)
-    prev_closes[0] = closes[0]
-    tr = np.maximum(
-        highs - lows,
-        np.maximum(np.abs(highs - prev_closes), np.abs(lows - prev_closes)),
+    atr_series = compute_atr_series(
+        df["high"], df["low"], df["close"], period=period, method="sma", min_periods=1
     )
-    window = tr[-min(period, len(tr)) :]
-    atr_val = float(np.mean(window))
+    atr_val = float(atr_series.iloc[-1])
     return atr_val if math.isfinite(atr_val) else None
 
 
 def _compute_session_vwap(df: pd.DataFrame) -> tuple[float | None, Literal["ABOVE", "BELOW", "AT", "UNAVAILABLE"], float | None]:
     """Compute session VWAP strictly on bars belonging to the latest bar's IST date."""
-    latest_date = df["timestamp"].iloc[-1].date()
-    session_df = df[df["timestamp"].dt.date == latest_date]
-    total_vol = float(session_df["volume"].sum())
-    if total_vol <= 0.0:
-        return None, "UNAVAILABLE", None
-
-    typical_price = (session_df["high"] + session_df["low"] + session_df["close"]) / 3.0
-    vwap = float((typical_price * session_df["volume"]).sum() / total_vol)
-    if not math.isfinite(vwap) or vwap <= 0.0:
-        return None, "UNAVAILABLE", None
-
-    latest_close = float(df["close"].iloc[-1])
-    dist_pct = ((latest_close - vwap) / vwap) * 100.0
-    if abs(dist_pct) <= 0.05:
-        pos: Literal["ABOVE", "BELOW", "AT", "UNAVAILABLE"] = "AT"
-    elif latest_close > vwap:
-        pos = "ABOVE"
-    else:
-        pos = "BELOW"
-    return vwap, pos, dist_pct
+    return compute_latest_session_vwap(df, zero_vol_policy="unavailable")
 
 
 def _unavailable_timeframe_analysis(timeframe: str, reason: str) -> TimeframeAnalysis:
@@ -682,8 +659,8 @@ class CandleIntelligenceEngine:
 
         # Short & medium EMA alignment
         closes = clean["close"]
-        ema_short = float(closes.ewm(span=self.ema_short_span, adjust=False).mean().iloc[-1])
-        ema_medium = float(closes.ewm(span=self.ema_medium_span, adjust=False).mean().iloc[-1])
+        ema_short = float(compute_ema_series(closes, span=self.ema_short_span).iloc[-1])
+        ema_medium = float(compute_ema_series(closes, span=self.ema_medium_span).iloc[-1])
         if curr_candle.close > ema_short > ema_medium:
             ema_alignment: Literal["BULLISH", "BEARISH", "NEUTRAL"] = "BULLISH"
         elif curr_candle.close < ema_short < ema_medium:
@@ -721,14 +698,15 @@ class CandleIntelligenceEngine:
         atr_pct = (atr / curr_candle.close) * 100.0 if atr is not None and curr_candle.close > 0 else None
 
         # Relative volume ratio (vs prior non-zero volume bars)
-        prior_vols = clean["volume"].iloc[:-1].tail(self.atr_period)
-        nonzero_prior = prior_vols[prior_vols > 0]
+        rvol_series = compute_rvol_series(
+            clean["volume"], window=self.atr_period, mode="prior_nonzero"
+        )
+        raw_rvol = float(rvol_series.iloc[-1])
         warnings: list[str] = []
-        if len(nonzero_prior) > 0 and curr_candle.volume > 0:
-            rel_vol: float | None = float(curr_candle.volume / float(nonzero_prior.mean()))
-        elif curr_candle.volume == 0:
-            rel_vol = 0.0
-            warnings.append("Latest bar has zero reported volume")
+        if math.isfinite(raw_rvol):
+            rel_vol: float | None = raw_rvol
+            if curr_candle.volume == 0:
+                warnings.append("Latest bar has zero reported volume")
         else:
             rel_vol = None
             warnings.append("Prior volume history is zero; relative volume unavailable")

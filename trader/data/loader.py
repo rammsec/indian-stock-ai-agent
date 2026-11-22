@@ -11,6 +11,7 @@ import pandas as pd
 import yfinance as yf
 
 from ..config import IST_TZ, is_nse_trading_day
+from ..intelligence.parsing import compute_candle_series_hash
 from .schema import Candle5M, DataProvenance, DataSourceMode
 from .validator import validate_candle_series
 
@@ -21,15 +22,7 @@ class DataUnavailableError(Exception):
     """Raised when real historical data cannot be obtained and silent synthetic substitution is blocked."""
 
 
-def _compute_candle_series_hash(candles: list[Candle5M]) -> str:
-    """Compute deterministic SHA-256 checksum across candle timestamps, OHLCV."""
-    if not candles:
-        return "EMPTY_DATASET_HASH_0000000000000000"
-    raw_str = ";".join(
-        f"{c.timestamp.isoformat()},{c.open},{c.high},{c.low},{c.close},{c.volume}"
-        for c in candles
-    )
-    return hashlib.sha256(raw_str.encode()).hexdigest()
+_compute_candle_series_hash = compute_candle_series_hash
 
 
 def generate_synthetic_5m_session(

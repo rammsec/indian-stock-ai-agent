@@ -10,6 +10,7 @@ from typing import Any, Literal
 import pandas as pd
 
 from ..config import IST_TZ, LAB_DEFAULT_UNIVERSE, is_nse_trading_day
+from ..intelligence.data_contract import cap_provenance_tier
 from .loader import CACHE_DIR
 from .resampler import ResampledCandle
 from .schema import Candle5M
@@ -26,6 +27,8 @@ def validate_1h_provenance(
     min_sessions_required: int = 60,
     provider_name: str = "yahoo_finance_1h",
     resampling_methodology: str = "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
+    *,
+    enforce_provider_authority_cap: bool = False,
 ) -> tuple[bool, dict[str, Any]]:
     """Run all 15 mandatory provenance & integrity checks across the 1-hour NSE Parquet archive."""
     per_symbol: dict[str, Any] = {}
@@ -203,6 +206,12 @@ def validate_1h_provenance(
             any_partial = True
         else:
             sym_status = "VERIFIED"
+
+        if enforce_provider_authority_cap:
+            capped = cap_provenance_tier(sym_status, provider_name)
+            sym_status = capped.value if hasattr(capped, "value") else capped  # type: ignore[assignment]
+            if sym_status == "PARTIALLY_VERIFIED":
+                any_partial = True
 
         per_symbol[sym] = {
             "symbol": sym,

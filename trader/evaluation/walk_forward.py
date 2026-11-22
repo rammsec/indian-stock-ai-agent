@@ -34,6 +34,7 @@ from trader.evaluation.data_readiness import (
     audit_historical_data_readiness,
 )
 from trader.evaluation.metrics import TradeRecord, compute_strategy_metrics
+from trader.intelligence.registry import compute_ema_series
 from trader.paper.cycle006b import (
     DEFAULT_CACHE_DIR,
     ExecutionInstrumentation,
@@ -724,8 +725,8 @@ class Cycle008WalkForwardEvaluator:
                     "target": None,
                 }
             closes = pre_df["close"].astype(float)
-            ema9 = float(closes.ewm(span=9, adjust=False).mean().iloc[-1])
-            ema21 = float(closes.ewm(span=21, adjust=False).mean().iloc[-1])
+            ema9 = float(compute_ema_series(closes, span=9).iloc[-1])
+            ema21 = float(compute_ema_series(closes, span=21).iloc[-1])
             prior_close = float(closes.iloc[-1])
             prior_5_high = float(pre_df["high"].astype(float).iloc[-6:-1].max())
 

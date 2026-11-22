@@ -10,7 +10,8 @@ import pandas as pd
 import yfinance as yf
 
 from ..config import IST_TZ, LAB_DEFAULT_UNIVERSE, is_nse_trading_day
-from .loader import CACHE_DIR, _compute_candle_series_hash
+from ..intelligence.parsing import compute_candle_series_hash
+from .loader import CACHE_DIR
 from .schema import Candle5M, DataProvenance, DataSourceMode
 
 
@@ -157,7 +158,7 @@ def load_1h_session_with_warmup(
         w_set = set(unique_w_dates)
         w_bars = [b for b in w_bars if b.timestamp.date() in w_set]
 
-    sha = _compute_candle_series_hash(s_bars) if s_bars else "EMPTY"
+    sha = compute_candle_series_hash(s_bars) if s_bars else "EMPTY"
     now_ts = datetime.now(tz=IST_TZ)
     prov = DataProvenance(
         source_mode=DataSourceMode.HISTORICAL_REAL,
