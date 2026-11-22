@@ -26,6 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest httpx pydantic pandas numpy pyarrow yfinance
 
+      - name: Run CYCLE-009C Fast Lookahead & Convergence CI Gate
+        run: |
+          pytest tests/intraday/test_cycle009c_lookahead_and_convergence_gate.py -m fast_ci -v --tb=short
+
       - name: Run Intraday & Historical Lab Test Suite
         run: |
           pytest tests/intraday/ tests/phase6/ -v --tb=short

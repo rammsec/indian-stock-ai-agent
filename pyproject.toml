@@ -27,3 +27,7 @@ dependencies = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+    "fast_ci: Fast deterministic CI gate tests (<15s)",
+    "research_slow: Longer-running historical research validation tests (1-5m)",
+]
