@@ -30,14 +30,16 @@
         "date_range": "2026-08-25T09:15:00+05:30 -> 2026-11-20T15:25:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "41b6fc7638c305b89018e9a7e46f70460ff176fa6a357958e3a53f1832e3365e",
-        "retrieved_at_utc": "2026-11-22T00:36:01Z",
-        "retrieved_at_ist": "2026-11-22T06:06:01+05:30",
-        "excluded_partial_sessions_count": 3,
-        "excluded_partial_sessions": [
+        "cache_file_mtime_utc": "2026-11-22T00:36:01Z",
+        "cache_file_mtime_ist": "2026-11-22T06:06:01+05:30",
+        "timestamp_source": "filesystem_mtime_of_isolated_yfinance_cache",
+        "universe_excluded_partial_sessions_count": 3,
+        "universe_excluded_partial_sessions": [
           "2026-10-27",
           "2026-10-28",
           "2026-11-04"
-        ]
+        ],
+        "universe_exclusion_reason": "BIRLACABLE had <70/75 5m bars (42/75, 66/75, 63/75), excluding those 3 sessions across the 5-stock universe."
       },
       {
         "symbol": "TCS",
@@ -47,14 +49,16 @@
         "date_range": "2026-08-25T09:15:00+05:30 -> 2026-11-20T15:25:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "1bc1fcd036a0251309928908d0ee5590d9f0c0b6bf9bb1330a07ca47c03d0a6c",
-        "retrieved_at_utc": "2026-11-22T00:36:02Z",
-        "retrieved_at_ist": "2026-11-22T06:06:02+05:30",
-        "excluded_partial_sessions_count": 3,
-        "excluded_partial_sessions": [
+        "cache_file_mtime_utc": "2026-11-22T00:36:02Z",
+        "cache_file_mtime_ist": "2026-11-22T06:06:02+05:30",
+        "timestamp_source": "filesystem_mtime_of_isolated_yfinance_cache",
+        "universe_excluded_partial_sessions_count": 3,
+        "universe_excluded_partial_sessions": [
           "2026-10-27",
           "2026-10-28",
           "2026-11-04"
-        ]
+        ],
+        "universe_exclusion_reason": "BIRLACABLE had <70/75 5m bars (42/75, 66/75, 63/75), excluding those 3 sessions across the 5-stock universe."
       },
       {
         "symbol": "BIRLACABLE",
@@ -64,14 +68,16 @@
         "date_range": "2026-08-25T09:15:00+05:30 -> 2026-11-20T15:25:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "bc54d18b370e88df4ad2232470fb4b979994aae563b7214f3059019878da0744",
-        "retrieved_at_utc": "2026-11-22T00:36:03Z",
-        "retrieved_at_ist": "2026-11-22T06:06:03+05:30",
-        "excluded_partial_sessions_count": 3,
-        "excluded_partial_sessions": [
+        "cache_file_mtime_utc": "2026-11-22T00:36:03Z",
+        "cache_file_mtime_ist": "2026-11-22T06:06:03+05:30",
+        "timestamp_source": "filesystem_mtime_of_isolated_yfinance_cache",
+        "universe_excluded_partial_sessions_count": 3,
+        "universe_excluded_partial_sessions": [
           "2026-10-27",
           "2026-10-28",
           "2026-11-04"
-        ]
+        ],
+        "universe_exclusion_reason": "BIRLACABLE had <70/75 5m bars (42/75, 66/75, 63/75), excluding those 3 sessions across the 5-stock universe."
       },
       {
         "symbol": "ITC",
@@ -81,14 +87,16 @@
         "date_range": "2026-08-25T09:15:00+05:30 -> 2026-11-20T15:25:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "2bf641bd37627f345d90c4c2b68d1d70be77e2f7db6bea22990dfe96927529a0",
-        "retrieved_at_utc": "2026-11-22T00:36:05Z",
-        "retrieved_at_ist": "2026-11-22T06:06:05+05:30",
-        "excluded_partial_sessions_count": 3,
-        "excluded_partial_sessions": [
+        "cache_file_mtime_utc": "2026-11-22T00:36:05Z",
+        "cache_file_mtime_ist": "2026-11-22T06:06:05+05:30",
+        "timestamp_source": "filesystem_mtime_of_isolated_yfinance_cache",
+        "universe_excluded_partial_sessions_count": 3,
+        "universe_excluded_partial_sessions": [
           "2026-10-27",
           "2026-10-28",
           "2026-11-04"
-        ]
+        ],
+        "universe_exclusion_reason": "BIRLACABLE had <70/75 5m bars (42/75, 66/75, 63/75), excluding those 3 sessions across the 5-stock universe."
       },
       {
         "symbol": "TATAELXSI",
@@ -98,14 +106,16 @@
         "date_range": "2026-08-25T09:15:00+05:30 -> 2026-11-20T15:25:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "4e1ee21e66c3f784c7458672991cee451a55908d86faf9f18e1dd13719fead44",
-        "retrieved_at_utc": "2026-11-22T00:36:06Z",
-        "retrieved_at_ist": "2026-11-22T06:06:06+05:30",
-        "excluded_partial_sessions_count": 3,
-        "excluded_partial_sessions": [
+        "cache_file_mtime_utc": "2026-11-22T00:36:06Z",
+        "cache_file_mtime_ist": "2026-11-22T06:06:06+05:30",
+        "timestamp_source": "filesystem_mtime_of_isolated_yfinance_cache",
+        "universe_excluded_partial_sessions_count": 3,
+        "universe_excluded_partial_sessions": [
           "2026-10-27",
           "2026-10-28",
           "2026-11-04"
-        ]
+        ],
+        "universe_exclusion_reason": "BIRLACABLE had <70/75 5m bars (42/75, 66/75, 63/75), excluding those 3 sessions across the 5-stock universe."
       }
     ],
     "1h_committed": [
@@ -117,8 +127,8 @@
         "date_range": "2025-11-21T09:15:00+05:30 -> 2026-11-20T15:15:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "f8931a85587e923a77214e344e0dde35c8db06db57a810c47ad939a48123dcfe",
-        "excluded_sessions_count": 3,
-        "excluded_sessions": [
+        "universe_excluded_sessions_count": 3,
+        "universe_excluded_sessions": [
           "2026-02-02",
           "2026-04-20",
           "2026-07-17"
@@ -132,8 +142,8 @@
         "date_range": "2025-11-21T09:15:00+05:30 -> 2026-11-20T15:15:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "542d5c0b8408957568f9c1354c5500f9a93eba45a15b2e70b9156fa8087dbbf4",
-        "excluded_sessions_count": 3,
-        "excluded_sessions": [
+        "universe_excluded_sessions_count": 3,
+        "universe_excluded_sessions": [
           "2026-02-02",
           "2026-04-20",
           "2026-07-17"
@@ -147,8 +157,8 @@
         "date_range": "2025-11-21T09:15:00+05:30 -> 2026-11-20T15:15:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26",
-        "excluded_sessions_count": 3,
-        "excluded_sessions": [
+        "universe_excluded_sessions_count": 3,
+        "universe_excluded_sessions": [
           "2026-02-02",
           "2026-04-20",
           "2026-07-17"
@@ -162,8 +172,8 @@
         "date_range": "2025-11-21T09:15:00+05:30 -> 2026-11-20T15:15:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be",
-        "excluded_sessions_count": 3,
-        "excluded_sessions": [
+        "universe_excluded_sessions_count": 3,
+        "universe_excluded_sessions": [
           "2026-02-02",
           "2026-04-20",
           "2026-07-17"
@@ -177,8 +187,8 @@
         "date_range": "2025-11-21T09:15:00+05:30 -> 2026-11-20T15:15:00+05:30",
         "timezone": "Asia/Kolkata",
         "sha256": "e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875",
-        "excluded_sessions_count": 3,
-        "excluded_sessions": [
+        "universe_excluded_sessions_count": 3,
+        "universe_excluded_sessions": [
           "2026-02-02",
           "2026-04-20",
           "2026-07-17"

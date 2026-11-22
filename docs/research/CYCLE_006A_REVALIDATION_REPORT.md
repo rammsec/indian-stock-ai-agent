@@ -79,7 +79,7 @@ All runs executed in an isolated temporary directory (`/tmp/cycle_006a_iso`) usi
   - `BIRLACABLE_1h.parquet`: `1,709` rows (`42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26`)
   - `ITC_1h.parquet`: `1,704` rows (`2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be`)
   - `TATAELXSI_1h.parquet`: `1,691` rows (`e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875`)
-- **Fetched `5m` Parquet (`yfinance` -> `/tmp/cycle_006a_iso/data/intraday/*_NSE_5m.parquet`, retrieved `2026-11-22T00:36:01Z`–`00:36:06Z` / `06:06:01`–`06:06:06 IST`, `2026-08-25 -> 2026-11-20`, `56` eligible sessions, `3` excluded partial sessions: `2026-10-27`, `2026-10-28`, `2026-11-04`)**:
+- **Fetched `5m` Parquet (`yfinance` -> `/tmp/cycle_006a_iso/data/intraday/*_NSE_5m.parquet`, isolated cache file mtime `2026-11-22T00:36:01Z`–`00:36:06Z` / `06:06:01`–`06:06:06 IST` [filesystem modification time when `yfinance` wrote the cache, not an API header], `2026-08-25 -> 2026-11-20`, `56` eligible sessions, `3` universe-excluded partial sessions triggered by `BIRLACABLE` `<70/75` bars: `2026-10-27`, `2026-10-28`, `2026-11-04`)**:
   - `RELIANCE_NSE_5m.parquet`: `4,325` rows (`41b6fc7638c305b89018e9a7e46f70460ff176fa6a357958e3a53f1832e3365e`)
   - `TCS_NSE_5m.parquet`: `4,315` rows (`1bc1fcd036a0251309928908d0ee5590d9f0c0b6bf9bb1330a07ca47c03d0a6c`)
   - `BIRLACABLE_NSE_5m.parquet`: `4,354` rows (`bc54d18b370e88df4ad2232470fb4b979994aae563b7214f3059019878da0744`)
