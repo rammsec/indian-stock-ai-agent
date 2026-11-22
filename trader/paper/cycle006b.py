@@ -28,6 +28,15 @@ import pandas as pd
 
 from trader.config import IST_TZ, LAB_DEFAULT_UNIVERSE, LabRiskConfig
 from trader.data.provenance_1h import validate_1h_provenance
+from trader.intelligence.parsing import (
+    get_git_commit_sha,
+    load_json_strict,
+    parse_finite_float,
+    parse_iso_to_ist,
+    parse_obs_date,
+    sha256_file,
+    write_report_atomic,
+)
 from trader.portfolio.cost_calculator import CostConfig
 from trader.portfolio.ledger import IntradayPaperPortfolio, OrderSide, OrderStatus
 from trader.risk.engine import DeterministicRiskEngine, RiskEvaluationResult
@@ -160,78 +169,12 @@ class Cycle006BConfig:
     max_concurrent_positions: int = 3
 
 
-def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(65536), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
-def _get_git_commit_sha() -> str:
-    try:
-        return subprocess.check_output(
-            ["git", "rev-parse", "HEAD"], stderr=subprocess.DEVNULL, text=True
-        ).strip()
-    except Exception:
-        return "UNKNOWN"
-
-
-def _parse_iso_to_ist(raw: Any, label: str) -> datetime:
-    if not isinstance(raw, str) or not raw.strip():
-        raise ValueError(f"Missing or empty timestamp for {label}")
-    text = raw.strip()
-    if text.endswith("Z"):
-        text = text[:-1] + "+00:00"
-    dt = datetime.fromisoformat(text)
-    if dt.tzinfo is None:
-        raise ValueError(f"Timezone-naive timestamp rejected for {label}: {raw!r}")
-    return dt.astimezone(IST_TZ)
-
-
-def _parse_obs_date(raw: Any, label: str) -> date:
-    """Parse observation_date safely: accept strict YYYY-MM-DD or tz-aware ISO timestamp normalized to IST."""
-    if not isinstance(raw, str) or not raw.strip():
-        raise ValueError(f"Missing or empty observation_date for {label}")
-    text = raw.strip()
-    if len(text) == 10 and text[4] == "-" and text[7] == "-":
-        return date.fromisoformat(text)
-    # Timestamp strings MUST carry explicit timezone info and are normalized to IST
-    # before extracting the calendar date so UTC/negative-offset crossings around
-    # IST midnight cannot make a future observation appear historical.
-    return _parse_iso_to_ist(text, label).date()
-
-
-def _parse_finite_float(raw: Any, label: str) -> float:
-    if raw is None or isinstance(raw, bool):
-        raise ValueError(f"Missing or invalid numeric field for {label}: {raw!r}")
-    try:
-        val = float(raw)
-    except (TypeError, ValueError) as exc:
-        raise ValueError(f"Non-numeric field for {label}: {raw!r}") from exc
-    if not math.isfinite(val):
-        raise ValueError(f"Non-finite numeric value for {label}: {raw!r}")
-    return val
-
-
-def _reject_non_standard_json_constant(token: str) -> Any:
-    raise ValueError(f"Non-standard JSON numeric constant rejected: {token!r}")
-
-
-def _load_json_strict(path: Path, label: str) -> tuple[dict[str, Any], str]:
-    if not path.exists():
-        raise FileNotFoundError(f"Required input missing ({label}): {path}")
-    file_hash = sha256_file(path)
-    try:
-        payload = json.loads(
-            path.read_text(encoding="utf-8"),
-            parse_constant=_reject_non_standard_json_constant,
-        )
-    except (json.JSONDecodeError, ValueError) as exc:
-        raise ValueError(f"Malformed JSON in {label} ({path}): {exc}") from exc
-    if not isinstance(payload, dict):
-        raise ValueError(f"Invalid root JSON type in {label} ({path}): expected object")
-    return payload, file_hash
+# Backward-compatible shims for existing tests/callers (CYCLE-009B)
+_get_git_commit_sha = get_git_commit_sha
+_parse_iso_to_ist = parse_iso_to_ist
+_parse_obs_date = parse_obs_date
+_parse_finite_float = parse_finite_float
+_load_json_strict = load_json_strict
 
 
 class Cycle006BPaperTradingRunner:
@@ -909,19 +852,3 @@ class Cycle006BPaperTradingRunner:
         canonical = json.dumps(report, sort_keys=True, separators=(",", ":")).encode("utf-8")
         report["output_report_sha256"] = hashlib.sha256(canonical).hexdigest()
         return report
-
-
-def write_report_atomic(report: dict[str, Any], output_path: Path) -> Path:
-    """Atomically write report JSON using a PID/TID-unique temp file and os.replace."""
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    tmp_path = output_path.with_name(
-        f"{output_path.name}.{os.getpid()}.{threading.get_ident()}.tmp"
-    )
-    try:
-        tmp_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-        os.replace(tmp_path, output_path)
-    except Exception:
-        if tmp_path.exists():
-            tmp_path.unlink(missing_ok=True)
-        raise
-    return output_path

@@ -6,49 +6,32 @@ import numpy as np
 import pandas as pd
 
 from ..data.schema import Candle5M
+from ..intelligence.registry import (
+    compute_atr_series,
+    compute_cpr_pivots_dict,
+    compute_ema_series,
+    compute_macd_series,
+    compute_rsi_series,
+    compute_rvol_series,
+    compute_session_vwap_series,
+)
 
 
 def compute_intraday_vwap(df: pd.DataFrame) -> pd.Series:
-    """Calculate cumulative Volume Weighted Average Price (VWAP), resetting daily at 09:15 IST.
-
-    Strictly zero-lookahead: Uses only closed bars t <= current. No backward filling.
-    Typical Price = (High + Low + Close) / 3
-    VWAP = cumsum(Typical Price * Volume) / cumsum(Volume)
-    """
-    df = df.copy()
-    typical_price = (df["high"] + df["low"] + df["close"]) / 3.0
-    tp_vol = typical_price * df["volume"]
-
-    # Extract date in IST to group by session
-    dates = df["timestamp"].dt.tz_convert("Asia/Kolkata").dt.date
-
-    cum_tp_vol = tp_vol.groupby(dates).cumsum()
-    cum_vol = df["volume"].groupby(dates).cumsum()
-
-    # If cumulative volume is 0 at start of session, fall back to typical price for that bar
-    vwap = cum_tp_vol / cum_vol.replace(0, np.nan)
-    # Forward-fill ONLY (never look forward via bfill)
-    return vwap.fillna(typical_price).ffill()
+    """Calculate cumulative Volume Weighted Average Price (VWAP), resetting daily at 09:15 IST."""
+    return compute_session_vwap_series(df, zero_vol_policy="typical_price")
 
 
 def compute_ema(series: pd.Series, span: int) -> pd.Series:
     """Calculate Exponential Moving Average with the specified span."""
-    return series.ewm(span=span, adjust=False).mean()
+    return compute_ema_series(series, span=span, min_periods=1)
 
 
 def compute_rsi(close: pd.Series, period: int = 14) -> pd.Series:
     """Calculate Wilder's Relative Strength Index (RSI-14)."""
-    delta = close.diff()
-    gain = delta.clip(lower=0.0)
-    loss = -delta.clip(upper=0.0)
-
-    # Wilder's smoothing (alpha = 1 / period)
-    avg_gain = gain.ewm(alpha=1.0 / period, min_periods=period, adjust=False).mean()
-    avg_loss = loss.ewm(alpha=1.0 / period, min_periods=period, adjust=False).mean()
-
-    rs = avg_gain / avg_loss.replace(0, np.nan)
-    rsi = 100.0 - (100.0 / (1.0 + rs))
-    return rsi.fillna(50.0)
+    return compute_rsi_series(
+        close, period=period, warmup_fill=50.0, zero_loss_mode="legacy_50"
+    )
 
 
 def compute_macd(
@@ -57,17 +40,8 @@ def compute_macd(
     slow_period: int = 26,
     signal_period: int = 9,
 ) -> tuple[pd.Series, pd.Series, pd.Series]:
-    """Calculate Moving Average Convergence Divergence (MACD).
-
-    Returns:
-        tuple[pd.Series, pd.Series, pd.Series]: (macd_line, signal_line, histogram)
-    """
-    fast_ema = compute_ema(close, span=fast_period)
-    slow_ema = compute_ema(close, span=slow_period)
-    macd_line = fast_ema - slow_ema
-    signal_line = compute_ema(macd_line, span=signal_period)
-    hist = macd_line - signal_line
-    return macd_line, signal_line, hist
+    """Calculate Moving Average Convergence Divergence (MACD)."""
+    return compute_macd_series(close, fast=fast_period, slow=slow_period, signal=signal_period)
 
 
 def compute_atr(
@@ -77,18 +51,7 @@ def compute_atr(
     period: int = 14,
 ) -> pd.Series:
     """Calculate Average True Range (ATR-14) using Wilder's smoothing with zero backward filling."""
-    prev_close = close.shift(1)
-    tr1 = high - low
-    tr2 = (high - prev_close).abs()
-    tr3 = (low - prev_close).abs()
-    true_range = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-
-    # For bar 0 where prev_close is NaN, true range is strictly high - low
-    true_range.iloc[0] = high.iloc[0] - low.iloc[0]
-
-    # Wilder's exponential smoothing strictly forward without bfill
-    atr = true_range.ewm(alpha=1.0 / period, adjust=False).mean()
-    return atr
+    return compute_atr_series(high, low, close, period=period, method="wilder", min_periods=1)
 
 
 def compute_cpr_pivots(
@@ -96,33 +59,8 @@ def compute_cpr_pivots(
     prev_low: float,
     prev_close: float,
 ) -> dict[str, float]:
-    """Compute Central Pivot Range (CPR) and classic Floor Pivots from prior session OHLC.
-
-    - Pivot (P) = (High + Low + Close) / 3
-    - Bottom CPR (BC) = (High + Low) / 2
-    - Top CPR (TC) = (2 * P) - BC
-    - R1 = (2 * P) - Low, S1 = (2 * P) - High
-    - R2 = P + (High - Low), S2 = P - (High - Low)
-    """
-    p = (prev_high + prev_low + prev_close) / 3.0
-    bc = (prev_high + prev_low) / 2.0
-    tc = (2.0 * p) - bc
-
-    r1 = (2.0 * p) - prev_low
-    s1 = (2.0 * p) - prev_high
-    r2 = p + (prev_high - prev_low)
-    s2 = p - (prev_high - prev_low)
-
-    return {
-        "pivot": round(p, 2),
-        "cpr_bc": round(bc, 2),
-        "cpr_tc": round(tc, 2),
-        "cpr_width_pct": round(abs(tc - bc) / p * 100.0, 3),
-        "r1": round(r1, 2),
-        "s1": round(s1, 2),
-        "r2": round(r2, 2),
-        "s2": round(s2, 2),
-    }
+    """Compute Central Pivot Range (CPR) and classic Floor Pivots from prior session OHLC."""
+    return compute_cpr_pivots_dict(prev_high, prev_low, prev_close)
 
 
 def compute_all_features(candles: list[Candle5M]) -> pd.DataFrame:
@@ -158,7 +96,7 @@ def compute_all_features(candles: list[Candle5M]) -> pd.DataFrame:
 
     df["atr_14"] = compute_atr(df["high"], df["low"], df["close"], period=14)
     df["volume_sma_20"] = df["volume"].rolling(window=20, min_periods=1).mean()
-    df["volume_ratio"] = df["volume"] / df["volume_sma_20"].replace(0, np.nan)
+    df["volume_ratio"] = compute_rvol_series(df["volume"], window=20, mode="inclusive")
 
     # Price vs VWAP and EMA trend flags
     df["above_vwap"] = df["close"] > df["vwap"]
