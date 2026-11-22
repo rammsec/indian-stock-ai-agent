@@ -5,14 +5,16 @@
 - **Run Status**: **`COMPLETED`**
 - **Session Date**: `2026-11-19` (as-of `2026-11-19T09:15:00+05:30`)
 - **Market Regime**: `Weak Bull`
-- **Code Commit SHA**: `c8aeb62ff6d3750723ea04d1592365a14fc7a6e2`
-- **Completed At (IST)**: `2026-11-22T14:31:36.910138+05:30`
-- **Output Report SHA-256**: `8ce5a7e31d8e87cced6e3cfbd6b9b0aaa918ed7f9c0a8339770ede1746789a1f`
+- **Confidence Calibration Status**: `UNCALIBRATED`
+- **Code Commit SHA**: `8a1b3002c2b9dfb027e7d51800d0c53cf0fa166c`
+- **Completed At (IST)**: `2026-11-22T15:13:38.625917+05:30`
+- **Output Report SHA-256**: `eb88a3d72f350b38e962fd09fa73b0de7a52d40e0b55bee08c3549caa891bc88`
 
 > **Governance & Scope Notice**: Numerical-only historical paper-trading dry run.
 > `qualification_allowed=false`, `unseen_evaluation_status=NOT_EVALUATED`,
 > `live_trading_enabled=false`, `visual_ai_enabled=false`, `synthetic_candles_used=0`,
 > `external_api_calls=0`, `paid_api_cost=0.0`.
+> `confidence_calibration_status: UNCALIBRATED` — Heuristic directional confidence score; not a calibrated probability of a profitable trade.
 
 ## 1. Per-Symbol Stage 1 (Central Directional) + Stage 2 (Candle Timing) + Risk Decisions
 
@@ -51,3 +53,11 @@
 - `synthetic_candles_used`: `0`
 - `external_api_calls`: `0` | `broker_connections`: `0` | `paid_api_cost`: `0.0`
 - `holdout_registry_unchanged`: `true` (`before=5fc9013346b5e4209576b98f7f035f8179f0f7c10173acf289badd3faa60e352`, `after=5fc9013346b5e4209576b98f7f035f8179f0f7c10173acf289badd3faa60e352`)
+
+## 5. Execution Provenance
+
+- `implementation_commit_sha`: `8a1b3002c2b9dfb027e7d51800d0c53cf0fa166c`
+- `working_tree_clean_at_execution`: `true`
+- `dirty_paths_at_execution`: `[]` (clean)
+- `report_commit_distinction`: implementation_commit_sha identifies the committed source revision executed to produce this report; the subsequent commit recording updated JSON/Markdown report files is necessarily a descendant commit.
+- `confidence_calibration_status`: `UNCALIBRATED` — Heuristic directional confidence score; not a calibrated probability of a profitable trade.

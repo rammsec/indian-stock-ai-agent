@@ -10,6 +10,8 @@
   "real_money_trading": false,
   "visual_ai_enabled": false,
   "synthetic_candles_used": 0,
+  "confidence_calibration_status": "UNCALIBRATED",
+  "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
   "broker_connections": 0,
   "external_api_calls": 0,
   "paid_api_cost": 0.0,
@@ -24,9 +26,23 @@
     "paid_api_cost_verification": "NO_PAID_API_CLIENT_IN_EXECUTION_PATH_AND_PYTHON_NET_GUARD_ACTIVE",
     "market_data_generation_mode": "READ_ONLY_COMMITTED_1H_PARQUET_NO_SYNTHETIC_CANDLES"
   },
-  "started_at_ist": "2026-11-22T14:31:36.018036+05:30",
-  "completed_at_ist": "2026-11-22T14:31:36.910138+05:30",
-  "code_commit_sha": "c8aeb62ff6d3750723ea04d1592365a14fc7a6e2",
+  "started_at_ist": "2026-11-22T15:13:37.711544+05:30",
+  "completed_at_ist": "2026-11-22T15:13:38.625917+05:30",
+  "code_commit_sha": "8a1b3002c2b9dfb027e7d51800d0c53cf0fa166c",
+  "execution_provenance": {
+    "implementation_commit_sha": "8a1b3002c2b9dfb027e7d51800d0c53cf0fa166c",
+    "working_tree_clean_at_execution": true,
+    "dirty_paths_at_execution": [],
+    "implementation_file_hashes": {
+      "trader/timing/__init__.py": "5828e206349c25f7690af04362182a91609ba49031be74efa692d31f9184f088",
+      "trader/timing/candle_intelligence.py": "e58a4b719464904de1302775f7542a5f5f54cff9c8cc8ccc8766d0212c5ae483",
+      "trader/timing/central_directional_agent.py": "2780777f00848c577dc894cc9e7b9d691d949334328b9239248ba17a0a432c69",
+      "trader/timing/candle_timing_agent.py": "c65918d58071c7f6fc168dffb8d490f8c27a7b0e2987547b057a23a696e78d2d",
+      "trader/timing/cycle007_pipeline.py": "befa3b949831e5ccb5c9b15a9be190ad12d66b872142d06bad932403b866a1a3",
+      "scripts/run_cycle_007_timing_dry_run.py": "8bdbb49090cf9221f2ca1107f1b296a3d836b3332ff1ab0514e23b7d086b37d8"
+    },
+    "report_commit_distinction": "implementation_commit_sha identifies the committed source revision executed to produce this report; the subsequent commit recording updated JSON/Markdown report files is necessarily a descendant commit."
+  },
   "session_date": "2026-11-19",
   "as_of_ist": "2026-11-19T09:15:00+05:30",
   "symbols": [
@@ -267,6 +283,8 @@
       "symbol": "RELIANCE",
       "direction": "NEUTRAL",
       "confidence": 0.4902,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "prob_next_day_up": 0.5049,
       "expected_next_day_return_pct": 0.0226,
       "news_sentiment_score": 0.0,
@@ -281,6 +299,8 @@
       "symbol": "TCS",
       "direction": "NEUTRAL",
       "confidence": 0.4236,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "prob_next_day_up": 0.4618,
       "expected_next_day_return_pct": -0.1679,
       "news_sentiment_score": 0.0,
@@ -295,6 +315,8 @@
       "symbol": "BIRLACABLE",
       "direction": "NEUTRAL",
       "confidence": 0.4362,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "prob_next_day_up": 0.4681,
       "expected_next_day_return_pct": -0.4444,
       "news_sentiment_score": 0.1324,
@@ -309,6 +331,8 @@
       "symbol": "ITC",
       "direction": "NEUTRAL",
       "confidence": 0.4992,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "prob_next_day_up": 0.4996,
       "expected_next_day_return_pct": 0.0183,
       "news_sentiment_score": 0.0446,
@@ -323,6 +347,8 @@
       "symbol": "TATAELXSI",
       "direction": "NEUTRAL",
       "confidence": 0.4362,
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "prob_next_day_up": 0.4681,
       "expected_next_day_return_pct": -0.1595,
       "news_sentiment_score": 0.0,
@@ -341,6 +367,7 @@
       "decision": "NO_TRADE",
       "alignment_status": "NEUTRAL_CENTRAL",
       "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
       "candle_bias": "NEUTRAL",
       "timing_quality_score": 0.04,
       "price_action_score": 0.08,
@@ -484,6 +511,7 @@
       "decision": "NO_TRADE",
       "alignment_status": "NEUTRAL_CENTRAL",
       "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
       "candle_bias": "BEARISH",
       "timing_quality_score": 0.325,
       "price_action_score": -0.65,
@@ -629,6 +657,7 @@
       "decision": "NO_TRADE",
       "alignment_status": "NEUTRAL_CENTRAL",
       "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
       "candle_bias": "BULLISH",
       "timing_quality_score": 0.2,
       "price_action_score": 0.4,
@@ -770,6 +799,7 @@
       "decision": "NO_TRADE",
       "alignment_status": "NEUTRAL_CENTRAL",
       "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
       "candle_bias": "NEUTRAL",
       "timing_quality_score": 0.01,
       "price_action_score": -0.02,
@@ -915,6 +945,7 @@
       "decision": "NO_TRADE",
       "alignment_status": "NEUTRAL_CENTRAL",
       "central_direction": "NEUTRAL",
+      "central_confidence_calibration_status": "UNCALIBRATED",
       "candle_bias": "NEUTRAL",
       "timing_quality_score": 0.01,
       "price_action_score": 0.02,
@@ -1058,10 +1089,14 @@
   "per_symbol_decisions": [
     {
       "symbol": "RELIANCE",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "stage1_central": {
         "symbol": "RELIANCE",
         "direction": "NEUTRAL",
         "confidence": 0.4902,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
         "prob_next_day_up": 0.5049,
         "expected_next_day_return_pct": 0.0226,
         "news_sentiment_score": 0.0,
@@ -1075,6 +1110,7 @@
       "stage2_timing": {
         "decision": "NO_TRADE",
         "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
         "candle_bias": "NEUTRAL",
         "timing_quality_score": 0.04,
         "price_action_score": 0.08,
@@ -1111,10 +1147,14 @@
     },
     {
       "symbol": "TCS",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "stage1_central": {
         "symbol": "TCS",
         "direction": "NEUTRAL",
         "confidence": 0.4236,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
         "prob_next_day_up": 0.4618,
         "expected_next_day_return_pct": -0.1679,
         "news_sentiment_score": 0.0,
@@ -1128,6 +1168,7 @@
       "stage2_timing": {
         "decision": "NO_TRADE",
         "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
         "candle_bias": "BEARISH",
         "timing_quality_score": 0.325,
         "price_action_score": -0.65,
@@ -1163,10 +1204,14 @@
     },
     {
       "symbol": "BIRLACABLE",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "stage1_central": {
         "symbol": "BIRLACABLE",
         "direction": "NEUTRAL",
         "confidence": 0.4362,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
         "prob_next_day_up": 0.4681,
         "expected_next_day_return_pct": -0.4444,
         "news_sentiment_score": 0.1324,
@@ -1180,6 +1225,7 @@
       "stage2_timing": {
         "decision": "NO_TRADE",
         "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
         "candle_bias": "BULLISH",
         "timing_quality_score": 0.2,
         "price_action_score": 0.4,
@@ -1215,10 +1261,14 @@
     },
     {
       "symbol": "ITC",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "stage1_central": {
         "symbol": "ITC",
         "direction": "NEUTRAL",
         "confidence": 0.4992,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
         "prob_next_day_up": 0.4996,
         "expected_next_day_return_pct": 0.0183,
         "news_sentiment_score": 0.0446,
@@ -1232,6 +1282,7 @@
       "stage2_timing": {
         "decision": "NO_TRADE",
         "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
         "candle_bias": "NEUTRAL",
         "timing_quality_score": 0.01,
         "price_action_score": -0.02,
@@ -1268,10 +1319,14 @@
     },
     {
       "symbol": "TATAELXSI",
+      "confidence_calibration_status": "UNCALIBRATED",
+      "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
       "stage1_central": {
         "symbol": "TATAELXSI",
         "direction": "NEUTRAL",
         "confidence": 0.4362,
+        "confidence_calibration_status": "UNCALIBRATED",
+        "confidence_calibration_note": "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
         "prob_next_day_up": 0.4681,
         "expected_next_day_return_pct": -0.1595,
         "news_sentiment_score": 0.0,
@@ -1285,6 +1340,7 @@
       "stage2_timing": {
         "decision": "NO_TRADE",
         "alignment_status": "NEUTRAL_CENTRAL",
+        "central_confidence_calibration_status": "UNCALIBRATED",
         "candle_bias": "NEUTRAL",
         "timing_quality_score": 0.01,
         "price_action_score": 0.02,
@@ -1417,5 +1473,5 @@
     "unchanged": true
   },
   "rejection_reasons": [],
-  "output_report_sha256": "8ce5a7e31d8e87cced6e3cfbd6b9b0aaa918ed7f9c0a8339770ede1746789a1f"
+  "output_report_sha256": "eb88a3d72f350b38e962fd09fa73b0de7a52d40e0b55bee08c3549caa891bc88"
 }
