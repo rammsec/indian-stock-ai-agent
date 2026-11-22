@@ -1,0 +1,488 @@
+{
+  "task_id": "CYCLE-006C-REAL-DATA-20261122",
+  "cycle_id": "CYCLE-006C",
+  "generated_at_ist": "2026-11-22T13:18:43.307361+05:30",
+  "session_date": "2026-11-19",
+  "primary_classification": "PASS_INFRASTRUCTURE_WITH_ZERO_TRADES",
+  "committed_baseline_misalignment": {
+    "latest_predictions.json": {
+      "path": "data/predictions/latest_predictions.json",
+      "sha256": "ac2fd950f4d89628aeaf473a0bddaac14de9c283355b4726c6cf0daefb2968d8",
+      "generated_at": "2026-11-18T21:04:26.529445+00:00",
+      "observation_dates": [
+        "2026-11-18"
+      ]
+    },
+    "regime.json": {
+      "path": "docs/data/regime.json",
+      "sha256": "fc1332c05ba08bfc6909692725734532bab09d4961c4ddb64f18c45e8975b263",
+      "observation_date": "2026-11-18",
+      "regime": "Weak Bull"
+    },
+    "phase5_intelligence.json": {
+      "path": "data/predictions/phase5_intelligence.json",
+      "sha256": "cf9877e1e9558cb8b233005eaa3088ede9ea1addade00973c31a0ce65033a4a9",
+      "generated_at": "2026-11-20T17:29:48.155332+05:30",
+      "observation_dates": [
+        "2026-11-20"
+      ]
+    },
+    "root_cause": "phase5_intelligence.json was refreshed on 2026-11-20T17:29:48+05:30, overwriting generated_at and per-stock observation_date to 2026-11-20 while latest_predictions.json and docs/data/regime.json remained at observation_date=2026-11-18 (pre-market for 2026-11-19). CYCLE-006B correctly failed closed to prevent lookahead/misalignment."
+  },
+  "snapshot_manifest": {
+    "cycle_id": "CYCLE-006C",
+    "snapshot_status": "RECONSTRUCTED_FROM_ARCHIVES",
+    "session_date": "2026-11-19",
+    "as_of_cutoff_ist": "2026-11-19T09:15:00+05:30",
+    "target_observation_date": "2026-11-18",
+    "symbols": [
+      "RELIANCE",
+      "TCS",
+      "BIRLACABLE",
+      "ITC",
+      "TATAELXSI"
+    ],
+    "source_file_hashes": {
+      "data/predictions/prediction_log.parquet": "e43c7c8310baf0bbde1d387096edf399b6e4186afcd6bd42e6f41dc0f8a07e4f",
+      "data/processed/market_regimes.parquet": "c48a68736993729ee6616ef69b12662602645dd4bcabc0e24c76e262af589a5b",
+      "data/predictions/forward_predictions.parquet": "2106caf6943427d498104a8a27088c5c9091a50fa24ae7973da795064edcafeb",
+      "data/predictions/structured_events.parquet": "9fa15f2f7a22f654a3c75f071a015d2fcc34f5e1994ea523e1399910a933844e"
+    },
+    "output_files": {
+      "predictions_path": "/tmp/cycle_006c_snapshot/latest_predictions.json",
+      "intelligence_path": "/tmp/cycle_006c_snapshot/phase5_intelligence.json",
+      "regime_path": "/tmp/cycle_006c_snapshot/regime.json"
+    },
+    "output_file_hashes": {
+      "latest_predictions.json": "66ac08320d597a9072f8f2f42b46a420e21b80ceb3fa29f8f6d00fb0eb0c1a87",
+      "phase5_intelligence.json": "94d15df951781258b443c3b22227e3e62c09831c48b7ba1b66b16c98fd972649",
+      "regime.json": "8902b0fae7abe33a51d69e7bbd947db265fb744a83d7ac72d76f57a964488b9b"
+    },
+    "timestamps": {
+      "prediction_generated_at_ist": "2026-11-19T02:34:26.591210+05:30",
+      "regime_availability_ist": "2026-11-19T02:34:26.591210+05:30",
+      "intelligence_generated_at_ist": "2026-11-19T02:34:53.810677+05:30",
+      "max_verified_event_collection_ist": "2026-11-19T02:34:53.810677+05:30"
+    },
+    "structured_events_audit": {
+      "total_archive_events": 280,
+      "included_verified_events": 81,
+      "included_by_symbol": {
+        "RELIANCE": 19,
+        "TCS": 31,
+        "BIRLACABLE": 9,
+        "ITC": 15,
+        "TATAELXSI": 7
+      },
+      "excluded_reasons": {
+        "missing_collection_timestamp": 156,
+        "missing_publication_timestamp": 0,
+        "published_after_cutoff": 4,
+        "collected_after_cutoff": 39,
+        "outside_target_universe": 0
+      }
+    },
+    "provenance_classification": "ARCHIVED_PRE_CUTOFF_RECONSTRUCTED",
+    "manifest_path": "/tmp/cycle_006c_snapshot/snapshot_manifest.json"
+  },
+  "paper_trading_run": {
+    "cycle_id": "CYCLE-006B",
+    "run_mode": "HISTORICAL_PAPER_TRADING_DRY_RUN",
+    "run_status": "COMPLETED",
+    "qualification_allowed": false,
+    "unseen_evaluation_status": "NOT_EVALUATED",
+    "unseen_return_pct": null,
+    "real_money_trading": false,
+    "synthetic_candles_used": 0,
+    "broker_connections": 0,
+    "external_api_calls": 0,
+    "paid_api_cost": 0.0,
+    "instrumentation": {
+      "network_guard_active": true,
+      "network_guard_scope": "python_stdlib_socket_and_urllib_only_not_os_sandbox",
+      "intercepted_network_attempts": 0,
+      "blocked_network_attempts": [],
+      "broker_adapters_configured": 0,
+      "broker_connections_verification": "NO_BROKER_ADAPTER_IN_EXECUTION_PATH",
+      "paid_llm_providers_configured": 0,
+      "paid_api_cost_verification": "NO_PAID_API_CLIENT_IN_EXECUTION_PATH_AND_PYTHON_NET_GUARD_ACTIVE",
+      "market_data_generation_mode": "READ_ONLY_EXISTING_PARQUET_NO_SYNTHETIC_CANDLE_GENERATION"
+    },
+    "started_at_ist": "2026-11-22T13:18:42.299966+05:30",
+    "completed_at_ist": "2026-11-22T13:18:42.655687+05:30",
+    "code_commit_sha": "9f13b6fb782e040e02de6fca700ed446c35c61d5",
+    "session_date": "2026-11-19",
+    "symbols": [
+      "RELIANCE",
+      "TCS",
+      "BIRLACABLE",
+      "ITC",
+      "TATAELXSI"
+    ],
+    "market_regime": "Weak Bull",
+    "market_data_provenance": {
+      "data_classification": "HISTORICAL_1H_PARQUET_ARCHIVE_NOT_LIVE",
+      "provenance_status": "PARTIALLY_VERIFIED",
+      "provenance_verified": false,
+      "dataset_fingerprint": "e508f71047493e5db1aaaee3ceb16d4db0eb2199a41a842743b077b7bb986394",
+      "session_date": "2026-11-19",
+      "symbols": {
+        "RELIANCE": {
+          "file": "RELIANCE_1h.parquet",
+          "sha256": "f8931a85587e923a77214e344e0dde35c8db06db57a810c47ad939a48123dcfe",
+          "session_bars": 7,
+          "first_candle_ist": "2026-11-19T09:15:00+05:30",
+          "latest_candle_ist": "2026-11-19T15:15:00+05:30",
+          "timezone": "Asia/Kolkata"
+        },
+        "TCS": {
+          "file": "TCS_1h.parquet",
+          "sha256": "542d5c0b8408957568f9c1354c5500f9a93eba45a15b2e70b9156fa8087dbbf4",
+          "session_bars": 7,
+          "first_candle_ist": "2026-11-19T09:15:00+05:30",
+          "latest_candle_ist": "2026-11-19T15:15:00+05:30",
+          "timezone": "Asia/Kolkata"
+        },
+        "BIRLACABLE": {
+          "file": "BIRLACABLE_1h.parquet",
+          "sha256": "42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26",
+          "session_bars": 7,
+          "first_candle_ist": "2026-11-19T09:15:00+05:30",
+          "latest_candle_ist": "2026-11-19T15:15:00+05:30",
+          "timezone": "Asia/Kolkata"
+        },
+        "ITC": {
+          "file": "ITC_1h.parquet",
+          "sha256": "2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be",
+          "session_bars": 7,
+          "first_candle_ist": "2026-11-19T09:15:00+05:30",
+          "latest_candle_ist": "2026-11-19T15:15:00+05:30",
+          "timezone": "Asia/Kolkata"
+        },
+        "TATAELXSI": {
+          "file": "TATAELXSI_1h.parquet",
+          "sha256": "e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875",
+          "session_bars": 7,
+          "first_candle_ist": "2026-11-19T09:15:00+05:30",
+          "latest_candle_ist": "2026-11-19T15:15:00+05:30",
+          "timezone": "Asia/Kolkata"
+        }
+      }
+    },
+    "input_freshness": {
+      "as_of_ist": "2026-11-19T09:15:00+05:30",
+      "max_staleness_hours": 72.0,
+      "max_input_spread_hours": 48.0,
+      "sources": {
+        "latest_predictions": {
+          "timestamp_ist": "2026-11-19T02:34:26.591210+05:30",
+          "age_hours": 6.6759
+        },
+        "phase5_intelligence": {
+          "timestamp_ist": "2026-11-19T02:34:53.810677+05:30",
+          "age_hours": 6.6684
+        },
+        "regime": {
+          "timestamp_ist": "2026-11-19T02:34:26.591210+05:30",
+          "age_hours": 6.6759
+        }
+      },
+      "cross_source_spread_hours": 0.0076,
+      "observation_freshness": {
+        "regime": {
+          "observation_date": "2026-11-18",
+          "eod_ist": "2026-11-18T15:30:00+05:30",
+          "age_hours": 17.75
+        },
+        "predictions": {
+          "RELIANCE": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "TCS": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "BIRLACABLE": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "ITC": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "TATAELXSI": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          }
+        },
+        "intelligence": {
+          "RELIANCE": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "TCS": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "BIRLACABLE": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "ITC": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          },
+          "TATAELXSI": {
+            "observation_date": "2026-11-18",
+            "eod_ist": "2026-11-18T15:30:00+05:30",
+            "age_hours": 17.75
+          }
+        }
+      }
+    },
+    "input_file_hashes": {
+      "data/intraday/RELIANCE_1h.parquet": "f8931a85587e923a77214e344e0dde35c8db06db57a810c47ad939a48123dcfe",
+      "data/intraday/TCS_1h.parquet": "542d5c0b8408957568f9c1354c5500f9a93eba45a15b2e70b9156fa8087dbbf4",
+      "data/intraday/BIRLACABLE_1h.parquet": "42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26",
+      "data/intraday/ITC_1h.parquet": "2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be",
+      "data/intraday/TATAELXSI_1h.parquet": "e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875",
+      "/tmp/cycle_006c_snapshot/latest_predictions.json": "66ac08320d597a9072f8f2f42b46a420e21b80ceb3fa29f8f6d00fb0eb0c1a87",
+      "/tmp/cycle_006c_snapshot/phase5_intelligence.json": "94d15df951781258b443c3b22227e3e62c09831c48b7ba1b66b16c98fd972649",
+      "/tmp/cycle_006c_snapshot/regime.json": "8902b0fae7abe33a51d69e7bbd947db265fb744a83d7ac72d76f57a964488b9b"
+    },
+    "risk_decisions": [
+      {
+        "symbol": "RELIANCE",
+        "stage": "SIGNAL_FILTER",
+        "approved": false,
+        "status": "NO_TRADE_SIGNAL",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Signal criteria not met (prob_up=0.505, exp_ret=0.023%, news_sent=0.000, regime=Weak Bull)"
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      },
+      {
+        "symbol": "TCS",
+        "stage": "SIGNAL_FILTER",
+        "approved": false,
+        "status": "NO_TRADE_SIGNAL",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Signal criteria not met (prob_up=0.462, exp_ret=-0.168%, news_sent=0.000, regime=Weak Bull)"
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      },
+      {
+        "symbol": "BIRLACABLE",
+        "stage": "SIGNAL_FILTER",
+        "approved": false,
+        "status": "NO_TRADE_SIGNAL",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Signal criteria not met (prob_up=0.468, exp_ret=-0.444%, news_sent=0.132, regime=Weak Bull)"
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      },
+      {
+        "symbol": "ITC",
+        "stage": "SIGNAL_FILTER",
+        "approved": false,
+        "status": "NO_TRADE_SIGNAL",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Signal criteria not met (prob_up=0.500, exp_ret=0.018%, news_sent=0.045, regime=Weak Bull)"
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      },
+      {
+        "symbol": "TATAELXSI",
+        "stage": "SIGNAL_FILTER",
+        "approved": false,
+        "status": "NO_TRADE_SIGNAL",
+        "approved_quantity": 0,
+        "requested_quantity": 0,
+        "rejection_reasons": [
+          "Signal criteria not met (prob_up=0.468, exp_ret=-0.160%, news_sent=0.000, regime=Weak Bull)"
+        ],
+        "timestamp_ist": "2026-11-19T09:15:00+05:30"
+      }
+    ],
+    "orders": [],
+    "order_count": 0,
+    "filled_order_count": 0,
+    "open_positions_count": 0,
+    "closed_trades_count": 0,
+    "portfolio_results": {
+      "initial_capital_inr": 50000.0,
+      "ending_cash_inr": 50000.0,
+      "invested_capital_inr": 0.0,
+      "ending_equity_inr": 50000.0,
+      "gross_pnl_inr": 0.0,
+      "net_pnl_inr": 0.0,
+      "gross_return_pct": 0.0,
+      "net_return_pct": 0.0
+    },
+    "cost_accounting": {
+      "brokerage_inr": 0.0,
+      "statutory_charges_inr": 0.0,
+      "slippage_inr": 0.0,
+      "total_friction_inr": 0.0
+    },
+    "ledger_reconciliation": {
+      "sha256_chain_valid": true,
+      "verification_message": "Ledger integrity and capital conservation 100% verified",
+      "ledger_event_count": 2,
+      "cash_plus_invested_matches_equity": true,
+      "equity_reconciliation_diff_inr": 0.0
+    },
+    "rejection_reasons": [],
+    "output_report_sha256": "71514b871f7f3cea358179019b89ed9d477352e9a9e5812be9c454aaaacacf04"
+  },
+  "timeframe_provenance": {
+    "committed_repo": {
+      "1h": {
+        "classification": "PARTIALLY_VERIFIED",
+        "verified": false,
+        "source": "committed_repo_yahoo_finance_1h_parquet",
+        "dataset_fingerprint": "e508f71047493e5db1aaaee3ceb16d4db0eb2199a41a842743b077b7bb986394"
+      },
+      "5m": {
+        "classification": "UNAVAILABLE",
+        "committed_in_repo": false,
+        "committed_files": [],
+        "reason": "No 5m parquet archives exist in committed data/intraday/."
+      },
+      "15m": {
+        "classification": "UNAVAILABLE",
+        "committed_in_repo": false,
+        "reason": "No direct 15m archive or committed 5m source available for aggregation."
+      }
+    },
+    "isolated_yahoo_cache": {
+      "1h": {
+        "classification": "PARTIALLY_VERIFIED",
+        "verified": false,
+        "source": "committed_repo_yahoo_finance_1h_parquet",
+        "dataset_fingerprint": "e508f71047493e5db1aaaee3ceb16d4db0eb2199a41a842743b077b7bb986394"
+      },
+      "5m": {
+        "classification": "PARTIALLY_VERIFIED",
+        "committed_in_repo": false,
+        "source": "isolated_yahoo_finance_5m_cache_not_committed_not_exchange_authoritative",
+        "missing_symbols": [],
+        "incomplete_session_bars_observed": true,
+        "symbols": {
+          "RELIANCE": {
+            "total_rows": 4325,
+            "session_bars": 74,
+            "expected_bars": 75,
+            "duplicates": 0,
+            "nan_values": 0,
+            "ohlc_violations": 0,
+            "timezone": "Asia/Kolkata",
+            "sha256": "41b6fc7638c305b89018e9a7e46f70460ff176fa6a357958e3a53f1832e3365e"
+          },
+          "TCS": {
+            "total_rows": 4315,
+            "session_bars": 74,
+            "expected_bars": 75,
+            "duplicates": 0,
+            "nan_values": 0,
+            "ohlc_violations": 0,
+            "timezone": "Asia/Kolkata",
+            "sha256": "1bc1fcd036a0251309928908d0ee5590d9f0c0b6bf9bb1330a07ca47c03d0a6c"
+          },
+          "BIRLACABLE": {
+            "total_rows": 4354,
+            "session_bars": 75,
+            "expected_bars": 75,
+            "duplicates": 0,
+            "nan_values": 0,
+            "ohlc_violations": 0,
+            "timezone": "Asia/Kolkata",
+            "sha256": "bc54d18b370e88df4ad2232470fb4b979994aae563b7214f3059019878da0744"
+          },
+          "ITC": {
+            "total_rows": 4326,
+            "session_bars": 74,
+            "expected_bars": 75,
+            "duplicates": 0,
+            "nan_values": 0,
+            "ohlc_violations": 0,
+            "timezone": "Asia/Kolkata",
+            "sha256": "2bf641bd37627f345d90c4c2b68d1d70be77e2f7db6bea22990dfe96927529a0"
+          },
+          "TATAELXSI": {
+            "total_rows": 4310,
+            "session_bars": 73,
+            "expected_bars": 75,
+            "duplicates": 0,
+            "nan_values": 0,
+            "ohlc_violations": 0,
+            "timezone": "Asia/Kolkata",
+            "sha256": "4e1ee21e66c3f784c7458672991cee451a55908d86faf9f18e1dd13719fead44"
+          }
+        }
+      },
+      "15m": {
+        "classification": "PARTIALLY_VERIFIED",
+        "committed_in_repo": false,
+        "source": "deterministic_aggregation_from_completed_5m_candles_no_interpolation",
+        "incomplete_session_bars_observed": true,
+        "symbols": {
+          "RELIANCE": {
+            "aggregated_completed_bars": 24,
+            "expected_bars": 25,
+            "aggregation_rule": "completed_5m_candles_only_no_interpolation_ist"
+          },
+          "TCS": {
+            "aggregated_completed_bars": 24,
+            "expected_bars": 25,
+            "aggregation_rule": "completed_5m_candles_only_no_interpolation_ist"
+          },
+          "BIRLACABLE": {
+            "aggregated_completed_bars": 25,
+            "expected_bars": 25,
+            "aggregation_rule": "completed_5m_candles_only_no_interpolation_ist"
+          },
+          "ITC": {
+            "aggregated_completed_bars": 24,
+            "expected_bars": 25,
+            "aggregation_rule": "completed_5m_candles_only_no_interpolation_ist"
+          },
+          "TATAELXSI": {
+            "aggregated_completed_bars": 24,
+            "expected_bars": 25,
+            "aggregation_rule": "completed_5m_candles_only_no_interpolation_ist"
+          }
+        }
+      }
+    }
+  },
+  "governance": {
+    "qualification_allowed": false,
+    "unseen_evaluation_status": "NOT_EVALUATED",
+    "live_trading_enabled": false,
+    "holdout_registry_unchanged": true,
+    "holdout_registry_sha256": "5fc9013346b5e4209576b98f7f035f8179f0f7c10173acf289badd3faa60e352",
+    "synthetic_candles_used": 0,
+    "external_api_calls": 0,
+    "paid_api_cost_usd": 0.0,
+    "cycle_007_implemented": false
+  }
+}
