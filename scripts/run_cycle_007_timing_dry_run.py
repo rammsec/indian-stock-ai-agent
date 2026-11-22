@@ -58,6 +58,12 @@ def _render_markdown_report(report: dict[str, Any]) -> str:
     ledger = report.get("ledger_reconciliation", {})
     holdout = report.get("holdout_registry_integrity", {})
     per_sym = report.get("per_symbol_decisions", [])
+    exec_prov = report.get("execution_provenance", {})
+    conf_status = report.get("confidence_calibration_status", "UNCALIBRATED")
+    conf_note = report.get(
+        "confidence_calibration_note",
+        "Heuristic directional confidence score; not a calibrated probability of a profitable trade.",
+    )
 
     lines = [
         "# CYCLE-007 — Directional Prediction & Intelligent Entry Timing (Numerical Phase) Dry-Run Report",
@@ -67,6 +73,7 @@ def _render_markdown_report(report: dict[str, Any]) -> str:
         f"- **Run Status**: **`{report['run_status']}`**",
         f"- **Session Date**: `{report['session_date']}` (as-of `{report['as_of_ist']}`)",
         f"- **Market Regime**: `{report.get('market_regime')}`",
+        f"- **Confidence Calibration Status**: `{conf_status}`",
         f"- **Code Commit SHA**: `{report.get('code_commit_sha')}`",
         f"- **Completed At (IST)**: `{report.get('completed_at_ist')}`",
         f"- **Output Report SHA-256**: `{report.get('output_report_sha256')}`",
@@ -75,6 +82,7 @@ def _render_markdown_report(report: dict[str, Any]) -> str:
         "> `qualification_allowed=false`, `unseen_evaluation_status=NOT_EVALUATED`,",
         "> `live_trading_enabled=false`, `visual_ai_enabled=false`, `synthetic_candles_used=0`,",
         "> `external_api_calls=0`, `paid_api_cost=0.0`.",
+        f"> `confidence_calibration_status: {conf_status}` — {conf_note}",
         "",
         "## 1. Per-Symbol Stage 1 (Central Directional) + Stage 2 (Candle Timing) + Risk Decisions",
         "",
@@ -93,6 +101,9 @@ def _render_markdown_report(report: dict[str, Any]) -> str:
             f"{s2['price_action_score']:+.4f} | {s2['timing_quality_score']:.4f} | "
             f"`{pats}` | **`{s2['decision']}`** | `{s2['alignment_status']}` | `{rk['status']}` |"
         )
+
+    dirty_paths = exec_prov.get("dirty_paths_at_execution", [])
+    dirty_paths_rendered = ", ".join(f"`{p}`" for p in dirty_paths) if dirty_paths else "`[]` (clean)"
 
     lines.extend(
         [
@@ -124,6 +135,14 @@ def _render_markdown_report(report: dict[str, Any]) -> str:
             f"- `synthetic_candles_used`: `{report.get('synthetic_candles_used')}`",
             f"- `external_api_calls`: `{report.get('external_api_calls')}` | `broker_connections`: `{report.get('broker_connections')}` | `paid_api_cost`: `{report.get('paid_api_cost')}`",
             f"- `holdout_registry_unchanged`: `{str(holdout.get('unchanged')).lower()}` (`before={holdout.get('sha256_before')}`, `after={holdout.get('sha256_after')}`)",
+            "",
+            "## 5. Execution Provenance",
+            "",
+            f"- `implementation_commit_sha`: `{exec_prov.get('implementation_commit_sha', report.get('code_commit_sha'))}`",
+            f"- `working_tree_clean_at_execution`: `{str(exec_prov.get('working_tree_clean_at_execution')).lower()}`",
+            f"- `dirty_paths_at_execution`: {dirty_paths_rendered}",
+            f"- `report_commit_distinction`: {exec_prov.get('report_commit_distinction', '')}",
+            f"- `confidence_calibration_status`: `{conf_status}` — {conf_note}",
             "",
         ]
     )

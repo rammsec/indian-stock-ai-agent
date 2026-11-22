@@ -25,6 +25,12 @@ from trader.paper.cycle006b import (
 )
 
 
+CONFIDENCE_CALIBRATION_STATUS = "UNCALIBRATED"
+CONFIDENCE_CALIBRATION_NOTE = (
+    "Heuristic directional confidence score; not a calibrated probability of a profitable trade."
+)
+
+
 class DirectionalBias(str, Enum):
     """Stage 1 directional hypothesis emitted by the Central Directional Agent."""
 
@@ -75,12 +81,30 @@ class DirectionalHypothesis:
     observation_date: date
     as_of_ist: datetime
     rationale: tuple[str, ...]
+    confidence_calibration_status: str = CONFIDENCE_CALIBRATION_STATUS
+    confidence_calibration_note: str = CONFIDENCE_CALIBRATION_NOTE
+
+    def __post_init__(self) -> None:
+        if self.confidence_calibration_status != CONFIDENCE_CALIBRATION_STATUS:
+            raise ValueError(
+                "DirectionalHypothesis.confidence_calibration_status must be "
+                f"{CONFIDENCE_CALIBRATION_STATUS!r}; got {self.confidence_calibration_status!r}"
+            )
+        if (
+            not isinstance(self.confidence_calibration_note, str)
+            or not self.confidence_calibration_note.strip()
+        ):
+            raise ValueError(
+                "DirectionalHypothesis.confidence_calibration_note must be a non-empty string"
+            )
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "symbol": self.symbol,
             "direction": self.direction.value,
             "confidence": round(self.confidence, 4),
+            "confidence_calibration_status": self.confidence_calibration_status,
+            "confidence_calibration_note": self.confidence_calibration_note,
             "prob_next_day_up": round(self.prob_next_day_up, 4),
             "expected_next_day_return_pct": round(self.expected_next_day_return_pct, 4),
             "news_sentiment_score": round(self.news_sentiment_score, 4),

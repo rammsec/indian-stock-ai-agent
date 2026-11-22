@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime, time as dt_time
 from pathlib import Path
@@ -30,7 +31,6 @@ from trader.paper.cycle006b import (
     DEFAULT_CACHE_DIR,
     ExecutionInstrumentation,
     OfflineExecutionGuard,
-    _get_git_commit_sha,
     sha256_file,
 )
 from trader.paper.cycle006c_snapshot import (
@@ -48,6 +48,8 @@ from trader.timing.candle_timing_agent import (
     TimingDecision,
 )
 from trader.timing.central_directional_agent import (
+    CONFIDENCE_CALIBRATION_NOTE,
+    CONFIDENCE_CALIBRATION_STATUS,
     CentralDirectionalAgent,
     CentralDirectionalConfig,
     DirectionalBias,
@@ -56,6 +58,64 @@ from trader.timing.central_directional_agent import (
 
 DEFAULT_HOLDOUT_REGISTRY_PATH = Path("data/lab/sealed_holdout_registry.json")
 DEFAULT_CYCLE007_SNAPSHOT_DIR = Path("/tmp/cycle_007_snapshot")
+REPORT_COMMIT_DISTINCTION = (
+    "implementation_commit_sha identifies the committed source revision executed to produce "
+    "this report; the subsequent commit recording updated JSON/Markdown report files is "
+    "necessarily a descendant commit."
+)
+CYCLE007_IMPLEMENTATION_MODULES: tuple[str, ...] = (
+    "trader/timing/__init__.py",
+    "trader/timing/candle_intelligence.py",
+    "trader/timing/central_directional_agent.py",
+    "trader/timing/candle_timing_agent.py",
+    "trader/timing/cycle007_pipeline.py",
+    "scripts/run_cycle_007_timing_dry_run.py",
+)
+
+
+def _collect_execution_provenance(repo_root: Path | None = None) -> dict[str, Any]:
+    """Capture git revision, cleanliness state, and SHA-256 hashes of executed CYCLE-007 code."""
+    root = repo_root if repo_root is not None else Path(__file__).resolve().parents[2]
+    try:
+        commit_sha = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=str(root),
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+    except Exception:
+        commit_sha = "UNKNOWN"
+
+    try:
+        raw_status = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            cwd=str(root),
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+        dirty_paths = [
+            line[3:].strip()
+            for line in raw_status.splitlines()
+            if line.strip()
+        ]
+        working_tree_clean = len(dirty_paths) == 0
+    except Exception:
+        working_tree_clean = False
+        dirty_paths = ["GIT_STATUS_UNAVAILABLE"]
+
+    implementation_file_hashes: dict[str, str] = {}
+    for rel_path in CYCLE007_IMPLEMENTATION_MODULES:
+        abs_path = root / rel_path
+        if abs_path.exists():
+            implementation_file_hashes[rel_path] = sha256_file(abs_path)
+
+    return {
+        "implementation_commit_sha": commit_sha,
+        "working_tree_clean_at_execution": working_tree_clean,
+        "dirty_paths_at_execution": dirty_paths,
+        "implementation_file_hashes": implementation_file_hashes,
+        "report_commit_distinction": REPORT_COMMIT_DISTINCTION,
+    }
 
 
 @dataclass(frozen=True)
@@ -548,10 +608,15 @@ class Cycle007Pipeline:
                 per_symbol_decisions.append(
                     {
                         "symbol": norm_sym,
+                        "confidence_calibration_status": hyp.confidence_calibration_status,
+                        "confidence_calibration_note": hyp.confidence_calibration_note,
                         "stage1_central": hyp.to_dict(),
                         "stage2_timing": {
                             "decision": assessment.decision.value,
                             "alignment_status": assessment.alignment_status.value,
+                            "central_confidence_calibration_status": (
+                                assessment.central_confidence_calibration_status
+                            ),
                             "candle_bias": assessment.candle_bias.value,
                             "timing_quality_score": round(assessment.timing_quality_score, 4),
                             "price_action_score": round(assessment.price_action_score, 4),
@@ -707,6 +772,7 @@ class Cycle007Pipeline:
         holdout_unchanged = (
             holdout_sha_before is not None and holdout_sha_before == holdout_sha_after
         )
+        execution_provenance = _collect_execution_provenance()
 
         report: dict[str, Any] = {
             "cycle_id": "CYCLE-007",
@@ -720,6 +786,8 @@ class Cycle007Pipeline:
             "real_money_trading": False,
             "visual_ai_enabled": False,
             "synthetic_candles_used": 0,
+            "confidence_calibration_status": CONFIDENCE_CALIBRATION_STATUS,
+            "confidence_calibration_note": CONFIDENCE_CALIBRATION_NOTE,
             "broker_connections": self.instrumentation.broker_connections,
             "external_api_calls": self.instrumentation.external_api_calls,
             "paid_api_cost": self.instrumentation.paid_api_cost_usd,
@@ -736,7 +804,8 @@ class Cycle007Pipeline:
             },
             "started_at_ist": started_at.isoformat(),
             "completed_at_ist": completed_at.isoformat(),
-            "code_commit_sha": _get_git_commit_sha(),
+            "code_commit_sha": execution_provenance["implementation_commit_sha"],
+            "execution_provenance": execution_provenance,
             "session_date": self.config.session_date.isoformat(),
             "as_of_ist": self.as_of_ist.isoformat(),
             "symbols": list(self.config.symbols),

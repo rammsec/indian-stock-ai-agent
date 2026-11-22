@@ -36,7 +36,11 @@ from trader.timing.candle_intelligence import (
     CandlePattern,
     TrendStructure,
 )
-from trader.timing.central_directional_agent import DirectionalBias, DirectionalHypothesis
+from trader.timing.central_directional_agent import (
+    CONFIDENCE_CALIBRATION_STATUS,
+    DirectionalBias,
+    DirectionalHypothesis,
+)
 
 
 class TimingDecision(str, Enum):
@@ -113,6 +117,15 @@ class TimingAssessment:
     contradiction_reasons: tuple[str, ...]
     rationale: tuple[str, ...]
     intelligence_report: CandleIntelligenceReport | None = None
+    central_confidence_calibration_status: str = CONFIDENCE_CALIBRATION_STATUS
+
+    def __post_init__(self) -> None:
+        if self.central_confidence_calibration_status != CONFIDENCE_CALIBRATION_STATUS:
+            raise ValueError(
+                "TimingAssessment.central_confidence_calibration_status must be "
+                f"{CONFIDENCE_CALIBRATION_STATUS!r}; got "
+                f"{self.central_confidence_calibration_status!r}"
+            )
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -121,6 +134,7 @@ class TimingAssessment:
             "decision": self.decision.value,
             "alignment_status": self.alignment_status.value,
             "central_direction": self.central_direction.value,
+            "central_confidence_calibration_status": self.central_confidence_calibration_status,
             "candle_bias": self.candle_bias.value,
             "timing_quality_score": round(self.timing_quality_score, 4),
             "price_action_score": round(self.price_action_score, 4),

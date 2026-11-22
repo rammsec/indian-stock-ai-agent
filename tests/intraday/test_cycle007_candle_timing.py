@@ -31,6 +31,7 @@ from trader.timing.candle_timing_agent import (
     AlignmentStatus,
     CandleTimingAgent,
     CandleTimingConfig,
+    TimingAssessment,
     TimingDecision,
 )
 from trader.timing.central_directional_agent import (
@@ -40,6 +41,7 @@ from trader.timing.central_directional_agent import (
     DirectionalHypothesis,
 )
 from trader.timing.cycle007_pipeline import (
+    CYCLE007_IMPLEMENTATION_MODULES,
     DEFAULT_HOLDOUT_REGISTRY_PATH,
     Cycle007Config,
     Cycle007Pipeline,
@@ -613,6 +615,60 @@ class TestCentralDirectionalAgent:
                 regime_payload=regime_ms,
             )
 
+    def test_directional_hypothesis_confidence_calibration_status_and_validation(self) -> None:
+        as_of = _ist(2026, 11, 19, 9, 15)
+        agent = CentralDirectionalAgent()
+        preds, intel, regime = _make_stage1_payloads(symbols=("RELIANCE", "TCS"))
+        res = agent.evaluate_from_payloads(
+            symbols=("RELIANCE", "TCS"),
+            as_of_ist=as_of,
+            predictions_payload=preds,
+            intelligence_payload=intel,
+            regime_payload=regime,
+        )
+        for hyp in (*res.hypotheses.values(), _make_hypothesis(as_of_ist=as_of)):
+            assert hyp.confidence_calibration_status == "UNCALIBRATED"
+            assert isinstance(hyp.confidence_calibration_note, str)
+            assert hyp.confidence_calibration_note.strip() != ""
+            note_lower = hyp.confidence_calibration_note.lower()
+            assert "heuristic" in note_lower
+            assert "not" in note_lower and "calibrated probability" in note_lower
+
+            payload = hyp.to_dict()
+            assert payload["confidence_calibration_status"] == "UNCALIBRATED"
+            assert payload["confidence_calibration_note"] == hyp.confidence_calibration_note
+
+        for bad_status in ("CALIBRATED", "", None):
+            with pytest.raises(ValueError, match="confidence_calibration_status"):
+                DirectionalHypothesis(
+                    symbol="RELIANCE",
+                    direction=DirectionalBias.BULLISH,
+                    confidence=0.75,
+                    prob_next_day_up=0.68,
+                    expected_next_day_return_pct=1.4,
+                    news_sentiment_score=0.2,
+                    market_regime="Bull",
+                    observation_date=date(2026, 11, 18),
+                    as_of_ist=as_of,
+                    rationale=("invalid calibration status test",),
+                    confidence_calibration_status=bad_status,  # type: ignore[arg-type]
+                )
+
+        with pytest.raises(ValueError, match="confidence_calibration_note"):
+            DirectionalHypothesis(
+                symbol="RELIANCE",
+                direction=DirectionalBias.BULLISH,
+                confidence=0.75,
+                prob_next_day_up=0.68,
+                expected_next_day_return_pct=1.4,
+                news_sentiment_score=0.2,
+                market_regime="Bull",
+                observation_date=date(2026, 11, 18),
+                as_of_ist=as_of,
+                rationale=("empty calibration note test",),
+                confidence_calibration_note="   ",
+            )
+
 
 # ===========================================================================
 # 4. Stage 2 — Independent Candle Timing Agent
@@ -754,6 +810,61 @@ class TestIndependentCandleTimingAgent:
         assert res_future.decision == TimingDecision.REJECT
         assert res_future.alignment_status == AlignmentStatus.REJECTED
         assert any("Lookahead violation" in msg for msg in res_future.rationale)
+
+    def test_timing_assessment_central_confidence_calibration_status_and_validation(self) -> None:
+        cutoff = _ist(2026, 11, 19, 9, 15)
+        agent = CandleTimingAgent()
+        hyp_bull = _make_hypothesis(symbol="RELIANCE", direction=DirectionalBias.BULLISH, as_of_ist=cutoff)
+        hyp_neut = _make_hypothesis(symbol="RELIANCE", direction=DirectionalBias.NEUTRAL, as_of_ist=cutoff)
+
+        assessments = [
+            agent.evaluate(
+                hypothesis=hyp_bull,
+                bars_primary=_make_bullish_uptrend_df(cutoff - timedelta(hours=1), n_bars=24),
+                as_of_ist=cutoff,
+            ),
+            agent.evaluate(
+                hypothesis=hyp_bull,
+                bars_primary=_make_bearish_downtrend_df(cutoff - timedelta(hours=1), n_bars=24),
+                as_of_ist=cutoff,
+            ),
+            agent.evaluate(
+                hypothesis=hyp_bull,
+                bars_primary=_make_indecisive_doji_df(cutoff - timedelta(hours=1), n_bars=20),
+                as_of_ist=cutoff,
+            ),
+            agent.evaluate(
+                hypothesis=hyp_neut,
+                bars_primary=_make_bullish_uptrend_df(cutoff - timedelta(hours=1), n_bars=24),
+                as_of_ist=cutoff,
+            ),
+            agent.evaluate(hypothesis=hyp_bull, bars_primary=None, as_of_ist=cutoff),
+        ]
+        for assmt in assessments:
+            assert assmt.central_confidence_calibration_status == "UNCALIBRATED"
+            assert assmt.to_dict()["central_confidence_calibration_status"] == "UNCALIBRATED"
+
+        for bad_status in ("CALIBRATED", ""):
+            with pytest.raises(ValueError, match="central_confidence_calibration_status"):
+                TimingAssessment(
+                    symbol="RELIANCE",
+                    as_of_ist=cutoff,
+                    decision=TimingDecision.WAIT,
+                    alignment_status=AlignmentStatus.UNCONFIRMED,
+                    central_direction=DirectionalBias.BULLISH,
+                    candle_bias=CandleBias.NEUTRAL,
+                    timing_quality_score=0.5,
+                    price_action_score=0.1,
+                    entry_price=None,
+                    invalidation_price=None,
+                    target_price=None,
+                    risk_reward_ratio=None,
+                    detected_patterns=(),
+                    timeframe_statuses={"1h": "AVAILABLE", "15m": "UNAVAILABLE", "5m": "UNAVAILABLE"},
+                    contradiction_reasons=(),
+                    rationale=("invalid calibration status test",),
+                    central_confidence_calibration_status=bad_status,
+                )
 
 
 # ===========================================================================
@@ -1142,4 +1253,80 @@ class TestCycle007EndToEndPipelineIntegration:
         assert report_stop["risk_decisions"][0]["status"] == "OPEN_GAP_STOP_DISTANCE_EXCEEDED"
         assert report_stop["order_count"] == 0
         assert report_stop["ledger_reconciliation"]["sha256_chain_valid"] is True
+
+    def test_pipeline_json_and_markdown_reports_preserve_calibration_and_execution_provenance(
+        self, tmp_path: Path
+    ) -> None:
+        """Verify CYCLE-007 JSON & Markdown reports expose UNCALIBRATED status (top-level and
+        per-symbol) and complete execution_provenance covering all 6 CYCLE-007 modules.
+        """
+        json_out = tmp_path / "cycle_007_provenance_report.json"
+        md_out = tmp_path / "cycle_007_provenance_report.md"
+        report = run_cycle_007_dry_run(
+            session_date=date(2026, 11, 19),
+            snapshot_dir=tmp_path / "snapshot",
+            json_out=json_out,
+            md_out=md_out,
+        )
+
+        loaded_json = json.loads(json_out.read_text(encoding="utf-8"))
+        md_text = md_out.read_text(encoding="utf-8")
+
+        expected_modules = {
+            "trader/timing/__init__.py",
+            "trader/timing/candle_intelligence.py",
+            "trader/timing/central_directional_agent.py",
+            "trader/timing/candle_timing_agent.py",
+            "trader/timing/cycle007_pipeline.py",
+            "scripts/run_cycle_007_timing_dry_run.py",
+        }
+        assert set(CYCLE007_IMPLEMENTATION_MODULES) == expected_modules
+        assert len(expected_modules) == 6
+
+        for payload in (report, loaded_json):
+            assert payload["confidence_calibration_status"] == "UNCALIBRATED"
+            note = payload["confidence_calibration_note"]
+            assert isinstance(note, str) and note.strip() != ""
+            assert "heuristic" in note.lower()
+            assert "not" in note.lower() and "calibrated probability" in note.lower()
+
+            per_sym = payload["per_symbol_decisions"]
+            assert len(per_sym) >= 1
+            for entry in per_sym:
+                assert entry["confidence_calibration_status"] == "UNCALIBRATED"
+                assert isinstance(entry["confidence_calibration_note"], str)
+                assert entry["confidence_calibration_note"].strip() != ""
+                assert entry["stage1_central"]["confidence_calibration_status"] == "UNCALIBRATED"
+                assert entry["stage2_timing"]["central_confidence_calibration_status"] == "UNCALIBRATED"
+
+            for hyp_dict in payload["stage1_central_hypotheses"].values():
+                assert hyp_dict["confidence_calibration_status"] == "UNCALIBRATED"
+            for timing_dict in payload["stage2_timing_assessments"].values():
+                assert timing_dict["central_confidence_calibration_status"] == "UNCALIBRATED"
+
+            exec_prov = payload["execution_provenance"]
+            assert isinstance(exec_prov["implementation_commit_sha"], str)
+            assert len(exec_prov["implementation_commit_sha"]) >= 7
+            assert exec_prov["implementation_commit_sha"] == payload["code_commit_sha"]
+            assert isinstance(exec_prov["working_tree_clean_at_execution"], bool)
+            assert isinstance(exec_prov["dirty_paths_at_execution"], list)
+            assert isinstance(exec_prov["report_commit_distinction"], str)
+            assert exec_prov["report_commit_distinction"].strip() != ""
+
+            file_hashes = exec_prov["implementation_file_hashes"]
+            assert isinstance(file_hashes, dict)
+            assert set(file_hashes.keys()) == expected_modules
+            for rel_path, digest in file_hashes.items():
+                assert isinstance(digest, str) and len(digest) == 64, f"Bad SHA-256 for {rel_path}"
+
+        # Markdown report assertions
+        assert "UNCALIBRATED" in md_text
+        assert "confidence_calibration_status" in md_text
+        assert "## 5. Execution Provenance" in md_text
+        assert "implementation_commit_sha" in md_text
+        assert "working_tree_clean_at_execution" in md_text
+        assert "dirty_paths_at_execution" in md_text
+        assert "report_commit_distinction" in md_text
+        assert loaded_json["execution_provenance"]["implementation_commit_sha"] in md_text
+
 
