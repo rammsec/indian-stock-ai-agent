@@ -35,11 +35,11 @@ All runs executed in an isolated temporary directory (`/tmp/cycle_006a_iso`) usi
 | `AGENT-CENTRAL-COUNCIL` | `NOT_COMPLETED` (600s timeout) | 433 | — | -55.19% | — | — | — |
 | `AGENT-AUTONOMOUS-TRADER` | `NOT_COMPLETED` (not run) | 547 | — | -69.38% | — | — | — |
 
-*Historical-vs-current-code note*: Original `research_cycle_report.json` did not populate `gross_return_pct` (`None`) and had minor fee-breakdown differences (`₹7.44`–`₹176.11` / `±0.04` profit factor) before the `CYCLE-002` fee-schema update.
+*Historical-vs-current-code note*: Original `research_cycle_report.json` did not populate `gross_return_pct` (`None`) and predated the `CYCLE-002` fee-schema update, resulting in fee-breakdown differences (`₹7.44`–`₹176.11`), profit-factor shifts (`±0.04`), Sharpe shifts (up to `±0.67`), Sortino shifts (up to `±0.60`), and expectancy shifts (up to `±₹5.62`) across 5 strategies (`STRAT-003`, `STRAT-001-VWAP-V2`, `STRAT-001-VWAP-PULLBACK`, `STRAT-004`, `STRAT-007`), while trade counts and net returns matched (`0.00%` delta). All 8 deterministic entries also transitioned `final_status` from `REJECTED` (`1/7`) to `INVALIDATED` (`0/7`) under Phase 11.3 fail-closed Gate 1.
 
 ### 2. `CYCLE-002` (5m vs 15m/30m Discovery — 56 Eligible Sessions: `2026-08-25 -> 2026-11-20`)
 
-| Candidate | Timeframe | Orig Trades | Rerun Trades | Orig Gross % | Rerun Gross % | Orig Net % | Rerun Net % | Delta (All Metrics) |
+| Candidate | Timeframe | Orig Trades | Rerun Trades | Orig Gross % | Rerun Gross % | Orig Net % | Rerun Net % | Delta (Trades / Gross / Net) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `BENCHMARK-CASH-NO-TRADE` *(Benchmark)* | 30m | 0 | 0 | 0.00% | 0.00% | 0.00% | 0.00% | `0` |
 | `STRAT-011-30M-BREAKOUT-VOL` | 30m | 26 | 26 | +0.40% | +0.40% | -1.59% | -1.59% | `0` |
@@ -51,9 +51,11 @@ All runs executed in an isolated temporary directory (`/tmp/cycle_006a_iso`) usi
 | `STRAT-008-15M-RS-LEADER` | 15m | 105 | 105 | -10.84% | -10.84% | -18.70% | -18.70% | `0` |
 | `STRAT-001-VWAP-PULLBACK` | 5m | 229 | 229 | -14.95% | -14.95% | -30.44% | -30.44% | `0` |
 
+*Gate status note*: All 9 `CYCLE-002` entries matched with `0` delta across financial metrics (trades, gross %, net %, max drawdown, total fees, profit factor), while `final_status` transitioned from `REJECTED` (`1/7`) to `INVALIDATED` (`0/7`) under current Phase 11.3 Gate 1 integrity enforcement.
+
 ### 3. `CYCLE-003` (Track A 30m: 56 Sessions; Track B 60m: 240 Sessions, `2025-11-21 -> 2026-11-20`)
 
-| Candidate | Track | Orig Trades | Rerun Trades | Orig Gross % | Rerun Gross % | Orig Net % | Rerun Net % | Delta (All Metrics) |
+| Candidate | Track | Orig Trades | Rerun Trades | Orig Gross % | Rerun Gross % | Orig Net % | Rerun Net % | Delta (Trades / Gross / Net) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `BENCHMARK-CASH-NO-TRADE` *(Benchmark)* | 60m | 0 | 0 | 0.00% | 0.00% | 0.00% | 0.00% | `0` |
 | `BENCHMARK-CASH-NO-TRADE` *(Benchmark)* | 30m | 0 | 0 | 0.00% | 0.00% | 0.00% | 0.00% | `0` |
@@ -64,18 +66,20 @@ All runs executed in an isolated temporary directory (`/tmp/cycle_006a_iso`) usi
 | `STRAT-015-60M-TREND-BREAKOUT` | 60m | 84 | 84 | +0.26% | +0.26% | -5.76% | -5.76% | `0` |
 | `STRAT-016-60M-VWAP-MOMENTUM` | 60m | 282 | 282 | -7.57% | -7.57% | -28.13% | -28.13% | `0` |
 
+*Gate & rounding note*: All 8 `CYCLE-003` entries matched with `0` delta across trades, gross %, net %, max drawdown, total fees, and profit factor (with a `₹0.01` internal brokerage/statutory rounding split on `STRAT-016-60M-VWAP-MOMENTUM@60m`: brokerage `2994.25 → 2994.26`, statutory `7287.85 → 7287.84`, net `total_fees_inr` delta `0.00`). As expected under Phase 11.3 Gate 1, all 8 entries transitioned `final_status` from `REJECTED` (`1/7` or `2/7`) to `INVALIDATED` (`0/7` or `1/7`).
+
 ---
 
 ## C. Data Provenance, Holdout & Qualification Integrity Audit
 
 ### Input Datasets (`Asia/Kolkata`)
-- **Committed `1h` Parquet (`data/intraday/*_1h.parquet`, `2025-11-21 -> 2026-11-20`)**:
+- **Committed `1h` Parquet (`data/intraday/*_1h.parquet`, `2025-11-21 -> 2026-11-20`, `240` eligible sessions, `3` excluded: `2026-02-02`, `2026-04-20`, `2026-07-17`)**:
   - `RELIANCE_1h.parquet`: `1,703` rows (`f8931a85587e923a77214e344e0dde35c8db06db57a810c47ad939a48123dcfe`)
   - `TCS_1h.parquet`: `1,696` rows (`542d5c0b8408957568f9c1354c5500f9a93eba45a15b2e70b9156fa8087dbbf4`)
   - `BIRLACABLE_1h.parquet`: `1,709` rows (`42914a6089a9270cfea784fe6d2084ccb00bd7841e396901f6ce9b72cebb4b26`)
   - `ITC_1h.parquet`: `1,704` rows (`2a5890a1e85ef7502f45e552dce3effdf340176cf33ba49433b4afa9dadcd9be`)
   - `TATAELXSI_1h.parquet`: `1,691` rows (`e028a9f72039613e5a178a89b5e1f06ab22b3847d42b1037fae1fe6e49e3e875`)
-- **Fetched `5m` Parquet (`yfinance` -> `/tmp/cycle_006a_iso/data/intraday/*_NSE_5m.parquet`, `2026-08-25 -> 2026-11-20`)**:
+- **Fetched `5m` Parquet (`yfinance` -> `/tmp/cycle_006a_iso/data/intraday/*_NSE_5m.parquet`, retrieved `2026-11-22T00:36:01Z`–`00:36:06Z` / `06:06:01`–`06:06:06 IST`, `2026-08-25 -> 2026-11-20`, `56` eligible sessions, `3` excluded partial sessions: `2026-10-27`, `2026-10-28`, `2026-11-04`)**:
   - `RELIANCE_NSE_5m.parquet`: `4,325` rows (`41b6fc7638c305b89018e9a7e46f70460ff176fa6a357958e3a53f1832e3365e`)
   - `TCS_NSE_5m.parquet`: `4,315` rows (`1bc1fcd036a0251309928908d0ee5590d9f0c0b6bf9bb1330a07ca47c03d0a6c`)
   - `BIRLACABLE_NSE_5m.parquet`: `4,354` rows (`bc54d18b370e88df4ad2232470fb4b979994aae563b7214f3059019878da0744`)
@@ -83,8 +87,10 @@ All runs executed in an isolated temporary directory (`/tmp/cycle_006a_iso`) usi
   - `TATAELXSI_NSE_5m.parquet`: `4,310` rows (`4e1ee21e66c3f784c7458672991cee451a55908d86faf9f18e1dd13719fead44`)
 
 ### Holdout & `CYCLE-004` / `CYCLE-005` / 7-Gate Audit
-- **Holdout registry**: Real [`sealed_holdout_registry.json`](../../data/lab/sealed_holdout_registry.json) remains unchanged (`48/48` `EXPOSED`, `0` `AVAILABLE`, `0` `SEALED`).
-- **`CYCLE-004` & `CYCLE-005` (`cycle_005_report.json` preserved, `cycle_005_report_v2.json` active)**:
+- **Holdout registry**: Real [`sealed_holdout_registry.json`](../../data/lab/sealed_holdout_registry.json) remains byte-for-byte unchanged (`48/48` `EXPOSED`, `0` `AVAILABLE`, `0` `SEALED`). During isolated execution, legacy `run_cycle_003()` appended `1` exposure entry (`isolated_exposures_appended: 1`) exclusively to the disposable copy inside `/tmp/cycle_006a_iso/data/lab/sealed_holdout_registry.json`.
+- **`CYCLE-004` (`cycle_004_report.json`, preserved untouched — unseen metrics INVALIDATED / NON-INDEPENDENT)**:
+  - Historical `cycle_004_report.json` recorded positive numerical `unseen_return_pct` values (`STRAT-020-60M-CNC-TREND-SWING: +3.58%`, `STRAT-019-60M-CNC-ORB-SWING: +2.89%`, `STRAT-018-60M-ORB-SELECTIVE: +1.34%`, `STRAT-017-60M-ORB@200K: +0.06%`, `STRAT-017-60M-ORB@500K: +0.02%`) with `qualification_allowed: null`, `consumed_holdout_dates_count: 0`, and `final_status: REJECTED`. Because `CYCLE-004` executed prior to Phase 11.3.5 on `PARTIALLY_VERIFIED` 1h provenance and previously exposed holdout dates, these numerical unseen returns are **invalidated and must NOT be interpreted as independent out-of-sample evidence**.
+- **`CYCLE-005` (`cycle_005_report.json` preserved, `cycle_005_report_v2.json` active)**:
   - `CYCLE-005` v2 records `evaluation_type = EXPLORATORY_TRAIN_VAL_ONLY`, `provenance_status = PARTIALLY_VERIFIED`, `qualification_allowed = False`, `unseen_return_pct = null`, `unseen_evaluation_status = NOT_EVALUATED`, and `Gate 2 = INSUFFICIENT_EVIDENCE` (no `0.0%` coercion).
 - **7-Gate Qualification (`evaluate_seven_gates`, `trader/research/qualification.py`)**:
   - Gate 1 (`Data & Holdout Integrity`): `ResearchIntegrityGuard` + `prov_ok`/`hold_ok` — fail-closed (`BLOCKED_INTEGRITY` / `INVALIDATED`).
@@ -99,10 +105,12 @@ All runs executed in an isolated temporary directory (`/tmp/cycle_006a_iso`) usi
 
 ## D. Regression & Immutability Verification
 
-- **Targeted PR #10/#11/#12 audit suite** (60s budget): **21/21 passed in 1.99s** (`0` failures, `0` skips).
-- **Full regression suite** (`.venv/bin/pytest tests/intraday/ tests/phase6/ -v --tb=short`, 10m budget): **278/278 passed in 339.10s (0:05:39)** (`0` failed, `0` skipped).
+- **Local VM Execution Evidence** (distinct from GitHub Actions CI):
+  - **Targeted PR #10/#11/#12 audit suite** (60s budget): **21/21 passed in 1.99s** (`0` failures, `0` skips).
+  - **Full regression suite** (`.venv/bin/pytest tests/intraday/ tests/phase6/ -v --tb=short`, 10m budget): **278/278 passed in 339.10s (0:05:39)** (`0` failed, `0` skipped).
+- **GitHub Actions CI Scope**: `test-intraday-and-lab` independently runs `pytest tests/intraday/ tests/phase6/` on PR commits, but **does not** re-execute `CYCLE-006A` backtests or verify the financial tables in this report.
 - **SHA-256 Immutability**: All **18 protected files** (all historical cycle reports, `sealed_holdout_registry.json`, `provenance_report.json`, `lab_index.json`, and all 5 `*_1h.parquet` files) verified byte-for-byte unchanged (`ALL_18_PROTECTED_FILES_SHA256_MATCH`).
-- **Working tree**: Transient test side effects cleaned; only the two new `CYCLE-006A` report files exist as untracked outputs.
+- **PR Hygiene**: Transient test side effects cleaned before committing; this PR adds only the two `CYCLE-006A` report files with zero modifications to existing tracked files.
 
 ---
 
@@ -110,4 +118,4 @@ All runs executed in an isolated temporary directory (`/tmp/cycle_006a_iso`) usi
 
 1. **Performance bottleneck (`df.iterrows()` in `trader/data/loader.py:139, 186`)**: Causes single 5m strategy replays to take ~170–350s and the full test suite to take ~5m39s.
 2. **Zero `AVAILABLE` holdout dates**: All `48` tracked dates in `sealed_holdout_registry.json` are `EXPOSED`, and `1h` provenance is `PARTIALLY_VERIFIED`.
-3. **Readiness recommendation**: The deterministic historical research foundation (`CYCLE-001`–`CYCLE-003` + `CYCLE-005` integrity controls) is **reproducible and technically sound** for exploratory research. Before launching `CYCLE-006` integrated paper trading, archive fresh post-`2026-11-20` sessions if unseen qualification is desired, and consider vectorizing `trader/data/loader.py` to remove the 5m replay bottleneck.
+3. **Readiness recommendation**: The deterministic historical research foundation (`CYCLE-001`–`CYCLE-003` + `CYCLE-005` integrity controls) is **reproducible and technically sound** for exploratory research. `CYCLE-006B` (paper-trading infrastructure development only — distinct from strategy qualification) may proceed once this PR is merged. Formal strategy qualification remains blocked until fresh post-`2026-11-20` sessions are archived and `1h` provenance is `VERIFIED`.
