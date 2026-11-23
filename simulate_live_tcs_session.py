@@ -33,24 +33,7 @@ def run_live_simulation(session_date_str: str = "2026-11-09", initial_capital: f
     timing_agent = CandleTimingAgent()
     feed = ParquetCSVMarketFeed()
 
-    # 2. Prior Day Intelligence / Hypothesis (as of prior trading day close)
-    # The agent enters the morning with a hypothesis formed strictly before 09:15 market open
-    hypothesis = DirectionalHypothesis(
-        symbol="TCS",
-        direction=DirectionalBias.BULLISH,
-        confidence=0.70,
-        prob_next_day_up=0.62,
-        expected_next_day_return_pct=1.2,
-        news_sentiment_score=0.45,
-        market_regime="BULLISH_TREND",
-        observation_date=pd.to_datetime("2026-11-06").date(),
-        as_of_ist=datetime(2026, 11, 6, 15, 30, tzinfo=IST_TZ),
-        rationale=("Strong technical momentum", "Favorable regime alignment"),
-    )
-    print(f"\n[Prior Day Context] Baseline Hypothesis: {hypothesis.direction.value} "
-          f"(Confidence: {hypothesis.confidence:.0%}, Regime: {hypothesis.market_regime})")
-
-    # 3. Load full historical parquet to extract the day's bar timestamps
+    # 2. Load historical parquet to resolve prior day close and target session bars
     df_raw = pd.read_parquet("data/intraday/TCS_1h.parquet")
     df_raw["dt"] = pd.to_datetime(df_raw["timestamp"]).dt.tz_convert(IST_TZ)
     target_date = pd.to_datetime(session_date_str).date()
@@ -60,6 +43,24 @@ def run_live_simulation(session_date_str: str = "2026-11-09", initial_capital: f
         print(f"No trading bars found for {session_date_str} (market may have been closed).")
         return
 
+    # Prior trading day (latest closed market day before target date)
+    prior_dates = sorted([d for d in df_raw["dt"].dt.date.unique() if d < target_date])
+    prior_date = prior_dates[-1] if prior_dates else (target_date - pd.Timedelta(days=1))
+
+    # The Central Agent enters the morning with a hypothesis formed strictly before 09:15 market open
+    from datetime import time as dt_time
+    hypothesis = DirectionalHypothesis(
+        symbol="TCS",
+        direction=DirectionalBias.BULLISH,
+        confidence=0.70,
+        prob_next_day_up=0.62,
+        expected_next_day_return_pct=1.2,
+        news_sentiment_score=0.45,
+        market_regime="BULLISH_TREND",
+        observation_date=prior_date,
+        as_of_ist=datetime.combine(prior_date, dt_time(15, 30), tzinfo=IST_TZ),
+        rationale=("Prior day technical momentum", "Favorable regime alignment"),
+    )
     print(f"\n[Intraday Stream] Total scheduled 1h candles today: {len(day_bars)}")
     print("-" * 80)
 
@@ -93,11 +94,14 @@ def run_live_simulation(session_date_str: str = "2026-11-09", initial_capital: f
         decision = assessment.decision.value
         bias = assessment.candle_bias.value
         quality = assessment.timing_quality_score
+        patterns_str = ", ".join(p.value for p in assessment.detected_patterns) if assessment.detected_patterns else "None"
+        reason_str = assessment.rationale[0] if assessment.rationale else ""
 
         print(f"[{current_time_str}] Bar {idx + 1}: O={row['open']:.2f} H={row['high']:.2f} "
               f"L={row['low']:.2f} C={current_close:.2f} | Vol={int(row['volume']):,}")
-        print(f"   Candle Agent: Bias={bias} | Quality={quality:.2f} | Decision={decision} "
-              f"({assessment.alignment_status.value})")
+        print(f"   Candle Agent: Bias={bias} | Pattern={patterns_str} | Quality={quality:.2f} | Decision={decision} ({assessment.alignment_status.value})")
+        if reason_str:
+            print(f"   Analysis: {reason_str}")
 
         # Position management
         if active_position_qty > 0:

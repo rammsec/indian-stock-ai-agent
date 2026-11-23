@@ -408,7 +408,8 @@
       <div>
         <div class="control-label">Session Date</div>
         <select id="select-date">
-          <option value="2026-11-09" selected>2026-11-09 (Monday - Intraday Test)</option>
+          <option value="2026-10-29" selected>2026-10-29 (Thursday - Shooting Star Rejections)</option>
+          <option value="2026-11-09">2026-11-09 (Monday - Intraday Test)</option>
           <option value="2026-11-20">2026-11-20 (Friday - Bullish Breakout)</option>
           <option value="2026-11-06">2026-11-06 (Friday)</option>
           <option value="2026-11-05">2026-11-05 (Thursday)</option>
@@ -548,6 +549,10 @@
           <div class="metric-row">
             <span class="metric-name">Quality Score (min 0.60):</span>
             <span class="metric-val" id="timing-quality">0.00</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-name">Detected Pattern:</span>
+            <span class="metric-val text-amber" id="timing-pattern">None</span>
           </div>
           <div class="metric-row">
             <span class="metric-name">Alignment with Central:</span>
@@ -728,6 +733,22 @@
         const range = Math.max(0.01, high - low);
         const body = Math.abs(close - open);
         const isBullishCandle = close >= open;
+        const upperWick = high - Math.max(open, close);
+        const lowerWick = Math.min(open, close) - low;
+
+        // Pattern recognition matching Python CandleIntelligenceEngine
+        let pattern = "None";
+        if (upperWick / range >= 0.45 && body / range <= 0.35) {
+          pattern = "SHOOTING_STAR, BEARISH_PIN_BAR";
+        } else if (lowerWick / range >= 0.45 && body / range <= 0.35) {
+          pattern = "HAMMER";
+        } else if (body / range <= 0.08) {
+          pattern = "DOJI";
+        } else if (body / range >= 0.65) {
+          pattern = isBullishCandle ? "BULLISH_MARUBOZU" : "BEARISH_MARUBOZU";
+        } else {
+          pattern = "INSIDE_BAR / INDECISION";
+        }
 
         let candleBias = isBullishCandle ? "BULLISH" : "BEARISH";
         let qualityScore = 0.0;
@@ -736,12 +757,18 @@
         let explanation = "";
 
         // Check if candle contradicts prior-day Bullish hypothesis
-        if (!isBullishCandle && close < open) {
+        if (pattern.includes("SHOOTING_STAR") || pattern.includes("BEARISH_PIN_BAR")) {
           candleBias = "BEARISH";
           qualityScore = 0.0;
           decision = "CONTRADICT_CENTRAL";
           alignment = "CONTRADICTED";
-          explanation = `Candle is Bearish (O=${open.toFixed(2)}, C=${close.toFixed(2)}). Price action contradicts Central Agent's prior-day Bullish hypothesis. REFUSING to buy into falling prices.`;
+          explanation = `Upper wick rejection pattern (${pattern}) detected. High of ₹${high.toFixed(2)} sharply rejected by sellers down to ₹${close.toFixed(2)}. Contradicts Central Buy call; refusing to buy into weakness.`;
+        } else if (!isBullishCandle && close < open) {
+          candleBias = "BEARISH";
+          qualityScore = 0.0;
+          decision = "CONTRADICT_CENTRAL";
+          alignment = "CONTRADICTED";
+          explanation = `Candle is Bearish (O=₹${open.toFixed(2)}, C=₹${close.toFixed(2)}). Price action contradicts Central Agent's prior-day Bullish hypothesis. REFUSING to buy into falling prices.`;
         } else if (isBullishCandle && body / range > 0.6) {
           qualityScore = Math.min(0.95, 0.65 + (body / range) * 0.25);
           if (qualityScore >= 0.60) {
@@ -757,12 +784,13 @@
           candleBias = "NEUTRAL";
           decision = "WAIT";
           alignment = "UNCONFIRMED";
-          explanation = `Indecision Doji / spinning top candle. Neither bulls nor bears in control. Preserving cash.`;
+          explanation = `Indecision candle (${pattern}). Range ₹${low.toFixed(2)} - ₹${high.toFixed(2)}. Neither bulls nor bears in decisive control. Preserving cash.`;
         }
 
         // Update Timing Agent UI
         document.getElementById('timing-bias').textContent = candleBias;
         document.getElementById('timing-quality').textContent = qualityScore.toFixed(2);
+        document.getElementById('timing-pattern').textContent = pattern;
         document.getElementById('timing-alignment').textContent = alignment;
         document.getElementById('timing-decision').textContent = decision;
         document.getElementById('timing-explanation').textContent = explanation;
