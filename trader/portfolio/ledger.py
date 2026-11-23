@@ -96,6 +96,12 @@ class PositionDict(dict):
                 return
         raise KeyError(key)
 
+    def get(self, key: object, default: Any = None) -> Any:
+        try:
+            return self[str(key)]
+        except KeyError:
+            return default
+
     def get_position(self, symbol: str, exchange: str | None = None) -> Position | None:
         """Lookup position with optional exchange qualification."""
         if exchange:

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from datetime import date, datetime, time as dt_time
+from datetime import date, datetime, timedelta, time as dt_time
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -114,6 +114,27 @@ class DirectionalHypothesis:
             "rationale": list(self.rationale),
         }
 
+    def to_authority_instruction(self, expires_after_hours: float = 8.0) -> Any:
+        from ..authority.instructions import AuthorityInstruction, AuthoritySource, PermissionType
+        perm = (
+            PermissionType.ALLOW_LONG
+            if self.direction == DirectionalBias.BULLISH
+            else (
+                PermissionType.ALLOW_SHORT
+                if self.direction == DirectionalBias.BEARISH
+                else PermissionType.NO_NEW_ENTRIES
+            )
+        )
+        return AuthorityInstruction(
+            instruction_id=f"CENTRAL-{self.symbol}-{self.observation_date.isoformat()}",
+            authority=AuthoritySource.CENTRAL_AGENT,
+            scope=self.symbol,
+            permission=perm,
+            valid_from=self.as_of_ist,
+            expires_at=self.as_of_ist + timedelta(hours=expires_after_hours),
+            reason=f"Central Agent {self.direction.value} hypothesis (confidence: {self.confidence:.2f})",
+            version="1.0",
+        )
 
 @dataclass(frozen=True)
 class CentralDirectionalBatchResult:

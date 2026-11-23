@@ -14,6 +14,7 @@ from typing import Any, Literal, Sequence
 
 import pandas as pd
 
+from ..authority import ActionType, GateEvaluationOutcome, MandatoryExecutionGate
 from ..config import DEFAULT_INITIAL_CAPITAL_INR, IST_TZ
 from ..data.market_feed import BaseMarketFeed, TimeframeLiteral
 from ..intelligence.data_contract import OHLCVEvidenceFrame, ProvenanceTier
@@ -37,6 +38,7 @@ class PaperSignalCall:
     bars_5m_count: int
     bars_15m_count: int
     bars_1h_count: int
+    gate_outcome: GateEvaluationOutcome | None = None
 
 
 @dataclass(frozen=True)
@@ -70,12 +72,14 @@ class PaperFeedSignalSession:
         timing_agent: CandleTimingAgent | None = None,
         risk_engine: DeterministicRiskEngine | None = None,
         portfolio: IntradayPaperPortfolio | None = None,
+        execution_gate: MandatoryExecutionGate | None = None,
     ) -> None:
         self.feed = feed
         self.directional_agent = directional_agent or CentralDirectionalAgent()
         self.timing_agent = timing_agent or CandleTimingAgent()
         self.risk_engine = risk_engine or DeterministicRiskEngine()
         self.portfolio = portfolio or IntradayPaperPortfolio(initial_capital=DEFAULT_INITIAL_CAPITAL_INR)
+        self.execution_gate = execution_gate or MandatoryExecutionGate(risk_engine=self.risk_engine)
 
     def generate_daily_calls(
         self,
@@ -143,22 +147,32 @@ class PaperFeedSignalSession:
             )
 
             risk_eval: RiskEvaluationResult | None = None
+            gate_outcome: GateEvaluationOutcome | None = None
+
+            # Register Central Instruction from hypothesis
+            central_instr = hyp.to_authority_instruction()
+            self.execution_gate.set_central_instruction(central_instr)
+
             if (
-                timing.decision == TimingDecision.ENTER_NOW
-                and bars_primary is not None
+                bars_primary is not None
                 and not bars_primary.empty
             ):
                 entry_price = float(bars_primary["close"].iloc[-1])
                 stop_loss = getattr(timing, "stop_loss_price", None) or round(entry_price * 0.985, 2)
-                risk_eval = self.risk_engine.evaluate_order(
+                target_price = getattr(timing, "target_price", None) or round(entry_price * 1.03, 2)
+
+                gate_outcome = self.execution_gate.evaluate_gate(
                     symbol=sym,
-                    side="BUY",
+                    action_type=ActionType.ENTRY_LONG,
+                    current_time=cutoff_ist,
+                    portfolio=self.portfolio,
+                    candle_assessment=timing,
                     requested_quantity=requested_quantity,
                     entry_price=entry_price,
                     stop_loss_price=stop_loss,
-                    portfolio=self.portfolio,
-                    current_time=cutoff_ist,
+                    target_price=target_price,
                 )
+                risk_eval = gate_outcome.risk_evaluation
 
             calls.append(
                 PaperSignalCall(
@@ -171,6 +185,7 @@ class PaperFeedSignalSession:
                     bars_5m_count=ev_5m.bar_count,
                     bars_15m_count=ev_15m.bar_count,
                     bars_1h_count=ev_1h.bar_count,
+                    gate_outcome=gate_outcome,
                 )
             )
 
