@@ -136,19 +136,21 @@ def _detect_head_and_shoulders(
     """Detect Head & Shoulders breakdown or Inverse Head & Shoulders breakout from confirmed causal pivots."""
     if len(pivot_highs) >= 3 and len(pivot_lows) >= 2:
         (i1, h1), (i2, h2), (i3, h3) = pivot_highs[-3], pivot_highs[-2], pivot_highs[-1]
-        inter_lows = [val for idx, val in pivot_lows if i1 < idx < i3]
-        if len(inter_lows) >= 2 and h2 > h1 and h2 > h3 and h2 > 0:
+        left_troughs = [val for idx, val in pivot_lows if i1 < idx < i2]
+        right_troughs = [val for idx, val in pivot_lows if i2 < idx < i3]
+        if left_troughs and right_troughs and h2 > h1 and h2 > h3 and h2 > 0:
             shoulder_diff_pct = abs(h1 - h3) / h2
-            neckline = min(inter_lows[-2], inter_lows[-1])
+            neckline = min(left_troughs[-1], right_troughs[0])
             if shoulder_diff_pct <= 0.04 and curr_close < neckline:
                 return "HEAD_AND_SHOULDERS_BREAKDOWN"
 
     if len(pivot_lows) >= 3 and len(pivot_highs) >= 2:
         (i1, l1), (i2, l2), (i3, l3) = pivot_lows[-3], pivot_lows[-2], pivot_lows[-1]
-        inter_highs = [val for idx, val in pivot_highs if i1 < idx < i3]
-        if len(inter_highs) >= 2 and l2 < l1 and l2 < l3 and l1 > 0:
+        left_peaks = [val for idx, val in pivot_highs if i1 < idx < i2]
+        right_peaks = [val for idx, val in pivot_highs if i2 < idx < i3]
+        if left_peaks and right_peaks and l2 < l1 and l2 < l3 and l1 > 0:
             shoulder_diff_pct = abs(l1 - l3) / max(l1, l3)
-            neckline = max(inter_highs[-2], inter_highs[-1])
+            neckline = max(left_peaks[-1], right_peaks[0])
             if shoulder_diff_pct <= 0.04 and curr_close > neckline:
                 return "INVERSE_HEAD_AND_SHOULDERS_BREAKOUT"
 
@@ -261,7 +263,6 @@ def _detect_orb_event(df: pd.DataFrame) -> tuple[str, float | None, float | None
     or_low = float(or_slice["low"].min())
 
     curr = sess.iloc[-1]
-    prev = sess.iloc[-2]
     curr_h, curr_l, curr_c = float(curr["high"]), float(curr["low"]), float(curr["close"])
     rng = max(1e-9, curr_h - curr_l)
     clv = (curr_c - curr_l) / rng
@@ -330,7 +331,7 @@ def analyze_market_structure(
     rsi_s = compute_rsi_series(closes, period=14)
     _, _, macd_hist_s = compute_macd_series(closes)
     rvol_s = compute_rvol_series(vols, window=14, mode="prior_nonzero")
-    vwap_s = compute_session_vwap_series(df)
+    vwap_s = compute_session_vwap_series(df, zero_vol_policy="unavailable")
 
     curr_o = float(opens.iloc[-1])
     curr_h = float(highs.iloc[-1])

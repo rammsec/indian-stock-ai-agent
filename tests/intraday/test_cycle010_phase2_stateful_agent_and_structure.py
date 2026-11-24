@@ -324,3 +324,52 @@ def test_structure_engine_zero_lookahead_future_perturbation_invariance() -> Non
     pert_snap = analyze_market_structure(perturbed.iloc[: t + 1].copy())
 
     assert base_snap.to_dict() == pert_snap.to_dict()
+
+
+def test_lifecycle_fails_closed_on_future_bar_corrupt_data_and_direction_flip() -> None:
+    """Verify evaluate_bar_lifecycle fails closed with REJECT on future-dated or corrupt bars even when position is open, and cancels active_setup on Central direction flip."""
+    agent = CandleTimingAgent()
+    up_df = _strong_uptrend_df()
+    # Set as_of_ist BEFORE the last bar's timestamp -> lookahead violation!
+    early_cutoff = up_df["timestamp"].iloc[-3].to_pydatetime()
+    open_pos = PositionContext(side="LONG", entry_price=1030.0, current_stop_loss=1010.0)
+
+    res_future = agent.evaluate_bar_lifecycle(
+        hypothesis=_make_hypothesis(DirectionalBias.BULLISH, as_of=early_cutoff),
+        bars_primary=up_df,
+        as_of_ist=early_cutoff,
+        position=open_pos,
+    )
+    assert res_future.call == AgentCall.REJECT
+    assert res_future.recommended_trailing_stop == open_pos.current_stop_loss
+
+    # Corrupt DataFrame missing required OHLCV columns must return REJECT without raising KeyError
+    corrupt_df = pd.DataFrame({"timestamp": up_df["timestamp"].iloc[:5], "close": [100.0] * 5})
+    ts_ok = up_df["timestamp"].iloc[5].to_pydatetime()
+    res_corrupt = agent.evaluate_bar_lifecycle(
+        hypothesis=_make_hypothesis(DirectionalBias.BULLISH, as_of=ts_ok),
+        bars_primary=corrupt_df,
+        as_of_ist=ts_ok,
+        position=open_pos,
+    )
+    assert res_corrupt.call == AgentCall.REJECT
+
+    # Active LONG setup must be cancelled when Central hypothesis flips BEARISH
+    doji_df = _build_bars([(1000.0, 1005.0, 995.0, 1000.2, 10000.0)] * 20)
+    ts_doji = doji_df["timestamp"].iloc[-1].to_pydatetime() + timedelta(hours=1)
+    long_setup = ActiveSetupContext(
+        direction="LONG",
+        setup_type="TREND_SETUP",
+        trigger_price=1006.0,
+        invalidation_price=990.0,
+        bars_watching=1,
+    )
+    res_flip = agent.evaluate_bar_lifecycle(
+        hypothesis=_make_hypothesis(DirectionalBias.BEARISH, as_of=ts_doji),
+        bars_primary=doji_df,
+        as_of_ist=ts_doji,
+        active_setup=long_setup,
+    )
+    assert res_flip.call == AgentCall.CANCEL_SETUP
+    assert res_flip.cancel_reason == "CENTRAL_DIRECTION_REVERSED"
+

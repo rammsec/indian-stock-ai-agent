@@ -95,6 +95,10 @@ class PositionContext:
     lowest_price: float | None = None
     bars_held: int = 0
 
+    def __post_init__(self) -> None:
+        if self.side not in ("LONG", "SHORT"):
+            raise ValueError(f"PositionContext.side must be 'LONG' or 'SHORT'; got {self.side!r}")
+
 
 @dataclass(frozen=True)
 class ActiveSetupContext:
@@ -106,6 +110,10 @@ class ActiveSetupContext:
     invalidation_price: float
     bars_watching: int = 0
     max_watch_bars: int = 6
+
+    def __post_init__(self) -> None:
+        if self.direction not in ("LONG", "SHORT"):
+            raise ValueError(f"ActiveSetupContext.direction must be 'LONG' or 'SHORT'; got {self.direction!r}")
 
 
 @dataclass(frozen=True)
@@ -859,6 +867,26 @@ class CandleTimingAgent:
             bars_5m=bars_5m,
             as_of_ist=as_of_ist,
         )
+
+        # Fail closed BEFORE structure analysis or position management whenever temporal/data
+        # integrity validation rejected the input (e.g., lookahead violation, naive datetime, corrupt OHLCV).
+        if (
+            bars_primary is None
+            or bars_primary.empty
+            or base.intelligence_report is None
+            or base.intelligence_report.primary.latest_candle is None
+        ):
+            return LifecycleAssessment(
+                call=AgentCall.REJECT,
+                timing_assessment=base,
+                structure=analyze_market_structure(None, max_atr_pct=self.config.max_atr_pct),
+                recommended_trailing_stop=position.current_stop_loss if position else None,
+                updated_setup=None,
+                exit_reason=None,
+                cancel_reason="REJECTED_BY_TIMING_GUARD" if active_setup is not None else None,
+                rationale=tuple(base.rationale),
+            )
+
         structure = analyze_market_structure(bars_primary, max_atr_pct=self.config.max_atr_pct)
 
         rationale: list[str] = list(base.rationale)
@@ -868,27 +896,10 @@ class CandleTimingAgent:
                 "relative volume unavailable rather than zero participation."
             )
 
-        # Fail closed on invalid/corrupt bar frames before position or setup inspection
-        if bars_primary is None or bars_primary.empty:
-            return LifecycleAssessment(
-                call=AgentCall.REJECT,
-                timing_assessment=base,
-                structure=structure,
-                recommended_trailing_stop=position.current_stop_loss if position else None,
-                updated_setup=None,
-                exit_reason=None,
-                cancel_reason=None,
-                rationale=tuple(rationale),
-            )
-
         curr_close = float(bars_primary["close"].iloc[-1])
         curr_low = float(bars_primary["low"].iloc[-1])
         curr_high = float(bars_primary["high"].iloc[-1])
-        primary_tf_report = (
-            base.intelligence_report.primary
-            if base.intelligence_report is not None
-            else None
-        )
+        primary_tf_report = base.intelligence_report.primary
         atr_val = (
             primary_tf_report.atr
             if (primary_tf_report is not None and primary_tf_report.atr is not None and primary_tf_report.atr > 0)
@@ -1043,10 +1054,18 @@ class CandleTimingAgent:
                 rationale=tuple(rationale),
             )
 
-        # Check active setup cancellation rules (invalidation breach, trap/contradiction, timeout)
+        # Check active setup cancellation rules (direction flip, invalidation breach, trap/contradiction, timeout)
         if active_setup is not None:
             cancel_reason: str | None = None
-            if active_setup.direction == "LONG":
+            if (
+                active_setup.direction == "LONG"
+                and hypothesis.direction == DirectionalBias.BEARISH
+            ) or (
+                active_setup.direction == "SHORT"
+                and hypothesis.direction == DirectionalBias.BULLISH
+            ):
+                cancel_reason = "CENTRAL_DIRECTION_REVERSED"
+            elif active_setup.direction == "LONG":
                 if curr_low <= active_setup.invalidation_price or curr_close < active_setup.invalidation_price:
                     cancel_reason = (
                         f"SETUP_INVALIDATED:low={curr_low:.2f}<=invalidation={active_setup.invalidation_price:.2f}"
