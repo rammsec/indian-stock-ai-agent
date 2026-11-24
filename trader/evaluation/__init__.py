@@ -16,6 +16,11 @@ from trader.evaluation.data_readiness import (
     audit_historical_data_readiness,
 )
 from trader.evaluation.metrics import TradeRecord, compute_strategy_metrics
+from trader.evaluation.outcome_evaluator import (
+    DecisionOutcomeRecord,
+    SessionOutcomeReport,
+    evaluate_session_outcomes,
+)
 from trader.evaluation.walk_forward import (
     CYCLE008_IMPLEMENTATION_MODULES,
     DEFAULT_ARCHIVED_DIAGNOSTIC_SESSIONS,
@@ -32,6 +37,8 @@ __all__ = [
     "Cycle008WalkForwardEvaluator",
     "DEFAULT_ARCHIVED_DIAGNOSTIC_SESSIONS",
     "DEFAULT_HOLDOUT_REGISTRY_PATH",
+    "DecisionOutcomeRecord",
+    "SessionOutcomeReport",
     "TradeRecord",
     "audit_bar_index_lookahead",
     "audit_cross_sectional_lookahead",
@@ -43,4 +50,5 @@ __all__ = [
     "audit_warmup_sensitivity",
     "build_chronological_splits",
     "compute_strategy_metrics",
+    "evaluate_session_outcomes",
 ]
