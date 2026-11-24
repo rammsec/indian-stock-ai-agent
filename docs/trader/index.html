@@ -44,6 +44,36 @@
       <div>Loading dataset provenance & model attribution...</div>
     </section>
 
+    <!-- Interactive Continuous Candle Agent Session Launcher (CYCLE-010 Phase 4) -->
+    <section class="card" id="candle-agent-launcher" style="padding: 12px 16px; border-left: 3px solid #22c55e; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <strong style="color: #f1f5f9;">🕯 Active Bar-by-Bar Intraday Candle Agent (5m / 15m / 1h)</strong>
+        <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">Launch continuous 09:15–15:30 IST monitoring with 9-call lifecycle, Human Authority controls, statutory Indian fees &amp; post-session outcome review.</div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <select id="launch-sym" style="background:#1a2234;color:#f1f5f9;border:1px solid #263148;border-radius:6px;padding:6px 8px;font-size:12px;">
+          <option value="TCS">TCS</option>
+          <option value="RELIANCE">RELIANCE</option>
+          <option value="ITC">ITC</option>
+          <option value="TATAELXSI">TATAELXSI</option>
+          <option value="BIRLACABLE">BIRLACABLE</option>
+        </select>
+        <select id="launch-tf" style="background:#1a2234;color:#f1f5f9;border:1px solid #263148;border-radius:6px;padding:6px 8px;font-size:12px;">
+          <option value="5m" selected>5m (75 bars)</option>
+          <option value="15m">15m (25 bars)</option>
+          <option value="1h">1h (7 bars)</option>
+        </select>
+        <select id="launch-dir" style="background:#1a2234;color:#f1f5f9;border:1px solid #263148;border-radius:6px;padding:6px 8px;font-size:12px;">
+          <option value="BULLISH" selected>BULLISH</option>
+          <option value="BEARISH">BEARISH</option>
+          <option value="NEUTRAL">NEUTRAL</option>
+        </select>
+        <button type="button" onclick="window.location.href='../candle-agent/?symbol='+document.getElementById('launch-sym').value+'&tf='+document.getElementById('launch-tf').value+'&dir='+document.getElementById('launch-dir').value" style="background:#0284c7;color:#fff;border:1px solid #0ea5e9;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">
+          ▶ Start Intraday Session
+        </button>
+      </div>
+    </section>
+
     <!-- Section A: Market Overview & Posture -->
     <section>
       <div class="section-title-bar">
