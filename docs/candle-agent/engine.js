@@ -371,9 +371,12 @@
 
     setHumanPermission(perm) {
       this.humanPermission = perm;
-      if (perm === "STOP_ALL" && this.position && this.barIdx > 0) {
-        const curBar = this.sessionBars[this.barIdx - 1];
-        this._closePosition(roundToNseTick(curBar.c), curBar.tc || curBar.t, "EMERGENCY_HUMAN_STOP_ALL");
+      if (perm === "STOP_ALL") {
+        this.pendingOrder = null;
+        if (this.position && this.barIdx > 0) {
+          const curBar = this.sessionBars[this.barIdx - 1];
+          this._closePosition(roundToNseTick(curBar.c), curBar.tc || curBar.t, "EMERGENCY_HUMAN_STOP_ALL");
+        }
       }
     }
 
@@ -542,8 +545,10 @@
         if (gapStop || gapTarget) {
           barNotes.push(gapStop ? `GAP_CANCEL_STOP@${fillPx}` : `GAP_CANCEL_TARGET@${fillPx}`);
         } else {
+          const isPendingExit = po.actionType === "EXIT_LONG" || po.actionType === "COVER_SHORT";
           const permCheck = humanPermissionAllows(this.humanPermission, po.actionType);
-          if (permCheck.allowed && !this._checkCircuitBreakers()) {
+          const haltedBlock = !isPendingExit && this._checkCircuitBreakers();
+          if (permCheck.allowed && !haltedBlock) {
             if (po.actionType === "OPEN_LONG" && !this.position) {
               const qty = this._sizeOrder("BUY", fillPx, po.stopLoss);
               if (qty > 0 && this._openPosition("LONG", qty, fillPx, po.stopLoss, po.target, tsOpen)) {
