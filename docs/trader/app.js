@@ -46,7 +46,7 @@ async function loadTraderState() {
 }
 
 function renderDashboard(data) {
-  renderDataProvenance(data.meta, data.data_provenance, data.cost_monitoring);
+  renderDataProvenance(data.metadata || data.meta, data.data_provenance, data.cost_monitoring);
   renderMarketOverview(data.market_overview);
   renderCouncilDebate(data.council_debate, data.market_overview.central_posture);
   renderStockScanner(data.stock_scanner);
