@@ -257,7 +257,7 @@ def _aggregate_split(split_name: str, reports: Sequence[MonitoringSessionResult]
     gross_pnl = net_pnl + total_friction
     gross_wins = sum(float(t.get("net_pnl_inr", 0.0)) for t in all_trades if float(t.get("net_pnl_inr", 0.0)) > 0.0)
     gross_losses = abs(sum(float(t.get("net_pnl_inr", 0.0)) for t in all_trades if float(t.get("net_pnl_inr", 0.0)) < 0.0))
-    profit_factor = (gross_wins / gross_losses) if gross_losses > 0 else (gross_wins if gross_wins > 0 else 0.0)
+    profit_factor = (gross_wins / gross_losses) if gross_losses > 0 else (999.99 if gross_wins > 0 else 0.0)
 
     return SplitMetrics(
         split_name=split_name,

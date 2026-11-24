@@ -398,7 +398,7 @@ class IntradayCandleMonitoringSession:
                     bar_events_notes.append(f"MANDATORY_1515_SQUAREOFF_EXECUTED:{sq_action.value}")
 
             # STEP D: Fetch strictly causal evidence <= ts_close and evaluate stateful CandleTimingAgent
-            causal_ev = self.feed.get_bars(sym_u, timeframe, ts_close, lookback_bars=warmup_lookback_bars + 100)
+            causal_ev = self.feed.get_bars(sym_u, timeframe, ts_close, lookback_bars=warmup_lookback_bars + session_bar_budget)
             causal_df = evidence_to_agent_df(causal_ev)
 
             pos_ctx: PositionContext | None = None

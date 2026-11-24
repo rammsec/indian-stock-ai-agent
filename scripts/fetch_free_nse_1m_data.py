@@ -138,6 +138,9 @@ def main() -> int:
 
         merged = pd.concat(frames, ignore_index=True)
         clean = normalize_1m_dataframe(merged, sym)
+        if clean.empty:
+            print(f"[fetch_1m] WARN Normalized 1m DataFrame empty for {sym}; skipping")
+            continue
         out_path = out_dir / f"{sym}_1m.parquet"
         clean.to_parquet(out_path, index=False)
 
