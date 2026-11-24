@@ -34,6 +34,7 @@ from ..config import (
     MAX_POSITION_WEIGHT_PCT,
     MAX_RISK_PER_TRADE_PCT,
 )
+from ..portfolio.cost_calculator import calculate_intraday_costs
 from ..portfolio.ledger import IntradayPaperPortfolio
 
 
@@ -325,10 +326,21 @@ class DeterministicRiskEngine:
         current_time: datetime,
         *,
         force_reduce_only: bool = False,
+        action_type: str | None = None,
+        include_entry_friction_in_cash_cap: bool = False,
     ) -> RiskEvaluationResult:
         """Evaluate order proposal against all hard-coded risk constraints."""
         reasons: list[str] = []
         side_upper = side.upper()
+        action_upper = action_type.upper() if action_type is not None else None
+
+        if action_upper is not None:
+            is_exit_order = action_upper in ("EXIT_LONG", "EXIT_SHORT", "COVER_SHORT", "RISK_EXIT")
+            is_short_entry = action_upper in ("ENTRY_SHORT", "OPEN_SHORT")
+        else:
+            # Backward-compatible default when action_type is omitted: BUY=long entry, SELL=long exit
+            is_exit_order = side_upper == "SELL"
+            is_short_entry = False
 
         # 0. Fail closed on timezone-naive datetimes
         if current_time.tzinfo is None:
@@ -355,8 +367,9 @@ class DeterministicRiskEngine:
 
         # 1. Check daily loss / intraday MTM drawdown circuit breaker
         if self.state == RiskState.HALTED or self.check_daily_loss_limit(portfolio):
-            if side_upper == "SELL" and force_reduce_only:
-                held_qty = portfolio.positions[symbol].quantity if symbol in portfolio.positions else 0
+            if is_exit_order and force_reduce_only:
+                pos = portfolio.positions.get(symbol)
+                held_qty = pos.quantity if pos is not None else 0
                 if held_qty <= 0:
                     reasons.append(f"No held position in {symbol} for forced square-off")
                     return self._record_audit(
@@ -406,12 +419,41 @@ class DeterministicRiskEngine:
         if self.state == RiskState.ACTIVE and current_t >= INTRADAY_REDUCING_WIND_DOWN_TIME:
             self.state = RiskState.REDUCING
 
-        # 3. For SELL (exits), allow execution in ACTIVE and REDUCING (even >= 15:05 / >= 15:15 IST)
-        if side_upper == "SELL":
-            if self.state == RiskState.REDUCING:
-                held_qty = portfolio.positions[symbol].quantity if symbol in portfolio.positions else 0
+        # 3. For exits (EXIT_LONG / COVER_SHORT / RISK_EXIT / legacy SELL), allow in ACTIVE and REDUCING
+        if is_exit_order:
+            pos = portfolio.positions.get(symbol)
+            held_qty = pos.quantity if pos is not None else 0
+            if self.state == RiskState.REDUCING or action_upper is not None:
                 if held_qty <= 0:
-                    reasons.append(f"No held position in {symbol} to exit in REDUCING state")
+                    reasons.append(f"No held position in {symbol} to exit in {self.state.value} state")
+                    return self._record_audit(
+                        timestamp_ist=current_ist,
+                        symbol=symbol,
+                        side=side_upper,
+                        approved=False,
+                        status="REJECTED",
+                        approved_quantity=0,
+                        requested_quantity=requested_quantity,
+                        reasons=reasons,
+                        max_risk_amount_inr=0.0,
+                        estimated_trade_risk_inr=0.0,
+                    )
+                if pos is not None and action_upper == "EXIT_LONG" and pos.side != "LONG":
+                    reasons.append(f"EXIT_LONG rejected: open position in {symbol} is {pos.side}, not LONG")
+                    return self._record_audit(
+                        timestamp_ist=current_ist,
+                        symbol=symbol,
+                        side=side_upper,
+                        approved=False,
+                        status="REJECTED",
+                        approved_quantity=0,
+                        requested_quantity=requested_quantity,
+                        reasons=reasons,
+                        max_risk_amount_inr=0.0,
+                        estimated_trade_risk_inr=0.0,
+                    )
+                if pos is not None and action_upper in ("EXIT_SHORT", "COVER_SHORT") and pos.side != "SHORT":
+                    reasons.append(f"COVER_SHORT rejected: open position in {symbol} is {pos.side}, not SHORT")
                     return self._record_audit(
                         timestamp_ist=current_ist,
                         symbol=symbol,
@@ -452,12 +494,12 @@ class DeterministicRiskEngine:
                 estimated_trade_risk_inr=0.0,
             )
 
-        # --- BUY Order Validations ---
+        # --- NEW ENTRY Order Validations (ENTRY_LONG / ENTRY_SHORT) ---
 
-        # 4. Block BUY in REDUCING or past entry/square-off cutoffs
+        # 4. Block new entries in REDUCING or past entry/square-off cutoffs
         if self.state == RiskState.REDUCING or current_t >= INTRADAY_MANDATORY_SQUAREOFF_TIME:
             reasons.append(
-                f"BUY blocked in {self.state.value} / square-off window ({current_t.strftime('%H:%M')} IST)"
+                f"{action_upper or side_upper} blocked in {self.state.value} / square-off window ({current_t.strftime('%H:%M')} IST)"
             )
             return self._record_audit(
                 timestamp_ist=current_ist,
@@ -503,23 +545,43 @@ class DeterministicRiskEngine:
                 estimated_trade_risk_inr=0.0,
             )
 
-        # 6. Stop-Loss is mandatory for intraday long entries
-        if stop_loss_price is None or stop_loss_price >= entry_price:
-            reasons.append(
-                f"Invalid stop-loss price ({stop_loss_price}) for entry ({entry_price}); must be below entry"
-            )
-            return self._record_audit(
-                timestamp_ist=current_ist,
-                symbol=symbol,
-                side=side_upper,
-                approved=False,
-                status="REJECTED",
-                approved_quantity=0,
-                requested_quantity=requested_quantity,
-                reasons=reasons,
-                max_risk_amount_inr=0.0,
-                estimated_trade_risk_inr=0.0,
-            )
+        # 6. Stop-Loss is mandatory for intraday entries (below entry for LONG, above entry for SHORT)
+        if is_short_entry:
+            if stop_loss_price is None or stop_loss_price <= entry_price:
+                reasons.append(
+                    f"Invalid short stop-loss price ({stop_loss_price}) for entry ({entry_price}); must be above entry"
+                )
+                return self._record_audit(
+                    timestamp_ist=current_ist,
+                    symbol=symbol,
+                    side=side_upper,
+                    approved=False,
+                    status="REJECTED",
+                    approved_quantity=0,
+                    requested_quantity=requested_quantity,
+                    reasons=reasons,
+                    max_risk_amount_inr=0.0,
+                    estimated_trade_risk_inr=0.0,
+                )
+            risk_per_share = stop_loss_price - entry_price
+        else:
+            if stop_loss_price is None or stop_loss_price >= entry_price:
+                reasons.append(
+                    f"Invalid stop-loss price ({stop_loss_price}) for entry ({entry_price}); must be below entry"
+                )
+                return self._record_audit(
+                    timestamp_ist=current_ist,
+                    symbol=symbol,
+                    side=side_upper,
+                    approved=False,
+                    status="REJECTED",
+                    approved_quantity=0,
+                    requested_quantity=requested_quantity,
+                    reasons=reasons,
+                    max_risk_amount_inr=0.0,
+                    estimated_trade_risk_inr=0.0,
+                )
+            risk_per_share = entry_price - stop_loss_price
 
         # 7. Check concurrent open positions ceiling
         if symbol not in portfolio.positions and len(portfolio.positions) >= self.max_concurrent_positions:
@@ -540,23 +602,33 @@ class DeterministicRiskEngine:
         # 8. Fixed Fractional Risk Sizing
         total_equity = portfolio.total_equity
         max_risk_inr = total_equity * self.max_risk_per_trade_pct
-        risk_per_share = entry_price - stop_loss_price
         max_shares_by_risk = int(max_risk_inr / risk_per_share) if risk_per_share > 0 else 0
 
         # 9. Position Size Ceiling (max 15% equity per stock)
         max_capital_per_pos = total_equity * self.max_position_weight_pct
         existing_pos_val = portfolio.positions[symbol].quantity * entry_price if symbol in portfolio.positions else 0.0
         remaining_pos_capital = max(0.0, max_capital_per_pos - existing_pos_val)
-        max_shares_by_cap = int(remaining_pos_capital / entry_price)
+        max_shares_by_cap = int(remaining_pos_capital / entry_price) if entry_price > 0 else 0
 
         # 10. Total Portfolio Exposure Limit (max 80% total invested)
         max_portfolio_invested = total_equity * self.max_portfolio_exposure_pct
         remaining_portfolio_capital = max(0.0, max_portfolio_invested - portfolio.invested_capital)
-        max_shares_by_exposure = int(remaining_portfolio_capital / entry_price)
+        max_shares_by_exposure = int(remaining_portfolio_capital / entry_price) if entry_price > 0 else 0
 
         # 11. Available Cash Limit (net of pending CashReservationLedger holds)
         available_cash = max(0.0, float(portfolio.cash) - self.cash_ledger.total_reserved_inr)
-        max_shares_by_cash = int(available_cash / entry_price)
+        max_shares_by_cash = int(available_cash / entry_price) if entry_price > 0 else 0
+        if include_entry_friction_in_cash_cap:
+            while max_shares_by_cash > 0:
+                est_cost = calculate_intraday_costs(
+                    price=entry_price,
+                    quantity=max_shares_by_cash,
+                    side=side_upper,
+                    cost_config=portfolio.cost_config,
+                ).total_friction_inr
+                if (entry_price * max_shares_by_cash) + est_cost <= available_cash:
+                    break
+                max_shares_by_cash -= 1
 
         # Determine approved quantity
         approved_qty = min(

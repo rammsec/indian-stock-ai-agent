@@ -174,7 +174,7 @@ class MandatoryExecutionGate:
         portfolio: IntradayPaperPortfolio,
         current_time: datetime,
     ) -> None:
-        """Default safe management: square off open positions to eliminate risk."""
+        """Default safe management: square off open long and short positions to eliminate risk."""
         sym_u = symbol.strip().upper()
         if sym_u == "*":
             # Square off all open positions
@@ -183,6 +183,41 @@ class MandatoryExecutionGate:
                 pos = portfolio.positions.get(k)
                 if pos and pos.quantity > 0:
                     px = getattr(pos, "current_price", pos.entry_price)
+                    if getattr(pos, "side", "LONG") == "SHORT":
+                        portfolio.submit_order(
+                            symbol=pos.symbol,
+                            side="BUY",
+                            quantity=pos.quantity,
+                            price=px,
+                            exchange=pos.exchange,
+                            timestamp=current_time,
+                            position_effect="COVER_SHORT",
+                        )
+                    else:
+                        portfolio.submit_order(
+                            symbol=pos.symbol,
+                            side="SELL",
+                            quantity=pos.quantity,
+                            price=px,
+                            exchange=pos.exchange,
+                            timestamp=current_time,
+                            position_effect="EXIT_LONG",
+                        )
+        else:
+            pos = portfolio.positions.get(sym_u)
+            if pos and pos.quantity > 0:
+                px = getattr(pos, "current_price", pos.entry_price)
+                if getattr(pos, "side", "LONG") == "SHORT":
+                    portfolio.submit_order(
+                        symbol=pos.symbol,
+                        side="BUY",
+                        quantity=pos.quantity,
+                        price=px,
+                        exchange=pos.exchange,
+                        timestamp=current_time,
+                        position_effect="COVER_SHORT",
+                    )
+                else:
                     portfolio.submit_order(
                         symbol=pos.symbol,
                         side="SELL",
@@ -190,19 +225,8 @@ class MandatoryExecutionGate:
                         price=px,
                         exchange=pos.exchange,
                         timestamp=current_time,
+                        position_effect="EXIT_LONG",
                     )
-        else:
-            pos = portfolio.positions.get(sym_u)
-            if pos and pos.quantity > 0:
-                px = getattr(pos, "current_price", pos.entry_price)
-                portfolio.submit_order(
-                    symbol=pos.symbol,
-                    side="SELL",
-                    quantity=pos.quantity,
-                    price=px,
-                    exchange=pos.exchange,
-                    timestamp=current_time,
-                )
 
     def invoke_safe_position_management(
         self,
@@ -241,12 +265,16 @@ class MandatoryExecutionGate:
         disagreement_str: str | None = None
 
         with self._lock:
-            # GATE 1: Current Human Permission
+            # GATE 1: Current Human Permission (fail closed if an explicitly registered human instruction expired)
             human_instr, human_errs = self._get_applicable_instruction(self._human_instructions, sym_u, now_ist)
             if human_instr is not None:
                 allowed, r_reason = human_instr.allows_action(action_type)
                 if not allowed:
                     rejection_reasons.append(f"HUMAN_PERMISSION_DENIED:{r_reason}")
+            elif action_type.is_new_entry and any(
+                e.startswith(("INSTRUCTION_EXPIRED:", "INSTRUCTION_NOT_YET_VALID:")) for e in human_errs
+            ):
+                rejection_reasons.append(f"HUMAN_INSTRUCTION_EXPIRED_OR_INVALID:{','.join(human_errs)}")
 
             # GATE 2: Current Central Agent Permission
             central_instr, central_errs = self._get_applicable_instruction(self._central_instructions, sym_u, now_ist)
@@ -283,15 +311,26 @@ class MandatoryExecutionGate:
                             f"CANDLE_TIMING_NOT_CONFIRMED:decision={candle_assessment.decision.value}"
                         )
 
+                    # Verify action-to-candle directional alignment (even under ALLOW_BOTH)
+                    expected_action_bias = (
+                        DirectionalBias.BULLISH if action_type == ActionType.ENTRY_LONG else DirectionalBias.BEARISH
+                    )
+                    if candle_assessment.candle_bias.value != expected_action_bias.value:
+                        disagreement_str = (
+                            f"Disagreement: Action={action_type.value} ({expected_action_bias.value}) vs "
+                            f"Candle={candle_assessment.candle_bias.value} "
+                            f"({candle_assessment.alignment_status.value})"
+                        )
+                        rejection_reasons.append(f"CANDLE_ACTION_DIRECTION_MISMATCH:{disagreement_str}")
+
                     # Check for Disagreement with Central Agent
-                    if central_instr is not None:
-                        # Central Direction expected
+                    if central_instr is not None and central_instr.permission != PermissionType.ALLOW_BOTH:
                         c_dir = (
                             DirectionalBias.BULLISH
-                            if central_instr.permission in (PermissionType.ALLOW_LONG, PermissionType.ALLOW_BOTH)
+                            if central_instr.permission == PermissionType.ALLOW_LONG
                             else (
                                 DirectionalBias.BEARISH
-                                if central_instr.permission in (PermissionType.ALLOW_SHORT, PermissionType.ALLOW_BOTH)
+                                if central_instr.permission == PermissionType.ALLOW_SHORT
                                 else DirectionalBias.NEUTRAL
                             )
                         )
@@ -300,20 +339,44 @@ class MandatoryExecutionGate:
                                 f"Disagreement: Central={c_dir.value} vs Candle={candle_assessment.candle_bias.value} "
                                 f"({candle_assessment.alignment_status.value})"
                             )
-                            # Disagreement blocks new entry unless Central is ALLOW_BOTH
-                            if central_instr.permission != PermissionType.ALLOW_BOTH:
-                                rejection_reasons.append(f"CENTRAL_CANDLE_DISAGREEMENT:{disagreement_str}")
+                            rejection_reasons.append(f"CENTRAL_CANDLE_DISAGREEMENT:{disagreement_str}")
 
             # GATE 6: Current Position and Available Capital
             pos = portfolio.positions.get(sym_u)
             current_qty = pos.quantity if pos else 0
+            current_side = getattr(pos, "side", "LONG") if pos else None
+
             if action_type == ActionType.ENTRY_LONG:
+                if pos is not None and current_side == "SHORT":
+                    rejection_reasons.append(
+                        f"OPPOSITE_POSITION_OPEN:cannot ENTRY_LONG while SHORT {current_qty} shares in {sym_u}"
+                    )
                 required_cash = requested_quantity * entry_price
                 if required_cash > portfolio.cash:
                     rejection_reasons.append(
                         f"INSUFFICIENT_CASH:required=Rs {required_cash:,.2f}, available=Rs {portfolio.cash:,.2f}"
                     )
-            elif action_type in (ActionType.EXIT_LONG, ActionType.RISK_EXIT):
+            elif action_type == ActionType.ENTRY_SHORT:
+                if pos is not None and current_side == "LONG":
+                    rejection_reasons.append(
+                        f"OPPOSITE_POSITION_OPEN:cannot ENTRY_SHORT while LONG {current_qty} shares in {sym_u}"
+                    )
+                required_margin = requested_quantity * entry_price
+                if required_margin > portfolio.cash:
+                    rejection_reasons.append(
+                        f"INSUFFICIENT_CASH:required=Rs {required_margin:,.2f}, available=Rs {portfolio.cash:,.2f}"
+                    )
+            elif action_type == ActionType.EXIT_LONG:
+                if pos is None or current_side != "LONG" or current_qty < requested_quantity:
+                    rejection_reasons.append(
+                        f"INSUFFICIENT_POSITION_TO_EXIT:requested={requested_quantity}, open_long={current_qty if current_side == 'LONG' else 0}"
+                    )
+            elif action_type == ActionType.EXIT_SHORT:
+                if pos is None or current_side != "SHORT" or current_qty < requested_quantity:
+                    rejection_reasons.append(
+                        f"INSUFFICIENT_POSITION_TO_EXIT:requested={requested_quantity}, open_short={current_qty if current_side == 'SHORT' else 0}"
+                    )
+            elif action_type == ActionType.RISK_EXIT:
                 if current_qty < requested_quantity:
                     rejection_reasons.append(
                         f"INSUFFICIENT_POSITION_TO_EXIT:requested={requested_quantity}, open={current_qty}"
@@ -321,21 +384,33 @@ class MandatoryExecutionGate:
 
             # GATE 7: Deterministic Risk Engine Approval (Human/Central CANNOT override Risk limits)
             risk_eval: RiskEvaluationResult | None = None
-            if action_type.is_new_entry and requested_quantity > 0 and entry_price > 0:
-                sl = stop_loss_price or round(entry_price * 0.985, 2)
-                side_str = "BUY" if action_type == ActionType.ENTRY_LONG else "SELL"
-                risk_eval = self.risk_engine.evaluate_order(
-                    symbol=sym_u,
-                    side=side_str,
-                    requested_quantity=requested_quantity,
-                    entry_price=entry_price,
-                    stop_loss_price=sl,
-                    portfolio=portfolio,
-                    current_time=now_ist,
-                )
-                if not risk_eval.approved:
-                    for reason in risk_eval.rejection_reasons:
-                        rejection_reasons.append(f"RISK_ENGINE_REJECTION:{reason}")
+            if action_type.is_new_entry:
+                if requested_quantity <= 0 or entry_price <= 0:
+                    rejection_reasons.append(
+                        f"INVALID_ENTRY_PARAMETERS:requested_quantity={requested_quantity}, entry_price={entry_price}"
+                    )
+                else:
+                    if stop_loss_price is not None:
+                        sl = stop_loss_price
+                    elif action_type == ActionType.ENTRY_SHORT:
+                        sl = round(entry_price * 1.015, 2)
+                    else:
+                        sl = round(entry_price * 0.985, 2)
+                    side_str = "BUY" if action_type == ActionType.ENTRY_LONG else "SELL"
+                    risk_eval = self.risk_engine.evaluate_order(
+                        symbol=sym_u,
+                        side=side_str,
+                        requested_quantity=requested_quantity,
+                        entry_price=entry_price,
+                        stop_loss_price=sl,
+                        portfolio=portfolio,
+                        current_time=now_ist,
+                        action_type=action_type.value,
+                        include_entry_friction_in_cash_cap=True,
+                    )
+                    if not risk_eval.approved:
+                        for reason in risk_eval.rejection_reasons:
+                            rejection_reasons.append(f"RISK_ENGINE_REJECTION:{reason}")
 
             # Final Gate Decision
             approved = len(rejection_reasons) == 0
@@ -410,18 +485,44 @@ class MandatoryExecutionGate:
             if not outcome.approved:
                 return outcome, False
 
-            # 2. Execution under the same atomic lock
-            side = "BUY" if action_type in (ActionType.ENTRY_LONG, ActionType.EXIT_SHORT) else "SELL"
+            # 2. Execution under the same atomic lock with explicit position_effect, stop_loss, and target
+            sym_u = symbol.strip().upper()
+            pos = portfolio.positions.get(sym_u)
+            if action_type == ActionType.ENTRY_LONG:
+                side = "BUY"
+                pos_effect = "OPEN_LONG"
+            elif action_type == ActionType.ENTRY_SHORT:
+                side = "SELL"
+                pos_effect = "OPEN_SHORT"
+            elif action_type == ActionType.EXIT_LONG:
+                side = "SELL"
+                pos_effect = "EXIT_LONG"
+            elif action_type == ActionType.EXIT_SHORT:
+                side = "BUY"
+                pos_effect = "COVER_SHORT"
+            else:
+                # ActionType.RISK_EXIT matches the existing position's direction
+                if pos is not None and getattr(pos, "side", "LONG") == "SHORT":
+                    side = "BUY"
+                    pos_effect = "COVER_SHORT"
+                else:
+                    side = "SELL"
+                    pos_effect = "EXIT_LONG"
+
             qty = outcome.risk_evaluation.approved_quantity if outcome.risk_evaluation else requested_quantity
 
-            portfolio.submit_order(
+            order = portfolio.submit_order(
                 symbol=symbol,
                 side=side,
                 quantity=qty,
                 price=price,
+                stop_loss=stop_loss_price,
+                target=target_price,
                 timestamp=current_time,
+                position_effect=pos_effect,
             )
-            return outcome, True
+            executed = order.status.value in ("FILLED", "PARTIALLY_FILLED")
+            return outcome, executed
 
     @property
     def audit_trail(self) -> tuple[AuthorityAuditRecord, ...]:
