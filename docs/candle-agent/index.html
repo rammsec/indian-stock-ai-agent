@@ -245,6 +245,7 @@
       <div class="ctrl-group">
         <label>Timeframe</label>
         <select id="select-timeframe">
+          <option value="1m">1m (375 bars/day)</option>
           <option value="5m" selected>5m (75 bars/day)</option>
           <option value="15m">15m (25 bars/day)</option>
           <option value="1h">1h (7 bars/day)</option>
@@ -286,6 +287,7 @@
           <option value="900">1x</option>
           <option value="400" selected>2x</option>
           <option value="150">4x</option>
+          <option value="50">8x</option>
         </select>
         <button id="btn-stop-all" class="btn-danger">🛑 STOP_ALL</button>
       </div>
@@ -660,6 +662,38 @@
           drawBracket(sim.position.stopLoss, "#ef4444", "SL");
           drawBracket(sim.position.target, "#22c55e", "TP");
         }
+
+        // Bold BUY / SHORT / EXIT markers directly on the chart canvas
+        if (sim.orders && sim.orders.length > 0) {
+          const barIndexByTime = new Map();
+          visible.forEach((b, i) => {
+            barIndexByTime.set(b.t, i);
+            if (b.tc) barIndexByTime.set(b.tc, i);
+          });
+          sim.orders.forEach((ord) => {
+            const idx = barIndexByTime.get(ord.time);
+            if (idx === undefined) return;
+            const bar = visible[idx];
+            const x = xOf(idx);
+            ctx.save();
+            ctx.font = "bold 10px monospace";
+            ctx.textAlign = "center";
+            if (ord.action === "OPEN_LONG") {
+              const y = Math.min(padT + priceH - 4, yOf(bar.l) + 14);
+              ctx.fillStyle = "#22c55e";
+              ctx.fillText("▲ BUY", x, y);
+            } else if (ord.action === "OPEN_SHORT") {
+              const y = Math.max(padT + 12, yOf(bar.h) - 8);
+              ctx.fillStyle = "#ef4444";
+              ctx.fillText("▼ SHORT", x, y);
+            } else {
+              const y = Math.max(padT + 12, yOf(ord.price) - 6);
+              ctx.fillStyle = ord.pnl >= 0 ? "#38bdf8" : "#f59e0b";
+              ctx.fillText("◆ EXIT", x, y);
+            }
+            ctx.restore();
+          });
+        }
       }
 
       function renderAll() {
@@ -845,7 +879,7 @@
           if (params.get("symbol") && catalog.symbols.includes(params.get("symbol").toUpperCase())) {
             elSymbol.value = params.get("symbol").toUpperCase();
           }
-          if (params.get("tf") && ["5m", "15m", "1h"].includes(params.get("tf"))) {
+          if (params.get("tf") && ["1m", "5m", "15m", "1h"].includes(params.get("tf"))) {
             elTf.value = params.get("tf");
           }
           if (params.get("dir") && ["BULLISH", "BEARISH", "NEUTRAL"].includes(params.get("dir").toUpperCase())) {
