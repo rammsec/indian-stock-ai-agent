@@ -115,12 +115,28 @@ class PaperFeedSignalSession:
                 as_of_time_ist=cutoff_ist.time(),
                 symbols=syms,
             )
+            out_files = snap["output_files"] if isinstance(snap, dict) and "output_files" in snap else snap
+            pred_path = (
+                out_files["predictions_path"]
+                if isinstance(out_files, dict)
+                else getattr(snap, "latest_predictions_path")
+            )
+            intel_path = (
+                out_files["intelligence_path"]
+                if isinstance(out_files, dict)
+                else getattr(snap, "phase5_intelligence_path")
+            )
+            reg_path = (
+                out_files["regime_path"]
+                if isinstance(out_files, dict)
+                else getattr(snap, "regime_path")
+            )
             batch = self.directional_agent.evaluate_from_files(
                 symbols=syms,
                 as_of_ist=cutoff_ist,
-                predictions_path=snap.latest_predictions_path,
-                intelligence_path=snap.phase5_intelligence_path,
-                regime_path=snap.regime_path,
+                predictions_path=pred_path,
+                intelligence_path=intel_path,
+                regime_path=reg_path,
             )
 
         calls: list[PaperSignalCall] = []
@@ -158,12 +174,16 @@ class PaperFeedSignalSession:
                 and not bars_primary.empty
             ):
                 entry_price = float(bars_primary["close"].iloc[-1])
-                stop_loss = getattr(timing, "stop_loss_price", None) or round(entry_price * 0.985, 2)
-                target_price = getattr(timing, "target_price", None) or round(entry_price * 1.03, 2)
+                is_bearish = hyp.direction.value == "BEARISH"
+                action_type = ActionType.ENTRY_SHORT if is_bearish else ActionType.ENTRY_LONG
+                default_sl = round(entry_price * (1.015 if is_bearish else 0.985), 2)
+                default_tp = round(entry_price * (0.97 if is_bearish else 1.03), 2)
+                stop_loss = getattr(timing, "invalidation_price", None) or default_sl
+                target_price = getattr(timing, "target_price", None) or default_tp
 
                 gate_outcome = self.execution_gate.evaluate_gate(
                     symbol=sym,
-                    action_type=ActionType.ENTRY_LONG,
+                    action_type=action_type,
                     current_time=cutoff_ist,
                     portfolio=self.portfolio,
                     candle_assessment=timing,
