@@ -53,12 +53,15 @@ class DailyPaperCallReport:
     calls: tuple[PaperSignalCall, ...]
 
 
-def _evidence_to_agent_df(ev: OHLCVEvidenceFrame) -> pd.DataFrame | None:
+def evidence_to_agent_df(ev: OHLCVEvidenceFrame) -> pd.DataFrame | None:
     if ev.provenance_status == ProvenanceTier.UNAVAILABLE or ev.frame.empty:
         return None
     df = ev.frame.copy()
     df["timestamp"] = df["ts_open_ist"]
     return df[["timestamp", "open", "high", "low", "close", "volume"]].reset_index(drop=True)
+
+
+_evidence_to_agent_df = evidence_to_agent_df
 
 
 class PaperFeedSignalSession:
