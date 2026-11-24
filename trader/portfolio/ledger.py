@@ -307,6 +307,20 @@ class IntradayPaperPortfolio:
             position_effect=effect,
         )
 
+        # Fail closed on non-positive quantity/price or unknown position_effect
+        if quantity <= 0 or price <= 0:
+            order.status = OrderStatus.REJECTED
+            order.rejection_reason = f"Invalid order parameters: quantity={quantity}, price={price} must be positive"
+            self.orders.append(order)
+            self._record_event("ORDER_REJECTED", timestamp.isoformat(), {"order_id": order_id, "symbol": symbol, "reason": order.rejection_reason})
+            return order
+        if effect not in ("OPEN_LONG", "EXIT_LONG", "OPEN_SHORT", "COVER_SHORT"):
+            order.status = OrderStatus.REJECTED
+            order.rejection_reason = f"Unrecognized position_effect: {effect!r}"
+            self.orders.append(order)
+            self._record_event("ORDER_REJECTED", timestamp.isoformat(), {"order_id": order_id, "symbol": symbol, "reason": order.rejection_reason})
+            return order
+
         # Validate side vs position_effect consistency (fail closed)
         if effect in ("OPEN_LONG", "COVER_SHORT") and side_enum != OrderSide.BUY:
             order.status = OrderStatus.REJECTED

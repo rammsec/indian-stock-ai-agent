@@ -367,17 +367,17 @@ class MandatoryExecutionGate:
                         f"INSUFFICIENT_CASH:required=Rs {required_margin:,.2f}, available=Rs {portfolio.cash:,.2f}"
                     )
             elif action_type == ActionType.EXIT_LONG:
-                if pos is None or current_side != "LONG" or current_qty < requested_quantity:
+                if requested_quantity <= 0 or pos is None or current_side != "LONG" or current_qty < requested_quantity:
                     rejection_reasons.append(
                         f"INSUFFICIENT_POSITION_TO_EXIT:requested={requested_quantity}, open_long={current_qty if current_side == 'LONG' else 0}"
                     )
             elif action_type == ActionType.EXIT_SHORT:
-                if pos is None or current_side != "SHORT" or current_qty < requested_quantity:
+                if requested_quantity <= 0 or pos is None or current_side != "SHORT" or current_qty < requested_quantity:
                     rejection_reasons.append(
                         f"INSUFFICIENT_POSITION_TO_EXIT:requested={requested_quantity}, open_short={current_qty if current_side == 'SHORT' else 0}"
                     )
             elif action_type == ActionType.RISK_EXIT:
-                if current_qty < requested_quantity:
+                if requested_quantity <= 0 or current_qty < requested_quantity:
                     rejection_reasons.append(
                         f"INSUFFICIENT_POSITION_TO_EXIT:requested={requested_quantity}, open={current_qty}"
                     )
@@ -510,13 +510,18 @@ class MandatoryExecutionGate:
                     pos_effect = "EXIT_LONG"
 
             qty = outcome.risk_evaluation.approved_quantity if outcome.risk_evaluation else requested_quantity
+            effective_stop_loss = stop_loss_price
+            if effective_stop_loss is None and action_type.is_new_entry and price > 0:
+                effective_stop_loss = (
+                    round(price * 1.015, 2) if action_type == ActionType.ENTRY_SHORT else round(price * 0.985, 2)
+                )
 
             order = portfolio.submit_order(
                 symbol=symbol,
                 side=side,
                 quantity=qty,
                 price=price,
-                stop_loss=stop_loss_price,
+                stop_loss=effective_stop_loss,
                 target=target_price,
                 timestamp=current_time,
                 position_effect=pos_effect,
