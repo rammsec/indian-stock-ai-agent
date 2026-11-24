@@ -163,6 +163,8 @@ def align_tick_bucket_ist(ts_ist: datetime, timeframe: TimeframeName) -> tuple[d
     """Compute (ts_open_ist, ts_close_ist) aligned to 09:15:00 IST, clamped at 15:30:00 IST."""
     if timeframe not in TIMEFRAME_SECONDS:
         raise ValueError(f"Unsupported timeframe: {timeframe!r}")
+    if ts_ist.tzinfo is None or ts_ist.tzinfo.utcoffset(ts_ist) is None:
+        raise ValueError("ts_ist must be timezone-aware")
     step_sec = TIMEFRAME_SECONDS[timeframe]
     ts_ist = ts_ist.astimezone(IST_TZ)
     session_open = ts_ist.replace(hour=9, minute=15, second=0, microsecond=0)
@@ -170,6 +172,8 @@ def align_tick_bucket_ist(ts_ist: datetime, timeframe: TimeframeName) -> tuple[d
     elapsed_sec = int((ts_ist - session_open).total_seconds())
     if elapsed_sec < 0:
         raise ValueError(f"Timestamp {ts_ist.isoformat()} is before NSE session open 09:15:00 IST")
+    if ts_ist >= session_close:
+        raise ValueError(f"Timestamp {ts_ist.isoformat()} is at or after NSE session close 15:30:00 IST")
     bucket_idx = elapsed_sec // step_sec
     ts_open = session_open + timedelta(seconds=bucket_idx * step_sec)
     ts_close = min(ts_open + timedelta(seconds=step_sec), session_close)
@@ -465,7 +469,12 @@ def parse_zerodha_kite_tick(
     token = raw_tick.get("instrument_token")
     if token not in token_to_symbol:
         return None
-    ltp = float(raw_tick["last_price"])
+    raw_ltp = raw_tick.get("last_price")
+    if raw_ltp is None:
+        return None
+    ltp = float(raw_ltp)
+    if ltp <= 0.0:
+        return None
     raw_ts = raw_tick.get("exchange_timestamp") or raw_tick.get("timestamp")
     if isinstance(raw_ts, datetime):
         ts_ist = raw_ts.astimezone(IST_TZ) if raw_ts.tzinfo else raw_ts.replace(tzinfo=IST_TZ)
@@ -507,13 +516,13 @@ def parse_angel_one_tick(
     token = str(raw_tick.get("token", ""))
     if token not in token_to_symbol:
         return None
-    # Angel One v2 reports prices in paise (x100) for integer fields; support float rupees too.
+    # Angel One v2 always encodes integer last_traded_price in paise (x100); floats are already rupees.
     raw_ltp = raw_tick.get("last_traded_price")
-    if raw_ltp is None:
+    if raw_ltp is None or isinstance(raw_ltp, bool):
         return None
-    ltp_val = float(raw_ltp)
-    if isinstance(raw_ltp, int) and ltp_val > 10000:
-        ltp_val = ltp_val / 100.0
+    ltp_val = float(raw_ltp) / 100.0 if isinstance(raw_ltp, int) else float(raw_ltp)
+    if ltp_val <= 0.0:
+        return None
 
     exch_ts_ms = raw_tick.get("exchange_timestamp")
     if isinstance(exch_ts_ms, (int, float)):
@@ -728,38 +737,40 @@ class ReadOnlyNseTickRecorder:
         if not clean_symbols:
             raise ValueError("At least one NSE symbol is required")
 
-        self.adapter.stream(clean_symbols, self._handle_tick)
-        all_bars = self.aggregator.finalize_all()
+        try:
+            self.adapter.stream(clean_symbols, self._handle_tick)
+        finally:
+            all_bars = self.aggregator.finalize_all()
 
-        bars_grouped: dict[tuple[str, date], dict[TimeframeName, list[RecordedBar]]] = defaultdict(
-            lambda: {tf: [] for tf in self.timeframes}
-        )
-        for bar in all_bars:
-            day = bar.ts_open_ist.astimezone(IST_TZ).date()
-            bars_grouped[(bar.symbol, day)][bar.timeframe].append(bar)
+            bars_grouped: dict[tuple[str, date], dict[TimeframeName, list[RecordedBar]]] = defaultdict(
+                lambda: {tf: [] for tf in self.timeframes}
+            )
+            for bar in all_bars:
+                day = bar.ts_open_ist.astimezone(IST_TZ).date()
+                bars_grouped[(bar.symbol, day)][bar.timeframe].append(bar)
 
-        summary = TickRecorderSummary(
-            provider=self.adapter.provider_name,
-            symbols=clean_symbols,
-            total_ticks_accepted=self.aggregator.accepted_ticks,
-            out_of_order_ticks=self.aggregator.out_of_order_ticks,
-            rejected_outside_hours_ticks=self.aggregator.rejected_outside_hours_ticks,
-            bars_written_by_timeframe={tf: 0 for tf in self.timeframes},
-        )
-
-        for (sym, day), raw_ticks in sorted(self._raw_ticks_by_symbol_day.items()):
-            tf_map = bars_grouped.get((sym, day), {tf: [] for tf in self.timeframes})
-            day_dir, prov = self.archive.write_day_archive(
-                symbol=sym,
-                trading_date=day,
+            summary = TickRecorderSummary(
                 provider=self.adapter.provider_name,
-                raw_ticks=raw_ticks,
-                bars_by_timeframe=tf_map,
+                symbols=clean_symbols,
+                total_ticks_accepted=self.aggregator.accepted_ticks,
                 out_of_order_ticks=self.aggregator.out_of_order_ticks,
                 rejected_outside_hours_ticks=self.aggregator.rejected_outside_hours_ticks,
+                bars_written_by_timeframe={tf: 0 for tf in self.timeframes},
             )
-            summary.written_files.append(str(day_dir / "provenance.json"))
-            for tf, count in prov.bar_counts.items():
-                summary.bars_written_by_timeframe[tf] = summary.bars_written_by_timeframe.get(tf, 0) + count
+
+            for (sym, day), raw_ticks in sorted(self._raw_ticks_by_symbol_day.items()):
+                tf_map = bars_grouped.get((sym, day), {tf: [] for tf in self.timeframes})
+                day_dir, prov = self.archive.write_day_archive(
+                    symbol=sym,
+                    trading_date=day,
+                    provider=self.adapter.provider_name,
+                    raw_ticks=raw_ticks,
+                    bars_by_timeframe=tf_map,
+                    out_of_order_ticks=self.aggregator.out_of_order_ticks,
+                    rejected_outside_hours_ticks=self.aggregator.rejected_outside_hours_ticks,
+                )
+                summary.written_files.append(str(day_dir / "provenance.json"))
+                for tf, count in prov.bar_counts.items():
+                    summary.bars_written_by_timeframe[tf] = summary.bars_written_by_timeframe.get(tf, 0) + count
 
         return summary

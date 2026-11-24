@@ -188,6 +188,19 @@ class TestBrokerAdaptersAndPayloadParsing:
         assert at.ltp == pytest.approx(3912.55)
         assert at.provider == "angel_one_smartapi"
 
+        # Sub-₹100 stock encoded in paise (₹20.50 -> 2050 paise) must convert accurately
+        sub100 = parse_angel_one_tick(
+            {"token": "9999", "last_traded_price": 2050, "exchange_timestamp": int(_ist(2026, 3, 16, 10, 5, 12).timestamp() * 1000)},
+            {"9999": "YESBANK"},
+        )
+        assert sub100 is not None
+        assert sub100.ltp == pytest.approx(20.50)
+
+        # Heartbeat / malformed / zero-price packets return None safely
+        assert parse_zerodha_kite_tick({"instrument_token": 2953217}, {2953217: "TCS"}) is None
+        assert parse_zerodha_kite_tick({"instrument_token": 2953217, "last_price": 0.0}, {2953217: "TCS"}) is None
+        assert parse_angel_one_tick({"token": "11536", "last_traded_price": 0}, {"11536": "TCS"}) is None
+
 
 class TestParquetArchiveAndCliEndToEnd:
     """Verify end-to-end offline JSONL recording -> Parquet + SHA-256 provenance + CLI."""
