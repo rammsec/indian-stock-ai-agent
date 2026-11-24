@@ -37,7 +37,7 @@ def test_session_catalog_provenance_symbols_and_1515_bar_clamping() -> None:
 
     assert cat["symbols"] == ["TCS", "RELIANCE", "ITC", "TATAELXSI", "BIRLACABLE"]
     assert "INFY" not in cat["symbols"]
-    assert cat["timeframes"] == ["5m", "15m", "1h"]
+    assert {"5m", "15m", "1h"}.issubset(set(cat["timeframes"]))
     assert len(cat["dates_by_timeframe"]["5m"]) == 10
     assert len(cat["dates_by_timeframe"]["15m"]) == 10
     assert len(cat["dates_by_timeframe"]["1h"]) == 60

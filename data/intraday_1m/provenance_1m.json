@@ -1,0 +1,72 @@
+{
+  "schema_version": "cycle011_1m_provenance_v1",
+  "generated_at_ist": "2026-11-24T19:54:39.139748+05:30",
+  "live_trading_enabled": false,
+  "synthetic_substitution": false,
+  "sources": [
+    "huggingface:xxparthparekhxx/indian-stock-market-minute-data (MIT, Upstox NSE 1m)",
+    "yahoo_finance:v8/chart?interval=1m&range=5d"
+  ],
+  "symbols": {
+    "TCS": {
+      "parquet_file": "TCS_1m.parquet",
+      "sha256": "4676c15e813a4d848b322ee6334b7e61d2039459d50d90f3fb2fb0e219661e1e",
+      "bars_count": 28434,
+      "trading_days": 76,
+      "start_ist": "2026-08-03T09:15:00+05:30",
+      "end_ist": "2026-11-23T15:29:00+05:30",
+      "sources": [
+        "huggingface_upstox_1m",
+        "yahoo_finance_1m"
+      ]
+    },
+    "RELIANCE": {
+      "parquet_file": "RELIANCE_1m.parquet",
+      "sha256": "9b497683561e0e9a57e87dc28eb30ae827d055fbbfebc42da4102a7ea58921e1",
+      "bars_count": 28434,
+      "trading_days": 76,
+      "start_ist": "2026-08-03T09:15:00+05:30",
+      "end_ist": "2026-11-23T15:29:00+05:30",
+      "sources": [
+        "huggingface_upstox_1m",
+        "yahoo_finance_1m"
+      ]
+    },
+    "ITC": {
+      "parquet_file": "ITC_1m.parquet",
+      "sha256": "c79d66a168753161f13c6892316f813ffde7ddef0bb97c3193b61ae10c4a5d12",
+      "bars_count": 28435,
+      "trading_days": 76,
+      "start_ist": "2026-08-03T09:15:00+05:30",
+      "end_ist": "2026-11-23T15:29:00+05:30",
+      "sources": [
+        "huggingface_upstox_1m",
+        "yahoo_finance_1m"
+      ]
+    },
+    "TATAELXSI": {
+      "parquet_file": "TATAELXSI_1m.parquet",
+      "sha256": "b163679856aff95f80f28fd8043002b468c8e1d2823ed5d0a0a91ae34cd8ad56",
+      "bars_count": 28431,
+      "trading_days": 76,
+      "start_ist": "2026-08-03T09:15:00+05:30",
+      "end_ist": "2026-11-23T15:29:00+05:30",
+      "sources": [
+        "huggingface_upstox_1m",
+        "yahoo_finance_1m"
+      ]
+    },
+    "BIRLACABLE": {
+      "parquet_file": "BIRLACABLE_1m.parquet",
+      "sha256": "4ef8e63c5efa31b97e8e77dab812cfa6e35f39e4f6352d532e201ae666f79507",
+      "bars_count": 28318,
+      "trading_days": 76,
+      "start_ist": "2026-08-03T09:15:00+05:30",
+      "end_ist": "2026-11-23T15:29:00+05:30",
+      "sources": [
+        "huggingface_upstox_1m",
+        "yahoo_finance_1m"
+      ]
+    }
+  }
+}

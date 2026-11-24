@@ -23,9 +23,9 @@ from ..intelligence.data_contract import (
 )
 from ..intelligence.parsing import sha256_file
 
-TimeframeLiteral = Literal["5m", "15m", "1h"]
+TimeframeLiteral = Literal["1m", "5m", "15m", "1h"]
 
-_TF_MINUTES: dict[str, int] = {"5m": 5, "15m": 15, "1h": 60}
+_TF_MINUTES: dict[str, int] = {"1m": 1, "5m": 5, "15m": 15, "1h": 60}
 
 
 class BrokerFeedNotConfiguredError(RuntimeError):
@@ -52,7 +52,9 @@ def _normalize_raw_ohlcv(
         out.columns = [str(c).lower() for c in out.columns]
 
     if "ts_open_ist" not in out.columns:
-        if "timestamp" in out.columns:
+        if "timestamp_ist" in out.columns:
+            ts = pd.to_datetime(out["timestamp_ist"])
+        elif "timestamp" in out.columns:
             ts = pd.to_datetime(out["timestamp"])
         elif "date" in out.columns:
             ts = pd.to_datetime(out["date"])
@@ -192,7 +194,7 @@ class ParquetCSVMarketFeed(BaseMarketFeed):
 
     @property
     def supported_timeframes(self) -> tuple[TimeframeLiteral, ...]:
-        return ("5m", "15m", "1h")
+        return ("1m", "5m", "15m", "1h")
 
     def _resolve_file(self, symbol: str, timeframe: TimeframeLiteral) -> Path | None:
         sym = symbol.strip().upper()

@@ -253,7 +253,10 @@ class IntradayCandleMonitoringSession:
         warmup_count = warmup_ev.bar_count
 
         # 2. Load session bar schedule strictly for iteration (agent ONLY sees causal slices via feed.get_bars)
-        full_day_ev = self.feed.get_bars(sym_u, timeframe, session_close_ist, lookback_bars=warmup_lookback_bars + 100)
+        session_bar_budget = 400 if timeframe == "1m" else 100
+        full_day_ev = self.feed.get_bars(
+            sym_u, timeframe, session_close_ist, lookback_bars=warmup_lookback_bars + session_bar_budget
+        )
         if full_day_ev.provenance_status == ProvenanceTier.UNAVAILABLE or full_day_ev.frame.empty:
             raise ValueError(f"No historical {timeframe} bars available for {sym_u} on {session_date.isoformat()}")
 

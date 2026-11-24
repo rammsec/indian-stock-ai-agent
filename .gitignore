@@ -12,4 +12,5 @@ data/raw/*.csv
 data/raw/*.html
 data/raw/*.zip
 data/ticks/
+data/intraday_1m/*.parquet
 .env

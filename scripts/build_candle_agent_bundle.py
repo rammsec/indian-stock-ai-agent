@@ -149,21 +149,83 @@ def _extract_5m_and_15m_sessions() -> tuple[dict[str, list[dict[str, Any]]], dic
     return bars_5m_by_sym, bars_15m_by_sym, list(reversed(sorted(set(dates_found))))
 
 
+INTRADAY_1M_DIR = Path("data/intraday_1m")
+
+
+def _extract_1m_bars(symbol: str, max_sessions: int = 5) -> tuple[list[dict[str, Any]], list[str]]:
+    path = INTRADAY_1M_DIR / f"{symbol}_1m.parquet"
+    if not path.exists():
+        return [], []
+    df = pd.read_parquet(path)
+    ts = pd.to_datetime(df["timestamp_ist"], utc=True).dt.tz_convert(IST_TZ)
+    df = df.copy()
+    df["ts_open"] = ts
+    df = df.sort_values("ts_open").drop_duplicates(subset=["ts_open"], keep="last").reset_index(drop=True)
+
+    unique_dates = sorted(df["ts_open"].dt.date.unique())
+    if not unique_dates:
+        return [], []
+    selectable_dates = unique_dates[-max_sessions:]
+    # Keep 1 prior trading day (~375 bars, sliced to 50 warmup in UI) before earliest selectable date
+    warmup_start_idx = max(0, len(unique_dates) - max_sessions - 1)
+    keep_from = unique_dates[warmup_start_idx]
+    df = df.loc[df["ts_open"].dt.date >= keep_from].reset_index(drop=True)
+
+    bars: list[dict[str, Any]] = []
+    for _, row in df.iterrows():
+        t_open = pd.Timestamp(row["ts_open"]).to_pydatetime().astimezone(IST_TZ)
+        t_close = t_open + timedelta(minutes=1)
+        bars.append(
+            {
+                "t": _fmt_ist(t_open),
+                "tc": _fmt_ist(t_close),
+                "o": round(float(row["open"]), 2),
+                "h": round(float(row["high"]), 2),
+                "l": round(float(row["low"]), 2),
+                "c": round(float(row["close"]), 2),
+                "v": int(round(float(row["volume"]))),
+            }
+        )
+    return bars, [d.isoformat() for d in reversed(selectable_dates)]
+
+
 def build_catalog() -> dict[str, Any]:
     bars_1h_by_sym: dict[str, list[dict[str, Any]]] = {}
     dates_1h: list[str] = []
+    bars_1m_by_sym: dict[str, list[dict[str, Any]]] = {}
+    dates_1m: list[str] = []
     for sym in SYMBOLS:
         b1h, d1h = _extract_1h_bars(sym, max_sessions=60)
         bars_1h_by_sym[sym] = b1h
         if not dates_1h:
             dates_1h = d1h
+        b1m, d1m = _extract_1m_bars(sym, max_sessions=5)
+        bars_1m_by_sym[sym] = b1m
+        if not dates_1m and d1m:
+            dates_1m = d1m
 
     bars_5m_by_sym, bars_15m_by_sym, dates_5m = _extract_5m_and_15m_sessions()
 
+    timeframes = ["1m", "5m", "15m", "1h"] if dates_1m else ["5m", "15m", "1h"]
+    dates_by_tf: dict[str, list[str]] = {
+        "5m": dates_5m,
+        "15m": dates_5m,
+        "1h": dates_1h,
+    }
+    bars_by_tf: dict[str, dict[str, list[dict[str, Any]]]] = {
+        "5m": bars_5m_by_sym,
+        "15m": bars_15m_by_sym,
+        "1h": bars_1h_by_sym,
+    }
+    if dates_1m:
+        dates_by_tf["1m"] = dates_1m
+        bars_by_tf["1m"] = bars_1m_by_sym
+
     catalog = {
-        "schema_version": "cycle010_phase4_v1",
+        "schema_version": "cycle011_1m_v1",
         "provenance": {
             "status": "PARTIALLY_VERIFIED",
+            "provider_1m": "huggingface_upstox_1m + yahoo_finance_1m (data/intraday_1m/*_1m.parquet)",
             "provider_1h": "yahoo_finance_1h (data/intraday/*_1h.parquet)",
             "provider_5m": "yahoo_finance_5m (docs/lab/data/runs_*.json)",
             "provider_15m": "causal_3bar_resample_from_5m",
@@ -173,17 +235,9 @@ def build_catalog() -> dict[str, Any]:
             "confidence_calibration_status": "UNCALIBRATED",
         },
         "symbols": list(SYMBOLS),
-        "timeframes": ["5m", "15m", "1h"],
-        "dates_by_timeframe": {
-            "5m": dates_5m,
-            "15m": dates_5m,
-            "1h": dates_1h,
-        },
-        "bars": {
-            "5m": bars_5m_by_sym,
-            "15m": bars_15m_by_sym,
-            "1h": bars_1h_by_sym,
-        },
+        "timeframes": timeframes,
+        "dates_by_timeframe": dates_by_tf,
+        "bars": bars_by_tf,
     }
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with OUT_PATH.open("w", encoding="utf-8") as fh:
@@ -195,6 +249,7 @@ if __name__ == "__main__":
     cat = build_catalog()
     print(
         f"Wrote {OUT_PATH} ({OUT_PATH.stat().st_size:,} bytes): "
-        f"symbols={cat['symbols']}, 5m_dates={len(cat['dates_by_timeframe']['5m'])}, "
+        f"symbols={cat['symbols']}, 1m_dates={len(cat['dates_by_timeframe'].get('1m', []))}, "
+        f"5m_dates={len(cat['dates_by_timeframe']['5m'])}, "
         f"1h_dates={len(cat['dates_by_timeframe']['1h'])}"
     )
