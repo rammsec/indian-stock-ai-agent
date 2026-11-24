@@ -110,6 +110,19 @@ def _simulate_counterfactual_trade(
     if future_bars.empty or entry_price <= 0 or quantity <= 0:
         return 0.0, "NO_FUTURE_BARS"
 
+    # Match IntradayCandleMonitoringSession: if bar 0 open already gaps past SL or TP, order is cancelled at ₹0 cost
+    first_open = float(future_bars["open"].iloc[0])
+    if direction == "SHORT":
+        if stop_loss is not None and first_open >= stop_loss:
+            return 0.0, "GAP_CANCELLED_STOP"
+        if target is not None and first_open <= target:
+            return 0.0, "GAP_CANCELLED_TARGET"
+    else:
+        if stop_loss is not None and first_open <= stop_loss:
+            return 0.0, "GAP_CANCELLED_STOP"
+        if target is not None and first_open >= target:
+            return 0.0, "GAP_CANCELLED_TARGET"
+
     exit_px = float(future_bars["close"].iloc[-1])
     exit_reason = "SESSION_CLOSE"
 

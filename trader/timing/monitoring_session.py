@@ -292,6 +292,7 @@ class IntradayCandleMonitoringSession:
         pending_order: PendingOrder | None = None
         active_setup: ActiveSetupContext | None = None
         decisions: list[BarDecisionRecord] = []
+        candidate_levels: list[tuple[float | None, float | None]] = []
         bars_held = 0
 
         # 4. Chronological Bar-by-Bar Monitoring Loop (09:15 -> 15:30 IST)
@@ -303,6 +304,7 @@ class IntradayCandleMonitoringSession:
             l_px = float(row["low"])
             c_px = float(row["close"])
             vol = float(row["volume"])
+            bar_events_notes: list[str] = []
 
             # Apply any scheduled mid-session human instruction updates up to ts_open
             while mid_update_idx < len(sorted_mid_updates) and sorted_mid_updates[mid_update_idx][0] <= ts_open:
@@ -312,16 +314,25 @@ class IntradayCandleMonitoringSession:
             # STEP A: At bar_t.ts_open_ist, execute any PendingOrder queued at bar_{t-1}.ts_close_ist
             if pending_order is not None:
                 fill_px = round_to_nse_tick(o_px)
-                gap_invalidated = False
-                if pending_order.action_type == ActionType.ENTRY_LONG and pending_order.stop_loss is not None:
-                    gap_invalidated = fill_px <= pending_order.stop_loss
-                elif pending_order.action_type == ActionType.ENTRY_SHORT and pending_order.stop_loss is not None:
-                    gap_invalidated = fill_px >= pending_order.stop_loss
+                sl_tick = round_to_nse_tick(pending_order.stop_loss) if pending_order.stop_loss is not None else None
+                tp_tick = round_to_nse_tick(pending_order.target) if pending_order.target is not None else None
 
-                if not gap_invalidated:
-                    sl_tick = round_to_nse_tick(pending_order.stop_loss) if pending_order.stop_loss is not None else None
-                    tp_tick = round_to_nse_tick(pending_order.target) if pending_order.target is not None else None
-                    _, executed = self.execution_gate.execute_with_gate_protection(
+                gap_cancel_reason: str | None = None
+                if pending_order.action_type == ActionType.ENTRY_LONG:
+                    if sl_tick is not None and fill_px <= sl_tick:
+                        gap_cancel_reason = f"PENDING_ORDER_CANCELLED_GAP_STOP:open={fill_px:.2f}<=sl={sl_tick:.2f}"
+                    elif tp_tick is not None and fill_px >= tp_tick:
+                        gap_cancel_reason = f"PENDING_ORDER_CANCELLED_GAP_TARGET:open={fill_px:.2f}>=tp={tp_tick:.2f}"
+                elif pending_order.action_type == ActionType.ENTRY_SHORT:
+                    if sl_tick is not None and fill_px >= sl_tick:
+                        gap_cancel_reason = f"PENDING_ORDER_CANCELLED_GAP_STOP:open={fill_px:.2f}>=sl={sl_tick:.2f}"
+                    elif tp_tick is not None and fill_px <= tp_tick:
+                        gap_cancel_reason = f"PENDING_ORDER_CANCELLED_GAP_TARGET:open={fill_px:.2f}<=tp={tp_tick:.2f}"
+
+                if gap_cancel_reason is not None:
+                    bar_events_notes.append(gap_cancel_reason)
+                else:
+                    gate_exec, executed = self.execution_gate.execute_with_gate_protection(
                         symbol=sym_u,
                         action_type=pending_order.action_type,
                         current_time=ts_open,
@@ -332,8 +343,16 @@ class IntradayCandleMonitoringSession:
                         stop_loss_price=sl_tick,
                         target_price=tp_tick,
                     )
-                    if executed and pending_order.action_type.is_new_entry:
-                        bars_held = 0
+                    if executed:
+                        bar_events_notes.append(
+                            f"PENDING_ORDER_FILLED:{pending_order.action_type.value}@{fill_px:.2f}"
+                        )
+                        if pending_order.action_type.is_new_entry:
+                            bars_held = 0
+                    else:
+                        bar_events_notes.append(
+                            f"PENDING_ORDER_REJECTED_AT_OPEN:{','.join(gate_exec.rejection_reasons) or 'UNFILLED'}"
+                        )
                 pending_order = None
 
             # Apply any scheduled mid-session human instruction updates up to ts_close
@@ -358,11 +377,12 @@ class IntradayCandleMonitoringSession:
             if self.risk_engine.state == RiskState.ACTIVE and ts_close.time() >= INTRADAY_REDUCING_WIND_DOWN_TIME:
                 self.risk_engine.state = RiskState.REDUCING
 
-            squared_off_this_bar = False
+            squared_off_side: str | None = None
             if ts_close.time() >= INTRADAY_MANDATORY_SQUAREOFF_TIME and sym_u in self.portfolio.positions:
                 open_pos = self.portfolio.positions[sym_u]
-                sq_action = ActionType.EXIT_SHORT if open_pos.side == "SHORT" else ActionType.EXIT_LONG
-                self.execution_gate.execute_with_gate_protection(
+                open_side = open_pos.side
+                sq_action = ActionType.EXIT_SHORT if open_side == "SHORT" else ActionType.EXIT_LONG
+                _, sq_executed = self.execution_gate.execute_with_gate_protection(
                     symbol=sym_u,
                     action_type=sq_action,
                     current_time=ts_close,
@@ -370,7 +390,9 @@ class IntradayCandleMonitoringSession:
                     requested_quantity=open_pos.quantity,
                     price=round_to_nse_tick(c_px),
                 )
-                squared_off_this_bar = True
+                if sq_executed:
+                    squared_off_side = open_side
+                    bar_events_notes.append(f"MANDATORY_1515_SQUAREOFF_EXECUTED:{sq_action.value}")
 
             # STEP D: Fetch strictly causal evidence <= ts_close and evaluate stateful CandleTimingAgent
             causal_ev = self.feed.get_bars(sym_u, timeframe, ts_close, lookback_bars=warmup_lookback_bars + 100)
@@ -408,14 +430,21 @@ class IntradayCandleMonitoringSession:
             effective_call = raw_call
             gate_status: str | None = None
             rej_reasons: tuple[str, ...] = ()
-            rationale_list = list(lifecycle.rationale)
+            rationale_list = bar_events_notes + list(lifecycle.rationale)
 
-            if squared_off_this_bar:
-                effective_call = AgentCall.EXIT_LONG if hyp.direction != DirectionalBias.BEARISH else AgentCall.COVER_SHORT
-                rationale_list.append("Mandatory 15:15 IST intraday square-off executed.")
+            if squared_off_side is not None:
+                effective_call = AgentCall.COVER_SHORT if squared_off_side == "SHORT" else AgentCall.EXIT_LONG
+                rationale_list.append(f"Mandatory 15:15 IST intraday square-off executed ({effective_call.value}).")
             elif raw_call == AgentCall.HOLD and sym_u in self.portfolio.positions:
                 if lifecycle.recommended_trailing_stop is not None:
-                    self.portfolio.positions[sym_u].stop_loss = lifecycle.recommended_trailing_stop
+                    cur_pos = self.portfolio.positions[sym_u]
+                    new_sl = round_to_nse_tick(lifecycle.recommended_trailing_stop)
+                    if cur_pos.stop_loss is None:
+                        cur_pos.stop_loss = new_sl
+                    elif cur_pos.side == "SHORT":
+                        cur_pos.stop_loss = min(cur_pos.stop_loss, new_sl)
+                    else:
+                        cur_pos.stop_loss = max(cur_pos.stop_loss, new_sl)
             elif raw_call in (AgentCall.OPEN_LONG, AgentCall.OPEN_SHORT, AgentCall.EXIT_LONG, AgentCall.COVER_SHORT):
                 action_map = {
                     AgentCall.OPEN_LONG: ActionType.ENTRY_LONG,
@@ -472,6 +501,10 @@ class IntradayCandleMonitoringSession:
                 else ("SHORT" if hyp.direction == DirectionalBias.BEARISH else "NEUTRAL")
             )
             pos_after = self.portfolio.positions.get(sym_u)
+            cand_sl = lifecycle.timing_assessment.invalidation_price
+            cand_tp = lifecycle.timing_assessment.target_price
+            candidate_levels.append((cand_sl, cand_tp))
+
             decisions.append(
                 BarDecisionRecord(
                     bar_index=int(bar_idx),
@@ -511,11 +544,11 @@ class IntradayCandleMonitoringSession:
                 "call": d.effective_call,
                 "intended_direction": d.intended_direction,
                 "reference_price": d.close,
-                "stop_loss": d.stop_loss_after,
-                "target": d.target_after,
+                "stop_loss": d.stop_loss_after if d.stop_loss_after is not None else cand_sl,
+                "target": d.target_after if d.target_after is not None else cand_tp,
                 "quantity": d.position_qty_after or requested_quantity,
             }
-            for d in decisions
+            for d, (cand_sl, cand_tp) in zip(decisions, candidate_levels)
         ]
         outcome_report = evaluate_session_outcomes(
             symbol=sym_u,
