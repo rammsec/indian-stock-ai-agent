@@ -11,3 +11,5 @@ __pycache__/
 data/raw/*.csv
 data/raw/*.html
 data/raw/*.zip
+data/ticks/
+.env
