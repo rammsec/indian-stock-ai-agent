@@ -79,7 +79,13 @@ def _normalize_raw_ohlcv(
 
     delta = pd.Timedelta(minutes=_TF_MINUTES[timeframe])
     if "ts_close_ist" not in out.columns:
-        out["ts_close_ist"] = pd.to_datetime(out["ts_open_ist"]) + delta
+        ts_open_dt = pd.to_datetime(out["ts_open_ist"])
+        ts_close_dt = ts_open_dt + delta
+        if timeframe == "1h":
+            # NSE final shortened 1h session bar runs 15:15-15:30 IST (15 minutes), not 15:15-16:15 IST
+            is_final_bar = (ts_open_dt.dt.hour == 15) & (ts_open_dt.dt.minute == 15)
+            ts_close_dt = ts_close_dt.where(~is_final_bar, ts_open_dt + pd.Timedelta(minutes=15))
+        out["ts_close_ist"] = ts_close_dt
     else:
         ts_close = pd.to_datetime(out["ts_close_ist"])
         if getattr(ts_close.dt, "tz", None) is None:

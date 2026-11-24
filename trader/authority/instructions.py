@@ -124,19 +124,19 @@ class AuthorityInstruction:
                 return False, f"{self.authority.value} permission EXIT_ONLY prohibits new exposure"
             return True, "EXIT_ONLY allows position reductions and closures"
 
-        # Directional permissions
+        # Directional permissions (protective exits are always permitted so mid-session flips never trap open positions)
         if self.permission == PermissionType.ALLOW_LONG:
             if action == ActionType.ENTRY_SHORT:
                 return False, f"{self.authority.value} permission ALLOW_LONG prohibits short entries"
-            if action == ActionType.EXIT_SHORT:
-                return False, f"{self.authority.value} permission ALLOW_LONG does not manage short exits"
+            if action.is_exit:
+                return True, f"ALLOW_LONG permits protective exit ({action.value})"
             return True, "ALLOW_LONG permits long actions"
 
         if self.permission == PermissionType.ALLOW_SHORT:
             if action == ActionType.ENTRY_LONG:
                 return False, f"{self.authority.value} permission ALLOW_SHORT prohibits long entries"
-            if action == ActionType.EXIT_LONG:
-                return False, f"{self.authority.value} permission ALLOW_SHORT does not manage long exits"
+            if action.is_exit:
+                return True, f"ALLOW_SHORT permits protective exit ({action.value})"
             return True, "ALLOW_SHORT permits short actions"
 
         if self.permission == PermissionType.ALLOW_BOTH:
