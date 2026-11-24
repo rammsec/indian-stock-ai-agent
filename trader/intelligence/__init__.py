@@ -46,6 +46,10 @@ from trader.intelligence.registry import (
     compute_session_vwap_series,
     compute_supertrend_series,
 )
+from trader.intelligence.structure import (
+    StructureSnapshot,
+    analyze_market_structure,
+)
 
 __all__ = [
     "FEATURE_SCHEMA_VERSION",
@@ -82,4 +86,6 @@ __all__ = [
     "compute_rvol_series",
     "compute_session_vwap_series",
     "compute_supertrend_series",
+    "StructureSnapshot",
+    "analyze_market_structure",
 ]

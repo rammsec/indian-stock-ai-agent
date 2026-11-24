@@ -21,11 +21,13 @@ import math
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Literal
 
 import pandas as pd
 
 from trader.config import IST_TZ
+from trader.intelligence.structure import StructureSnapshot, analyze_market_structure
+from trader.portfolio.ledger import round_to_nse_tick
 from trader.timing.candle_intelligence import (
     BEARISH_PATTERNS,
     BULLISH_PATTERNS,
@@ -61,6 +63,99 @@ class AlignmentStatus(str, Enum):
     CONTRADICTED = "CONTRADICTED"
     NEUTRAL_CENTRAL = "NEUTRAL_CENTRAL"
     REJECTED = "REJECTED"
+
+
+class AgentCall(str, Enum):
+    """Canonical 9-call continuous intraday monitoring decision taxonomy.
+
+    Explicitly separates opening a short (OPEN_SHORT) from exiting a long (EXIT_LONG),
+    and opening a long (OPEN_LONG) from covering a short (COVER_SHORT).
+    """
+
+    OPEN_LONG = "OPEN_LONG"
+    OPEN_SHORT = "OPEN_SHORT"
+    WAIT = "WAIT"
+    HOLD = "HOLD"
+    EXIT_LONG = "EXIT_LONG"
+    COVER_SHORT = "COVER_SHORT"
+    NO_TRADE = "NO_TRADE"
+    CANCEL_SETUP = "CANCEL_SETUP"
+    REJECT = "REJECT"
+
+
+@dataclass(frozen=True)
+class PositionContext:
+    """Active open position state passed into stateful bar-by-bar lifecycle evaluation."""
+
+    side: Literal["LONG", "SHORT"]
+    entry_price: float
+    current_stop_loss: float
+    target_price: float | None = None
+    highest_price: float | None = None
+    lowest_price: float | None = None
+    bars_held: int = 0
+
+
+@dataclass(frozen=True)
+class ActiveSetupContext:
+    """Watched setup state while FLAT awaiting trigger confirmation or invalidation."""
+
+    direction: Literal["LONG", "SHORT"]
+    setup_type: str
+    trigger_price: float
+    invalidation_price: float
+    bars_watching: int = 0
+    max_watch_bars: int = 6
+
+
+@dataclass(frozen=True)
+class LifecycleAssessment:
+    """Stateful bar-by-bar evaluation output emitting one of the 9 canonical AgentCall values."""
+
+    call: AgentCall
+    timing_assessment: TimingAssessment
+    structure: StructureSnapshot
+    recommended_trailing_stop: float | None
+    updated_setup: ActiveSetupContext | None
+    exit_reason: str | None
+    cancel_reason: str | None
+    rationale: tuple[str, ...]
+    central_confidence_calibration_status: str = CONFIDENCE_CALIBRATION_STATUS
+
+    def __post_init__(self) -> None:
+        if self.central_confidence_calibration_status != CONFIDENCE_CALIBRATION_STATUS:
+            raise ValueError(
+                "LifecycleAssessment.central_confidence_calibration_status must be "
+                f"{CONFIDENCE_CALIBRATION_STATUS!r}; got {self.central_confidence_calibration_status!r}"
+            )
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "call": self.call.value,
+            "timing_assessment": self.timing_assessment.to_dict(),
+            "structure": self.structure.to_dict(),
+            "recommended_trailing_stop": (
+                round(self.recommended_trailing_stop, 2)
+                if self.recommended_trailing_stop is not None
+                else None
+            ),
+            "updated_setup": (
+                {
+                    "direction": self.updated_setup.direction,
+                    "setup_type": self.updated_setup.setup_type,
+                    "trigger_price": round(self.updated_setup.trigger_price, 2),
+                    "invalidation_price": round(self.updated_setup.invalidation_price, 2),
+                    "bars_watching": self.updated_setup.bars_watching,
+                    "max_watch_bars": self.updated_setup.max_watch_bars,
+                }
+                if self.updated_setup is not None
+                else None
+            ),
+            "exit_reason": self.exit_reason,
+            "cancel_reason": self.cancel_reason,
+            "rationale": list(self.rationale),
+            "central_confidence_calibration_status": self.central_confidence_calibration_status,
+        }
 
 
 @dataclass(frozen=True)
@@ -732,4 +827,361 @@ class CandleTimingAgent:
             contradiction_reasons=(),
             rationale=(reason,),
             intelligence_report=report,
+        )
+
+    def evaluate_bar_lifecycle(
+        self,
+        *,
+        hypothesis: DirectionalHypothesis,
+        bars_primary: pd.DataFrame | None,
+        primary_timeframe: str = "1h",
+        bars_15m: pd.DataFrame | None = None,
+        bars_5m: pd.DataFrame | None = None,
+        as_of_ist: datetime | None = None,
+        position: PositionContext | None = None,
+        active_setup: ActiveSetupContext | None = None,
+    ) -> LifecycleAssessment:
+        """Stateful bar-by-bar evaluation emitting one of the 9 canonical AgentCall values.
+
+        - When `position` is open (LONG or SHORT): evaluates protective exits (EXIT_LONG / COVER_SHORT)
+          or HOLD with monotonic ATR trailing stop ratcheting. Never confuses EXIT_LONG with OPEN_SHORT
+          or COVER_SHORT with OPEN_LONG.
+        - When FLAT with `active_setup`: confirms entry (OPEN_LONG / OPEN_SHORT), continues waiting (WAIT),
+          or cancels invalidated/expired/contradicted setups (CANCEL_SETUP).
+        - When FLAT without `active_setup`: emits OPEN_LONG, OPEN_SHORT, WAIT (registering a watched setup),
+          NO_TRADE, or REJECT.
+        """
+        base = self.evaluate(
+            hypothesis=hypothesis,
+            bars_primary=bars_primary,
+            primary_timeframe=primary_timeframe,
+            bars_15m=bars_15m,
+            bars_5m=bars_5m,
+            as_of_ist=as_of_ist,
+        )
+        structure = analyze_market_structure(bars_primary, max_atr_pct=self.config.max_atr_pct)
+
+        rationale: list[str] = list(base.rationale)
+        if structure.volume_regime == "VOLUME_UNREPORTED_BY_PROVIDER":
+            rationale.append(
+                "Provider reported volume=0 on active bar (VOLUME_UNREPORTED_BY_PROVIDER); "
+                "relative volume unavailable rather than zero participation."
+            )
+
+        # Fail closed on invalid/corrupt bar frames before position or setup inspection
+        if bars_primary is None or bars_primary.empty:
+            return LifecycleAssessment(
+                call=AgentCall.REJECT,
+                timing_assessment=base,
+                structure=structure,
+                recommended_trailing_stop=position.current_stop_loss if position else None,
+                updated_setup=None,
+                exit_reason=None,
+                cancel_reason=None,
+                rationale=tuple(rationale),
+            )
+
+        curr_close = float(bars_primary["close"].iloc[-1])
+        curr_low = float(bars_primary["low"].iloc[-1])
+        curr_high = float(bars_primary["high"].iloc[-1])
+        primary_tf_report = (
+            base.intelligence_report.primary
+            if base.intelligence_report is not None
+            else None
+        )
+        atr_val = (
+            primary_tf_report.atr
+            if (primary_tf_report is not None and primary_tf_report.atr is not None and primary_tf_report.atr > 0)
+            else max(0.05, curr_close * 0.01)
+        )
+
+        # ------------------------------------------------------------------
+        # BRANCH 1: Managing an Open LONG or SHORT Position
+        # ------------------------------------------------------------------
+        if position is not None:
+            if position.side == "LONG":
+                exit_reason: str | None = None
+                if curr_close <= position.current_stop_loss:
+                    exit_reason = f"STOP_LOSS_BREACHED:close={curr_close:.2f}<=stop={position.current_stop_loss:.2f}"
+                elif position.target_price is not None and curr_close >= position.target_price:
+                    exit_reason = f"TARGET_REACHED:close={curr_close:.2f}>=target={position.target_price:.2f}"
+                elif structure.chart_pattern == "HEAD_AND_SHOULDERS_BREAKDOWN":
+                    exit_reason = "STRUCTURAL_EXIT:HEAD_AND_SHOULDERS_BREAKDOWN"
+                elif structure.reversal_event == "BEARISH_REVERSAL":
+                    exit_reason = "STRUCTURAL_EXIT:BEARISH_REVERSAL_CHOCH"
+                elif structure.breakout_event in ("BEARISH_BREAKDOWN", "FALSE_BREAKOUT"):
+                    exit_reason = f"STRUCTURAL_EXIT:{structure.breakout_event}"
+                elif base.candle_bias == CandleBias.BEARISH and base.price_action_score <= -0.35:
+                    exit_reason = (
+                        f"BEARISH_CONTRADICTION_EXIT:pa_score={base.price_action_score:.2f}"
+                    )
+
+                if exit_reason is not None:
+                    rationale.append(f"Open LONG position exit triggered: {exit_reason}")
+                    return LifecycleAssessment(
+                        call=AgentCall.EXIT_LONG,
+                        timing_assessment=base,
+                        structure=structure,
+                        recommended_trailing_stop=position.current_stop_loss,
+                        updated_setup=None,
+                        exit_reason=exit_reason,
+                        cancel_reason=None,
+                        rationale=tuple(rationale),
+                    )
+
+                # HOLD with monotonic upward trailing stop ratchet once trade moves >= 0.5*ATR in favor
+                trailed_stop = position.current_stop_loss
+                if curr_close >= position.entry_price + 0.5 * atr_val:
+                    candidate = round_to_nse_tick(curr_close - 1.5 * atr_val)
+                    max_safe_stop = round_to_nse_tick(curr_close - 0.25 * atr_val)
+                    candidate = min(candidate, max_safe_stop)
+                    if candidate > trailed_stop:
+                        trailed_stop = candidate
+                        rationale.append(
+                            f"Trailing stop ratcheted upward: {position.current_stop_loss:.2f} -> {trailed_stop:.2f}"
+                        )
+                rationale.append(f"HOLD open LONG (close={curr_close:.2f}, stop={trailed_stop:.2f})")
+                return LifecycleAssessment(
+                    call=AgentCall.HOLD,
+                    timing_assessment=base,
+                    structure=structure,
+                    recommended_trailing_stop=trailed_stop,
+                    updated_setup=None,
+                    exit_reason=None,
+                    cancel_reason=None,
+                    rationale=tuple(rationale),
+                )
+
+            # position.side == "SHORT"
+            cover_reason: str | None = None
+            if curr_close >= position.current_stop_loss:
+                cover_reason = f"STOP_LOSS_BREACHED:close={curr_close:.2f}>=stop={position.current_stop_loss:.2f}"
+            elif position.target_price is not None and curr_close <= position.target_price:
+                cover_reason = f"TARGET_REACHED:close={curr_close:.2f}<=target={position.target_price:.2f}"
+            elif structure.chart_pattern == "INVERSE_HEAD_AND_SHOULDERS_BREAKOUT":
+                cover_reason = "STRUCTURAL_EXIT:INVERSE_HEAD_AND_SHOULDERS_BREAKOUT"
+            elif structure.reversal_event == "BULLISH_REVERSAL":
+                cover_reason = "STRUCTURAL_EXIT:BULLISH_REVERSAL_CHOCH"
+            elif structure.breakout_event in ("BULLISH_BREAKOUT", "FAILED_BREAKDOWN"):
+                cover_reason = f"STRUCTURAL_EXIT:{structure.breakout_event}"
+            elif base.candle_bias == CandleBias.BULLISH and base.price_action_score >= 0.35:
+                cover_reason = f"BULLISH_CONTRADICTION_COVER:pa_score={base.price_action_score:.2f}"
+
+            if cover_reason is not None:
+                rationale.append(f"Open SHORT position cover triggered: {cover_reason}")
+                return LifecycleAssessment(
+                    call=AgentCall.COVER_SHORT,
+                    timing_assessment=base,
+                    structure=structure,
+                    recommended_trailing_stop=position.current_stop_loss,
+                    updated_setup=None,
+                    exit_reason=cover_reason,
+                    cancel_reason=None,
+                    rationale=tuple(rationale),
+                )
+
+            # HOLD SHORT with monotonic downward trailing stop ratchet
+            trailed_stop = position.current_stop_loss
+            if curr_close <= position.entry_price - 0.5 * atr_val:
+                candidate = round_to_nse_tick(curr_close + 1.5 * atr_val)
+                min_safe_stop = round_to_nse_tick(curr_close + 0.25 * atr_val)
+                candidate = max(candidate, min_safe_stop)
+                if candidate < trailed_stop:
+                    trailed_stop = candidate
+                    rationale.append(
+                        f"Short trailing stop ratcheted downward: {position.current_stop_loss:.2f} -> {trailed_stop:.2f}"
+                    )
+            rationale.append(f"HOLD open SHORT (close={curr_close:.2f}, stop={trailed_stop:.2f})")
+            return LifecycleAssessment(
+                call=AgentCall.HOLD,
+                timing_assessment=base,
+                structure=structure,
+                recommended_trailing_stop=trailed_stop,
+                updated_setup=None,
+                exit_reason=None,
+                cancel_reason=None,
+                rationale=tuple(rationale),
+            )
+
+        # ------------------------------------------------------------------
+        # BRANCH 2: FLAT — Evaluating Active Setup or Fresh Entry Candidate
+        # ------------------------------------------------------------------
+        if base.decision == TimingDecision.REJECT:
+            return LifecycleAssessment(
+                call=AgentCall.REJECT,
+                timing_assessment=base,
+                structure=structure,
+                recommended_trailing_stop=None,
+                updated_setup=None,
+                exit_reason=None,
+                cancel_reason="REJECTED_BY_TIMING_GUARD" if active_setup is not None else None,
+                rationale=tuple(rationale),
+            )
+
+        if base.decision == TimingDecision.NO_TRADE:
+            if active_setup is not None:
+                cancel_reason = "CENTRAL_DIRECTION_NEUTRAL"
+                rationale.append(f"Active setup cancelled: {cancel_reason}")
+                return LifecycleAssessment(
+                    call=AgentCall.CANCEL_SETUP,
+                    timing_assessment=base,
+                    structure=structure,
+                    recommended_trailing_stop=None,
+                    updated_setup=None,
+                    exit_reason=None,
+                    cancel_reason=cancel_reason,
+                    rationale=tuple(rationale),
+                )
+            return LifecycleAssessment(
+                call=AgentCall.NO_TRADE,
+                timing_assessment=base,
+                structure=structure,
+                recommended_trailing_stop=None,
+                updated_setup=None,
+                exit_reason=None,
+                cancel_reason=None,
+                rationale=tuple(rationale),
+            )
+
+        # Check active setup cancellation rules (invalidation breach, trap/contradiction, timeout)
+        if active_setup is not None:
+            cancel_reason: str | None = None
+            if active_setup.direction == "LONG":
+                if curr_low <= active_setup.invalidation_price or curr_close < active_setup.invalidation_price:
+                    cancel_reason = (
+                        f"SETUP_INVALIDATED:low={curr_low:.2f}<=invalidation={active_setup.invalidation_price:.2f}"
+                    )
+                elif base.decision == TimingDecision.CONTRADICT_CENTRAL:
+                    cancel_reason = "SETUP_CONTRADICTED_BY_CANDLE_EVIDENCE"
+                elif structure.breakout_event == "FALSE_BREAKOUT" or structure.orb_event == "FAILED_ORB_HIGH":
+                    cancel_reason = f"SETUP_TRAP_DETECTED:{structure.breakout_event}/{structure.orb_event}"
+                elif structure.ema_cross_event == "FAILED_BULLISH_CROSSOVER":
+                    cancel_reason = "SETUP_FAILED_BULLISH_CROSSOVER"
+            else:
+                if curr_high >= active_setup.invalidation_price or curr_close > active_setup.invalidation_price:
+                    cancel_reason = (
+                        f"SETUP_INVALIDATED:high={curr_high:.2f}>=invalidation={active_setup.invalidation_price:.2f}"
+                    )
+                elif base.decision == TimingDecision.CONTRADICT_CENTRAL:
+                    cancel_reason = "SETUP_CONTRADICTED_BY_CANDLE_EVIDENCE"
+                elif structure.breakout_event == "FAILED_BREAKDOWN" or structure.orb_event == "FAILED_ORB_LOW":
+                    cancel_reason = f"SETUP_TRAP_DETECTED:{structure.breakout_event}/{structure.orb_event}"
+                elif structure.ema_cross_event == "FAILED_BEARISH_CROSSOVER":
+                    cancel_reason = "SETUP_FAILED_BEARISH_CROSSOVER"
+
+            if cancel_reason is None and active_setup.bars_watching >= active_setup.max_watch_bars:
+                cancel_reason = f"SETUP_EXPIRED:bars_watching={active_setup.bars_watching}>={active_setup.max_watch_bars}"
+
+            if cancel_reason is not None:
+                rationale.append(f"Active setup cancelled: {cancel_reason}")
+                return LifecycleAssessment(
+                    call=AgentCall.CANCEL_SETUP,
+                    timing_assessment=base,
+                    structure=structure,
+                    recommended_trailing_stop=None,
+                    updated_setup=None,
+                    exit_reason=None,
+                    cancel_reason=cancel_reason,
+                    rationale=tuple(rationale),
+                )
+
+        # Entry Confirmation (with structural trap veto)
+        if base.decision == TimingDecision.ENTER_NOW:
+            if hypothesis.direction == DirectionalBias.BULLISH:
+                if (
+                    structure.breakout_event == "FALSE_BREAKOUT"
+                    or structure.orb_event == "FAILED_ORB_HIGH"
+                    or structure.vwap_event == "VWAP_REJECTION"
+                ):
+                    rationale.append(
+                        f"Bullish entry vetoed by structural trap ({structure.breakout_event}/{structure.orb_event}/{structure.vwap_event})"
+                    )
+                    return LifecycleAssessment(
+                        call=AgentCall.CANCEL_SETUP if active_setup is not None else AgentCall.WAIT,
+                        timing_assessment=base,
+                        structure=structure,
+                        recommended_trailing_stop=None,
+                        updated_setup=None,
+                        exit_reason=None,
+                        cancel_reason="STRUCTURAL_TRAP_VETO" if active_setup is not None else None,
+                        rationale=tuple(rationale),
+                    )
+                return LifecycleAssessment(
+                    call=AgentCall.OPEN_LONG,
+                    timing_assessment=base,
+                    structure=structure,
+                    recommended_trailing_stop=base.invalidation_price,
+                    updated_setup=None,
+                    exit_reason=None,
+                    cancel_reason=None,
+                    rationale=tuple(rationale),
+                )
+
+            if hypothesis.direction == DirectionalBias.BEARISH:
+                if (
+                    structure.breakout_event == "FAILED_BREAKDOWN"
+                    or structure.orb_event == "FAILED_ORB_LOW"
+                    or structure.vwap_event == "VWAP_RECLAIM"
+                ):
+                    rationale.append(
+                        f"Bearish entry vetoed by structural trap ({structure.breakout_event}/{structure.orb_event}/{structure.vwap_event})"
+                    )
+                    return LifecycleAssessment(
+                        call=AgentCall.CANCEL_SETUP if active_setup is not None else AgentCall.WAIT,
+                        timing_assessment=base,
+                        structure=structure,
+                        recommended_trailing_stop=None,
+                        updated_setup=None,
+                        exit_reason=None,
+                        cancel_reason="STRUCTURAL_TRAP_VETO" if active_setup is not None else None,
+                        rationale=tuple(rationale),
+                    )
+                return LifecycleAssessment(
+                    call=AgentCall.OPEN_SHORT,
+                    timing_assessment=base,
+                    structure=structure,
+                    recommended_trailing_stop=base.invalidation_price,
+                    updated_setup=None,
+                    exit_reason=None,
+                    cancel_reason=None,
+                    rationale=tuple(rationale),
+                )
+
+        # Contradicted or unconfirmed WAIT -> track or update watched setup
+        updated_setup: ActiveSetupContext | None = None
+        if base.decision == TimingDecision.WAIT and hypothesis.direction in (
+            DirectionalBias.BULLISH,
+            DirectionalBias.BEARISH,
+        ):
+            if active_setup is not None:
+                updated_setup = ActiveSetupContext(
+                    direction=active_setup.direction,
+                    setup_type=active_setup.setup_type,
+                    trigger_price=active_setup.trigger_price,
+                    invalidation_price=active_setup.invalidation_price,
+                    bars_watching=active_setup.bars_watching + 1,
+                    max_watch_bars=active_setup.max_watch_bars,
+                )
+            elif base.invalidation_price is not None:
+                setup_dir: Literal["LONG", "SHORT"] = (
+                    "LONG" if hypothesis.direction == DirectionalBias.BULLISH else "SHORT"
+                )
+                trigger_px = round_to_nse_tick(curr_high if setup_dir == "LONG" else curr_low)
+                updated_setup = ActiveSetupContext(
+                    direction=setup_dir,
+                    setup_type=structure.active_scenarios[0] if structure.active_scenarios else "TREND_SETUP",
+                    trigger_price=trigger_px,
+                    invalidation_price=round_to_nse_tick(base.invalidation_price),
+                    bars_watching=1,
+                )
+
+        return LifecycleAssessment(
+            call=AgentCall.WAIT,
+            timing_assessment=base,
+            structure=structure,
+            recommended_trailing_stop=None,
+            updated_setup=updated_setup,
+            exit_reason=None,
+            cancel_reason=None,
+            rationale=tuple(rationale),
         )
