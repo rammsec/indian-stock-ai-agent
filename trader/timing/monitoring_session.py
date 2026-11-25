@@ -41,6 +41,7 @@ from trader.config import (
 from trader.data.market_feed import BaseMarketFeed, TimeframeLiteral
 from trader.evaluation.outcome_evaluator import SessionOutcomeReport, evaluate_session_outcomes
 from trader.intelligence.data_contract import ProvenanceTier
+from trader.portfolio.cost_calculator import calculate_intraday_costs
 from trader.portfolio.ledger import IntradayPaperPortfolio, round_to_nse_tick
 from trader.risk.engine import DeterministicRiskEngine, RiskState
 from trader.timing.candle_timing_agent import (
@@ -239,11 +240,31 @@ class IntradayCandleMonitoringSession:
         mid_session_human_instructions: Mapping[datetime, AuthorityInstruction] | None = None,
         requested_quantity: int = 10,
         warmup_lookback_bars: int = 100,
+        min_reward_to_friction_ratio: float | None = None,
+        cooldown_bars_after_exit: int | None = None,
+        max_entries_per_session: int | None = None,
     ) -> MonitoringSessionResult:
         """Run a full causal intraday monitoring session from 09:15 IST to 15:30 IST."""
         sym_u = symbol.strip().upper()
         session_open_ist = datetime.combine(session_date, time(9, 15), tzinfo=IST_TZ)
         session_close_ist = datetime.combine(session_date, time(15, 30), tzinfo=IST_TZ)
+
+        # CYCLE-012 timeframe-aware entry-discipline defaults (active by default on 1m to prevent fee churn)
+        eff_min_rtf = (
+            float(min_reward_to_friction_ratio)
+            if min_reward_to_friction_ratio is not None
+            else (3.0 if timeframe == "1m" else 0.0)
+        )
+        eff_cooldown_bars = (
+            int(cooldown_bars_after_exit)
+            if cooldown_bars_after_exit is not None
+            else (5 if timeframe == "1m" else 0)
+        )
+        eff_max_entries = (
+            max_entries_per_session
+            if max_entries_per_session is not None
+            else (4 if timeframe == "1m" else None)
+        )
 
         self.portfolio.reset_daily_session(session_date)
         self.risk_engine.reset_daily_session(session_date)
@@ -293,6 +314,8 @@ class IntradayCandleMonitoringSession:
         mid_update_idx = 0
 
         pending_order: PendingOrder | None = None
+        entries_opened_this_session = 0
+        last_exit_bar_index: int | None = None
         active_setup: ActiveSetupContext | None = None
         decisions: list[BarDecisionRecord] = []
         candidate_levels: list[tuple[float | None, float | None]] = []
@@ -352,6 +375,9 @@ class IntradayCandleMonitoringSession:
                         )
                         if pending_order.action_type.is_new_entry:
                             bars_held = 0
+                            entries_opened_this_session += 1
+                        elif pending_order.action_type.is_exit:
+                            last_exit_bar_index = int(bar_idx)
                     else:
                         bar_events_notes.append(
                             f"PENDING_ORDER_REJECTED_AT_OPEN:{','.join(gate_exec.rejection_reasons) or 'UNFILLED'}"
@@ -374,6 +400,8 @@ class IntradayCandleMonitoringSession:
                     timestamp=ts_close,
                     round_ticks=True,
                 )
+                if sym_u not in self.portfolio.positions:
+                    last_exit_bar_index = int(bar_idx)
                 self.risk_engine.check_daily_loss_limit(self.portfolio)
 
             # STEP C: NSE Time Boundaries (15:05 REDUCING, 15:15 Mandatory Square-Off)
@@ -395,6 +423,7 @@ class IntradayCandleMonitoringSession:
                 )
                 if sq_executed:
                     squared_off_side = open_side
+                    last_exit_bar_index = int(bar_idx)
                     bar_events_notes.append(f"MANDATORY_1515_SQUAREOFF_EXECUTED:{sq_action.value}")
 
             # STEP D: Fetch strictly causal evidence <= ts_close and evaluate stateful CandleTimingAgent
@@ -483,16 +512,48 @@ class IntradayCandleMonitoringSession:
                         if gate_out.risk_evaluation is not None
                         else qty_req
                     )
-                    pending_order = PendingOrder(
-                        symbol=sym_u,
-                        action_type=act,
-                        requested_quantity=approved_qty,
-                        signal_bar_close_ist=ts_close,
-                        stop_loss=sl_cand,
-                        target=tp_cand,
-                        candle_assessment=lifecycle.timing_assessment if act.is_new_entry else None,
-                        reason=f"Queued from {raw_call.value} at {ts_close.isoformat()}",
-                    )
+                    discipline_rejects: list[str] = []
+                    if act.is_new_entry:
+                        if eff_max_entries is not None and entries_opened_this_session >= eff_max_entries:
+                            discipline_rejects.append(
+                                f"DAILY_ENTRY_CAP_REACHED:{entries_opened_this_session}/{eff_max_entries}"
+                            )
+                        if (
+                            eff_cooldown_bars > 0
+                            and last_exit_bar_index is not None
+                            and (int(bar_idx) - last_exit_bar_index) < eff_cooldown_bars
+                        ):
+                            discipline_rejects.append(
+                                f"POST_EXIT_COOLDOWN_ACTIVE:{int(bar_idx) - last_exit_bar_index}<{eff_cooldown_bars}"
+                            )
+                        if eff_min_rtf > 0.0 and tp_cand is not None and approved_qty > 0:
+                            entry_side = "BUY" if act == ActionType.ENTRY_LONG else "SELL"
+                            exit_side = "SELL" if act == ActionType.ENTRY_LONG else "BUY"
+                            est_rt_cost = (
+                                calculate_intraday_costs(round_to_nse_tick(c_px), approved_qty, entry_side).total_friction_inr
+                                + calculate_intraday_costs(round_to_nse_tick(tp_cand), approved_qty, exit_side).total_friction_inr
+                            )
+                            expected_gross = abs(tp_cand - c_px) * approved_qty
+                            if expected_gross < eff_min_rtf * est_rt_cost:
+                                discipline_rejects.append(
+                                    f"FRICTION_EDGE_TOO_LOW:exp={expected_gross:.2f}<{eff_min_rtf:.1f}x{est_rt_cost:.2f}"
+                                )
+
+                    if discipline_rejects:
+                        effective_call = AgentCall.REJECT
+                        gate_status = "REJECTED"
+                        rej_reasons = tuple(discipline_rejects)
+                    else:
+                        pending_order = PendingOrder(
+                            symbol=sym_u,
+                            action_type=act,
+                            requested_quantity=approved_qty,
+                            signal_bar_close_ist=ts_close,
+                            stop_loss=sl_cand,
+                            target=tp_cand,
+                            candle_assessment=lifecycle.timing_assessment if act.is_new_entry else None,
+                            reason=f"Queued from {raw_call.value} at {ts_close.isoformat()}",
+                        )
                 else:
                     effective_call = AgentCall.REJECT
                     if not rej_reasons and ts_close.time() >= INTRADAY_MANDATORY_SQUAREOFF_TIME:

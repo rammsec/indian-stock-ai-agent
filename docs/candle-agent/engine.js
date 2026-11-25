@@ -339,7 +339,20 @@
   }
 
   class IntradaySessionSimulator {
-    constructor({ symbol, sessionDate, timeframe, warmupBars, sessionBars, centralDirection, humanPermission, setupFilter = "ALL_QUALIFYING", initialCapital = 50000 }) {
+    constructor({
+      symbol,
+      sessionDate,
+      timeframe,
+      warmupBars,
+      sessionBars,
+      centralDirection,
+      humanPermission,
+      setupFilter = "ALL_QUALIFYING",
+      initialCapital = 50000,
+      minRewardToFrictionRatio = null,
+      cooldownBarsAfterExit = null,
+      maxEntriesPerSession = null,
+    }) {
       this.symbol = symbol;
       this.sessionDate = sessionDate;
       this.timeframe = timeframe;
@@ -349,6 +362,12 @@
       this.humanPermission = humanPermission || "ALLOW_LONG";
       this.setupFilter = setupFilter;
       this.initialCapital = Number(initialCapital) || 50000;
+      this.minRewardToFrictionRatio =
+        minRewardToFrictionRatio !== null ? Number(minRewardToFrictionRatio) : timeframe === "1m" ? 3.0 : 0.0;
+      this.cooldownBarsAfterExit =
+        cooldownBarsAfterExit !== null ? Number(cooldownBarsAfterExit) : timeframe === "1m" ? 5 : 0;
+      this.maxEntriesPerSession =
+        maxEntriesPerSession !== null ? Number(maxEntriesPerSession) : timeframe === "1m" ? 4 : null;
 
       this.reset();
     }
@@ -362,6 +381,8 @@
       this.position = null; // { side: "LONG"|"SHORT", qty, entryPrice, currentPrice, stopLoss, target, entryCost, highestPrice, lowestPrice, barsHeld }
       this.pendingOrder = null; // { actionType, qty, stopLoss, target, signalCloseTs }
       this.activeSetup = null; // { direction, invalidationPrice, barsWatching }
+      this.entriesOpenedThisSession = 0;
+      this.lastExitBarIndex = null;
       this.decisions = [];
       this.closedTrades = [];
       this.orders = [];
@@ -470,6 +491,7 @@
         pnl: 0,
         reason: `Filled at next-bar open (${side})`,
       });
+      this.entriesOpenedThisSession += 1;
       return true;
     }
 
@@ -509,6 +531,7 @@
         reason,
       });
       this.position = null;
+      this.lastExitBarIndex = Math.max(0, this.barIdx - 1);
       this._checkCircuitBreakers();
       return true;
     }
@@ -740,17 +763,47 @@
                 gateStatus = "REJECTED";
                 rejectionReasons.push("RISK_SIZED_DOWN_TO_ZERO");
               } else {
-                call = candidateCall;
-                gateStatus = "APPROVED";
-                this.activeSetup = null;
-                this.pendingOrder = {
-                  actionType: candidateCall,
-                  qty,
-                  stopLoss: candSl,
-                  target: candTp,
-                  signalCloseTs: tsClose,
-                };
-                barNotes.push(`Queued ${candidateCall} (${qty} sh) for next bar open`);
+                const disciplineRejects = [];
+                if (this.maxEntriesPerSession !== null && this.entriesOpenedThisSession >= this.maxEntriesPerSession) {
+                  disciplineRejects.push(`DAILY_ENTRY_CAP_REACHED:${this.entriesOpenedThisSession}/${this.maxEntriesPerSession}`);
+                }
+                if (
+                  this.cooldownBarsAfterExit > 0 &&
+                  this.lastExitBarIndex !== null &&
+                  idx - this.lastExitBarIndex < this.cooldownBarsAfterExit
+                ) {
+                  disciplineRejects.push(`POST_EXIT_COOLDOWN_ACTIVE:${idx - this.lastExitBarIndex}<${this.cooldownBarsAfterExit}`);
+                }
+                if (this.minRewardToFrictionRatio > 0 && candTp !== null) {
+                  const eSide = wantLong ? "BUY" : "SELL";
+                  const xSide = wantLong ? "SELL" : "BUY";
+                  const estRtCost =
+                    calculateIndianIntradayCosts(roundToNseTick(bar.c), qty, eSide).totalFrictionInr +
+                    calculateIndianIntradayCosts(roundToNseTick(candTp), qty, xSide).totalFrictionInr;
+                  const expGross = Math.abs(candTp - bar.c) * qty;
+                  if (expGross < this.minRewardToFrictionRatio * estRtCost) {
+                    disciplineRejects.push(
+                      `FRICTION_EDGE_TOO_LOW:exp=${expGross.toFixed(2)}<${this.minRewardToFrictionRatio.toFixed(1)}x${estRtCost.toFixed(2)}`
+                    );
+                  }
+                }
+                if (disciplineRejects.length > 0) {
+                  call = "REJECT";
+                  gateStatus = "REJECTED";
+                  disciplineRejects.forEach((r) => rejectionReasons.push(r));
+                } else {
+                  call = candidateCall;
+                  gateStatus = "APPROVED";
+                  this.activeSetup = null;
+                  this.pendingOrder = {
+                    actionType: candidateCall,
+                    qty,
+                    stopLoss: candSl,
+                    target: candTp,
+                    signalCloseTs: tsClose,
+                  };
+                  barNotes.push(`Queued ${candidateCall} (${qty} sh) for next bar open`);
+                }
               }
             }
           } else {
