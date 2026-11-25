@@ -338,6 +338,41 @@
     return { allowed: true, reason: `${permission} permits ${actionType}` };
   }
 
+  function evaluateCausal5mMtfTrend(bars) {
+    if (!bars || bars.length < 5) return "NEUTRAL";
+    const buckets = new Map();
+    for (let i = 0; i < bars.length; i++) {
+      const b = bars[i];
+      if (!b || !b.t) continue;
+      const dayPart = b.t.slice(0, 10);
+      const hh = Number(b.t.slice(11, 13));
+      const mm = Number(b.t.slice(14, 16));
+      const minsSinceOpen = hh * 60 + mm - (9 * 60 + 15);
+      if (minsSinceOpen < 0) continue;
+      const bIdx = Math.floor(minsSinceOpen / 5);
+      buckets.set(`${dayPart}#${bIdx}`, b.c);
+    }
+    const closes = Array.from(buckets.values());
+    if (closes.length < 5) return "NEUTRAL";
+    const ema = (vals, span) => {
+      const k = 2 / (span + 1);
+      let e = vals[0];
+      for (let i = 1; i < vals.length; i++) e = vals[i] * k + e * (1 - k);
+      return e;
+    };
+    const lastClose = closes[closes.length - 1];
+    const ema9 = ema(closes, 9);
+    if (closes.length >= 21) {
+      const ema21 = ema(closes, 21);
+      if (lastClose >= ema9 && ema9 >= ema21) return "BULLISH";
+      if (lastClose <= ema9 && ema9 <= ema21) return "BEARISH";
+      return "NEUTRAL";
+    }
+    if (lastClose > ema9) return "BULLISH";
+    if (lastClose < ema9) return "BEARISH";
+    return "NEUTRAL";
+  }
+
   class IntradaySessionSimulator {
     constructor({
       symbol,
@@ -352,6 +387,8 @@
       minRewardToFrictionRatio = null,
       cooldownBarsAfterExit = null,
       maxEntriesPerSession = null,
+      requireMtfTrendAlignment = null,
+      minWinnerRrMultiple = null,
     }) {
       this.symbol = symbol;
       this.sessionDate = sessionDate;
@@ -368,6 +405,10 @@
         cooldownBarsAfterExit !== null ? Number(cooldownBarsAfterExit) : timeframe === "1m" ? 5 : 0;
       this.maxEntriesPerSession =
         maxEntriesPerSession !== null ? Number(maxEntriesPerSession) : timeframe === "1m" ? 4 : null;
+      this.requireMtfTrendAlignment =
+        requireMtfTrendAlignment !== null ? Boolean(requireMtfTrendAlignment) : timeframe === "1m";
+      this.minWinnerRrMultiple =
+        minWinnerRrMultiple !== null ? Number(minWinnerRrMultiple) : timeframe === "1m" ? 2.5 : 0.0;
 
       this.reset();
     }
@@ -383,6 +424,7 @@
       this.activeSetup = null; // { direction, invalidationPrice, barsWatching }
       this.entriesOpenedThisSession = 0;
       this.lastExitBarIndex = null;
+      this.lastMtf5mTrend = "NEUTRAL";
       this.decisions = [];
       this.closedTrades = [];
       this.orders = [];
@@ -651,6 +693,7 @@
       const causalSlice = this.warmupBars.concat(this.sessionBars.slice(0, idx + 1));
       const analysis = analyzeCausalBars(causalSlice, this.sessionDate);
       this.lastAnalysis = analysis;
+      this.lastMtf5mTrend = evaluateCausal5mMtfTrend(causalSlice);
 
       // Compute structural candidate stop/target (NSE tick rounded)
       const isBearCentral = this.centralDirection === "BEARISH";
@@ -660,7 +703,8 @@
       const distPct = Math.abs(bar.c - rawSl) / bar.c;
       const clampedDist = Math.max(0.002, Math.min(0.05, distPct));
       const candSl = roundToNseTick(isBearCentral ? bar.c * (1 + clampedDist) : bar.c * (1 - clampedDist));
-      const candTp = roundToNseTick(isBearCentral ? bar.c - 2.0 * (candSl - bar.c) : bar.c + 2.0 * (bar.c - candSl));
+      const rrMult = this.minWinnerRrMultiple > 2.0 ? this.minWinnerRrMultiple : 2.0;
+      const candTp = roundToNseTick(isBearCentral ? bar.c - rrMult * (candSl - bar.c) : bar.c + rrMult * (bar.c - candSl));
 
       let call = "WAIT";
       let gateStatus = "N/A";
@@ -764,6 +808,12 @@
                 rejectionReasons.push("RISK_SIZED_DOWN_TO_ZERO");
               } else {
                 const disciplineRejects = [];
+                if (this.requireMtfTrendAlignment) {
+                  const expectedTrend = wantLong ? "BULLISH" : "BEARISH";
+                  if (this.lastMtf5mTrend !== expectedTrend) {
+                    disciplineRejects.push(`MTF_5M_TREND_MISALIGNED:5m=${this.lastMtf5mTrend},req=${expectedTrend}`);
+                  }
+                }
                 if (this.maxEntriesPerSession !== null && this.entriesOpenedThisSession >= this.maxEntriesPerSession) {
                   disciplineRejects.push(`DAILY_ENTRY_CAP_REACHED:${this.entriesOpenedThisSession}/${this.maxEntriesPerSession}`);
                 }
@@ -829,6 +879,7 @@
         c: bar.c,
         v: bar.v,
         call,
+        mtf5mTrend: this.lastMtf5mTrend,
         intendedDirection: this.centralDirection === "BULLISH" ? "LONG" : this.centralDirection === "BEARISH" ? "SHORT" : "NEUTRAL",
         patterns: analysis.patterns,
         breakoutState: analysis.breakoutState,
