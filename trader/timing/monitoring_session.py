@@ -208,6 +208,43 @@ def _build_default_hypothesis(
     )
 
 
+def evaluate_causal_5m_mtf_trend(causal_df: pd.DataFrame) -> Literal["BULLISH", "BEARISH", "NEUTRAL"]:
+    """Causally aggregate completed 1m bars into 5m buckets and return 5m EMA trend bias.
+
+    Strictly uses only completed bars already present in `causal_df` (zero lookahead).
+    Returns "NEUTRAL" until at least 5 completed 5m bars exist.
+    """
+    if causal_df is None or causal_df.empty or "close" not in causal_df.columns:
+        return "NEUTRAL"
+    if isinstance(causal_df.index, pd.DatetimeIndex):
+        ts_idx = causal_df.index
+    elif "ts_open_ist" in causal_df.columns:
+        ts_idx = pd.DatetimeIndex(pd.to_datetime(causal_df["ts_open_ist"]))
+    elif "timestamp" in causal_df.columns:
+        ts_idx = pd.DatetimeIndex(pd.to_datetime(causal_df["timestamp"]))
+    else:
+        return "NEUTRAL"
+
+    closes = pd.Series(causal_df["close"].astype(float).values, index=ts_idx)
+    bars_5m = closes.resample("5min", origin="start_day", offset="15min").last().dropna()
+    if len(bars_5m) < 5:
+        return "NEUTRAL"
+    ema9 = bars_5m.ewm(span=9, adjust=False).mean().iloc[-1]
+    last_close = float(bars_5m.iloc[-1])
+    if len(bars_5m) >= 21:
+        ema21 = bars_5m.ewm(span=21, adjust=False).mean().iloc[-1]
+        if last_close >= ema9 and ema9 >= ema21:
+            return "BULLISH"
+        if last_close <= ema9 and ema9 <= ema21:
+            return "BEARISH"
+        return "NEUTRAL"
+    if last_close > ema9:
+        return "BULLISH"
+    if last_close < ema9:
+        return "BEARISH"
+    return "NEUTRAL"
+
+
 class IntradayCandleMonitoringSession:
     """Continuous bar-by-bar intraday candle monitoring & paper-trading session engine."""
 
@@ -243,13 +280,15 @@ class IntradayCandleMonitoringSession:
         min_reward_to_friction_ratio: float | None = None,
         cooldown_bars_after_exit: int | None = None,
         max_entries_per_session: int | None = None,
+        require_mtf_trend_alignment: bool | None = None,
+        min_winner_rr_multiple: float | None = None,
     ) -> MonitoringSessionResult:
         """Run a full causal intraday monitoring session from 09:15 IST to 15:30 IST."""
         sym_u = symbol.strip().upper()
         session_open_ist = datetime.combine(session_date, time(9, 15), tzinfo=IST_TZ)
         session_close_ist = datetime.combine(session_date, time(15, 30), tzinfo=IST_TZ)
 
-        # CYCLE-012 timeframe-aware entry-discipline defaults (active by default on 1m to prevent fee churn)
+        # CYCLE-012/013 timeframe-aware entry-discipline defaults (active by default on 1m)
         eff_min_rtf = (
             float(min_reward_to_friction_ratio)
             if min_reward_to_friction_ratio is not None
@@ -264,6 +303,16 @@ class IntradayCandleMonitoringSession:
             max_entries_per_session
             if max_entries_per_session is not None
             else (4 if timeframe == "1m" else None)
+        )
+        eff_require_mtf = (
+            bool(require_mtf_trend_alignment)
+            if require_mtf_trend_alignment is not None
+            else (timeframe == "1m")
+        )
+        eff_min_rr = (
+            float(min_winner_rr_multiple)
+            if min_winner_rr_multiple is not None
+            else (2.5 if timeframe == "1m" else 0.0)
         )
 
         self.portfolio.reset_daily_session(session_date)
@@ -492,6 +541,20 @@ class IntradayCandleMonitoringSession:
                 )
                 sl_cand = lifecycle.timing_assessment.invalidation_price if act.is_new_entry else None
                 tp_cand = lifecycle.timing_assessment.target_price if act.is_new_entry else None
+                if act.is_new_entry and eff_min_rr > 0.0 and sl_cand is not None:
+                    risk_dist = abs(c_px - sl_cand)
+                    if risk_dist > 0.0:
+                        min_tp = (
+                            round_to_nse_tick(c_px + risk_dist * eff_min_rr)
+                            if act == ActionType.ENTRY_LONG
+                            else round_to_nse_tick(max(0.05, c_px - risk_dist * eff_min_rr))
+                        )
+                        if tp_cand is None:
+                            tp_cand = min_tp
+                        elif act == ActionType.ENTRY_LONG:
+                            tp_cand = max(tp_cand, min_tp)
+                        else:
+                            tp_cand = min(tp_cand, min_tp)
 
                 gate_out = self.execution_gate.evaluate_gate(
                     symbol=sym_u,
@@ -514,6 +577,13 @@ class IntradayCandleMonitoringSession:
                     )
                     discipline_rejects: list[str] = []
                     if act.is_new_entry:
+                        if eff_require_mtf:
+                            mtf_trend = evaluate_causal_5m_mtf_trend(causal_df)
+                            expected_trend = "BULLISH" if act == ActionType.ENTRY_LONG else "BEARISH"
+                            if mtf_trend != expected_trend:
+                                discipline_rejects.append(
+                                    f"MTF_5M_TREND_MISALIGNED:5m={mtf_trend},req={expected_trend}"
+                                )
                         if eff_max_entries is not None and entries_opened_this_session >= eff_max_entries:
                             discipline_rejects.append(
                                 f"DAILY_ENTRY_CAP_REACHED:{entries_opened_this_session}/{eff_max_entries}"

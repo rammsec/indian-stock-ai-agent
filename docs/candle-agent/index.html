@@ -22,84 +22,98 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--bg-canvas);
+      background: radial-gradient(circle at top left, #111a2e 0%, var(--bg-canvas) 48%, #070a12 100%);
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 14px;
       line-height: 1.5;
+      min-height: 100vh;
+      font-variant-numeric: tabular-nums;
     }
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 20px;
-      background: var(--bg-surface);
+      padding: 13px 22px;
+      background: rgba(18, 24, 38, 0.92);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
       flex-wrap: wrap;
       gap: 10px;
     }
-    .brand { font-weight: 800; font-size: 16px; letter-spacing: 0.3px; }
+    .brand { font-weight: 800; font-size: 16px; letter-spacing: 0.2px; display: flex; align-items: center; gap: 6px; }
     .brand span { color: var(--accent); }
     .nav-links a {
       color: var(--text-secondary);
       text-decoration: none;
-      margin-left: 14px;
-      font-size: 13px;
-      padding: 5px 10px;
-      border-radius: 6px;
+      margin-left: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 7px;
       border: 1px solid var(--border);
+      background: rgba(26, 34, 52, 0.5);
+      transition: all 0.15s ease;
     }
-    .nav-links a:hover { color: var(--text-primary); border-color: var(--accent); }
+    .nav-links a:hover { color: var(--text-primary); border-color: var(--accent); background: rgba(56, 189, 248, 0.12); }
     .provenance-bar {
-      background: #141d30;
+      background: rgba(20, 29, 48, 0.85);
       border-bottom: 1px solid var(--border);
-      padding: 7px 20px;
+      padding: 7px 22px;
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--text-secondary);
       display: flex;
       justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
       gap: 10px;
     }
     .badge {
       display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
       font-family: var(--font-mono);
       font-size: 11px;
       font-weight: 700;
+      letter-spacing: 0.25px;
     }
-    .badge-bull { background: rgba(34,197,94,0.16); color: var(--bull); border: 1px solid rgba(34,197,94,0.35); }
-    .badge-bear { background: rgba(239,68,68,0.16); color: var(--bear); border: 1px solid rgba(239,68,68,0.35); }
-    .badge-warn { background: rgba(245,158,11,0.16); color: var(--warn); border: 1px solid rgba(245,158,11,0.35); }
-    .badge-info { background: rgba(56,189,248,0.16); color: var(--accent); border: 1px solid rgba(56,189,248,0.35); }
-    .badge-purple { background: rgba(168,85,247,0.16); color: var(--purple); border: 1px solid rgba(168,85,247,0.35); }
+    .badge-bull { background: rgba(34,197,94,0.16); color: var(--bull); border: 1px solid rgba(34,197,94,0.38); }
+    .badge-bear { background: rgba(239,68,68,0.16); color: var(--bear); border: 1px solid rgba(239,68,68,0.38); }
+    .badge-warn { background: rgba(245,158,11,0.16); color: var(--warn); border: 1px solid rgba(245,158,11,0.38); }
+    .badge-info { background: rgba(56,189,248,0.16); color: var(--accent); border: 1px solid rgba(56,189,248,0.38); }
+    .badge-purple { background: rgba(168,85,247,0.16); color: var(--purple); border: 1px solid rgba(168,85,247,0.38); }
 
-    .container { max-width: 1440px; margin: 0 auto; padding: 14px 18px 40px; }
+    .container { max-width: 1460px; margin: 0 auto; padding: 16px 20px 44px; }
 
     .control-bar {
-      background: var(--bg-surface);
+      background: linear-gradient(180deg, rgba(22, 30, 48, 0.96), rgba(16, 22, 36, 0.96));
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
+      border-radius: 12px;
+      padding: 13px 16px;
       margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 11px;
       align-items: flex-end;
     }
     .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
-    .ctrl-group label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+    .ctrl-group label { font-size: 10.5px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
     .ctrl-group select, .ctrl-group input {
-      background: var(--bg-elevated);
+      background: #0e1422;
       color: var(--text-primary);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 6px 9px;
+      border-radius: 7px;
+      padding: 7px 10px;
       font-size: 13px;
       font-family: var(--font-mono);
+      transition: border-color 0.15s ease;
     }
+    .ctrl-group select:focus, .ctrl-group input:focus { outline: none; border-color: var(--accent); }
     .transport {
       display: flex;
       gap: 8px;
@@ -109,19 +123,42 @@
     }
     button {
       cursor: pointer;
-      border-radius: 6px;
+      border-radius: 7px;
       border: 1px solid var(--border);
-      padding: 7px 12px;
-      font-weight: 600;
+      padding: 7px 13px;
+      font-weight: 700;
       font-size: 12px;
       background: var(--bg-elevated);
       color: var(--text-primary);
+      transition: all 0.15s ease;
     }
-    button:hover { border-color: var(--accent); }
-    .btn-primary { background: #0284c7; border-color: #0ea5e9; color: #fff; }
-    .btn-primary:hover { background: #0369a1; }
-    .btn-danger { background: rgba(239,68,68,0.18); border-color: var(--bear); color: #fecaca; }
+    button:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .btn-primary { background: linear-gradient(135deg, #0284c7, #0ea5e9); border-color: #38bdf8; color: #fff; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); }
+    .btn-primary:hover { background: linear-gradient(135deg, #0369a1, #0284c7); }
+    .btn-danger { background: rgba(239,68,68,0.16); border-color: var(--bear); color: #fecaca; }
     .btn-danger:hover { background: var(--bear); color: #fff; }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 1080px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .kpi-strip { grid-template-columns: 1fr; } }
+    .kpi-tile {
+      background: linear-gradient(180deg, rgba(22, 30, 48, 0.92), rgba(15, 21, 34, 0.94));
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 11px 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .kpi-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.55px; color: var(--text-secondary); }
+    .kpi-value { font-family: var(--font-mono); font-size: 18px; font-weight: 800; color: var(--text-primary); }
+    .kpi-sub { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
 
     .error-banner {
       display: none;
@@ -144,10 +181,11 @@
     @media (max-width: 1080px) { .main-grid { grid-template-columns: 1fr; } }
 
     .card {
-      background: var(--bg-surface);
+      background: linear-gradient(180deg, rgba(20, 27, 43, 0.96), rgba(15, 21, 34, 0.96));
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
+      border-radius: 12px;
+      padding: 13px 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
     }
     .card-header {
       display: flex;
@@ -158,7 +196,9 @@
       font-weight: 700;
       color: var(--text-primary);
       border-bottom: 1px solid var(--border);
-      padding-bottom: 6px;
+      padding-bottom: 7px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
     #candle-canvas {
       width: 100%;
@@ -293,6 +333,35 @@
       </div>
     </div>
 
+    <!-- LIVE KPI TELEMETRY STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi-tile">
+        <div class="kpi-label">Last Price (IST)</div>
+        <div class="kpi-value" id="kpi-price">—</div>
+        <div class="kpi-sub" id="kpi-change">Waiting for 09:15 open</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Active Position</div>
+        <div class="kpi-value" id="kpi-position">FLAT</div>
+        <div class="kpi-sub" id="kpi-pos-sub">0 shares open</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Net Realized P&amp;L</div>
+        <div class="kpi-value" id="kpi-pnl">₹0.00</div>
+        <div class="kpi-sub" id="kpi-pnl-sub">After NSE brokerage &amp; STT</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">Entries &amp; Win Rate</div>
+        <div class="kpi-value" id="kpi-trades">0</div>
+        <div class="kpi-sub" id="kpi-winrate">Win Rate: —</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-label">5m MTF Trend Gate</div>
+        <div class="kpi-value" id="kpi-mtf">NEUTRAL</div>
+        <div class="kpi-sub" id="kpi-mtf-sub">Causal 5m EMA alignment</div>
+      </div>
+    </div>
+
     <!-- MAIN CHART + 3-PANEL AGENT HUD -->
     <div class="main-grid">
       <div class="card">
@@ -303,7 +372,10 @@
             <span style="color:#f59e0b;">━ EMA21</span> &nbsp;
             <span style="color:#a855f7;">┈ VWAP</span> &nbsp;
             <span style="color:#ef4444;">┈ SL</span> &nbsp;
-            <span style="color:#22c55e;">┈ TP</span>
+            <span style="color:#22c55e;">┈ TP</span> &nbsp;
+            <span style="color:#22c55e;">▲ BUY</span> &nbsp;
+            <span style="color:#ef4444;">▼ SHORT</span> &nbsp;
+            <span style="color:#38bdf8;">◆ EXIT</span>
           </span>
         </div>
         <canvas id="candle-canvas"></canvas>
@@ -709,6 +781,54 @@
         document.getElementById("clock-banner").textContent = lastDec
           ? `Eval Clock: ${lastDec.tsClose} IST (Closed Bar ${sim.barIdx}/${total})`
           : `Eval Clock: ${sim.sessionDate} 09:15 IST (Pre-Open)`;
+
+        // Live KPI Strip
+        const openRef = sim.sessionBars.length > 0 ? sim.sessionBars[0].o : null;
+        const kpiPriceEl = document.getElementById("kpi-price");
+        const kpiChgEl = document.getElementById("kpi-change");
+        if (lastDec && openRef) {
+          const chgPct = ((lastDec.c - openRef) / openRef) * 100;
+          kpiPriceEl.textContent = `₹${lastDec.c.toFixed(2)}`;
+          kpiChgEl.textContent = `${chgPct >= 0 ? "+" : ""}${chgPct.toFixed(2)}% vs 09:15 open`;
+          kpiChgEl.className = chgPct >= 0 ? "kpi-sub text-bull" : "kpi-sub text-bear";
+        } else {
+          kpiPriceEl.textContent = "—";
+          kpiChgEl.textContent = "Waiting for 09:15 open";
+          kpiChgEl.className = "kpi-sub";
+        }
+
+        const kpiPosEl = document.getElementById("kpi-position");
+        const kpiPosSub = document.getElementById("kpi-pos-sub");
+        if (sim.position) {
+          kpiPosEl.textContent = `${sim.position.side} (${sim.position.qty})`;
+          kpiPosEl.className = sim.position.side === "LONG" ? "kpi-value text-bull" : "kpi-value text-bear";
+          kpiPosSub.textContent = `Entry ₹${sim.position.entryPrice.toFixed(2)}`;
+        } else {
+          kpiPosEl.textContent = "FLAT";
+          kpiPosEl.className = "kpi-value";
+          kpiPosSub.textContent = "0 shares open";
+        }
+
+        const kpiPnlEl = document.getElementById("kpi-pnl");
+        const curRpnl = sim.getRealizedPnl();
+        kpiPnlEl.textContent = `${curRpnl >= 0 ? "+" : ""}₹${curRpnl.toFixed(2)}`;
+        kpiPnlEl.className = curRpnl > 0 ? "kpi-value text-bull" : curRpnl < 0 ? "kpi-value text-bear" : "kpi-value";
+
+        const closedCount = sim.closedTrades.length;
+        const winsCount = sim.closedTrades.filter((t) => t.netPnlInr > 0).length;
+        const capTxt = sim.maxEntriesPerSession !== null ? ` / ${sim.maxEntriesPerSession}` : "";
+        document.getElementById("kpi-trades").textContent = `${sim.entriesOpenedThisSession}${capTxt}`;
+        document.getElementById("kpi-winrate").textContent =
+          closedCount > 0 ? `Win Rate: ${((winsCount / closedCount) * 100).toFixed(0)}% (${winsCount}/${closedCount})` : "Win Rate: —";
+
+        const mtfVal = sim.lastMtf5mTrend || "NEUTRAL";
+        const kpiMtfEl = document.getElementById("kpi-mtf");
+        kpiMtfEl.textContent = mtfVal === "BULLISH" ? "BULLISH ▲" : mtfVal === "BEARISH" ? "BEARISH ▼" : "NEUTRAL";
+        kpiMtfEl.className =
+          mtfVal === "BULLISH" ? "kpi-value text-bull" : mtfVal === "BEARISH" ? "kpi-value text-bear" : "kpi-value text-warn";
+        document.getElementById("kpi-mtf-sub").textContent = sim.requireMtfTrendAlignment
+          ? "5m Trend Gate: ACTIVE"
+          : "5m Trend Gate: Monitor Only";
 
         // Panel 1: Authority
         document.getElementById("hud-central").textContent = `${sim.centralDirection} (UNCALIB)`;
