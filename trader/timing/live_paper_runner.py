@@ -284,7 +284,7 @@ class LivePaperTradingRunner:
 
         self._bars_1m_evaluated += 1
         df = pd.DataFrame(self._bars_1m_history[sym])
-        overlays = compute_chart_overlays(df, current_date=day)
+        overlays = compute_chart_overlays(df, session_date=day)
 
         # Estimate ATR causally from recent bars
         if len(df) >= 2:
@@ -302,9 +302,9 @@ class LivePaperTradingRunner:
             atr = max(bar.close * 0.002, 0.5)
 
         eff_dir = infer_auto_market_direction(
-            overlays=overlays,
             mtf_5m_trend="NEUTRAL",
-            current_price=bar.close,
+            overlays=overlays,
+            current_close=bar.close,
         )
         self._last_direction_by_symbol[sym] = eff_dir
 
