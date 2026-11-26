@@ -1244,7 +1244,7 @@
         v: bar.v,
         call,
         mtf5mTrend: this.lastMtf5mTrend,
-        intendedDirection: this.centralDirection === "BULLISH" ? "LONG" : this.centralDirection === "BEARISH" ? "SHORT" : "NEUTRAL",
+        intendedDirection: effectiveDirection === "BULLISH" ? "LONG" : effectiveDirection === "BEARISH" ? "SHORT" : "NEUTRAL",
         patterns: analysis.patterns,
         breakoutState: analysis.breakoutState,
         vwapEvent: analysis.vwapEvent,

@@ -416,7 +416,7 @@ def train_walkforward_setup_scorer(
 
     calibration_status = (
         "EMPIRICAL_WALKFORWARD_CALIBRATED"
-        if (len(y_train) >= 50 and len(y_oos) >= 10 and oos_brier <= oos_baseline_brier + 0.01)
+        if (len(y_train) >= 50 and len(y_oos) >= 10 and oos_brier <= oos_baseline_brier)
         else "UNCALIBRATED"
     )
 

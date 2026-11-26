@@ -38,6 +38,7 @@ from trader.intelligence.chart_overlays import (
     infer_auto_market_direction,
 )
 from trader.portfolio.cost_calculator import calculate_intraday_costs
+from trader.timing.monitoring_session import evaluate_causal_5m_mtf_trend
 
 LIVE_TRADING_ENABLED: Final[bool] = False
 READ_ONLY_MODE: Final[bool] = True
@@ -301,8 +302,9 @@ class LivePaperTradingRunner:
         if atr <= 0.0:
             atr = max(bar.close * 0.002, 0.5)
 
+        mtf_5m_trend = evaluate_causal_5m_mtf_trend(df)
         eff_dir = infer_auto_market_direction(
-            mtf_5m_trend="NEUTRAL",
+            mtf_5m_trend=mtf_5m_trend,
             overlays=overlays,
             current_close=bar.close,
         )
@@ -407,17 +409,40 @@ class LivePaperTradingRunner:
                             allow_entry = True
                             if self.ml_scorer is not None:
                                 side_sign = 1.0 if want_side == "BUY" else -1.0
+                                want_dir = "BULLISH" if want_side == "BUY" else "BEARISH"
+                                close_s = df["close"].astype(float)
+                                ema9_val = float(close_s.ewm(span=9, adjust=False).mean().iloc[-1])
+                                ema21_val = float(close_s.ewm(span=21, adjust=False).mean().iloc[-1])
+                                ema_spread_bps = ((ema9_val - ema21_val) / bar.close) * 10_000.0
+                                deltas = close_s.diff().dropna()
+                                gains = deltas.clip(lower=0.0).ewm(alpha=1.0 / 14.0, adjust=False).mean()
+                                losses = (-deltas.clip(upper=0.0)).ewm(alpha=1.0 / 14.0, adjust=False).mean()
+                                if len(losses) > 0 and float(losses.iloc[-1]) > 1e-12:
+                                    rs_val = float(gains.iloc[-1]) / float(losses.iloc[-1])
+                                    rsi_val = 100.0 - 100.0 / (1.0 + rs_val)
+                                else:
+                                    rsi_val = 50.0
+                                vwap_sd_est = (
+                                    (overlays.vwap_upper_1sd - overlays.vwap)
+                                    if (overlays.vwap is not None and overlays.vwap_upper_1sd is not None)
+                                    else 0.0
+                                )
+                                vwap_z_val = (
+                                    max(-4.0, min(4.0, (bar.close - overlays.vwap) / vwap_sd_est))
+                                    if (overlays.vwap is not None and vwap_sd_est > 1e-6)
+                                    else 0.0
+                                )
                                 feat = {
                                     "side_sign": side_sign,
                                     "adx_14": float(adx_val),
                                     "di_diff_aligned": side_sign
                                     * ((overlays.plus_di_14 or 0.0) - (overlays.minus_di_14 or 0.0)),
-                                    "rsi_14_centered": 0.0,
-                                    "ema_spread_aligned_bps": 0.0,
-                                    "vwap_z_aligned": 0.0,
+                                    "rsi_14_centered": side_sign * (rsi_val - 50.0),
+                                    "ema_spread_aligned_bps": side_sign * ema_spread_bps,
+                                    "vwap_z_aligned": side_sign * vwap_z_val,
                                     "atr_pct_bps": (atr / bar.close) * 10_000.0,
                                     "body_ratio": abs(bar.close - bar.open) / max(bar.high - bar.low, 1e-6),
-                                    "mtf_5m_aligned": 0.0,
+                                    "mtf_5m_aligned": 1.0 if mtf_5m_trend == want_dir else 0.0,
                                     "orb_breakout_aligned": 1.0
                                     if (
                                         (want_side == "BUY" and overlays.orb_state == "ORB_BREAKOUT_UP")
@@ -430,7 +455,12 @@ class LivePaperTradingRunner:
                                         or (want_side == "SELL" and overlays.liquidity_sweep == "BEARISH_SWEEP")
                                     )
                                     else 0.0,
-                                    "fvg_aligned": 1.0 if overlays.recent_fvg is not None else 0.0,
+                                    "fvg_aligned": 1.0
+                                    if (
+                                        overlays.recent_fvg is not None
+                                        and overlays.recent_fvg.direction == want_dir
+                                    )
+                                    else 0.0,
                                     "minutes_from_open": float((t_ist.hour - 9) * 60 + (t_ist.minute - 15)),
                                     "reward_to_friction": float((target_dist * qty) / rt_cost),
                                     "near_pdhl": 1.0 if overlays.near_key_level else 0.0,
@@ -449,8 +479,8 @@ class LivePaperTradingRunner:
                                     initial_sl=sl,
                                     active_sl=sl,
                                     take_profit=tp,
-                                    peak_price=bar.high,
-                                    trough_price=bar.low,
+                                    peak_price=bar.close,
+                                    trough_price=bar.close,
                                     ml_win_prob=ml_prob,
                                 )
                                 self._entries_today[(sym, day)] += 1

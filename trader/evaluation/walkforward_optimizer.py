@@ -838,8 +838,8 @@ def simulate_fast_1m_session(
         pos_initial_sl = est_sl
         pos_active_sl = est_sl
         pos_tp = est_tp
-        pos_peak = h
-        pos_trough = l
+        pos_peak = c
+        pos_trough = c
         pos_entry_features = features
         pos_ml_prob = ml_prob
         entries_today += 1
