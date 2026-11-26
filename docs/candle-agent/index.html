@@ -1098,13 +1098,34 @@
             ? `Causal @ ${cutoffTs.slice(0, 16).replace("T", " ")} IST (${tf})`
             : `Pre-open (${targetDate}, ${tf}) — Step or Play to scan live`;
         }
+        if (!cutoffTs) {
+          container.innerHTML = (catalog.symbols || [])
+            .map((sym) => {
+              const active = sym === elSymbol.value;
+              return `<button type="button" data-scan-sym="${sym}" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;border:1px solid ${active ? "#38bdf8" : "rgba(148,163,184,0.22)"};background:${active ? "rgba(56,189,248,0.14)" : "rgba(15,23,42,0.55)"};color:#94a3b8;font-family:var(--font-mono);font-size:11px;">
+                <strong style="color:#f8fafc;">${sym}</strong>
+                <span>AWAITING 09:15 CLOSE</span>
+              </button>`;
+            })
+            .join("");
+          container.querySelectorAll("button[data-scan-sym]").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const nextSym = btn.getAttribute("data-scan-sym");
+              if (nextSym && nextSym !== elSymbol.value) {
+                elSymbol.value = nextSym;
+                initSession();
+              }
+            });
+          });
+          return;
+        }
         const tfMap = (catalog.bars && catalog.bars[tf]) || {};
         const rows = [];
         for (const sym of catalog.symbols || []) {
           const allBars = tfMap[sym] || [];
           const dayBars = allBars.filter((b) => b.t.startsWith(targetDate));
           if (!dayBars.length) continue;
-          const revealed = cutoffTs ? dayBars.filter((b) => b.t <= cutoffTs) : dayBars.slice(0, 1);
+          const revealed = dayBars.filter((b) => b.t <= cutoffTs);
           if (!revealed.length) continue;
           const first = revealed[0];
           const last = revealed[revealed.length - 1];
