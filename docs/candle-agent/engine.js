@@ -423,6 +423,195 @@
     return { stopLoss: roundToNseTick(best), breakevenLocked };
   }
 
+  function computeChartOverlays(bars, sessionDate) {
+    const empty = {
+      adx14: null, plusDi14: null, minusDi14: null, marketRegime: "WARMING_UP",
+      supertrendValue: null, supertrendDirection: "NEUTRAL", supertrendSeries: [], supertrendDirSeries: [],
+      pdh: null, pdl: null, orbHigh: null, orbLow: null, orbReady: false, orbState: "ORB_FORMING",
+      vwapUpper1Series: [], vwapLower1Series: [], vwapUpper2Series: [], vwapLower2Series: [],
+      vwapStretch: "UNAVAILABLE", nearKeyLevel: false, nearestKeyLevelName: null,
+      liquiditySweep: "NONE", recentFvg: null,
+    };
+    if (!bars || bars.length === 0) return empty;
+    const n = bars.length;
+    const highs = bars.map((b) => b.h);
+    const lows = bars.map((b) => b.l);
+    const closes = bars.map((b) => b.c);
+    const vols = bars.map((b) => b.v || 0);
+
+    // 1. Causal Wilder ADX(14)
+    let adx14 = null, plusDi14 = null, minusDi14 = null, marketRegime = "WARMING_UP";
+    const adxP = 14;
+    if (n >= adxP + 2) {
+      const tr = new Array(n).fill(0), pdm = new Array(n).fill(0), mdm = new Array(n).fill(0);
+      for (let i = 1; i < n; i++) {
+        const up = highs[i] - highs[i - 1], dn = lows[i - 1] - lows[i];
+        pdm[i] = up > dn && up > 0 ? up : 0;
+        mdm[i] = dn > up && dn > 0 ? dn : 0;
+        tr[i] = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i - 1]), Math.abs(lows[i] - closes[i - 1]));
+      }
+      let smTr = 0, smP = 0, smM = 0;
+      for (let i = 1; i <= adxP; i++) { smTr += tr[i]; smP += pdm[i]; smM += mdm[i]; }
+      const dxs = [];
+      for (let i = adxP; i < n; i++) {
+        if (i > adxP) {
+          smTr = smTr - smTr / adxP + tr[i];
+          smP = smP - smP / adxP + pdm[i];
+          smM = smM - smM / adxP + mdm[i];
+        }
+        const pdi = smTr > 0 ? (100 * smP) / smTr : 0;
+        const mdi = smTr > 0 ? (100 * smM) / smTr : 0;
+        plusDi14 = pdi; minusDi14 = mdi;
+        const denom = pdi + mdi;
+        dxs.push(denom > 0 ? (100 * Math.abs(pdi - mdi)) / denom : 0);
+      }
+      if (dxs.length > 0) {
+        if (dxs.length < adxP) {
+          adx14 = dxs.reduce((a, b) => a + b, 0) / dxs.length;
+        } else {
+          adx14 = dxs.slice(0, adxP).reduce((a, b) => a + b, 0) / adxP;
+          for (let i = adxP; i < dxs.length; i++) adx14 = (adx14 * (adxP - 1) + dxs[i]) / adxP;
+        }
+        marketRegime = adx14 < 20 ? "CHOPPY_SIDEWAYS" : adx14 <= 40 ? "TRENDING" : "STRONG_EXHAUSTION_WATCH";
+      }
+    }
+
+    // 2. Causal Supertrend(10, 3.0)
+    const stP = 10, stMult = 3.0;
+    const stSeries = new Array(n).fill(null), stDirSeries = new Array(n).fill(0);
+    let supertrendValue = null, supertrendDirection = "NEUTRAL";
+    if (n >= stP + 2) {
+      const tr = new Array(n).fill(0);
+      tr[0] = highs[0] - lows[0];
+      for (let i = 1; i < n; i++) {
+        tr[i] = Math.max(highs[i] - lows[i], Math.abs(highs[i] - closes[i - 1]), Math.abs(lows[i] - closes[i - 1]));
+      }
+      const atr = new Array(n).fill(0);
+      let s0 = 0;
+      for (let i = 0; i < stP; i++) s0 += tr[i];
+      atr[stP - 1] = s0 / stP;
+      for (let i = stP; i < n; i++) atr[i] = (atr[i - 1] * (stP - 1) + tr[i]) / stP;
+
+      const fUp = new Array(n).fill(0), fLo = new Array(n).fill(0), dir = new Array(n).fill(1);
+      for (let i = stP - 1; i < n; i++) {
+        const hl2 = (highs[i] + lows[i]) * 0.5;
+        const bUp = hl2 + stMult * atr[i], bLo = hl2 - stMult * atr[i];
+        if (i === stP - 1) {
+          fUp[i] = bUp; fLo[i] = bLo; dir[i] = closes[i] >= hl2 ? 1 : -1;
+        } else {
+          fUp[i] = bUp < fUp[i - 1] || closes[i - 1] > fUp[i - 1] ? bUp : fUp[i - 1];
+          fLo[i] = bLo > fLo[i - 1] || closes[i - 1] < fLo[i - 1] ? bLo : fLo[i - 1];
+          dir[i] = dir[i - 1] === 1 ? (closes[i] < fLo[i] ? -1 : 1) : (closes[i] > fUp[i] ? 1 : -1);
+        }
+        stDirSeries[i] = dir[i];
+        stSeries[i] = dir[i] === 1 ? fLo[i] : fUp[i];
+      }
+      supertrendDirection = dir[n - 1] === 1 ? "BULLISH" : "BEARISH";
+      supertrendValue = stSeries[n - 1];
+    }
+
+    // 3. PDH/PDL, ORB 15m (09:15-09:30 IST), and Session VWAP ±1σ/±2σ bands
+    let pdh = null, pdl = null, orbHigh = null, orbLow = null, orbReady = false, orbState = "ORB_FORMING";
+    const u1S = new Array(n).fill(null), l1S = new Array(n).fill(null);
+    const u2S = new Array(n).fill(null), l2S = new Array(n).fill(null);
+    let vwapStretch = "UNAVAILABLE", lastVwap = null;
+
+    let prevDate = null;
+    for (let i = 0; i < n; i++) {
+      const d = bars[i].t.slice(0, 10);
+      if (d < sessionDate && (prevDate === null || d > prevDate)) prevDate = d;
+    }
+    if (prevDate !== null) {
+      for (let i = 0; i < n; i++) {
+        if (bars[i].t.slice(0, 10) === prevDate) {
+          pdh = pdh === null ? highs[i] : Math.max(pdh, highs[i]);
+          pdl = pdl === null ? lows[i] : Math.min(pdl, lows[i]);
+        }
+      }
+    }
+
+    let cumVol = 0, cumPv = 0, cumPv2 = 0;
+    let lastSessHHMM = "";
+    for (let i = 0; i < n; i++) {
+      if (bars[i].t.slice(0, 10) !== sessionDate) continue;
+      const hhmm = bars[i].t.slice(11, 16);
+      lastSessHHMM = hhmm;
+      if (hhmm >= "09:15" && hhmm < "09:30") {
+        orbHigh = orbHigh === null ? highs[i] : Math.max(orbHigh, highs[i]);
+        orbLow = orbLow === null ? lows[i] : Math.min(orbLow, lows[i]);
+      }
+      const tp = (highs[i] + lows[i] + closes[i]) / 3.0;
+      const v = vols[i];
+      if (v > 0) {
+        cumVol += v;
+        cumPv += tp * v;
+        cumPv2 += tp * tp * v;
+      }
+      if (cumVol > 0) {
+        const vw = cumPv / cumVol;
+        const sd = Math.sqrt(Math.max(0, cumPv2 / cumVol - vw * vw));
+        lastVwap = vw;
+        u1S[i] = vw + sd; l1S[i] = vw - sd;
+        u2S[i] = vw + 2 * sd; l2S[i] = vw - 2 * sd;
+        if (i === n - 1) {
+          vwapStretch = sd > 0 && closes[i] > u2S[i] ? "OVEREXTENDED_ABOVE_2SD" : sd > 0 && closes[i] < l2S[i] ? "OVEREXTENDED_BELOW_2SD" : "NORMAL";
+        }
+      }
+    }
+    if (orbHigh !== null && orbLow !== null && lastSessHHMM >= "09:29") {
+      orbReady = true;
+      const lc = closes[n - 1];
+      orbState = lc > orbHigh ? "ORB_BREAKOUT_UP" : lc < orbLow ? "ORB_BREAKOUT_DOWN" : "INSIDE_ORB";
+    }
+
+    // 4. Liquidity Sweep & 3-Candle Fair Value Gap (FVG)
+    let liquiditySweep = "NONE";
+    if (n >= 12) {
+      let priorLow = Infinity, priorHigh = -Infinity;
+      for (let i = n - 11; i < n - 1; i++) {
+        if (lows[i] < priorLow) priorLow = lows[i];
+        if (highs[i] > priorHigh) priorHigh = highs[i];
+      }
+      if (lows[n - 1] < priorLow && closes[n - 1] > priorLow) liquiditySweep = "BULLISH_SWEEP";
+      else if (highs[n - 1] > priorHigh && closes[n - 1] < priorHigh) liquiditySweep = "BEARISH_SWEEP";
+    }
+    let recentFvg = null;
+    for (let i = n - 1; i >= Math.max(2, n - 12); i--) {
+      if (lows[i] > highs[i - 2]) {
+        recentFvg = { direction: "BULLISH", low: highs[i - 2], high: lows[i], barIndex: i };
+        break;
+      }
+      if (highs[i] < lows[i - 2]) {
+        recentFvg = { direction: "BEARISH", low: highs[i], high: lows[i - 2], barIndex: i };
+        break;
+      }
+    }
+
+    // 5. Key-Level Location Proximity (within 0.35%)
+    const lc = closes[n - 1];
+    const lvls = [];
+    if (pdh !== null) lvls.push(["PDH", pdh]);
+    if (pdl !== null) lvls.push(["PDL", pdl]);
+    if (orbReady && orbHigh !== null) lvls.push(["ORB_HIGH", orbHigh]);
+    if (orbReady && orbLow !== null) lvls.push(["ORB_LOW", orbLow]);
+    if (lastVwap !== null) lvls.push(["VWAP", lastVwap]);
+    let nearKeyLevel = false, nearestKeyLevelName = null, bestD = Infinity;
+    for (const [nm, lv] of lvls) {
+      const dist = Math.abs(lc - lv) / Math.max(0.05, lc);
+      if (dist < bestD) { bestD = dist; nearestKeyLevelName = nm; }
+    }
+    if (bestD <= 0.0035) nearKeyLevel = true; else nearestKeyLevelName = null;
+
+    return {
+      adx14, plusDi14, minusDi14, marketRegime,
+      supertrendValue, supertrendDirection, supertrendSeries: stSeries, supertrendDirSeries: stDirSeries,
+      pdh, pdl, orbHigh, orbLow, orbReady, orbState,
+      vwapUpper1Series: u1S, vwapLower1Series: l1S, vwapUpper2Series: u2S, vwapLower2Series: l2S,
+      vwapStretch, nearKeyLevel, nearestKeyLevelName,
+      liquiditySweep, recentFvg,
+    };
+  }
+
   class IntradaySessionSimulator {
     constructor({
       symbol,
@@ -443,6 +632,9 @@
       chandelierAtrMult = 2.2,
       breakevenTriggerR = 1.2,
       minHoldBarsBeforeAgentExit = null,
+      strategyProfile = "BALANCED_ALL",
+      minAdxForEntry = null,
+      blockVwap2sdChase = null,
     }) {
       this.symbol = symbol;
       this.sessionDate = sessionDate;
@@ -469,6 +661,9 @@
       this.breakevenTriggerR = Number(breakevenTriggerR) || 1.2;
       this.minHoldBarsBeforeAgentExit =
         minHoldBarsBeforeAgentExit !== null ? Number(minHoldBarsBeforeAgentExit) : timeframe === "1m" ? 6 : 0;
+      this.strategyProfile = strategyProfile || "BALANCED_ALL";
+      this.minAdxForEntry = minAdxForEntry !== null ? Number(minAdxForEntry) : timeframe === "1m" ? 18.0 : 0.0;
+      this.blockVwap2sdChase = blockVwap2sdChase !== null ? Boolean(blockVwap2sdChase) : timeframe === "1m";
 
       this.reset();
     }
@@ -488,6 +683,7 @@
       this.breakevenLocked = false;
       this.chandelierStopHistory = [];
       this.lastMtf5mTrend = "NEUTRAL";
+      this.lastOverlays = null;
       this.decisions = [];
       this.closedTrades = [];
       this.orders = [];
@@ -761,6 +957,8 @@
       const analysis = analyzeCausalBars(causalSlice, this.sessionDate);
       this.lastAnalysis = analysis;
       this.lastMtf5mTrend = evaluateCausal5mMtfTrend(causalSlice);
+      const ov = computeChartOverlays(causalSlice, this.sessionDate);
+      this.lastOverlays = ov;
 
       // Compute structural candidate stop/target (NSE tick rounded)
       const isBearCentral = this.centralDirection === "BEARISH";
@@ -919,6 +1117,33 @@
                   const expectedTrend = wantLong ? "BULLISH" : "BEARISH";
                   if (this.lastMtf5mTrend !== expectedTrend) {
                     disciplineRejects.push(`MTF_5M_TREND_MISALIGNED:5m=${this.lastMtf5mTrend},req=${expectedTrend}`);
+                  }
+                }
+                if (this.minAdxForEntry > 0 && ov.adx14 !== null && ov.adx14 < this.minAdxForEntry) {
+                  disciplineRejects.push(`ADX_CHOPPY_MARKET:adx=${ov.adx14.toFixed(1)}<${this.minAdxForEntry.toFixed(1)}`);
+                }
+                if (this.blockVwap2sdChase) {
+                  if (wantLong && ov.vwapStretch === "OVEREXTENDED_ABOVE_2SD") {
+                    disciplineRejects.push("VWAP_2SD_OVEREXTENDED_CHASE:LONG_ABOVE_+2SD");
+                  } else if (!wantLong && ov.vwapStretch === "OVEREXTENDED_BELOW_2SD") {
+                    disciplineRejects.push("VWAP_2SD_OVEREXTENDED_CHASE:SHORT_BELOW_-2SD");
+                  }
+                }
+                const wantDir = wantLong ? "BULLISH" : "BEARISH";
+                if (this.strategyProfile === "ORB_BREAKOUT") {
+                  const reqOrb = wantLong ? "ORB_BREAKOUT_UP" : "ORB_BREAKOUT_DOWN";
+                  if (!ov.orbReady || ov.orbState !== reqOrb) {
+                    disciplineRejects.push(`PROFILE_ORB_REQUIRED:${ov.orbState}!=${reqOrb}`);
+                  }
+                } else if (this.strategyProfile === "SUPERTREND_ADX") {
+                  if (ov.supertrendDirection !== wantDir || (ov.adx14 !== null && ov.adx14 < 20.0)) {
+                    disciplineRejects.push(`PROFILE_SUPERTREND_ADX_MISMATCH:st=${ov.supertrendDirection},adx=${ov.adx14}`);
+                  }
+                } else if (this.strategyProfile === "LIQUIDITY_REVERSAL") {
+                  const reqSw = wantLong ? "BULLISH_SWEEP" : "BEARISH_SWEEP";
+                  const fvgOk = ov.recentFvg !== null && ov.recentFvg.direction === wantDir;
+                  if (ov.liquiditySweep !== reqSw && !ov.nearKeyLevel && !fvgOk) {
+                    disciplineRejects.push("PROFILE_LIQUIDITY_REVERSAL_NO_LEVEL_OR_SWEEP");
                   }
                 }
                 if (this.maxEntriesPerSession !== null && this.entriesOpenedThisSession >= this.maxEntriesPerSession) {
@@ -1095,6 +1320,7 @@
     humanPermissionAllows,
     evaluateCausal5mMtfTrend,
     computeChandelierTrailingStop,
+    computeChartOverlays,
     IntradaySessionSimulator,
   };
 });

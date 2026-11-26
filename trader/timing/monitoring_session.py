@@ -40,6 +40,7 @@ from trader.config import (
 )
 from trader.data.market_feed import BaseMarketFeed, TimeframeLiteral
 from trader.evaluation.outcome_evaluator import SessionOutcomeReport, evaluate_session_outcomes
+from trader.intelligence.chart_overlays import StrategyProfileLiteral, compute_chart_overlays
 from trader.intelligence.data_contract import ProvenanceTier
 from trader.portfolio.cost_calculator import calculate_intraday_costs
 from trader.portfolio.ledger import IntradayPaperPortfolio, round_to_nse_tick
@@ -353,13 +354,16 @@ class IntradayCandleMonitoringSession:
         chandelier_atr_mult: float = 2.2,
         breakeven_trigger_r: float = 1.2,
         min_hold_bars_before_agent_exit: int | None = None,
+        strategy_profile: StrategyProfileLiteral = "BALANCED_ALL",
+        min_adx_for_entry: float | None = None,
+        block_vwap_2sd_chase: bool | None = None,
     ) -> MonitoringSessionResult:
         """Run a full causal intraday monitoring session from 09:15 IST to 15:30 IST."""
         sym_u = symbol.strip().upper()
         session_open_ist = datetime.combine(session_date, time(9, 15), tzinfo=IST_TZ)
         session_close_ist = datetime.combine(session_date, time(15, 30), tzinfo=IST_TZ)
 
-        # CYCLE-012/013/014 timeframe-aware entry & trailing-exit defaults (active by default on 1m)
+        # CYCLE-012..018 timeframe-aware entry & trailing-exit defaults (active by default on 1m)
         eff_min_rtf = (
             float(min_reward_to_friction_ratio)
             if min_reward_to_friction_ratio is not None
@@ -394,6 +398,16 @@ class IntradayCandleMonitoringSession:
             int(min_hold_bars_before_agent_exit)
             if min_hold_bars_before_agent_exit is not None
             else (6 if timeframe == "1m" else 0)
+        )
+        eff_min_adx = (
+            float(min_adx_for_entry)
+            if min_adx_for_entry is not None
+            else (18.0 if timeframe == "1m" else 0.0)
+        )
+        eff_block_vwap_chase = (
+            bool(block_vwap_2sd_chase)
+            if block_vwap_2sd_chase is not None
+            else (timeframe == "1m")
         )
 
         self.portfolio.reset_daily_session(session_date)
@@ -712,6 +726,32 @@ class IntradayCandleMonitoringSession:
                                 discipline_rejects.append(
                                     f"MTF_5M_TREND_MISALIGNED:5m={mtf_trend},req={expected_trend}"
                                 )
+                        if eff_min_adx > 0.0 or eff_block_vwap_chase or strategy_profile != "BALANCED_ALL":
+                            ov = compute_chart_overlays(causal_df, session_date)
+                            want_dir = "BULLISH" if act == ActionType.ENTRY_LONG else "BEARISH"
+                            if eff_min_adx > 0.0 and ov.adx_14 is not None and ov.adx_14 < eff_min_adx:
+                                discipline_rejects.append(
+                                    f"ADX_CHOPPY_MARKET:adx={ov.adx_14:.1f}<{eff_min_adx:.1f}"
+                                )
+                            if eff_block_vwap_chase:
+                                if act == ActionType.ENTRY_LONG and ov.vwap_stretch == "OVEREXTENDED_ABOVE_2SD":
+                                    discipline_rejects.append("VWAP_2SD_OVEREXTENDED_CHASE:LONG_ABOVE_+2SD")
+                                elif act == ActionType.ENTRY_SHORT and ov.vwap_stretch == "OVEREXTENDED_BELOW_2SD":
+                                    discipline_rejects.append("VWAP_2SD_OVEREXTENDED_CHASE:SHORT_BELOW_-2SD")
+                            if strategy_profile == "ORB_BREAKOUT":
+                                req_orb = "ORB_BREAKOUT_UP" if act == ActionType.ENTRY_LONG else "ORB_BREAKOUT_DOWN"
+                                if not ov.orb_ready or ov.orb_state != req_orb:
+                                    discipline_rejects.append(f"PROFILE_ORB_REQUIRED:{ov.orb_state}!={req_orb}")
+                            elif strategy_profile == "SUPERTREND_ADX":
+                                if ov.supertrend_direction != want_dir or (ov.adx_14 is not None and ov.adx_14 < 20.0):
+                                    discipline_rejects.append(
+                                        f"PROFILE_SUPERTREND_ADX_MISMATCH:st={ov.supertrend_direction},adx={ov.adx_14}"
+                                    )
+                            elif strategy_profile == "LIQUIDITY_REVERSAL":
+                                req_sw = "BULLISH_SWEEP" if act == ActionType.ENTRY_LONG else "BEARISH_SWEEP"
+                                fvg_ok = ov.recent_fvg is not None and ov.recent_fvg.direction == want_dir
+                                if ov.liquidity_sweep != req_sw and not ov.near_key_level and not fvg_ok:
+                                    discipline_rejects.append("PROFILE_LIQUIDITY_REVERSAL_NO_LEVEL_OR_SWEEP")
                         if eff_max_entries is not None and entries_opened_this_session >= eff_max_entries:
                             discipline_rejects.append(
                                 f"DAILY_ENTRY_CAP_REACHED:{entries_opened_this_session}/{eff_max_entries}"
