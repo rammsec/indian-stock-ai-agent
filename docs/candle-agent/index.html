@@ -372,6 +372,15 @@
       </div>
     </div>
 
+    <!-- CYCLE-024: MULTI-STOCK LIVE OPPORTUNITY SCANNER STRIP -->
+    <div class="card" style="margin-bottom:14px;padding:10px 14px;">
+      <div class="card-header" style="margin-bottom:8px;">
+        <span>Multi-Stock Causal Opportunity Scanner (Click to Switch)</span>
+        <span id="scanner-asof" style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);">Scanning catalog…</span>
+      </div>
+      <div id="watchlist-scanner" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+
     <!-- MAIN CHART + 3-PANEL AGENT HUD -->
     <div class="main-grid">
       <div class="card">
@@ -1073,6 +1082,61 @@
           outSum.textContent = "COMPLETE SESSION TO REVIEW";
           outBody.innerHTML = `<tr><td colspan="7" style="color:var(--text-secondary);text-align:center;">Step or Play to 15:30 IST close to unlock post-session outcome review (zero lookahead during session).</td></tr>`;
         }
+        renderWatchlistScanner();
+      }
+
+      function renderWatchlistScanner() {
+        const container = document.getElementById("watchlist-scanner");
+        const asofEl = document.getElementById("scanner-asof");
+        if (!container || !catalog || !sim) return;
+        const tf = elTf.value;
+        const targetDate = elDate.value;
+        const curRec = sim.records.length > 0 ? sim.records[sim.records.length - 1] : null;
+        const cutoffTs = curRec ? curRec.tsOpen : null;
+        if (asofEl) {
+          asofEl.textContent = cutoffTs
+            ? `Causal @ ${cutoffTs.slice(0, 16).replace("T", " ")} IST (${tf})`
+            : `Pre-open (${targetDate}, ${tf}) — Step or Play to scan live`;
+        }
+        const tfMap = (catalog.bars && catalog.bars[tf]) || {};
+        const rows = [];
+        for (const sym of catalog.symbols || []) {
+          const allBars = tfMap[sym] || [];
+          const dayBars = allBars.filter((b) => b.t.startsWith(targetDate));
+          if (!dayBars.length) continue;
+          const revealed = cutoffTs ? dayBars.filter((b) => b.t <= cutoffTs) : dayBars.slice(0, 1);
+          if (!revealed.length) continue;
+          const first = revealed[0];
+          const last = revealed[revealed.length - 1];
+          const pctChg = ((last.c - first.o) / Math.max(first.o, 1e-6)) * 100;
+          const bias = pctChg > 0.25 ? "BULLISH" : pctChg < -0.25 ? "BEARISH" : "NEUTRAL";
+          const score = Math.min(99, Math.round(40 + Math.abs(pctChg) * 28));
+          const tag = bias === "BULLISH" ? "LONG" : bias === "BEARISH" ? "SHORT" : "CHOP";
+          rows.push({ sym, lastC: last.c, pctChg, bias, score, tag });
+        }
+        rows.sort((a, b) => b.score - a.score);
+        container.innerHTML = rows
+          .map((r, i) => {
+            const active = r.sym === elSymbol.value;
+            const col = r.bias === "BULLISH" ? "#22c55e" : r.bias === "BEARISH" ? "#ef4444" : "#94a3b8";
+            return `<button type="button" data-scan-sym="${r.sym}" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;border:1px solid ${active ? "#38bdf8" : "rgba(148,163,184,0.22)"};background:${active ? "rgba(56,189,248,0.14)" : "rgba(15,23,42,0.55)"};color:#e2e8f0;font-family:var(--font-mono);font-size:11px;">
+              <span style="color:#94a3b8;">#${i + 1}</span>
+              <strong style="color:#f8fafc;">${r.sym}</strong>
+              <span style="color:${col};font-weight:700;">${r.tag} (${r.score})</span>
+              <span>₹${r.lastC.toFixed(1)}</span>
+              <span style="color:${col};">${r.pctChg >= 0 ? "+" : ""}${r.pctChg.toFixed(2)}%</span>
+            </button>`;
+          })
+          .join("");
+        container.querySelectorAll("button[data-scan-sym]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const nextSym = btn.getAttribute("data-scan-sym");
+            if (nextSym && nextSym !== elSymbol.value) {
+              elSymbol.value = nextSym;
+              initSession();
+            }
+          });
+        });
       }
 
       function stepOnce() {
