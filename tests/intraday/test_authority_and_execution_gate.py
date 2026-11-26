@@ -77,11 +77,13 @@ def _make_instruction(
     scope: str = "TCS",
     valid_from: datetime,
     duration_hours: float = 6.0,
-    instruction_id: str = "TEST-INSTR-1",
+    instruction_id: str | None = None,
     reason: str = "Test instruction",
 ) -> AuthorityInstruction:
+    import uuid
+
     return AuthorityInstruction(
-        instruction_id=instruction_id,
+        instruction_id=instruction_id or f"TEST-INSTR-{uuid.uuid4().hex[:8]}",
         authority=authority,
         scope=scope,
         permission=permission,
@@ -97,11 +99,16 @@ def _make_instruction(
 # ==============================================================================
 
 def test_central_buy_plus_candle_buy_approved() -> None:
-    """Scenario 1: Central BUY + Candle BUY -> Approved when risk engine approves."""
+    """Scenario 1: Human ALLOW_LONG + Central BUY + Candle BUY -> Approved when risk engine approves."""
     gate = MandatoryExecutionGate()
     portfolio = IntradayPaperPortfolio(initial_capital=DEFAULT_INITIAL_CAPITAL_INR)
     now = datetime(2026, 11, 20, 10, 15, tzinfo=IST_TZ)
 
+    gate.set_human_instruction(_make_instruction(
+        authority=AuthoritySource.HUMAN,
+        permission=PermissionType.ALLOW_LONG,
+        valid_from=now - timedelta(minutes=30),
+    ))
     central_instr = _make_instruction(
         authority=AuthoritySource.CENTRAL_AGENT,
         permission=PermissionType.ALLOW_LONG,
@@ -419,7 +426,7 @@ def test_risk_engine_rejection_overrides_human_and_central_approval() -> None:
     # Sized with a tight daily loss limit
     risk_engine = DeterministicRiskEngine(max_daily_loss_pct=0.01)
     gate = MandatoryExecutionGate(risk_engine=risk_engine)
-    portfolio = IntradayPaperPortfolio(initial_capital=50000.0)
+    portfolio = IntradayPaperPortfolio(initial_capital=1000.0)
     now = datetime(2026, 11, 20, 10, 15, tzinfo=IST_TZ)
 
     # Both Human and Central approve
@@ -434,7 +441,7 @@ def test_risk_engine_rejection_overrides_human_and_central_approval() -> None:
         valid_from=now - timedelta(minutes=10),
     ))
 
-    # Request position that exceeds capital (50 shares @ 2500 = 125,000 INR > 50,000 capital)
+    # Even after Risk Engine sizing, ₹1,000 capital cannot cover 1 share @ ₹2,500 -> Risk Engine MUST reject!
     candle_eval = _make_timing_assessment(as_of=now)
 
     outcome, executed = gate.execute_with_gate_protection(
@@ -449,7 +456,7 @@ def test_risk_engine_rejection_overrides_human_and_central_approval() -> None:
 
     assert outcome.approved is False
     assert executed is False
-    assert any("INSUFFICIENT_CASH" in r for r in outcome.rejection_reasons)
+    assert any("RISK_ENGINE_REJECTION" in r for r in outcome.rejection_reasons)
 
 
 def test_conflicting_human_and_central_instructions_human_restriction_wins() -> None:
@@ -596,6 +603,11 @@ def test_sha256_audit_trail_immutable_and_verifiable() -> None:
     portfolio = IntradayPaperPortfolio(initial_capital=DEFAULT_INITIAL_CAPITAL_INR)
     now = datetime(2026, 11, 20, 10, 15, tzinfo=IST_TZ)
 
+    gate.set_human_instruction(_make_instruction(
+        authority=AuthoritySource.HUMAN,
+        permission=PermissionType.ALLOW_LONG,
+        valid_from=now - timedelta(minutes=10),
+    ))
     gate.set_central_instruction(_make_instruction(
         authority=AuthoritySource.CENTRAL_AGENT,
         permission=PermissionType.ALLOW_LONG,

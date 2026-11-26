@@ -96,6 +96,7 @@ class PaperFeedSignalSession:
         snapshot_dir: Path | None = None,
         lookback_bars: int = 200,
         requested_quantity: int = 10,
+        human_instruction: Any | None = None,
     ) -> DailyPaperCallReport:
         if as_of_ist.tzinfo is None:
             raise ValueError("as_of_ist must be timezone-aware")
@@ -170,7 +171,9 @@ class PaperFeedSignalSession:
 
             # Register Central Instruction from hypothesis
             central_instr = hyp.to_authority_instruction()
-            self.execution_gate.set_central_instruction(central_instr)
+            self.execution_gate.set_central_instruction(central_instr, current_time=cutoff_ist)
+            if human_instruction is not None:
+                self.execution_gate.set_human_instruction(human_instruction, current_time=cutoff_ist)
 
             if (
                 bars_primary is not None

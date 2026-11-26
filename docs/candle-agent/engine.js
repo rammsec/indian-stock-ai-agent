@@ -324,18 +324,38 @@
   }
 
   function humanPermissionAllows(permission, actionType) {
-    const isExit = actionType === "EXIT_LONG" || actionType === "COVER_SHORT" || actionType === "RISK_EXIT";
-    if (isExit) return { allowed: true, reason: `${permission} always permits protective exit (${actionType})` };
-    if (permission === "STOP_ALL" || permission === "PAUSE" || permission === "NO_NEW_ENTRIES" || permission === "EXIT_ONLY") {
+    const isRiskExit = actionType === "RISK_EXIT";
+    const isDiscretionaryExit = actionType === "EXIT_LONG" || actionType === "COVER_SHORT";
+    const isExit = isRiskExit || isDiscretionaryExit;
+    if (isRiskExit) return { allowed: true, reason: `${permission || "NONE"} always permits protective RISK_EXIT` };
+    if (!permission || typeof permission !== "string") {
+      return isExit
+        ? { allowed: true, reason: "Missing Human permission still permits protective exit" }
+        : { allowed: false, reason: "HUMAN_INSTRUCTION_MISSING: fail-closed blocks new entries" };
+    }
+    if (permission === "PAUSE") {
+      return { allowed: false, reason: `HUMAN permission PAUSE suspends ${actionType} (only RISK_EXIT allowed)` };
+    }
+    if (isExit) return { allowed: true, reason: `${permission} permits protective exit (${actionType})` };
+    if (permission === "STOP_ALL" || permission === "NO_NEW_ENTRIES" || permission === "EXIT_ONLY") {
       return { allowed: false, reason: `HUMAN permission ${permission} blocks new entries` };
     }
-    if (permission === "ALLOW_LONG" && actionType === "OPEN_SHORT") {
-      return { allowed: false, reason: "HUMAN permission ALLOW_LONG prohibits short entries" };
+    if (permission === "ALLOW_LONG") {
+      if (actionType === "OPEN_SHORT") {
+        return { allowed: false, reason: "HUMAN permission ALLOW_LONG prohibits short entries" };
+      }
+      return { allowed: true, reason: `ALLOW_LONG permits ${actionType}` };
     }
-    if (permission === "ALLOW_SHORT" && actionType === "OPEN_LONG") {
-      return { allowed: false, reason: "HUMAN permission ALLOW_SHORT prohibits long entries" };
+    if (permission === "ALLOW_SHORT") {
+      if (actionType === "OPEN_LONG") {
+        return { allowed: false, reason: "HUMAN permission ALLOW_SHORT prohibits long entries" };
+      }
+      return { allowed: true, reason: `ALLOW_SHORT permits ${actionType}` };
     }
-    return { allowed: true, reason: `${permission} permits ${actionType}` };
+    if (permission === "ALLOW_BOTH") {
+      return { allowed: true, reason: `ALLOW_BOTH permits ${actionType}` };
+    }
+    return { allowed: false, reason: `UNKNOWN_HUMAN_PERMISSION:${permission}` };
   }
 
   function evaluateCausal5mMtfTrend(bars) {
@@ -900,7 +920,14 @@
           const isPendingExit = po.actionType === "EXIT_LONG" || po.actionType === "COVER_SHORT";
           const permCheck = humanPermissionAllows(this.humanPermission, po.actionType);
           const haltedBlock = !isPendingExit && this._checkCircuitBreakers();
-          if (permCheck.allowed && !haltedBlock) {
+          const reducingBlock = !isPendingExit && (this.riskState === "REDUCING" || tsOpen.slice(11, 16) > "14:45");
+          let centralBlock = false;
+          if (!isPendingExit && this.centralDirection !== "AUTO") {
+            if (this.centralDirection === "NEUTRAL") centralBlock = true;
+            if (this.centralDirection === "BULLISH" && po.actionType === "OPEN_SHORT") centralBlock = true;
+            if (this.centralDirection === "BEARISH" && po.actionType === "OPEN_LONG") centralBlock = true;
+          }
+          if (permCheck.allowed && !haltedBlock && !reducingBlock && !centralBlock) {
             if (po.actionType === "OPEN_LONG" && !this.position) {
               const qty = this._sizeOrder("BUY", fillPx, po.stopLoss);
               if (qty > 0 && this._openPosition("LONG", qty, fillPx, po.stopLoss, po.target, tsOpen)) {
@@ -916,7 +943,14 @@
               barNotes.push(`FILLED ${po.actionType}@₹${fillPx.toFixed(2)}`);
             }
           } else {
-            barNotes.push(`OPEN_GATE_BLOCKED:${permCheck.reason}`);
+            const blockReason = !permCheck.allowed
+              ? permCheck.reason
+              : haltedBlock
+              ? "RISK_HALTED_EXIT_ONLY"
+              : reducingBlock
+              ? "PAST_1445_OR_REDUCING"
+              : `CENTRAL_DIRECTION_CHANGED:${this.centralDirection}`;
+            barNotes.push(`OPEN_GATE_BLOCKED:${blockReason}`);
           }
         }
       }

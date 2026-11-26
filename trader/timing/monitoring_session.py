@@ -76,6 +76,7 @@ class PendingOrder:
     target: float | None
     candle_assessment: TimingAssessment | None
     reason: str
+    reservation_order_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -485,8 +486,22 @@ class IntradayCandleMonitoringSession:
 
             # Apply any scheduled mid-session human instruction updates up to ts_open
             while mid_update_idx < len(sorted_mid_updates) and sorted_mid_updates[mid_update_idx][0] <= ts_open:
-                self.execution_gate.set_human_instruction(sorted_mid_updates[mid_update_idx][1])
-                current_human_permission = sorted_mid_updates[mid_update_idx][1].permission
+                mid_instr = sorted_mid_updates[mid_update_idx][1]
+                reg_res = self.execution_gate.set_human_instruction(mid_instr, current_time=ts_open)
+                if reg_res.accepted:
+                    current_human_permission = mid_instr.permission
+                    if mid_instr.permission == PermissionType.STOP_ALL:
+                        if pending_order is not None and pending_order.reservation_order_id:
+                            self.execution_gate.release_cash_reservation(pending_order.reservation_order_id)
+                        pending_order = None
+                        self.execution_gate.invoke_safe_position_management(
+                            symbol=sym_u,
+                            portfolio=self.portfolio,
+                            current_time=ts_open,
+                        )
+                        bar_events_notes.append(f"HUMAN_STOP_ALL_SAFE_MANAGEMENT:{mid_instr.instruction_id}")
+                else:
+                    bar_events_notes.append(f"HUMAN_INSTRUCTION_REJECTED:{reg_res.reason}")
                 mid_update_idx += 1
 
             # STEP A: At bar_t.ts_open_ist, execute any PendingOrder queued at bar_{t-1}.ts_close_ist
@@ -508,6 +523,8 @@ class IntradayCandleMonitoringSession:
                         gap_cancel_reason = f"PENDING_ORDER_CANCELLED_GAP_TARGET:open={fill_px:.2f}<=tp={tp_tick:.2f}"
 
                 if gap_cancel_reason is not None:
+                    if pending_order.reservation_order_id:
+                        self.execution_gate.release_cash_reservation(pending_order.reservation_order_id)
                     bar_events_notes.append(gap_cancel_reason)
                 else:
                     gate_exec, executed = self.execution_gate.execute_with_gate_protection(
@@ -520,6 +537,7 @@ class IntradayCandleMonitoringSession:
                         candle_assessment=pending_order.candle_assessment,
                         stop_loss_price=sl_tick,
                         target_price=tp_tick,
+                        reservation_order_id=pending_order.reservation_order_id,
                     )
                     if executed:
                         bar_events_notes.append(
@@ -540,11 +558,24 @@ class IntradayCandleMonitoringSession:
 
             # Apply any scheduled mid-session human instruction updates up to ts_close
             while mid_update_idx < len(sorted_mid_updates) and sorted_mid_updates[mid_update_idx][0] <= ts_close:
-                self.execution_gate.set_human_instruction(sorted_mid_updates[mid_update_idx][1])
-                current_human_permission = sorted_mid_updates[mid_update_idx][1].permission
+                mid_instr = sorted_mid_updates[mid_update_idx][1]
+                reg_res = self.execution_gate.set_human_instruction(mid_instr, current_time=ts_close)
+                if reg_res.accepted:
+                    current_human_permission = mid_instr.permission
+                    if mid_instr.permission == PermissionType.STOP_ALL:
+                        self.execution_gate.invoke_safe_position_management(
+                            symbol=sym_u,
+                            portfolio=self.portfolio,
+                            current_time=ts_close,
+                        )
+                        bar_events_notes.append(f"HUMAN_STOP_ALL_SAFE_MANAGEMENT:{mid_instr.instruction_id}")
+                else:
+                    bar_events_notes.append(f"HUMAN_INSTRUCTION_REJECTED:{reg_res.reason}")
                 mid_update_idx += 1
 
             # STEP B: Intrabar OHLC stop-loss / target check (conservative stop-first) & MTM DD check
+            # Decision 4: RiskState.HALTED implements EXIT_ONLY by default (blocks new entries,
+            # continues managing existing positions via SL/TP/approved exits & 15:15 square-off).
             if sym_u in self.portfolio.positions:
                 self.portfolio.update_candle_bar(
                     symbol=sym_u,
@@ -557,7 +588,8 @@ class IntradayCandleMonitoringSession:
                 )
                 if sym_u not in self.portfolio.positions:
                     last_exit_bar_index = int(bar_idx)
-                self.risk_engine.check_daily_loss_limit(self.portfolio)
+                if self.risk_engine.check_daily_loss_limit(self.portfolio):
+                    bar_events_notes.append("RISK_HALTED_EXIT_ONLY_ACTIVE:drawdown_breach_blocks_new_entries")
 
             # STEP C: NSE Time Boundaries (15:05 REDUCING, 15:15 Mandatory Square-Off)
             if self.risk_engine.state == RiskState.ACTIVE and ts_close.time() >= INTRADAY_REDUCING_WIND_DOWN_TIME:
@@ -585,7 +617,9 @@ class IntradayCandleMonitoringSession:
             causal_ev = self.feed.get_bars(sym_u, timeframe, ts_close, lookback_bars=warmup_lookback_bars + session_bar_budget)
             causal_df = evidence_to_agent_df(causal_ev)
 
-            if auto_direction:
+            # Decision 3: AUTO is a Central-authorized regime mode; yields immediately if an explicit
+            # Central hypothesis was provided, and never overrides Human restrictions.
+            if auto_direction and central_hypothesis is None:
                 auto_mtf = evaluate_causal_5m_mtf_trend(causal_df)
                 auto_ov = compute_chart_overlays(causal_df, session_date)
                 inferred = infer_auto_market_direction(auto_mtf, auto_ov, c_px)
@@ -601,7 +635,10 @@ class IntradayCandleMonitoringSession:
                         direction=new_bias,
                         as_of_ist=ts_close,
                     )
-                    self.execution_gate.set_central_instruction(hyp.to_authority_instruction(expires_after_hours=8.0))
+                    self.execution_gate.set_central_instruction(
+                        hyp.to_authority_instruction(expires_after_hours=8.0),
+                        current_time=ts_close,
+                    )
                     bar_events_notes.append(f"AUTO_DIRECTION_SWITCH:{new_bias.value}")
 
             pos_ctx: PositionContext | None = None
@@ -733,6 +770,7 @@ class IntradayCandleMonitoringSession:
                     entry_price=round_to_nse_tick(c_px),
                     stop_loss_price=sl_cand,
                     target_price=tp_cand,
+                    dry_run=True,
                 )
                 gate_status = gate_out.status
                 rej_reasons = gate_out.rejection_reasons
@@ -807,6 +845,14 @@ class IntradayCandleMonitoringSession:
                         gate_status = "REJECTED"
                         rej_reasons = tuple(discipline_rejects)
                     else:
+                        res_id: str | None = None
+                        if act.is_new_entry and approved_qty > 0:
+                            res_id = f"PEND-{sym_u}-{int(bar_idx)}"
+                            self.execution_gate.reserve_cash_for_pending_order(
+                                res_id,
+                                sym_u,
+                                round_to_nse_tick(c_px) * approved_qty,
+                            )
                         pending_order = PendingOrder(
                             symbol=sym_u,
                             action_type=act,
@@ -816,6 +862,7 @@ class IntradayCandleMonitoringSession:
                             target=tp_cand,
                             candle_assessment=lifecycle.timing_assessment if act.is_new_entry else None,
                             reason=f"Queued from {raw_call.value} at {ts_close.isoformat()}",
+                            reservation_order_id=res_id,
                         )
                 else:
                     effective_call = AgentCall.REJECT
@@ -863,6 +910,10 @@ class IntradayCandleMonitoringSession:
                 )
             )
 
+        # Release any lingering pending reservation at end of session
+        if pending_order is not None and pending_order.reservation_order_id:
+            self.execution_gate.release_cash_reservation(pending_order.reservation_order_id)
+
         # 5. Phase 2: Post-Session Counterfactual Outcome Review (strictly after session ends)
         eval_inputs = [
             {
@@ -884,11 +935,10 @@ class IntradayCandleMonitoringSession:
             default_eval_quantity=requested_quantity,
         )
 
-        # 6. Verify all 3 cryptographic SHA-256 chains
+        # 6. Verify all 3 cryptographic SHA-256 chains (full prev_hash linkage)
         ledger_ok, _ = self.portfolio.verify_ledger_integrity()
         risk_ok = bool(self.risk_engine.verify_audit_chain())
-        auth_trail = self.execution_gate.audit_trail
-        auth_ok = all(rec.verify_hash() for rec in auth_trail)
+        auth_ok = self.execution_gate.verify_audit_chain()
         total_friction = sum(float(t.get("total_friction_inr", 0.0)) for t in self.portfolio.closed_trades)
 
         return MonitoringSessionResult(

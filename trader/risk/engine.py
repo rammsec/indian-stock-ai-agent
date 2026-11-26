@@ -136,6 +136,13 @@ class OrderRateThrottler:
         self._lock = threading.Lock()
         self._timestamps: deque[datetime] = deque()
 
+    def would_allow(self, ts_ist: datetime) -> bool:
+        cutoff = ts_ist - timedelta(seconds=60)
+        with self._lock:
+            while self._timestamps and self._timestamps[0] <= cutoff:
+                self._timestamps.popleft()
+            return len(self._timestamps) < self.max_orders_per_minute
+
     def allow_and_record(self, ts_ist: datetime) -> bool:
         cutoff = ts_ist - timedelta(seconds=60)
         with self._lock:
@@ -328,9 +335,11 @@ class DeterministicRiskEngine:
         force_reduce_only: bool = False,
         action_type: str | None = None,
         include_entry_friction_in_cash_cap: bool = False,
+        dry_run: bool = False,
     ) -> RiskEvaluationResult:
         """Evaluate order proposal against all hard-coded risk constraints."""
         reasons: list[str] = []
+        symbol = symbol.strip().upper()
         side_upper = side.upper()
         action_upper = action_type.upper() if action_type is not None else None
 
@@ -530,7 +539,12 @@ class DeterministicRiskEngine:
             )
 
         # 5. Sliding-window order rate throttle
-        if not self.rate_throttler.allow_and_record(current_ist):
+        rate_ok = (
+            self.rate_throttler.would_allow(current_ist)
+            if dry_run
+            else self.rate_throttler.allow_and_record(current_ist)
+        )
+        if not rate_ok:
             reasons.append("Order rate throttle exceeded (max orders per minute)")
             return self._record_audit(
                 timestamp_ist=current_ist,
@@ -604,15 +618,17 @@ class DeterministicRiskEngine:
         max_risk_inr = total_equity * self.max_risk_per_trade_pct
         max_shares_by_risk = int(max_risk_inr / risk_per_share) if risk_per_share > 0 else 0
 
-        # 9. Position Size Ceiling (max 15% equity per stock)
+        # 9. Position Size Ceiling (max 15% equity per stock, net of pending symbol reservations)
         max_capital_per_pos = total_equity * self.max_position_weight_pct
         existing_pos_val = portfolio.positions[symbol].quantity * entry_price if symbol in portfolio.positions else 0.0
-        remaining_pos_capital = max(0.0, max_capital_per_pos - existing_pos_val)
+        reserved_sym_val = self.cash_ledger.reserved_for_symbol(symbol)
+        remaining_pos_capital = max(0.0, max_capital_per_pos - existing_pos_val - reserved_sym_val)
         max_shares_by_cap = int(remaining_pos_capital / entry_price) if entry_price > 0 else 0
 
-        # 10. Total Portfolio Exposure Limit (max 80% total invested)
+        # 10. Total Portfolio Exposure Limit (max 80% total invested, net of all pending reservations)
         max_portfolio_invested = total_equity * self.max_portfolio_exposure_pct
-        remaining_portfolio_capital = max(0.0, max_portfolio_invested - portfolio.invested_capital)
+        total_reserved = self.cash_ledger.total_reserved_inr
+        remaining_portfolio_capital = max(0.0, max_portfolio_invested - portfolio.invested_capital - total_reserved)
         max_shares_by_exposure = int(remaining_portfolio_capital / entry_price) if entry_price > 0 else 0
 
         # 11. Available Cash Limit (net of pending CashReservationLedger holds)

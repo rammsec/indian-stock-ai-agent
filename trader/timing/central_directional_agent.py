@@ -125,8 +125,10 @@ class DirectionalHypothesis:
                 else PermissionType.NO_NEW_ENTRIES
             )
         )
+        import uuid
+
         return AuthorityInstruction(
-            instruction_id=f"CENTRAL-{self.symbol}-{self.observation_date.isoformat()}",
+            instruction_id=f"CENTRAL-{self.symbol}-{self.observation_date.isoformat()}-{uuid.uuid4().hex[:8]}",
             authority=AuthoritySource.CENTRAL_AGENT,
             scope=self.symbol,
             permission=perm,
