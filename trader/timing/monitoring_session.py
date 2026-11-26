@@ -40,6 +40,7 @@ from trader.config import (
 )
 from trader.data.market_feed import BaseMarketFeed, TimeframeLiteral
 from trader.evaluation.outcome_evaluator import SessionOutcomeReport, evaluate_session_outcomes
+from trader.intelligence.chart_overlays import StrategyProfileLiteral, compute_chart_overlays
 from trader.intelligence.data_contract import ProvenanceTier
 from trader.portfolio.cost_calculator import calculate_intraday_costs
 from trader.portfolio.ledger import IntradayPaperPortfolio, round_to_nse_tick
@@ -245,6 +246,73 @@ def evaluate_causal_5m_mtf_trend(causal_df: pd.DataFrame) -> Literal["BULLISH", 
     return "NEUTRAL"
 
 
+def compute_chandelier_trailing_stop(
+    *,
+    side: Literal["LONG", "SHORT"],
+    entry_price: float,
+    current_close: float,
+    current_stop_loss: float | None,
+    highest_price: float,
+    lowest_price: float,
+    atr_14: float,
+    initial_risk_distance: float,
+    round_trip_fee_per_share: float = 0.0,
+    chandelier_atr_mult: float = 2.2,
+    breakeven_trigger_r: float = 1.2,
+) -> tuple[float | None, bool]:
+    """Compute monotonic Chandelier ATR trailing stop with fee-aware breakeven lock.
+
+    Returns (new_stop_loss, breakeven_locked).
+    - Never widens risk (strictly monotonic ratchet toward profit).
+    - Locks in entry +/- (round_trip_fee_per_share + 0.05) once favorable excursion >= breakeven_trigger_r * R.
+    - Clamps strictly inside current_close by at least 1 NSE tick (₹0.05) so it never self-triggers above market.
+    """
+    if atr_14 <= 0.0 and initial_risk_distance <= 0.0:
+        return current_stop_loss, False
+
+    breakeven_locked = False
+    candidates: list[float] = []
+    if current_stop_loss is not None:
+        candidates.append(float(current_stop_loss))
+
+    if side == "LONG":
+        if initial_risk_distance > 0.0 and highest_price >= entry_price + breakeven_trigger_r * initial_risk_distance:
+            be_floor = round_to_nse_tick(entry_price + max(0.0, round_trip_fee_per_share) + 0.05)
+            candidates.append(be_floor)
+            breakeven_locked = True
+        if atr_14 > 0.0:
+            ch_stop = round_to_nse_tick(highest_price - chandelier_atr_mult * atr_14)
+            if ch_stop > 0.0:
+                candidates.append(ch_stop)
+        if not candidates:
+            return None, breakeven_locked
+        best = max(candidates)
+        max_valid = round_to_nse_tick(max(0.05, current_close - 0.05))
+        if current_stop_loss is not None:
+            best = max(float(current_stop_loss), min(best, max_valid))
+        else:
+            best = min(best, max_valid)
+        return round_to_nse_tick(best), breakeven_locked
+
+    # SHORT
+    if initial_risk_distance > 0.0 and lowest_price <= entry_price - breakeven_trigger_r * initial_risk_distance:
+        be_cap = round_to_nse_tick(max(0.05, entry_price - max(0.0, round_trip_fee_per_share) - 0.05))
+        candidates.append(be_cap)
+        breakeven_locked = True
+    if atr_14 > 0.0:
+        ch_stop = round_to_nse_tick(lowest_price + chandelier_atr_mult * atr_14)
+        candidates.append(ch_stop)
+    if not candidates:
+        return None, breakeven_locked
+    best = min(candidates)
+    min_valid = round_to_nse_tick(current_close + 0.05)
+    if current_stop_loss is not None:
+        best = min(float(current_stop_loss), max(best, min_valid))
+    else:
+        best = max(best, min_valid)
+    return round_to_nse_tick(best), breakeven_locked
+
+
 class IntradayCandleMonitoringSession:
     """Continuous bar-by-bar intraday candle monitoring & paper-trading session engine."""
 
@@ -282,13 +350,20 @@ class IntradayCandleMonitoringSession:
         max_entries_per_session: int | None = None,
         require_mtf_trend_alignment: bool | None = None,
         min_winner_rr_multiple: float | None = None,
+        enable_chandelier_trailing: bool | None = None,
+        chandelier_atr_mult: float = 2.2,
+        breakeven_trigger_r: float = 1.2,
+        min_hold_bars_before_agent_exit: int | None = None,
+        strategy_profile: StrategyProfileLiteral = "BALANCED_ALL",
+        min_adx_for_entry: float | None = None,
+        block_vwap_2sd_chase: bool | None = None,
     ) -> MonitoringSessionResult:
         """Run a full causal intraday monitoring session from 09:15 IST to 15:30 IST."""
         sym_u = symbol.strip().upper()
         session_open_ist = datetime.combine(session_date, time(9, 15), tzinfo=IST_TZ)
         session_close_ist = datetime.combine(session_date, time(15, 30), tzinfo=IST_TZ)
 
-        # CYCLE-012/013 timeframe-aware entry-discipline defaults (active by default on 1m)
+        # CYCLE-012..018 timeframe-aware entry & trailing-exit defaults (active by default on 1m)
         eff_min_rtf = (
             float(min_reward_to_friction_ratio)
             if min_reward_to_friction_ratio is not None
@@ -313,6 +388,26 @@ class IntradayCandleMonitoringSession:
             float(min_winner_rr_multiple)
             if min_winner_rr_multiple is not None
             else (2.5 if timeframe == "1m" else 0.0)
+        )
+        eff_chandelier = (
+            bool(enable_chandelier_trailing)
+            if enable_chandelier_trailing is not None
+            else (timeframe == "1m")
+        )
+        eff_min_hold_bars = (
+            int(min_hold_bars_before_agent_exit)
+            if min_hold_bars_before_agent_exit is not None
+            else (6 if timeframe == "1m" else 0)
+        )
+        eff_min_adx = (
+            float(min_adx_for_entry)
+            if min_adx_for_entry is not None
+            else (18.0 if timeframe == "1m" else 0.0)
+        )
+        eff_block_vwap_chase = (
+            bool(block_vwap_2sd_chase)
+            if block_vwap_2sd_chase is not None
+            else (timeframe == "1m")
         )
 
         self.portfolio.reset_daily_session(session_date)
@@ -363,8 +458,10 @@ class IntradayCandleMonitoringSession:
         mid_update_idx = 0
 
         pending_order: PendingOrder | None = None
+        current_human_permission: PermissionType = h_instr.permission
         entries_opened_this_session = 0
         last_exit_bar_index: int | None = None
+        active_initial_risk: float = 0.0
         active_setup: ActiveSetupContext | None = None
         decisions: list[BarDecisionRecord] = []
         candidate_levels: list[tuple[float | None, float | None]] = []
@@ -384,6 +481,7 @@ class IntradayCandleMonitoringSession:
             # Apply any scheduled mid-session human instruction updates up to ts_open
             while mid_update_idx < len(sorted_mid_updates) and sorted_mid_updates[mid_update_idx][0] <= ts_open:
                 self.execution_gate.set_human_instruction(sorted_mid_updates[mid_update_idx][1])
+                current_human_permission = sorted_mid_updates[mid_update_idx][1].permission
                 mid_update_idx += 1
 
             # STEP A: At bar_t.ts_open_ist, execute any PendingOrder queued at bar_{t-1}.ts_close_ist
@@ -425,8 +523,10 @@ class IntradayCandleMonitoringSession:
                         if pending_order.action_type.is_new_entry:
                             bars_held = 0
                             entries_opened_this_session += 1
+                            active_initial_risk = abs(fill_px - sl_tick) if sl_tick is not None else max(0.05, fill_px * 0.005)
                         elif pending_order.action_type.is_exit:
                             last_exit_bar_index = int(bar_idx)
+                            active_initial_risk = 0.0
                     else:
                         bar_events_notes.append(
                             f"PENDING_ORDER_REJECTED_AT_OPEN:{','.join(gate_exec.rejection_reasons) or 'UNFILLED'}"
@@ -436,6 +536,7 @@ class IntradayCandleMonitoringSession:
             # Apply any scheduled mid-session human instruction updates up to ts_close
             while mid_update_idx < len(sorted_mid_updates) and sorted_mid_updates[mid_update_idx][0] <= ts_close:
                 self.execution_gate.set_human_instruction(sorted_mid_updates[mid_update_idx][1])
+                current_human_permission = sorted_mid_updates[mid_update_idx][1].permission
                 mid_update_idx += 1
 
             # STEP B: Intrabar OHLC stop-loss / target check (conservative stop-first) & MTM DD check
@@ -513,6 +614,47 @@ class IntradayCandleMonitoringSession:
             rej_reasons: tuple[str, ...] = ()
             rationale_list = bar_events_notes + list(lifecycle.rationale)
 
+            if squared_off_side is None and eff_chandelier and sym_u in self.portfolio.positions:
+                cur_pos = self.portfolio.positions[sym_u]
+                atr_val = float(getattr(lifecycle.timing_assessment, "atr_14", 0.0) or 0.0)
+                if atr_val <= 0.0 and len(causal_df) >= 2:
+                    atr_val = float((causal_df["high"] - causal_df["low"]).tail(14).mean())
+                est_rt_fee_per_sh = (
+                    calculate_intraday_costs(round_to_nse_tick(cur_pos.entry_price), cur_pos.quantity, "BUY").total_friction_inr
+                    + calculate_intraday_costs(round_to_nse_tick(c_px), cur_pos.quantity, "SELL").total_friction_inr
+                ) / max(1, cur_pos.quantity)
+                ch_sl, be_locked = compute_chandelier_trailing_stop(
+                    side=cur_pos.side,
+                    entry_price=cur_pos.entry_price,
+                    current_close=c_px,
+                    current_stop_loss=cur_pos.stop_loss,
+                    highest_price=cur_pos.highest_price,
+                    lowest_price=cur_pos.lowest_price,
+                    atr_14=atr_val,
+                    initial_risk_distance=active_initial_risk,
+                    round_trip_fee_per_share=est_rt_fee_per_sh,
+                    chandelier_atr_mult=chandelier_atr_mult,
+                    breakeven_trigger_r=breakeven_trigger_r,
+                )
+                if ch_sl is not None and ch_sl != cur_pos.stop_loss:
+                    cur_pos.stop_loss = ch_sl
+                    rationale_list.append(
+                        f"CHANDELIER_TRAIL_SL:{ch_sl:.2f}" + (" (BREAKEVEN_LOCKED)" if be_locked else "")
+                    )
+
+                if (
+                    raw_call in (AgentCall.EXIT_LONG, AgentCall.COVER_SHORT)
+                    and eff_min_hold_bars > 0
+                    and bars_held < eff_min_hold_bars
+                    and self.risk_engine.state == RiskState.ACTIVE
+                    and current_human_permission not in (PermissionType.EXIT_ONLY, PermissionType.STOP_ALL)
+                ):
+                    raw_call = AgentCall.HOLD
+                    effective_call = AgentCall.HOLD
+                    rationale_list.append(
+                        f"CHANDELIER_HOLD_SUPPRESSED_EARLY_EXIT:bars_held={bars_held}<{eff_min_hold_bars}"
+                    )
+
             if squared_off_side is not None:
                 effective_call = AgentCall.COVER_SHORT if squared_off_side == "SHORT" else AgentCall.EXIT_LONG
                 rationale_list.append(f"Mandatory 15:15 IST intraday square-off executed ({effective_call.value}).")
@@ -584,6 +726,32 @@ class IntradayCandleMonitoringSession:
                                 discipline_rejects.append(
                                     f"MTF_5M_TREND_MISALIGNED:5m={mtf_trend},req={expected_trend}"
                                 )
+                        if eff_min_adx > 0.0 or eff_block_vwap_chase or strategy_profile != "BALANCED_ALL":
+                            ov = compute_chart_overlays(causal_df, session_date)
+                            want_dir = "BULLISH" if act == ActionType.ENTRY_LONG else "BEARISH"
+                            if eff_min_adx > 0.0 and ov.adx_14 is not None and ov.adx_14 < eff_min_adx:
+                                discipline_rejects.append(
+                                    f"ADX_CHOPPY_MARKET:adx={ov.adx_14:.1f}<{eff_min_adx:.1f}"
+                                )
+                            if eff_block_vwap_chase:
+                                if act == ActionType.ENTRY_LONG and ov.vwap_stretch == "OVEREXTENDED_ABOVE_2SD":
+                                    discipline_rejects.append("VWAP_2SD_OVEREXTENDED_CHASE:LONG_ABOVE_+2SD")
+                                elif act == ActionType.ENTRY_SHORT and ov.vwap_stretch == "OVEREXTENDED_BELOW_2SD":
+                                    discipline_rejects.append("VWAP_2SD_OVEREXTENDED_CHASE:SHORT_BELOW_-2SD")
+                            if strategy_profile == "ORB_BREAKOUT":
+                                req_orb = "ORB_BREAKOUT_UP" if act == ActionType.ENTRY_LONG else "ORB_BREAKOUT_DOWN"
+                                if not ov.orb_ready or ov.orb_state != req_orb:
+                                    discipline_rejects.append(f"PROFILE_ORB_REQUIRED:{ov.orb_state}!={req_orb}")
+                            elif strategy_profile == "SUPERTREND_ADX":
+                                if ov.supertrend_direction != want_dir or (ov.adx_14 is not None and ov.adx_14 < 20.0):
+                                    discipline_rejects.append(
+                                        f"PROFILE_SUPERTREND_ADX_MISMATCH:st={ov.supertrend_direction},adx={ov.adx_14}"
+                                    )
+                            elif strategy_profile == "LIQUIDITY_REVERSAL":
+                                req_sw = "BULLISH_SWEEP" if act == ActionType.ENTRY_LONG else "BEARISH_SWEEP"
+                                fvg_ok = ov.recent_fvg is not None and ov.recent_fvg.direction == want_dir
+                                if ov.liquidity_sweep != req_sw and not ov.near_key_level and not fvg_ok:
+                                    discipline_rejects.append("PROFILE_LIQUIDITY_REVERSAL_NO_LEVEL_OR_SWEEP")
                         if eff_max_entries is not None and entries_opened_this_session >= eff_max_entries:
                             discipline_rejects.append(
                                 f"DAILY_ENTRY_CAP_REACHED:{entries_opened_this_session}/{eff_max_entries}"

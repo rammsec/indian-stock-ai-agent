@@ -316,6 +316,15 @@
         </select>
       </div>
       <div class="ctrl-group">
+        <label>Strategy Profile</label>
+        <select id="select-profile">
+          <option value="BALANCED_ALL" selected>Balanced (MTF+ADX+Chandelier)</option>
+          <option value="ORB_BREAKOUT">ORB 15m Breakout</option>
+          <option value="SUPERTREND_ADX">Supertrend + ADX(20+)</option>
+          <option value="LIQUIDITY_REVERSAL">Liquidity Sweep / FVG</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
         <label>Budget (₹)</label>
         <input id="input-capital" type="number" value="50000" min="10000" step="10000" style="width:105px" />
       </div>
@@ -523,6 +532,7 @@
       const elDate = document.getElementById("select-date");
       const elDir = document.getElementById("select-direction");
       const elPerm = document.getElementById("select-human-perm");
+      const elProfile = document.getElementById("select-profile");
       const elCap = document.getElementById("input-capital");
       const elSpeed = document.getElementById("select-speed");
       const elErr = document.getElementById("error-banner");
@@ -588,6 +598,7 @@
           sessionBars,
           centralDirection: elDir.value,
           humanPermission: elPerm.value,
+          strategyProfile: elProfile ? elProfile.value : "BALANCED_ALL",
           initialCapital: Number(elCap.value) || 50000,
         });
 
@@ -713,6 +724,83 @@
           drawLine(sim.lastAnalysis.ema9Series, "#38bdf8", false);
           drawLine(sim.lastAnalysis.ema21Series, "#f59e0b", false);
           drawLine(sim.lastAnalysis.vwapSeries, "#a855f7", true);
+
+          // CYCLE-015/016/017 Institutional Overlays: VWAP ±1σ/±2σ, Supertrend(10,3), ORB 15m, PDH/PDL, FVG
+          if (sim.lastOverlays) {
+            const ov = sim.lastOverlays;
+            drawLine(ov.vwapUpper1Series, "rgba(168,85,247,0.35)", true);
+            drawLine(ov.vwapLower1Series, "rgba(168,85,247,0.35)", true);
+            drawLine(ov.vwapUpper2Series, "rgba(168,85,247,0.20)", true);
+            drawLine(ov.vwapLower2Series, "rgba(168,85,247,0.20)", true);
+
+            // Color-flipping Supertrend(10, 3.0)
+            if (ov.supertrendSeries && ov.supertrendSeries.length > 0) {
+              for (let i = 1; i < visible.length; i++) {
+                const v0 = ov.supertrendSeries[wLen + i - 1];
+                const v1 = ov.supertrendSeries[wLen + i];
+                const d1 = ov.supertrendDirSeries[wLen + i];
+                if (v0 === null || v0 === undefined || v1 === null || v1 === undefined) continue;
+                ctx.save();
+                ctx.strokeStyle = d1 === 1 ? "rgba(34,197,94,0.85)" : "rgba(239,68,68,0.85)";
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.moveTo(xOf(i - 1), yOf(v0));
+                ctx.lineTo(xOf(i), yOf(v1));
+                ctx.stroke();
+                ctx.restore();
+              }
+            }
+
+            // ORB 15m (09:15-09:30 IST) shaded zone + boundaries
+            if (ov.orbHigh !== null && ov.orbLow !== null) {
+              const yOrbH = yOf(ov.orbHigh);
+              const yOrbL = yOf(ov.orbLow);
+              ctx.save();
+              ctx.fillStyle = "rgba(56,189,248,0.06)";
+              ctx.fillRect(padL, yOrbH, chartW, Math.max(1, yOrbL - yOrbH));
+              ctx.strokeStyle = "rgba(56,189,248,0.45)";
+              ctx.setLineDash([3, 3]);
+              ctx.beginPath();
+              ctx.moveTo(padL, yOrbH); ctx.lineTo(W - padR, yOrbH);
+              ctx.moveTo(padL, yOrbL); ctx.lineTo(W - padR, yOrbL);
+              ctx.stroke();
+              ctx.fillStyle = "#38bdf8";
+              ctx.font = "9.5px monospace";
+              ctx.fillText(`ORB H ₹${ov.orbHigh.toFixed(1)}`, padL + 4, yOrbH - 3);
+              ctx.fillText(`ORB L ₹${ov.orbLow.toFixed(1)}`, padL + 4, yOrbL + 10);
+              ctx.restore();
+            }
+
+            // PDH / PDL Institutional Reference Lines (only if within visible price window)
+            const drawRefLevel = (px, color, label) => {
+              if (px === null || px < minP || px > maxP) return;
+              const y = yOf(px);
+              ctx.save();
+              ctx.strokeStyle = color;
+              ctx.setLineDash([6, 4]);
+              ctx.lineWidth = 1.1;
+              ctx.beginPath();
+              ctx.moveTo(padL, y); ctx.lineTo(W - padR, y);
+              ctx.stroke();
+              ctx.fillStyle = color;
+              ctx.font = "9.5px monospace";
+              ctx.fillText(`${label} ₹${px.toFixed(1)}`, W - padR - 95, y - 3);
+              ctx.restore();
+            };
+            drawRefLevel(ov.pdh, "rgba(251,146,60,0.75)", "PDH");
+            drawRefLevel(ov.pdl, "rgba(251,146,60,0.75)", "PDL");
+
+            // Recent Fair Value Gap (FVG) Imbalance Pocket
+            if (ov.recentFvg && ov.recentFvg.barIndex >= wLen) {
+              const fIdx = ov.recentFvg.barIndex - wLen;
+              const yTop = yOf(ov.recentFvg.high);
+              const yBot = yOf(ov.recentFvg.low);
+              ctx.save();
+              ctx.fillStyle = ov.recentFvg.direction === "BULLISH" ? "rgba(34,197,94,0.14)" : "rgba(239,68,68,0.14)";
+              ctx.fillRect(xOf(Math.max(0, fIdx - 2)), yTop, W - padR - xOf(Math.max(0, fIdx - 2)), Math.max(2, yBot - yTop));
+              ctx.restore();
+            }
+          }
         }
 
         // Active Stop-Loss & Target brackets
@@ -733,6 +821,26 @@
           };
           drawBracket(sim.position.stopLoss, "#ef4444", "SL");
           drawBracket(sim.position.target, "#22c55e", "TP");
+        }
+
+        // Chandelier ATR Trailing Stop stair-step line (gold/amber)
+        if (sim.chandelierStopHistory && sim.chandelierStopHistory.length > 0) {
+          ctx.save();
+          ctx.strokeStyle = "#facc15";
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          let activeSeg = false;
+          for (let i = 0; i < visible.length; i++) {
+            const slPx = sim.chandelierStopHistory[i];
+            if (slPx === null || slPx === undefined) {
+              activeSeg = false;
+              continue;
+            }
+            const x = xOf(i), y = yOf(slPx);
+            if (!activeSeg) { ctx.moveTo(x, y); activeSeg = true; } else { ctx.lineTo(x, y); }
+          }
+          ctx.stroke();
+          ctx.restore();
         }
 
         // Bold BUY / SHORT / EXIT markers directly on the chart canvas
@@ -802,7 +910,7 @@
         if (sim.position) {
           kpiPosEl.textContent = `${sim.position.side} (${sim.position.qty})`;
           kpiPosEl.className = sim.position.side === "LONG" ? "kpi-value text-bull" : "kpi-value text-bear";
-          kpiPosSub.textContent = `Entry ₹${sim.position.entryPrice.toFixed(2)}`;
+          kpiPosSub.textContent = `Entry ₹${sim.position.entryPrice.toFixed(2)}${sim.breakevenLocked ? " • BE LOCKED 🔒" : ""}`;
         } else {
           kpiPosEl.textContent = "FLAT";
           kpiPosEl.className = "kpi-value";
@@ -826,9 +934,17 @@
         kpiMtfEl.textContent = mtfVal === "BULLISH" ? "BULLISH ▲" : mtfVal === "BEARISH" ? "BEARISH ▼" : "NEUTRAL";
         kpiMtfEl.className =
           mtfVal === "BULLISH" ? "kpi-value text-bull" : mtfVal === "BEARISH" ? "kpi-value text-bear" : "kpi-value text-warn";
-        document.getElementById("kpi-mtf-sub").textContent = sim.requireMtfTrendAlignment
-          ? "5m Trend Gate: ACTIVE"
-          : "5m Trend Gate: Monitor Only";
+        const ovNow = sim.lastOverlays;
+        if (ovNow && ovNow.adx14 !== null) {
+          const adxTag = ovNow.marketRegime === "CHOPPY_SIDEWAYS" ? `CHOP ADX ${ovNow.adx14.toFixed(0)}` : `TREND ADX ${ovNow.adx14.toFixed(0)}`;
+          const stTag = ovNow.supertrendDirection === "BULLISH" ? "ST▲" : ovNow.supertrendDirection === "BEARISH" ? "ST▼" : "ST—";
+          const orbTag = ovNow.orbState === "ORB_BREAKOUT_UP" ? "ORB↑" : ovNow.orbState === "ORB_BREAKOUT_DOWN" ? "ORB↓" : "ORB";
+          document.getElementById("kpi-mtf-sub").textContent = `${adxTag} • ${stTag} • ${orbTag}`;
+        } else {
+          document.getElementById("kpi-mtf-sub").textContent = sim.requireMtfTrendAlignment
+            ? "5m Trend Gate: ACTIVE"
+            : "5m Trend Gate: Monitor Only";
+        }
 
         // Panel 1: Authority
         document.getElementById("hud-central").textContent = `${sim.centralDirection} (UNCALIB)`;
@@ -972,6 +1088,7 @@
         initSession();
       });
       elDate.addEventListener("change", initSession);
+      if (elProfile) elProfile.addEventListener("change", initSession);
       elCap.addEventListener("change", initSession);
       elDir.addEventListener("change", () => {
         if (sim) { sim.setCentralDirection(elDir.value); renderAll(); }
