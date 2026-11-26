@@ -298,7 +298,8 @@
       <div class="ctrl-group">
         <label>Central Direction</label>
         <select id="select-direction">
-          <option value="BULLISH" selected>BULLISH</option>
+          <option value="AUTO" selected>AUTO (Live Trend)</option>
+          <option value="BULLISH">BULLISH</option>
           <option value="BEARISH">BEARISH</option>
           <option value="NEUTRAL">NEUTRAL</option>
         </select>
@@ -306,9 +307,9 @@
       <div class="ctrl-group">
         <label>Human Authority (Live Mid-Session)</label>
         <select id="select-human-perm">
-          <option value="ALLOW_LONG" selected>ALLOW_LONG</option>
+          <option value="ALLOW_BOTH" selected>ALLOW_BOTH</option>
+          <option value="ALLOW_LONG">ALLOW_LONG</option>
           <option value="ALLOW_SHORT">ALLOW_SHORT</option>
-          <option value="ALLOW_BOTH">ALLOW_BOTH</option>
           <option value="NO_NEW_ENTRIES">NO_NEW_ENTRIES</option>
           <option value="EXIT_ONLY">EXIT_ONLY</option>
           <option value="PAUSE">PAUSE</option>
@@ -386,6 +387,14 @@
             <span style="color:#ef4444;">▼ SHORT</span> &nbsp;
             <span style="color:#38bdf8;">◆ EXIT</span>
           </span>
+        </div>
+        <div id="overlay-toggles" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);">
+          <label style="cursor:pointer;"><input type="checkbox" id="ov-supertrend" checked /> <span style="color:#22c55e;">Supertrend</span></label>
+          <label style="cursor:pointer;"><input type="checkbox" id="ov-vwap-bands" checked /> <span style="color:#a855f7;">VWAP ±σ</span></label>
+          <label style="cursor:pointer;"><input type="checkbox" id="ov-orb" checked /> <span style="color:#38bdf8;">ORB 15m</span></label>
+          <label style="cursor:pointer;"><input type="checkbox" id="ov-pdhl" checked /> <span style="color:#fb923c;">PDH/PDL</span></label>
+          <label style="cursor:pointer;"><input type="checkbox" id="ov-fvg" checked /> <span style="color:#4ade80;">FVG Zones</span></label>
+          <label style="cursor:pointer;"><input type="checkbox" id="ov-chandelier" checked /> <span style="color:#facc15;">Chandelier SL</span></label>
         </div>
         <canvas id="candle-canvas"></canvas>
         <div class="progress-wrap">
@@ -725,16 +734,23 @@
           drawLine(sim.lastAnalysis.ema21Series, "#f59e0b", false);
           drawLine(sim.lastAnalysis.vwapSeries, "#a855f7", true);
 
-          // CYCLE-015/016/017 Institutional Overlays: VWAP ±1σ/±2σ, Supertrend(10,3), ORB 15m, PDH/PDL, FVG
+          // CYCLE-015/016/017/019 Institutional Overlays (toggleable)
+          const showSt = !document.getElementById("ov-supertrend") || document.getElementById("ov-supertrend").checked;
+          const showVb = !document.getElementById("ov-vwap-bands") || document.getElementById("ov-vwap-bands").checked;
+          const showOrb = !document.getElementById("ov-orb") || document.getElementById("ov-orb").checked;
+          const showPdhl = !document.getElementById("ov-pdhl") || document.getElementById("ov-pdhl").checked;
+          const showFvg = !document.getElementById("ov-fvg") || document.getElementById("ov-fvg").checked;
           if (sim.lastOverlays) {
             const ov = sim.lastOverlays;
-            drawLine(ov.vwapUpper1Series, "rgba(168,85,247,0.35)", true);
-            drawLine(ov.vwapLower1Series, "rgba(168,85,247,0.35)", true);
-            drawLine(ov.vwapUpper2Series, "rgba(168,85,247,0.20)", true);
-            drawLine(ov.vwapLower2Series, "rgba(168,85,247,0.20)", true);
+            if (showVb) {
+              drawLine(ov.vwapUpper1Series, "rgba(168,85,247,0.35)", true);
+              drawLine(ov.vwapLower1Series, "rgba(168,85,247,0.35)", true);
+              drawLine(ov.vwapUpper2Series, "rgba(168,85,247,0.20)", true);
+              drawLine(ov.vwapLower2Series, "rgba(168,85,247,0.20)", true);
+            }
 
             // Color-flipping Supertrend(10, 3.0)
-            if (ov.supertrendSeries && ov.supertrendSeries.length > 0) {
+            if (showSt && ov.supertrendSeries && ov.supertrendSeries.length > 0) {
               for (let i = 1; i < visible.length; i++) {
                 const v0 = ov.supertrendSeries[wLen + i - 1];
                 const v1 = ov.supertrendSeries[wLen + i];
@@ -752,7 +768,7 @@
             }
 
             // ORB 15m (09:15-09:30 IST) shaded zone + boundaries
-            if (ov.orbHigh !== null && ov.orbLow !== null) {
+            if (showOrb && ov.orbHigh !== null && ov.orbLow !== null) {
               const yOrbH = yOf(ov.orbHigh);
               const yOrbL = yOf(ov.orbLow);
               ctx.save();
@@ -773,7 +789,7 @@
 
             // PDH / PDL Institutional Reference Lines (only if within visible price window)
             const drawRefLevel = (px, color, label) => {
-              if (px === null || px < minP || px > maxP) return;
+              if (!showPdhl || px === null || px < minP || px > maxP) return;
               const y = yOf(px);
               ctx.save();
               ctx.strokeStyle = color;
@@ -791,7 +807,7 @@
             drawRefLevel(ov.pdl, "rgba(251,146,60,0.75)", "PDL");
 
             // Recent Fair Value Gap (FVG) Imbalance Pocket
-            if (ov.recentFvg && ov.recentFvg.barIndex >= wLen) {
+            if (showFvg && ov.recentFvg && ov.recentFvg.barIndex >= wLen) {
               const fIdx = ov.recentFvg.barIndex - wLen;
               const yTop = yOf(ov.recentFvg.high);
               const yBot = yOf(ov.recentFvg.low);
@@ -824,7 +840,8 @@
         }
 
         // Chandelier ATR Trailing Stop stair-step line (gold/amber)
-        if (sim.chandelierStopHistory && sim.chandelierStopHistory.length > 0) {
+        const showCh = !document.getElementById("ov-chandelier") || document.getElementById("ov-chandelier").checked;
+        if (showCh && sim.chandelierStopHistory && sim.chandelierStopHistory.length > 0) {
           ctx.save();
           ctx.strokeStyle = "#facc15";
           ctx.lineWidth = 1.8;
@@ -947,7 +964,11 @@
         }
 
         // Panel 1: Authority
-        document.getElementById("hud-central").textContent = `${sim.centralDirection} (UNCALIB)`;
+        const centralTxt =
+          sim.centralDirection === "AUTO"
+            ? `AUTO → ${sim.lastEffectiveDirection || "NEUTRAL"}`
+            : `${sim.centralDirection} (UNCALIB)`;
+        document.getElementById("hud-central").textContent = centralTxt;
         document.getElementById("hud-human").textContent = sim.humanPermission;
         document.getElementById("hud-gate-status").textContent = lastDec ? lastDec.gateStatus : "READY";
         const gBadge = document.getElementById("gate-badge");
@@ -1096,6 +1117,11 @@
       elPerm.addEventListener("change", () => {
         if (sim) { sim.setHumanPermission(elPerm.value); renderAll(); }
       });
+      document.querySelectorAll('#overlay-toggles input[type="checkbox"]').forEach((cb) => {
+        cb.addEventListener("change", () => {
+          if (sim) renderChart();
+        });
+      });
 
       // Load genuine verified historical catalog
       fetch("data/session_catalog.json")
@@ -1119,7 +1145,7 @@
           if (params.get("tf") && ["1m", "5m", "15m", "1h"].includes(params.get("tf"))) {
             elTf.value = params.get("tf");
           }
-          if (params.get("dir") && ["BULLISH", "BEARISH", "NEUTRAL"].includes(params.get("dir").toUpperCase())) {
+          if (params.get("dir") && ["AUTO", "BULLISH", "BEARISH", "NEUTRAL"].includes(params.get("dir").toUpperCase())) {
             elDir.value = params.get("dir").toUpperCase();
           }
           populateDatesForTimeframe(elTf.value, params.get("date"));

@@ -612,6 +612,30 @@
     };
   }
 
+  function inferAutoMarketDirection(mtf5mTrend, ov, currentClose, lastVwap = null) {
+    let score = 0;
+    if (mtf5mTrend === "BULLISH") score += 1;
+    else if (mtf5mTrend === "BEARISH") score -= 1;
+
+    if (ov && ov.supertrendDirection === "BULLISH") score += 1;
+    else if (ov && ov.supertrendDirection === "BEARISH") score -= 1;
+
+    const vw = lastVwap !== null && lastVwap !== undefined ? lastVwap : null;
+    if (vw !== null) {
+      if (currentClose > vw) score += 1;
+      else if (currentClose < vw) score -= 1;
+    }
+
+    if (ov && ov.orbReady) {
+      if (ov.orbState === "ORB_BREAKOUT_UP") score += 1;
+      else if (ov.orbState === "ORB_BREAKOUT_DOWN") score -= 1;
+    }
+
+    if (score >= 2) return "BULLISH";
+    if (score <= -2) return "BEARISH";
+    return "NEUTRAL";
+  }
+
   class IntradaySessionSimulator {
     constructor({
       symbol,
@@ -959,9 +983,15 @@
       this.lastMtf5mTrend = evaluateCausal5mMtfTrend(causalSlice);
       const ov = computeChartOverlays(causalSlice, this.sessionDate);
       this.lastOverlays = ov;
+      const lastVwap = analysis.vwapSeries && analysis.vwapSeries.length > 0 ? analysis.vwapSeries[analysis.vwapSeries.length - 1] : null;
+      const effectiveDirection =
+        this.centralDirection === "AUTO"
+          ? inferAutoMarketDirection(this.lastMtf5mTrend, ov, bar.c, lastVwap)
+          : this.centralDirection;
+      this.lastEffectiveDirection = effectiveDirection;
 
       // Compute structural candidate stop/target (NSE tick rounded)
-      const isBearCentral = this.centralDirection === "BEARISH";
+      const isBearCentral = effectiveDirection === "BEARISH";
       const rawSl = isBearCentral
         ? Math.max(bar.h, analysis.recentSwingHigh) + 0.25 * analysis.atr
         : Math.min(bar.l, analysis.recentSwingLow) - 0.25 * analysis.atr;
@@ -985,9 +1015,11 @@
         // Stateful open position management -> HOLD (with Chandelier + trailing stop ratchet) or EXIT_LONG / COVER_SHORT
         const p = this.position;
         if (this.enableChandelierTrailing) {
+          const eSide = p.side === "SHORT" ? "SELL" : "BUY";
+          const xSide = p.side === "SHORT" ? "BUY" : "SELL";
           const estRtFeePerSh =
-            (calculateIndianIntradayCosts(roundToNseTick(p.entryPrice), p.qty, "BUY").totalFrictionInr +
-              calculateIndianIntradayCosts(roundToNseTick(bar.c), p.qty, "SELL").totalFrictionInr) /
+            (calculateIndianIntradayCosts(roundToNseTick(p.entryPrice), p.qty, eSide).totalFrictionInr +
+              calculateIndianIntradayCosts(roundToNseTick(bar.c), p.qty, xSide).totalFrictionInr) /
             Math.max(1, p.qty);
           const chRes = computeChandelierTrailingStop({
             side: p.side,
@@ -1068,11 +1100,11 @@
           call = "REJECT";
           gateStatus = "REJECTED";
           rejectionReasons.push(`VOLATILITY_BREACH:atrPct=${analysis.atrPct.toFixed(2)}%`);
-        } else if (this.centralDirection === "NEUTRAL") {
+        } else if (effectiveDirection === "NEUTRAL") {
           call = this.activeSetup ? "CANCEL_SETUP" : "NO_TRADE";
           this.activeSetup = null;
         } else {
-          const wantLong = this.centralDirection === "BULLISH";
+          const wantLong = effectiveDirection === "BULLISH";
           const aligned = wantLong ? analysis.candleBias === "BULLISH" : analysis.candleBias === "BEARISH";
           const contradicted = wantLong ? analysis.candleBias === "BEARISH" : analysis.candleBias === "BULLISH";
           const trap = wantLong
@@ -1321,6 +1353,7 @@
     evaluateCausal5mMtfTrend,
     computeChandelierTrailingStop,
     computeChartOverlays,
+    inferAutoMarketDirection,
     IntradaySessionSimulator,
   };
 });

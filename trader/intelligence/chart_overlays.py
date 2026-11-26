@@ -420,3 +420,49 @@ def compute_chart_overlays(
         liquidity_sweep=sweep,
         recent_fvg=fvg,
     )
+
+
+def infer_auto_market_direction(
+    mtf_5m_trend: TrendDirLiteral,
+    overlays: ChartOverlaySnapshot,
+    current_close: float,
+) -> TrendDirLiteral:
+    """Causally infer live intraday directional bias from 4 real-time chart votes.
+
+    Votes (+1 BULLISH / -1 BEARISH):
+    1. 5m MTF EMA trend
+    2. Supertrend(10, 3.0) direction
+    3. Session VWAP side (close > vwap vs close < vwap)
+    4. ORB 15m breakout direction (post-09:30 IST)
+
+    Returns BULLISH if score >= +2, BEARISH if score <= -2, else NEUTRAL.
+    """
+    score = 0
+    if mtf_5m_trend == "BULLISH":
+        score += 1
+    elif mtf_5m_trend == "BEARISH":
+        score -= 1
+
+    if overlays.supertrend_direction == "BULLISH":
+        score += 1
+    elif overlays.supertrend_direction == "BEARISH":
+        score -= 1
+
+    if overlays.vwap is not None:
+        if current_close > overlays.vwap:
+            score += 1
+        elif current_close < overlays.vwap:
+            score -= 1
+
+    if overlays.orb_ready:
+        if overlays.orb_state == "ORB_BREAKOUT_UP":
+            score += 1
+        elif overlays.orb_state == "ORB_BREAKOUT_DOWN":
+            score -= 1
+
+    if score >= 2:
+        return "BULLISH"
+    if score <= -2:
+        return "BEARISH"
+    return "NEUTRAL"
+

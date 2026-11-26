@@ -40,7 +40,11 @@ from trader.config import (
 )
 from trader.data.market_feed import BaseMarketFeed, TimeframeLiteral
 from trader.evaluation.outcome_evaluator import SessionOutcomeReport, evaluate_session_outcomes
-from trader.intelligence.chart_overlays import StrategyProfileLiteral, compute_chart_overlays
+from trader.intelligence.chart_overlays import (
+    StrategyProfileLiteral,
+    compute_chart_overlays,
+    infer_auto_market_direction,
+)
 from trader.intelligence.data_contract import ProvenanceTier
 from trader.portfolio.cost_calculator import calculate_intraday_costs
 from trader.portfolio.ledger import IntradayPaperPortfolio, round_to_nse_tick
@@ -357,6 +361,7 @@ class IntradayCandleMonitoringSession:
         strategy_profile: StrategyProfileLiteral = "BALANCED_ALL",
         min_adx_for_entry: float | None = None,
         block_vwap_2sd_chase: bool | None = None,
+        auto_direction: bool = False,
     ) -> MonitoringSessionResult:
         """Run a full causal intraday monitoring session from 09:15 IST to 15:30 IST."""
         sym_u = symbol.strip().upper()
@@ -580,6 +585,25 @@ class IntradayCandleMonitoringSession:
             causal_ev = self.feed.get_bars(sym_u, timeframe, ts_close, lookback_bars=warmup_lookback_bars + session_bar_budget)
             causal_df = evidence_to_agent_df(causal_ev)
 
+            if auto_direction:
+                auto_mtf = evaluate_causal_5m_mtf_trend(causal_df)
+                auto_ov = compute_chart_overlays(causal_df, session_date)
+                inferred = infer_auto_market_direction(auto_mtf, auto_ov, c_px)
+                new_bias = (
+                    DirectionalBias.BULLISH
+                    if inferred == "BULLISH"
+                    else (DirectionalBias.BEARISH if inferred == "BEARISH" else DirectionalBias.NEUTRAL)
+                )
+                if new_bias != hyp.direction:
+                    hyp = _build_default_hypothesis(
+                        symbol=sym_u,
+                        session_date=session_date,
+                        direction=new_bias,
+                        as_of_ist=ts_close,
+                    )
+                    self.execution_gate.set_central_instruction(hyp.to_authority_instruction(expires_after_hours=8.0))
+                    bar_events_notes.append(f"AUTO_DIRECTION_SWITCH:{new_bias.value}")
+
             pos_ctx: PositionContext | None = None
             if sym_u in self.portfolio.positions:
                 p_obj = self.portfolio.positions[sym_u]
@@ -619,9 +643,11 @@ class IntradayCandleMonitoringSession:
                 atr_val = float(getattr(lifecycle.timing_assessment, "atr_14", 0.0) or 0.0)
                 if atr_val <= 0.0 and len(causal_df) >= 2:
                     atr_val = float((causal_df["high"] - causal_df["low"]).tail(14).mean())
+                e_side = "SELL" if cur_pos.side == "SHORT" else "BUY"
+                x_side = "BUY" if cur_pos.side == "SHORT" else "SELL"
                 est_rt_fee_per_sh = (
-                    calculate_intraday_costs(round_to_nse_tick(cur_pos.entry_price), cur_pos.quantity, "BUY").total_friction_inr
-                    + calculate_intraday_costs(round_to_nse_tick(c_px), cur_pos.quantity, "SELL").total_friction_inr
+                    calculate_intraday_costs(round_to_nse_tick(cur_pos.entry_price), cur_pos.quantity, e_side).total_friction_inr
+                    + calculate_intraday_costs(round_to_nse_tick(c_px), cur_pos.quantity, x_side).total_friction_inr
                 ) / max(1, cur_pos.quantity)
                 ch_sl, be_locked = compute_chandelier_trailing_stop(
                     side=cur_pos.side,
@@ -649,7 +675,6 @@ class IntradayCandleMonitoringSession:
                     and self.risk_engine.state == RiskState.ACTIVE
                     and current_human_permission not in (PermissionType.EXIT_ONLY, PermissionType.STOP_ALL)
                 ):
-                    raw_call = AgentCall.HOLD
                     effective_call = AgentCall.HOLD
                     rationale_list.append(
                         f"CHANDELIER_HOLD_SUPPRESSED_EARLY_EXIT:bars_held={bars_held}<{eff_min_hold_bars}"
@@ -658,7 +683,7 @@ class IntradayCandleMonitoringSession:
             if squared_off_side is not None:
                 effective_call = AgentCall.COVER_SHORT if squared_off_side == "SHORT" else AgentCall.EXIT_LONG
                 rationale_list.append(f"Mandatory 15:15 IST intraday square-off executed ({effective_call.value}).")
-            elif raw_call == AgentCall.HOLD and sym_u in self.portfolio.positions:
+            elif effective_call == AgentCall.HOLD and sym_u in self.portfolio.positions:
                 if lifecycle.recommended_trailing_stop is not None:
                     cur_pos = self.portfolio.positions[sym_u]
                     new_sl = round_to_nse_tick(lifecycle.recommended_trailing_stop)
@@ -668,14 +693,14 @@ class IntradayCandleMonitoringSession:
                         cur_pos.stop_loss = min(cur_pos.stop_loss, new_sl)
                     else:
                         cur_pos.stop_loss = max(cur_pos.stop_loss, new_sl)
-            elif raw_call in (AgentCall.OPEN_LONG, AgentCall.OPEN_SHORT, AgentCall.EXIT_LONG, AgentCall.COVER_SHORT):
+            elif effective_call in (AgentCall.OPEN_LONG, AgentCall.OPEN_SHORT, AgentCall.EXIT_LONG, AgentCall.COVER_SHORT):
                 action_map = {
                     AgentCall.OPEN_LONG: ActionType.ENTRY_LONG,
                     AgentCall.OPEN_SHORT: ActionType.ENTRY_SHORT,
                     AgentCall.EXIT_LONG: ActionType.EXIT_LONG,
                     AgentCall.COVER_SHORT: ActionType.EXIT_SHORT,
                 }
-                act = action_map[raw_call]
+                act = action_map[effective_call]
                 qty_req = (
                     self.portfolio.positions[sym_u].quantity
                     if (act.is_exit and sym_u in self.portfolio.positions)
