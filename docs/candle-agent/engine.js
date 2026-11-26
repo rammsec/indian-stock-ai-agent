@@ -373,6 +373,56 @@
     return "NEUTRAL";
   }
 
+  function computeChandelierTrailingStop({
+    side,
+    entryPrice,
+    currentClose,
+    currentStopLoss,
+    highestPrice,
+    lowestPrice,
+    atr14,
+    initialRiskDistance,
+    roundTripFeePerShare = 0.0,
+    chandelierAtrMult = 2.2,
+    breakevenTriggerR = 1.2,
+  }) {
+    if (atr14 <= 0 && initialRiskDistance <= 0) {
+      return { stopLoss: currentStopLoss, breakevenLocked: false };
+    }
+    let breakevenLocked = false;
+    const candidates = [];
+    if (currentStopLoss !== null && currentStopLoss !== undefined) {
+      candidates.push(Number(currentStopLoss));
+    }
+    if (side === "LONG") {
+      if (initialRiskDistance > 0 && highestPrice >= entryPrice + breakevenTriggerR * initialRiskDistance) {
+        candidates.push(roundToNseTick(entryPrice + Math.max(0, roundTripFeePerShare) + 0.05));
+        breakevenLocked = true;
+      }
+      if (atr14 > 0) {
+        const ch = roundToNseTick(highestPrice - chandelierAtrMult * atr14);
+        if (ch > 0) candidates.push(ch);
+      }
+      if (candidates.length === 0) return { stopLoss: null, breakevenLocked };
+      let best = Math.max(...candidates);
+      const maxValid = roundToNseTick(Math.max(0.05, currentClose - 0.05));
+      best = currentStopLoss !== null && currentStopLoss !== undefined ? Math.max(Number(currentStopLoss), Math.min(best, maxValid)) : Math.min(best, maxValid);
+      return { stopLoss: roundToNseTick(best), breakevenLocked };
+    }
+    if (initialRiskDistance > 0 && lowestPrice <= entryPrice - breakevenTriggerR * initialRiskDistance) {
+      candidates.push(roundToNseTick(Math.max(0.05, entryPrice - Math.max(0, roundTripFeePerShare) - 0.05)));
+      breakevenLocked = true;
+    }
+    if (atr14 > 0) {
+      candidates.push(roundToNseTick(lowestPrice + chandelierAtrMult * atr14));
+    }
+    if (candidates.length === 0) return { stopLoss: null, breakevenLocked };
+    let best = Math.min(...candidates);
+    const minValid = roundToNseTick(currentClose + 0.05);
+    best = currentStopLoss !== null && currentStopLoss !== undefined ? Math.min(Number(currentStopLoss), Math.max(best, minValid)) : Math.max(best, minValid);
+    return { stopLoss: roundToNseTick(best), breakevenLocked };
+  }
+
   class IntradaySessionSimulator {
     constructor({
       symbol,
@@ -389,6 +439,10 @@
       maxEntriesPerSession = null,
       requireMtfTrendAlignment = null,
       minWinnerRrMultiple = null,
+      enableChandelierTrailing = null,
+      chandelierAtrMult = 2.2,
+      breakevenTriggerR = 1.2,
+      minHoldBarsBeforeAgentExit = null,
     }) {
       this.symbol = symbol;
       this.sessionDate = sessionDate;
@@ -409,6 +463,12 @@
         requireMtfTrendAlignment !== null ? Boolean(requireMtfTrendAlignment) : timeframe === "1m";
       this.minWinnerRrMultiple =
         minWinnerRrMultiple !== null ? Number(minWinnerRrMultiple) : timeframe === "1m" ? 2.5 : 0.0;
+      this.enableChandelierTrailing =
+        enableChandelierTrailing !== null ? Boolean(enableChandelierTrailing) : timeframe === "1m";
+      this.chandelierAtrMult = Number(chandelierAtrMult) || 2.2;
+      this.breakevenTriggerR = Number(breakevenTriggerR) || 1.2;
+      this.minHoldBarsBeforeAgentExit =
+        minHoldBarsBeforeAgentExit !== null ? Number(minHoldBarsBeforeAgentExit) : timeframe === "1m" ? 6 : 0;
 
       this.reset();
     }
@@ -424,6 +484,9 @@
       this.activeSetup = null; // { direction, invalidationPrice, barsWatching }
       this.entriesOpenedThisSession = 0;
       this.lastExitBarIndex = null;
+      this.activeInitialRisk = 0.0;
+      this.breakevenLocked = false;
+      this.chandelierStopHistory = [];
       this.lastMtf5mTrend = "NEUTRAL";
       this.decisions = [];
       this.closedTrades = [];
@@ -534,6 +597,8 @@
         reason: `Filled at next-bar open (${side})`,
       });
       this.entriesOpenedThisSession += 1;
+      this.activeInitialRisk = stopLoss !== null && stopLoss !== undefined ? Math.abs(fillPx - stopLoss) : Math.max(0.05, fillPx * 0.005);
+      this.breakevenLocked = false;
       return true;
     }
 
@@ -573,6 +638,8 @@
         reason,
       });
       this.position = null;
+      this.activeInitialRisk = 0.0;
+      this.breakevenLocked = false;
       this.lastExitBarIndex = Math.max(0, this.barIdx - 1);
       this._checkCircuitBreakers();
       return true;
@@ -717,18 +784,58 @@
         call = closedIntrabarSide === "SHORT" ? "COVER_SHORT" : "EXIT_LONG";
         gateStatus = "INTRABAR_EXIT";
       } else if (this.position) {
-        // Stateful open position management -> HOLD (with trailing stop ratchet) or EXIT_LONG / COVER_SHORT
+        // Stateful open position management -> HOLD (with Chandelier + trailing stop ratchet) or EXIT_LONG / COVER_SHORT
         const p = this.position;
-        const shouldExitLong =
+        if (this.enableChandelierTrailing) {
+          const estRtFeePerSh =
+            (calculateIndianIntradayCosts(roundToNseTick(p.entryPrice), p.qty, "BUY").totalFrictionInr +
+              calculateIndianIntradayCosts(roundToNseTick(bar.c), p.qty, "SELL").totalFrictionInr) /
+            Math.max(1, p.qty);
+          const chRes = computeChandelierTrailingStop({
+            side: p.side,
+            entryPrice: p.entryPrice,
+            currentClose: bar.c,
+            currentStopLoss: p.stopLoss,
+            highestPrice: p.highestPrice,
+            lowestPrice: p.lowestPrice,
+            atr14: analysis.atr,
+            initialRiskDistance: this.activeInitialRisk,
+            roundTripFeePerShare: estRtFeePerSh,
+            chandelierAtrMult: this.chandelierAtrMult,
+            breakevenTriggerR: this.breakevenTriggerR,
+          });
+          if (chRes.breakevenLocked) this.breakevenLocked = true;
+          if (chRes.stopLoss !== null && chRes.stopLoss !== p.stopLoss) {
+            p.stopLoss = chRes.stopLoss;
+            barNotes.push(`CHANDELIER_TRAIL_SL -> ₹${chRes.stopLoss.toFixed(2)}${chRes.breakevenLocked ? " (BREAKEVEN_LOCKED)" : ""}`);
+          }
+        }
+
+        let shouldExitLong =
           p.side === "LONG" &&
           (analysis.breakoutState === "BREAKDOWN_LOW" ||
             analysis.breakoutState === "FALSE_BREAKOUT" ||
             (analysis.candleBias === "BEARISH" && analysis.priceActionScore <= -0.35));
-        const shouldCoverShort =
+        let shouldCoverShort =
           p.side === "SHORT" &&
           (analysis.breakoutState === "BREAKOUT_HIGH" ||
             analysis.breakoutState === "FAILED_BREAKDOWN" ||
             (analysis.candleBias === "BULLISH" && analysis.priceActionScore >= 0.35));
+
+        if (
+          this.enableChandelierTrailing &&
+          this.minHoldBarsBeforeAgentExit > 0 &&
+          p.barsHeld < this.minHoldBarsBeforeAgentExit &&
+          this.riskState === "ACTIVE" &&
+          this.humanPermission !== "EXIT_ONLY" &&
+          this.humanPermission !== "STOP_ALL"
+        ) {
+          if (shouldExitLong || shouldCoverShort) {
+            barNotes.push(`CHANDELIER_HOLD_SUPPRESSED_EARLY_EXIT:barsHeld=${p.barsHeld}<${this.minHoldBarsBeforeAgentExit}`);
+          }
+          shouldExitLong = false;
+          shouldCoverShort = false;
+        }
 
         if (shouldExitLong) {
           call = "EXIT_LONG";
@@ -898,8 +1005,10 @@
         cashInr: Number(this.cash.toFixed(2)),
         equityInr: Number(this.getTotalEquity().toFixed(2)),
         realizedPnlInr: Number(this.getRealizedPnl().toFixed(2)),
+        breakevenLocked: Boolean(this.position && this.breakevenLocked),
         notes: barNotes,
       };
+      this.chandelierStopHistory.push(this.position ? this.position.stopLoss : null);
       this.decisions.push(rec);
 
       if (this.barIdx >= this.sessionBars.length) {
@@ -984,6 +1093,8 @@
     calculateIndianIntradayCosts,
     analyzeCausalBars,
     humanPermissionAllows,
+    evaluateCausal5mMtfTrend,
+    computeChandelierTrailingStop,
     IntradaySessionSimulator,
   };
 });

@@ -735,6 +735,26 @@
           drawBracket(sim.position.target, "#22c55e", "TP");
         }
 
+        // Chandelier ATR Trailing Stop stair-step line (gold/amber)
+        if (sim.chandelierStopHistory && sim.chandelierStopHistory.length > 0) {
+          ctx.save();
+          ctx.strokeStyle = "#facc15";
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          let activeSeg = false;
+          for (let i = 0; i < visible.length; i++) {
+            const slPx = sim.chandelierStopHistory[i];
+            if (slPx === null || slPx === undefined) {
+              activeSeg = false;
+              continue;
+            }
+            const x = xOf(i), y = yOf(slPx);
+            if (!activeSeg) { ctx.moveTo(x, y); activeSeg = true; } else { ctx.lineTo(x, y); }
+          }
+          ctx.stroke();
+          ctx.restore();
+        }
+
         // Bold BUY / SHORT / EXIT markers directly on the chart canvas
         if (sim.orders && sim.orders.length > 0) {
           const barIndexByTime = new Map();
@@ -802,7 +822,7 @@
         if (sim.position) {
           kpiPosEl.textContent = `${sim.position.side} (${sim.position.qty})`;
           kpiPosEl.className = sim.position.side === "LONG" ? "kpi-value text-bull" : "kpi-value text-bear";
-          kpiPosSub.textContent = `Entry ₹${sim.position.entryPrice.toFixed(2)}`;
+          kpiPosSub.textContent = `Entry ₹${sim.position.entryPrice.toFixed(2)}${sim.breakevenLocked ? " • BE LOCKED 🔒" : ""}`;
         } else {
           kpiPosEl.textContent = "FLAT";
           kpiPosEl.className = "kpi-value";
