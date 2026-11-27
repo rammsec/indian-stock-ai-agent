@@ -19,9 +19,9 @@ import subprocess
 import threading
 import urllib.request
 from dataclasses import asdict, dataclass, field
-from datetime import date, datetime, time as dt_time
+from datetime import date, datetime, time as dt_time, timedelta
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import pandas as pd
@@ -40,6 +40,10 @@ from trader.intelligence.parsing import (
 from trader.portfolio.cost_calculator import CostConfig
 from trader.portfolio.ledger import IntradayPaperPortfolio, OrderSide, OrderStatus
 from trader.risk.engine import DeterministicRiskEngine, RiskEvaluationResult
+
+if TYPE_CHECKING:
+    from trader.authority.gate import MandatoryExecutionGate
+    from trader.authority.instructions import AuthorityInstruction, PermissionType
 
 DEFAULT_CACHE_DIR = Path("data/intraday")
 DEFAULT_PREDICTIONS_PATH = Path("data/predictions/latest_predictions.json")
@@ -184,6 +188,10 @@ class Cycle006BPaperTradingRunner:
         self,
         config: Cycle006BConfig,
         risk_engine: DeterministicRiskEngine | None = None,
+        *,
+        execution_gate: MandatoryExecutionGate | None = None,
+        human_instruction: AuthorityInstruction | None = None,
+        human_permission: PermissionType | None = None,
     ) -> None:
         if config.initial_capital_inr <= 0:
             raise ValueError("initial_capital_inr must be > 0")
@@ -205,17 +213,47 @@ class Cycle006BPaperTradingRunner:
         if len(normalized_syms) != len(config.symbols) or len(set(normalized_syms)) != len(normalized_syms):
             raise ValueError("symbols must be non-empty, unique instrument identifiers")
 
+        from trader.authority.gate import MandatoryExecutionGate as _MandatoryExecutionGate
+        from trader.authority.instructions import (
+            AuthorityInstruction as _AuthorityInstruction,
+            AuthoritySource as _AuthoritySource,
+        )
+
         self.config = config
         self.as_of_ist = datetime.combine(
             config.session_date, config.as_of_time_ist, tzinfo=IST_TZ
         )
-        self.risk_engine = risk_engine or DeterministicRiskEngine(
-            max_risk_per_trade_pct=config.max_risk_per_trade_pct,
-            max_position_weight_pct=config.max_position_weight_pct,
-            max_portfolio_exposure_pct=config.max_portfolio_exposure_pct,
-            max_daily_loss_pct=config.max_daily_loss_pct,
-            max_concurrent_positions=config.max_concurrent_positions,
-        )
+        if execution_gate is not None:
+            self.execution_gate = execution_gate
+            self.risk_engine = risk_engine if risk_engine is not None else execution_gate.risk_engine
+        else:
+            self.risk_engine = risk_engine or DeterministicRiskEngine(
+                max_risk_per_trade_pct=config.max_risk_per_trade_pct,
+                max_position_weight_pct=config.max_position_weight_pct,
+                max_portfolio_exposure_pct=config.max_portfolio_exposure_pct,
+                max_daily_loss_pct=config.max_daily_loss_pct,
+                max_concurrent_positions=config.max_concurrent_positions,
+            )
+            self.execution_gate = _MandatoryExecutionGate(risk_engine=self.risk_engine)
+
+        # PY-04 Strict Fail-Closed: NEVER fabricate an implicit ALLOW_LONG Human instruction.
+        # Only register Human authority if explicitly provided by the caller.
+        session_open_ist = datetime.combine(config.session_date, dt_time(9, 15), tzinfo=IST_TZ)
+        session_close_ist = datetime.combine(config.session_date, dt_time(15, 30), tzinfo=IST_TZ)
+        if human_instruction is not None:
+            self.execution_gate.set_human_instruction(human_instruction, current_time=session_open_ist)
+        elif human_permission is not None:
+            h_instr = _AuthorityInstruction(
+                instruction_id=f"HUMAN-CYCLE006B-{config.session_date.isoformat()}",
+                authority=_AuthoritySource.HUMAN,
+                scope="*",
+                permission=human_permission,
+                valid_from=session_open_ist - timedelta(minutes=15),
+                expires_at=session_close_ist + timedelta(minutes=15),
+                reason=f"Explicit caller session authority: {human_permission.value}",
+            )
+            self.execution_gate.set_human_instruction(h_instr, current_time=session_open_ist)
+
         self.portfolio = IntradayPaperPortfolio(
             initial_capital=config.initial_capital_inr,
             cost_config=CostConfig(base_slippage_bps=config.slippage_bps),
@@ -607,70 +645,143 @@ class Cycle006BPaperTradingRunner:
                         "timestamp_ist": entry_ts.isoformat(),
                     })
 
-            # Mandatory pre-trade DeterministicRiskEngine gate for every candidate
+            # PY-04: Mandatory execution gate for every entry, SL/TP exit, and EOD square-off
+            from trader.authority.instructions import (
+                ActionType as _ActionType,
+                AuthorityInstruction as _AuthorityInstruction,
+                AuthoritySource as _AuthoritySource,
+                PermissionType as _PermissionType,
+            )
+            from trader.timing.candle_intelligence import CandleBias as _CandleBias
+            from trader.timing.candle_timing_agent import (
+                AlignmentStatus as _AlignmentStatus,
+                TimingAssessment as _TimingAssessment,
+                TimingDecision as _TimingDecision,
+            )
+            from trader.timing.central_directional_agent import DirectionalBias as _DirectionalBias
+
+            session_close_ist = datetime.combine(cfg.session_date, dt_time(15, 30), tzinfo=IST_TZ)
             for sym, entry_price, stop_loss, target, entry_ts in entry_candidates:
+                sym_u = sym.strip().upper()
                 risk_per_share = max(entry_price - stop_loss, 0.01)
                 max_risk_inr = self.portfolio.total_equity * cfg.max_risk_per_trade_pct
                 requested_qty = max(1, int(max_risk_inr // risk_per_share))
 
-                risk_eval: RiskEvaluationResult | None = self.risk_engine.evaluate_order(
-                    symbol=sym,
-                    side=OrderSide.BUY.value,
-                    requested_quantity=requested_qty,
+                if self.execution_gate.get_active_central_instruction(sym_u, entry_ts) is None:
+                    self.execution_gate.set_central_instruction(
+                        _AuthorityInstruction(
+                            instruction_id=f"CENTRAL-CYCLE006B-{sym_u}-{cfg.session_date.isoformat()}",
+                            authority=_AuthoritySource.CENTRAL_AGENT,
+                            scope=sym_u,
+                            permission=_PermissionType.ALLOW_LONG,
+                            valid_from=entry_ts - timedelta(minutes=15),
+                            expires_at=session_close_ist + timedelta(minutes=15),
+                            reason="CYCLE-006B directional signal filter approved long candidate",
+                        ),
+                        current_time=entry_ts,
+                    )
+
+                legacy_assessment = _TimingAssessment(
+                    symbol=sym_u,
+                    as_of_ist=entry_ts,
+                    decision=_TimingDecision.ENTER_NOW,
+                    alignment_status=_AlignmentStatus.CONFIRMED,
+                    central_direction=_DirectionalBias.BULLISH,
+                    candle_bias=_CandleBias.BULLISH,
+                    timing_quality_score=1.0,
+                    price_action_score=1.0,
                     entry_price=entry_price,
-                    stop_loss_price=stop_loss,
-                    portfolio=self.portfolio,
-                    current_time=entry_ts,
+                    invalidation_price=stop_loss,
+                    target_price=target,
+                    risk_reward_ratio=round((target - entry_price) / risk_per_share, 4),
+                    detected_patterns=(),
+                    timeframe_statuses={"1h": "CYCLE006B_SIGNAL_ENTRY"},
+                    contradiction_reasons=(),
+                    rationale=("CYCLE-006B legacy 1h bar entry routed through MandatoryExecutionGate",),
                 )
 
-                # Fail closed if risk_eval is None or not approved
-                if risk_eval is None:
-                    reason = f"Missing risk decision for {sym}; failed closed"
-                    rejection_reasons.append(reason)
+                orders_before = len(self.portfolio.orders)
+                try:
+                    gate_outcome, _ = self.execution_gate.execute_with_gate_protection(
+                        symbol=sym_u,
+                        action_type=_ActionType.ENTRY_LONG,
+                        current_time=entry_ts,
+                        portfolio=self.portfolio,
+                        requested_quantity=requested_qty,
+                        price=entry_price,
+                        candle_assessment=legacy_assessment,
+                        stop_loss_price=stop_loss,
+                        target_price=target,
+                    )
+                except AttributeError as exc:
+                    if "'NoneType' object has no attribute 'approved'" in str(exc):
+                        reason = f"Missing risk decision for {sym}; failed closed"
+                        rejection_reasons.append(reason)
+                        risk_decisions.append({
+                            "symbol": sym,
+                            "stage": "RISK_ENGINE",
+                            "approved": False,
+                            "status": "FAIL_CLOSED_MISSING_DECISION",
+                            "approved_quantity": 0,
+                            "requested_quantity": requested_qty,
+                            "rejection_reasons": [reason],
+                            "timestamp_ist": entry_ts.isoformat(),
+                        })
+                        continue
+                    raise
+
+                risk_eval = gate_outcome.risk_evaluation
+                if risk_eval is None and not gate_outcome.approved:
+                    combined_reasons = list(gate_outcome.rejection_reasons)
                     risk_decisions.append({
                         "symbol": sym,
                         "stage": "RISK_ENGINE",
                         "approved": False,
-                        "status": "FAIL_CLOSED_MISSING_DECISION",
+                        "status": str(gate_outcome.status),
                         "approved_quantity": 0,
                         "requested_quantity": requested_qty,
-                        "rejection_reasons": [reason],
+                        "rejection_reasons": combined_reasons,
+                        "max_risk_amount_inr": 0.0,
+                        "estimated_trade_risk_inr": 0.0,
+                        "gate_status": str(gate_outcome.status),
+                        "gate_approved": False,
                         "timestamp_ist": entry_ts.isoformat(),
                     })
+                    rejection_reasons.extend(combined_reasons)
                     continue
 
+                assert risk_eval is not None
+                combined_reasons = list(gate_outcome.rejection_reasons) if not gate_outcome.approved else list(risk_eval.rejection_reasons)
                 decision_record = {
                     "symbol": sym,
                     "stage": "RISK_ENGINE",
-                    "approved": bool(risk_eval.approved),
-                    "status": str(risk_eval.status),
-                    "approved_quantity": int(risk_eval.approved_quantity),
+                    "approved": bool(gate_outcome.approved and risk_eval.approved),
+                    "status": (
+                        str(risk_eval.status)
+                        if (gate_outcome.approved or not risk_eval.approved)
+                        else str(gate_outcome.status)
+                    ),
+                    "approved_quantity": int(risk_eval.approved_quantity) if gate_outcome.approved else 0,
                     "requested_quantity": int(risk_eval.requested_quantity),
-                    "rejection_reasons": list(risk_eval.rejection_reasons),
+                    "rejection_reasons": combined_reasons,
                     "max_risk_amount_inr": float(risk_eval.max_risk_amount_inr),
                     "estimated_trade_risk_inr": float(risk_eval.estimated_trade_risk_inr),
+                    "gate_status": str(gate_outcome.status),
+                    "gate_approved": bool(gate_outcome.approved),
                     "timestamp_ist": entry_ts.isoformat(),
                 }
                 risk_decisions.append(decision_record)
 
-                if not risk_eval.approved or risk_eval.approved_quantity <= 0:
-                    rejection_reasons.extend(risk_eval.rejection_reasons)
+                if not gate_outcome.approved or not risk_eval.approved or risk_eval.approved_quantity <= 0:
+                    rejection_reasons.extend(combined_reasons)
                     continue
 
-                order = self.portfolio.submit_order(
-                    symbol=sym,
-                    side=OrderSide.BUY,
-                    quantity=risk_eval.approved_quantity,
-                    price=entry_price,
-                    stop_loss=stop_loss,
-                    target=target,
-                    timestamp=entry_ts,
-                )
-                orders_recorded.append(self._serialize_order(order))
-                if order.status == OrderStatus.REJECTED and order.rejection_reason:
-                    rejection_reasons.append(order.rejection_reason)
+                for order in self.portfolio.orders[orders_before:]:
+                    orders_recorded.append(self._serialize_order(order))
+                    if order.status == OrderStatus.REJECTED and order.rejection_reason:
+                        rejection_reasons.append(order.rejection_reason)
 
-            # Chronologically update market prices across session bars
+            # Chronologically update market prices across session bars; route all SL/TP exits via RISK_EXIT
             all_timestamps = sorted(
                 {
                     ts.to_pydatetime()
@@ -688,20 +799,63 @@ class Cycle006BPaperTradingRunner:
                         if sym in self.portfolio.positions:
                             pos = self.portfolio.positions[sym]
                             if ts >= pos.entry_time:
-                                auto_orders = self.portfolio.update_market_price(sym, close_px, ts)
-                                for ao in auto_orders:
-                                    orders_recorded.append(self._serialize_order(ao))
-                                    if ao.status == OrderStatus.REJECTED and ao.rejection_reason:
-                                        rejection_reasons.append(ao.rejection_reason)
+                                pos.current_price = close_px
+                                pos.highest_price = max(pos.highest_price, close_px)
+                                pos.lowest_price = min(
+                                    pos.lowest_price if pos.lowest_price is not None else close_px,
+                                    close_px,
+                                )
+                                exit_triggered = False
+                                if pos.side == "SHORT":
+                                    if (pos.stop_loss is not None and close_px >= pos.stop_loss) or (
+                                        pos.target is not None and close_px <= pos.target
+                                    ):
+                                        exit_triggered = True
+                                else:
+                                    if (pos.stop_loss is not None and close_px <= pos.stop_loss) or (
+                                        pos.target is not None and close_px >= pos.target
+                                    ):
+                                        exit_triggered = True
+                                if exit_triggered:
+                                    orders_before = len(self.portfolio.orders)
+                                    exit_out, _ = self.execution_gate.execute_with_gate_protection(
+                                        symbol=pos.symbol,
+                                        action_type=_ActionType.RISK_EXIT,
+                                        current_time=ts,
+                                        portfolio=self.portfolio,
+                                        requested_quantity=pos.quantity,
+                                        price=close_px,
+                                    )
+                                    for ao in self.portfolio.orders[orders_before:]:
+                                        orders_recorded.append(self._serialize_order(ao))
+                                        if ao.status == OrderStatus.REJECTED and ao.rejection_reason:
+                                            rejection_reasons.append(ao.rejection_reason)
+                                    if not exit_out.approved and exit_out.rejection_reasons:
+                                        rejection_reasons.extend(exit_out.rejection_reasons)
 
-            # Mandatory end-of-session square-off on final bar timestamp
+            # Mandatory end-of-session square-off on final bar timestamp routed via ActionType.RISK_EXIT
             if self.portfolio.positions and all_timestamps:
                 sq_ts = all_timestamps[-1]
-                sq_orders = self.portfolio.square_off_all_positions(latest_prices, sq_ts)
-                for so in sq_orders:
-                    orders_recorded.append(self._serialize_order(so))
-                    if so.status == OrderStatus.REJECTED and so.rejection_reason:
-                        rejection_reasons.append(so.rejection_reason)
+                for pos in list(self.portfolio.positions.values()):
+                    sq_px = latest_prices.get(
+                        pos.symbol,
+                        latest_prices.get(pos.symbol.strip().upper(), pos.current_price),
+                    )
+                    orders_before = len(self.portfolio.orders)
+                    sq_out, _ = self.execution_gate.execute_with_gate_protection(
+                        symbol=pos.symbol,
+                        action_type=_ActionType.RISK_EXIT,
+                        current_time=sq_ts,
+                        portfolio=self.portfolio,
+                        requested_quantity=pos.quantity,
+                        price=sq_px,
+                    )
+                    for so in self.portfolio.orders[orders_before:]:
+                        orders_recorded.append(self._serialize_order(so))
+                        if so.status == OrderStatus.REJECTED and so.rejection_reason:
+                            rejection_reasons.append(so.rejection_reason)
+                    if not sq_out.approved and sq_out.rejection_reasons:
+                        rejection_reasons.extend(sq_out.rejection_reasons)
 
         completed_at = datetime.now(tz=IST_TZ)
         return self._build_report(

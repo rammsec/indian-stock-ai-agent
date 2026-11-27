@@ -51,6 +51,53 @@ def sha256_file_1m(path: Path) -> str:
     return h.hexdigest()
 
 
+def parse_tz_aware_ist(series: pd.Series, label: str = "timestamp_ist") -> pd.Series:
+    """Parse a timestamp Series to Asia/Kolkata (IST), rejecting NaT and naive timestamps."""
+    if series.isna().any():
+        raise ValueError(f"Missing/NaT timestamp rejected in column '{label}'")
+    if series.empty:
+        return pd.Series(pd.DatetimeIndex([], tz=IST_TZ), index=series.index)
+
+    if pd.api.types.is_datetime64_any_dtype(series):
+        if getattr(series.dt, "tz", None) is None:
+            raise ValueError(
+                f"AMBIGUOUS_NAIVE_TIMESTAMP: timezone-naive datetime series rejected in '{label}'"
+            )
+        return series.dt.tz_convert(IST_TZ)
+
+    if pd.api.types.is_object_dtype(series) or pd.api.types.is_string_dtype(series):
+        converted: list[pd.Timestamp] = []
+        for item in series.tolist():
+            if item is None or pd.isna(item):
+                raise ValueError(f"Missing/NaT timestamp rejected in column '{label}': {item!r}")
+            if isinstance(item, pd.Timestamp):
+                if item.tzinfo is None or item.utcoffset() is None:
+                    raise ValueError(
+                        f"AMBIGUOUS_NAIVE_TIMESTAMP: timezone-naive timestamp rejected in '{label}': {item!r}"
+                    )
+                converted.append(item.tz_convert(IST_TZ))
+            elif isinstance(item, datetime):
+                if item.tzinfo is None or item.utcoffset() is None:
+                    raise ValueError(
+                        f"AMBIGUOUS_NAIVE_TIMESTAMP: timezone-naive datetime rejected in '{label}': {item!r}"
+                    )
+                converted.append(pd.Timestamp(item).tz_convert(IST_TZ))
+            else:
+                dt = pd.to_datetime(item)
+                if pd.isna(dt):
+                    raise ValueError(f"Missing/NaT timestamp rejected in column '{label}': {item!r}")
+                if dt.tzinfo is None or dt.utcoffset() is None:
+                    raise ValueError(
+                        f"AMBIGUOUS_NAIVE_TIMESTAMP: timezone-naive timestamp string rejected in '{label}': {item!r}"
+                    )
+                converted.append(dt.tz_convert(IST_TZ))
+        return pd.Series(pd.DatetimeIndex(converted).tz_convert(IST_TZ), index=series.index)
+
+    raise ValueError(
+        f"Column '{label}' must contain timezone-aware timestamps, got dtype {series.dtype}"
+    )
+
+
 def normalize_1m_dataframe(df: pd.DataFrame, symbol: str) -> pd.DataFrame:
     """Clean, validate, deduplicate, and IST-normalize a 1m OHLCV DataFrame.
 
@@ -67,7 +114,7 @@ def normalize_1m_dataframe(df: pd.DataFrame, symbol: str) -> pd.DataFrame:
         )
 
     out = df.copy()
-    ts = pd.to_datetime(out["timestamp_ist"], utc=True).dt.tz_convert(IST_TZ)
+    ts = parse_tz_aware_ist(out["timestamp_ist"], label="timestamp_ist")
     out["timestamp_ist"] = ts
     out["symbol"] = symbol.strip().upper()
     if "source" not in out.columns:

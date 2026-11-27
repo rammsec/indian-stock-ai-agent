@@ -16,6 +16,7 @@ import pandas as pd
 import pytest
 
 from scripts.run_cycle_007_timing_dry_run import run_cycle_007_dry_run
+from trader.authority.instructions import PermissionType
 from trader.config import IST_TZ, LAB_DEFAULT_UNIVERSE
 from trader.paper.cycle006b import DEFAULT_CACHE_DIR, sha256_file
 from trader.timing.candle_intelligence import (
@@ -1105,8 +1106,8 @@ class TestCycle007EndToEndPipelineIntegration:
             regime_path=regime_path,
         )
 
-        report_1 = Cycle007Pipeline(cfg).run()
-        report_2 = Cycle007Pipeline(cfg).run()
+        report_1 = Cycle007Pipeline(cfg, human_permission=PermissionType.ALLOW_LONG).run()
+        report_2 = Cycle007Pipeline(cfg, human_permission=PermissionType.ALLOW_LONG).run()
 
         assert report_1["run_status"] == "COMPLETED"
         assert report_1["stage1_central_hypotheses"]["RELIANCE"]["direction"] == "BULLISH"

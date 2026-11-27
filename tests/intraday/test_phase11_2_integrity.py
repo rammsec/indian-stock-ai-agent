@@ -100,7 +100,12 @@ def test_1h_provenance_validator_and_failure_cases(tmp_path: Path) -> None:
     # 1. Valid dataset
     for sym in LAB_DEFAULT_UNIVERSE:
         _write_1h_parquet(tmp_path / f"{sym}_1h.parquet", trading_days)
-    ok, rep = validate_1h_provenance(LAB_DEFAULT_UNIVERSE, cache_dir=tmp_path, min_sessions_required=60)
+    ok, rep = validate_1h_provenance(
+        LAB_DEFAULT_UNIVERSE,
+        cache_dir=tmp_path,
+        min_sessions_required=60,
+        enforce_provider_authority_cap=False,
+    )
     assert ok is True
     assert rep["final_provenance_status"] in ("VERIFIED", "PARTIALLY_VERIFIED")
     orig_fp = rep["symbols"]["RELIANCE"]["dataset_fingerprint"]

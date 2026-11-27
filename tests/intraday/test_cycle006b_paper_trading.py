@@ -21,6 +21,7 @@ import pandas as pd
 import pytest
 
 from scripts.run_cycle_006b_paper_dry_run import main as cli_main
+from trader.authority.instructions import PermissionType
 from trader.config import IST_TZ
 from trader.paper.cycle006b import (
     Cycle006BConfig,
@@ -362,7 +363,7 @@ def test_12_to_16_risk_engine_rejection_and_missing_decision_fail_closed(tmp_pat
 def test_17_to_24_portfolio_costs_ledger_tamper_and_determinism(tmp_path: Path) -> None:
     cfg = _make_valid_config(tmp_path)
 
-    runner1 = Cycle006BPaperTradingRunner(cfg)
+    runner1 = Cycle006BPaperTradingRunner(cfg, human_permission=PermissionType.ALLOW_LONG)
     rep1 = runner1.run()
     assert rep1["run_status"] == "COMPLETED"
     assert rep1["filled_order_count"] >= 2  # At least 1 BUY + 1 EOD square-off SELL
@@ -391,7 +392,7 @@ def test_17_to_24_portfolio_costs_ledger_tamper_and_determinism(tmp_path: Path) 
     assert tampered_ok is False
 
     # Determinism across repeated runs with identical inputs
-    runner2 = Cycle006BPaperTradingRunner(cfg)
+    runner2 = Cycle006BPaperTradingRunner(cfg, human_permission=PermissionType.ALLOW_LONG)
     rep2 = runner2.run()
     assert rep1["portfolio_results"] == rep2["portfolio_results"]
     assert rep1["cost_accounting"] == rep2["cost_accounting"]
@@ -485,7 +486,7 @@ def test_35_intraday_stop_loss_auto_exit_recorded_and_reconciled(tmp_path: Path)
     df.loc[day_indices[2], "close"] = sl_crash_px
     df.to_parquet(pq_path, index=False)
 
-    rep = Cycle006BPaperTradingRunner(cfg).run()
+    rep = Cycle006BPaperTradingRunner(cfg, human_permission=PermissionType.ALLOW_LONG).run()
     assert rep["run_status"] == "COMPLETED"
     assert rep["open_positions_count"] == 0
     assert rep["closed_trades_count"] == 1
@@ -524,16 +525,17 @@ def test_36_rejected_portfolio_order_excluded_from_costs_and_gross_pnl(tmp_path:
         intelligence_path=intel_p,
         regime_path=reg_p,
     )
-    rep = Cycle006BPaperTradingRunner(cfg).run()
+    rep = Cycle006BPaperTradingRunner(cfg, human_permission=PermissionType.ALLOW_LONG).run()
     assert rep["run_status"] == "COMPLETED"
-    assert rep["order_count"] == 1
+    # MandatoryExecutionGate enforces include_entry_friction_in_cash_cap=True, so the
+    # 1-share order is rejected at the risk gate (cash_shares=0) before portfolio submission.
+    assert rep["order_count"] == 0
     assert rep["filled_order_count"] == 0
-    assert rep["orders"][0]["status"] == "REJECTED"
     assert rep["cost_accounting"]["total_friction_inr"] == 0.0
     assert rep["cost_accounting"]["brokerage_inr"] == 0.0
     assert rep["portfolio_results"]["gross_pnl_inr"] == 0.0
     assert rep["portfolio_results"]["net_pnl_inr"] == 0.0
-    assert any("Insufficient cash" in r for r in rep["rejection_reasons"])
+    assert any("cash_shares=0" in r or "Insufficient cash" in r for r in rep["rejection_reasons"])
 
 
 def test_37_offline_guard_blocks_raw_socket_connect_and_connect_ex() -> None:
