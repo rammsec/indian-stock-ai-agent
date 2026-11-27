@@ -573,8 +573,10 @@ def test_d6_09_loader_1h_rejects_naive_and_nat_and_converts_tz_aware(
 
 def test_d6_11_historical_real_never_substitutes_synthetic_and_fails_closed(
     monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
 ) -> None:
     """build_trader_dataset(HISTORICAL_REAL) never calls generate_synthetic_5m_session and fails closed."""
+    monkeypatch.setattr(generate_trader_data, "OUTPUT_DIR", tmp_path)
     # Pre-generate fixture candles strictly for the watchlist scanner step before monkeypatching
     watchlist_fixtures: dict[str, tuple[Any, Any]] = {}
     for sym, bp in [("RELIANCE", 2520.0), ("TCS", 3540.0), ("HDFCBANK", 1625.0), ("INFY", 1820.0), ("ITC", 435.0)]:
@@ -607,8 +609,12 @@ def test_d6_11_historical_real_never_substitutes_synthetic_and_fails_closed(
         assert row["profit_factor"] is None
 
 
-def test_d6_11_synthetic_test_mode_explicitly_tags_source_mode() -> None:
+def test_d6_11_synthetic_test_mode_explicitly_tags_source_mode(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
     """build_trader_dataset(SYNTHETIC_TEST) runs backtests and tags source_mode='SYNTHETIC_TEST'."""
+    monkeypatch.setattr(generate_trader_data, "OUTPUT_DIR", tmp_path)
     payload_syn = generate_trader_data.build_trader_dataset(DataSourceMode.SYNTHETIC_TEST)
     perf_syn = payload_syn["strategy_performance"]
     assert len(perf_syn) == 4
