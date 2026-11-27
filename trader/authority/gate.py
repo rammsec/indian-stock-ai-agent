@@ -262,8 +262,7 @@ class MandatoryExecutionGate:
                 version="1.0",
             )
             self.set_human_instruction(instr, current_time=now_ist)
-            if norm_scope == "*":
-                self.risk_engine.cash_ledger.clear()
+            self.release_reservations_for_scope(norm_scope)
             if portfolio is not None:
                 self.invoke_safe_position_management(
                     symbol=scope,
@@ -351,6 +350,16 @@ class MandatoryExecutionGate:
         with self._lock:
             return self.risk_engine.cash_ledger.release(order_id)
 
+    def release_reservations_for_scope(self, scope: str) -> float:
+        """Release all pending cash reservations for '*' or a specific symbol scope."""
+        norm = "*" if scope in ("*", "PORTFOLIO", "ALL") else scope.strip().upper()
+        with self._lock:
+            if norm == "*":
+                released = self.risk_engine.cash_ledger.total_reserved_inr
+                self.risk_engine.cash_ledger.clear()
+                return released
+            return self.risk_engine.cash_ledger.release_for_symbol(norm)
+
     def clear_cash_reservations(self) -> None:
         """Clear all pending cash reservations."""
         with self._lock:
@@ -367,11 +376,9 @@ class MandatoryExecutionGate:
         current_time: datetime,
     ) -> None:
         """Default safe management: square off open long/short positions via audited RISK_EXIT."""
-        sym_u = symbol.strip().upper()
-        target_symbols = list(portfolio.positions.keys()) if sym_u == "*" else [sym_u]
-        for k in target_symbols:
-            pos = portfolio.positions.get(k)
-            if pos and pos.quantity > 0:
+        sym_u = "*" if symbol in ("*", "PORTFOLIO", "ALL") else symbol.strip().upper()
+        for pos in list(portfolio.positions.values()):
+            if pos and pos.quantity > 0 and (sym_u == "*" or pos.symbol.strip().upper() == sym_u):
                 px = getattr(pos, "current_price", pos.entry_price)
                 self.execute_with_gate_protection(
                     symbol=pos.symbol,

@@ -345,7 +345,7 @@ class IntradayCandleMonitoringSession:
         timeframe: TimeframeLiteral = "1h",
         direction: DirectionalBias = DirectionalBias.BULLISH,
         hypothesis: DirectionalHypothesis | None = None,
-        human_permission: PermissionType = PermissionType.ALLOW_LONG,
+        human_permission: PermissionType | None = None,
         human_instruction: AuthorityInstruction | None = None,
         mid_session_human_instructions: Mapping[datetime, AuthorityInstruction] | None = None,
         requested_quantity: int = 10,
@@ -437,25 +437,34 @@ class IntradayCandleMonitoringSession:
         if session_bars.empty:
             raise ValueError(f"No {timeframe} session bars found for {sym_u} on {session_date.isoformat()}")
 
-        # 3. Register pre-open Central Directional Hypothesis & Human Authority Instruction
+        # 3. Register pre-open Central Directional Hypothesis & explicit Human Authority Instruction
         hyp = hypothesis or _build_default_hypothesis(
             symbol=sym_u,
             session_date=session_date,
             direction=direction,
             as_of_ist=session_open_ist,
         )
-        self.execution_gate.set_central_instruction(hyp.to_authority_instruction(expires_after_hours=8.0))
-
-        h_instr = human_instruction or AuthorityInstruction(
-            instruction_id=f"HUMAN-{sym_u}-{session_date.isoformat()}",
-            authority=AuthoritySource.HUMAN,
-            scope=sym_u,
-            permission=human_permission,
-            valid_from=session_open_ist - timedelta(minutes=15),
-            expires_at=session_close_ist + timedelta(minutes=15),
-            reason=f"User session authority: {human_permission.value}",
+        self.execution_gate.set_central_instruction(
+            hyp.to_authority_instruction(expires_after_hours=8.0),
+            current_time=session_open_ist,
         )
-        self.execution_gate.set_human_instruction(h_instr)
+
+        # Decision 1 (Strict Fail-Closed): NEVER fabricate an implicit ALLOW_LONG Human instruction.
+        h_instr: AuthorityInstruction | None = None
+        if human_instruction is not None:
+            h_instr = human_instruction
+        elif human_permission is not None:
+            h_instr = AuthorityInstruction(
+                instruction_id=f"HUMAN-{sym_u}-{session_date.isoformat()}",
+                authority=AuthoritySource.HUMAN,
+                scope=sym_u,
+                permission=human_permission,
+                valid_from=session_open_ist - timedelta(minutes=15),
+                expires_at=session_close_ist + timedelta(minutes=15),
+                reason=f"User session authority: {human_permission.value}",
+            )
+        if h_instr is not None:
+            self.execution_gate.set_human_instruction(h_instr, current_time=session_open_ist)
 
         sorted_mid_updates = sorted(
             [(ts.astimezone(IST_TZ), instr) for ts, instr in (mid_session_human_instructions or {}).items()],
@@ -464,7 +473,7 @@ class IntradayCandleMonitoringSession:
         mid_update_idx = 0
 
         pending_order: PendingOrder | None = None
-        current_human_permission: PermissionType = h_instr.permission
+        current_human_permission: PermissionType | None = h_instr.permission if h_instr is not None else None
         entries_opened_this_session = 0
         last_exit_bar_index: int | None = None
         active_initial_risk: float = 0.0
@@ -491,6 +500,7 @@ class IntradayCandleMonitoringSession:
                 if reg_res.accepted:
                     current_human_permission = mid_instr.permission
                     if mid_instr.permission == PermissionType.STOP_ALL:
+                        self.execution_gate.release_reservations_for_scope(mid_instr.normalized_scope)
                         if pending_order is not None and pending_order.reservation_order_id:
                             self.execution_gate.release_cash_reservation(pending_order.reservation_order_id)
                         pending_order = None
@@ -563,6 +573,7 @@ class IntradayCandleMonitoringSession:
                 if reg_res.accepted:
                     current_human_permission = mid_instr.permission
                     if mid_instr.permission == PermissionType.STOP_ALL:
+                        self.execution_gate.release_reservations_for_scope(mid_instr.normalized_scope)
                         self.execution_gate.invoke_safe_position_management(
                             symbol=sym_u,
                             portfolio=self.portfolio,
@@ -573,25 +584,47 @@ class IntradayCandleMonitoringSession:
                     bar_events_notes.append(f"HUMAN_INSTRUCTION_REJECTED:{reg_res.reason}")
                 mid_update_idx += 1
 
-            # STEP B: Intrabar OHLC stop-loss / target check (conservative stop-first) & MTM DD check
+            # STEP B: Intrabar OHLC stop-loss / target check (conservative stop-first) routed
+            # through MandatoryExecutionGate as audited ActionType.RISK_EXIT (zero unaudited mutations).
             # Decision 4: RiskState.HALTED implements EXIT_ONLY by default (blocks new entries,
             # continues managing existing positions via SL/TP/approved exits & 15:15 square-off).
             if sym_u in self.portfolio.positions:
-                self.portfolio.update_candle_bar(
-                    symbol=sym_u,
-                    open_price=o_px,
-                    high_price=h_px,
-                    low_price=l_px,
-                    close_price=c_px,
-                    timestamp=ts_close,
-                    round_ticks=True,
-                )
-                if sym_u not in self.portfolio.positions:
-                    last_exit_bar_index = int(bar_idx)
+                open_pos_b = self.portfolio.positions[sym_u]
+                intrabar_exit_px: float | None = None
+                intrabar_reason: str | None = None
+                if open_pos_b.side == "SHORT":
+                    if open_pos_b.stop_loss is not None and h_px >= open_pos_b.stop_loss:
+                        intrabar_exit_px = round_to_nse_tick(max(o_px, open_pos_b.stop_loss))
+                        intrabar_reason = "INTRABAR_STOP_LOSS_SHORT"
+                    elif open_pos_b.target is not None and l_px <= open_pos_b.target:
+                        intrabar_exit_px = round_to_nse_tick(min(o_px, open_pos_b.target))
+                        intrabar_reason = "INTRABAR_TARGET_SHORT"
+                else:
+                    if open_pos_b.stop_loss is not None and l_px <= open_pos_b.stop_loss:
+                        intrabar_exit_px = round_to_nse_tick(min(o_px, open_pos_b.stop_loss))
+                        intrabar_reason = "INTRABAR_STOP_LOSS_LONG"
+                    elif open_pos_b.target is not None and h_px >= open_pos_b.target:
+                        intrabar_exit_px = round_to_nse_tick(max(o_px, open_pos_b.target))
+                        intrabar_reason = "INTRABAR_TARGET_LONG"
+
+                if intrabar_exit_px is not None:
+                    _, ib_exec = self.execution_gate.execute_with_gate_protection(
+                        symbol=sym_u,
+                        action_type=ActionType.RISK_EXIT,
+                        current_time=ts_close,
+                        portfolio=self.portfolio,
+                        requested_quantity=open_pos_b.quantity,
+                        price=intrabar_exit_px,
+                    )
+                    if ib_exec:
+                        last_exit_bar_index = int(bar_idx)
+                        bar_events_notes.append(f"{intrabar_reason}@{intrabar_exit_px:.2f}")
+                else:
+                    open_pos_b.current_price = round_to_nse_tick(c_px)
                 if self.risk_engine.check_daily_loss_limit(self.portfolio):
                     bar_events_notes.append("RISK_HALTED_EXIT_ONLY_ACTIVE:drawdown_breach_blocks_new_entries")
 
-            # STEP C: NSE Time Boundaries (15:05 REDUCING, 15:15 Mandatory Square-Off)
+            # STEP C: NSE Time Boundaries (15:05 REDUCING, 15:15 Mandatory Square-Off via RISK_EXIT)
             if self.risk_engine.state == RiskState.ACTIVE and ts_close.time() >= INTRADAY_REDUCING_WIND_DOWN_TIME:
                 self.risk_engine.state = RiskState.REDUCING
 
@@ -599,10 +632,9 @@ class IntradayCandleMonitoringSession:
             if ts_close.time() >= INTRADAY_MANDATORY_SQUAREOFF_TIME and sym_u in self.portfolio.positions:
                 open_pos = self.portfolio.positions[sym_u]
                 open_side = open_pos.side
-                sq_action = ActionType.EXIT_SHORT if open_side == "SHORT" else ActionType.EXIT_LONG
                 _, sq_executed = self.execution_gate.execute_with_gate_protection(
                     symbol=sym_u,
-                    action_type=sq_action,
+                    action_type=ActionType.RISK_EXIT,
                     current_time=ts_close,
                     portfolio=self.portfolio,
                     requested_quantity=open_pos.quantity,
@@ -611,7 +643,7 @@ class IntradayCandleMonitoringSession:
                 if sq_executed:
                     squared_off_side = open_side
                     last_exit_bar_index = int(bar_idx)
-                    bar_events_notes.append(f"MANDATORY_1515_SQUAREOFF_EXECUTED:{sq_action.value}")
+                    bar_events_notes.append(f"MANDATORY_1515_SQUAREOFF_EXECUTED:RISK_EXIT({open_side})")
 
             # STEP D: Fetch strictly causal evidence <= ts_close and evaluate stateful CandleTimingAgent
             causal_ev = self.feed.get_bars(sym_u, timeframe, ts_close, lookback_bars=warmup_lookback_bars + session_bar_budget)
@@ -619,7 +651,7 @@ class IntradayCandleMonitoringSession:
 
             # Decision 3: AUTO is a Central-authorized regime mode; yields immediately if an explicit
             # Central hypothesis was provided, and never overrides Human restrictions.
-            if auto_direction and central_hypothesis is None:
+            if auto_direction and hypothesis is None:
                 auto_mtf = evaluate_causal_5m_mtf_trend(causal_df)
                 auto_ov = compute_chart_overlays(causal_df, session_date)
                 inferred = infer_auto_market_direction(auto_mtf, auto_ov, c_px)

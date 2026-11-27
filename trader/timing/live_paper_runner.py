@@ -325,6 +325,7 @@ class LivePaperTradingRunner:
         """Register Human Authority instruction via MandatoryExecutionGate (triggers safe mgmt on STOP_ALL)."""
         res = self.execution_gate.set_human_instruction(instruction, current_time=current_time)
         if res.accepted and instruction.permission == PermissionType.STOP_ALL:
+            self.execution_gate.release_reservations_for_scope(instruction.normalized_scope)
             ts = current_time or self._last_watermark_ist or datetime.now(IST_TZ)
             self.execution_gate.invoke_safe_position_management(
                 symbol=instruction.normalized_scope,
@@ -498,28 +499,36 @@ class LivePaperTradingRunner:
         self._last_direction_by_symbol[sym] = eff_dir
 
         # Update MTM price & check drawdown circuit breaker (Decision 4: HALTED -> EXIT_ONLY)
-        if sym in self.portfolio.positions:
-            self.portfolio.positions[sym].current_price = round_to_nse_tick(bar.close)
+        pos = self.portfolio.positions.get(sym)
+        if pos is None:
+            for p in self.portfolio.positions.values():
+                if p.symbol.strip().upper() == sym:
+                    pos = p
+                    break
+        if pos is not None and pos.quantity > 0:
+            pos.current_price = round_to_nse_tick(bar.close)
         self.risk_engine.check_daily_loss_limit(self.portfolio)
         if self.risk_engine.state == RiskState.ACTIVE and ts_close.time() >= INTRADAY_REDUCING_WIND_DOWN_TIME:
             self.risk_engine.state = RiskState.REDUCING
 
         # 1. Manage existing open position (always allowed under EXIT_ONLY / HALTED / PAUSE for RISK_EXIT)
-        pos = self.portfolio.positions.get(sym)
         if pos is not None and pos.quantity > 0:
+            is_short_pos = getattr(pos, "side", "LONG") == "SHORT"
+            default_sl = round_to_nse_tick(bar.close * (1.015 if is_short_pos else 0.985))
+            default_tp = round_to_nse_tick(bar.close * (0.97 if is_short_pos else 1.03))
             meta = self._pos_meta.setdefault(
                 sym,
                 {
-                    "initial_sl": pos.stop_loss or round_to_nse_tick(bar.close * 0.985),
-                    "active_sl": pos.stop_loss or round_to_nse_tick(bar.close * 0.985),
-                    "take_profit": pos.target or round_to_nse_tick(bar.close * 1.03),
+                    "initial_sl": pos.stop_loss or default_sl,
+                    "active_sl": pos.stop_loss or default_sl,
+                    "take_profit": pos.target or default_tp,
                     "peak_price": pos.entry_price,
                     "trough_price": pos.entry_price,
                     "entry_time_ist": ts_close.isoformat(),
                     "ml_win_prob": None,
                 },
             )
-            if t_ist >= EOD_SQUAREOFF_IST:
+            if ts_close.time() >= EOD_SQUAREOFF_IST:
                 self._execute_governed_exit(sym, bar.close, ts_close, "EOD_SQUARE_OFF", is_risk_exit=True)
             elif getattr(pos, "side", "LONG") == "LONG":
                 if bar.low <= meta["active_sl"]:
@@ -805,16 +814,22 @@ class LivePaperTradingRunner:
                 if bar.timeframe == "1m":
                     self._evaluate_closed_1m_bar(bar)
 
-            # Release any remaining cash reservations & close open positions via audited RISK_EXIT
+            # Release any remaining cash reservations & close all open positions via audited RISK_EXIT
             self.execution_gate.clear_cash_reservations()
-            for sym in list(self.portfolio.positions.keys()):
-                pos = self.portfolio.positions.get(sym)
-                if pos is not None and pos.quantity > 0 and self._bars_1m_history[sym]:
-                    last_bar = self._bars_1m_history[sym][-1]
-                    exit_ts = last_bar["timestamp"] + timedelta(minutes=1)
+            for pos in list(self.portfolio.positions.values()):
+                if pos is not None and pos.quantity > 0:
+                    sym = pos.symbol.strip().upper()
+                    hist = self._bars_1m_history.get(sym)
+                    if hist:
+                        last_bar = hist[-1]
+                        exit_px = float(last_bar["close"])
+                        exit_ts = last_bar["timestamp"] + timedelta(minutes=1)
+                    else:
+                        exit_px = float(getattr(pos, "current_price", pos.entry_price) or pos.entry_price)
+                        exit_ts = self._last_watermark_ist or datetime.now(IST_TZ)
                     self._execute_governed_exit(
                         sym,
-                        float(last_bar["close"]),
+                        exit_px,
                         exit_ts,
                         "SESSION_SHUTDOWN_SQUARE_OFF",
                         is_risk_exit=True,

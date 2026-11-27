@@ -172,7 +172,7 @@ class PaperFeedSignalSession:
             # Register Central Instruction from hypothesis
             central_instr = hyp.to_authority_instruction()
             self.execution_gate.set_central_instruction(central_instr, current_time=cutoff_ist)
-            if human_instruction is not None:
+            if human_instruction is not None and self.execution_gate.get_active_human_instruction(sym, cutoff_ist) is None:
                 self.execution_gate.set_human_instruction(human_instruction, current_time=cutoff_ist)
 
             if (
@@ -197,6 +197,7 @@ class PaperFeedSignalSession:
                     entry_price=entry_price,
                     stop_loss_price=stop_loss,
                     target_price=target_price,
+                    dry_run=True,
                 )
                 risk_eval = gate_outcome.risk_evaluation
 

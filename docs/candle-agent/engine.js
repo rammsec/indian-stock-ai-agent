@@ -686,7 +686,7 @@
       this.warmupBars = warmupBars || [];
       this.sessionBars = sessionBars || [];
       this.centralDirection = centralDirection || "BULLISH";
-      this.humanPermission = humanPermission || "ALLOW_LONG";
+      this.humanPermission = humanPermission !== undefined ? humanPermission : null;
       this.setupFilter = setupFilter;
       this.initialCapital = Number(initialCapital) || 50000;
       this.minRewardToFrictionRatio =
@@ -727,6 +727,7 @@
       this.breakevenLocked = false;
       this.chandelierStopHistory = [];
       this.lastMtf5mTrend = "NEUTRAL";
+      this.lastEffectiveDirection = this.centralDirection === "AUTO" ? "NEUTRAL" : this.centralDirection;
       this.lastOverlays = null;
       this.decisions = [];
       this.closedTrades = [];
@@ -739,15 +740,26 @@
       this.humanPermission = perm;
       if (perm === "STOP_ALL") {
         this.pendingOrder = null;
-        if (this.position && this.barIdx > 0) {
-          const curBar = this.sessionBars[this.barIdx - 1];
-          this._closePosition(roundToNseTick(curBar.c), curBar.tc || curBar.t, "EMERGENCY_HUMAN_STOP_ALL");
+        if (this.position) {
+          if (this.barIdx > 0 && this.sessionBars[this.barIdx - 1]) {
+            const curBar = this.sessionBars[this.barIdx - 1];
+            this._closePosition(roundToNseTick(curBar.c), curBar.tc || curBar.t, "EMERGENCY_HUMAN_STOP_ALL");
+          } else {
+            const fallbackPx = roundToNseTick(this.position.currentPrice || this.position.entryPrice);
+            const fallbackTs =
+              (this.sessionBars[0] && (this.sessionBars[0].t || this.sessionBars[0].tc)) ||
+              `${this.sessionDate}T09:15:00+05:30`;
+            this._closePosition(fallbackPx, fallbackTs, "EMERGENCY_HUMAN_STOP_ALL");
+          }
         }
       }
     }
 
     setCentralDirection(dir) {
       this.centralDirection = dir;
+      if (dir !== "AUTO") {
+        this.lastEffectiveDirection = dir;
+      }
     }
 
     getInvestedCapital() {
@@ -920,12 +932,14 @@
           const isPendingExit = po.actionType === "EXIT_LONG" || po.actionType === "COVER_SHORT";
           const permCheck = humanPermissionAllows(this.humanPermission, po.actionType);
           const haltedBlock = !isPendingExit && this._checkCircuitBreakers();
-          const reducingBlock = !isPendingExit && (this.riskState === "REDUCING" || tsOpen.slice(11, 16) > "14:45");
+          const reducingBlock = !isPendingExit && (this.riskState === "REDUCING" || tsOpen.slice(11, 16) >= "14:45");
+          const effectiveCentralAtOpen =
+            this.centralDirection === "AUTO" ? this.lastEffectiveDirection : this.centralDirection;
           let centralBlock = false;
-          if (!isPendingExit && this.centralDirection !== "AUTO") {
-            if (this.centralDirection === "NEUTRAL") centralBlock = true;
-            if (this.centralDirection === "BULLISH" && po.actionType === "OPEN_SHORT") centralBlock = true;
-            if (this.centralDirection === "BEARISH" && po.actionType === "OPEN_LONG") centralBlock = true;
+          if (!isPendingExit) {
+            if (effectiveCentralAtOpen === "NEUTRAL" || !effectiveCentralAtOpen) centralBlock = true;
+            if (effectiveCentralAtOpen === "BULLISH" && po.actionType === "OPEN_SHORT") centralBlock = true;
+            if (effectiveCentralAtOpen === "BEARISH" && po.actionType === "OPEN_LONG") centralBlock = true;
           }
           if (permCheck.allowed && !haltedBlock && !reducingBlock && !centralBlock) {
             if (po.actionType === "OPEN_LONG" && !this.position) {
@@ -949,7 +963,7 @@
               ? "RISK_HALTED_EXIT_ONLY"
               : reducingBlock
               ? "PAST_1445_OR_REDUCING"
-              : `CENTRAL_DIRECTION_CHANGED:${this.centralDirection}`;
+              : `CENTRAL_DIRECTION_CHANGED:${effectiveCentralAtOpen}`;
             barNotes.push(`OPEN_GATE_BLOCKED:${blockReason}`);
           }
         }
@@ -1102,15 +1116,31 @@
         }
 
         if (shouldExitLong) {
-          call = "EXIT_LONG";
-          gateStatus = "APPROVED";
-          this.pendingOrder = { actionType: "EXIT_LONG", qty: p.qty, stopLoss: null, target: null, signalCloseTs: tsClose };
-          barNotes.push("Queued EXIT_LONG for next bar open (structural reversal)");
+          const exitCheck = humanPermissionAllows(this.humanPermission, "EXIT_LONG");
+          if (exitCheck.allowed) {
+            call = "EXIT_LONG";
+            gateStatus = "APPROVED";
+            this.pendingOrder = { actionType: "EXIT_LONG", qty: p.qty, stopLoss: null, target: null, signalCloseTs: tsClose };
+            barNotes.push("Queued EXIT_LONG for next bar open (structural reversal)");
+          } else {
+            call = "REJECT";
+            gateStatus = "REJECTED";
+            rejectionReasons.push(`HUMAN_PERMISSION_DENIED:${exitCheck.reason}`);
+            barNotes.push(`EXIT_LONG blocked at close: ${exitCheck.reason}`);
+          }
         } else if (shouldCoverShort) {
-          call = "COVER_SHORT";
-          gateStatus = "APPROVED";
-          this.pendingOrder = { actionType: "COVER_SHORT", qty: p.qty, stopLoss: null, target: null, signalCloseTs: tsClose };
-          barNotes.push("Queued COVER_SHORT for next bar open (structural reversal)");
+          const coverCheck = humanPermissionAllows(this.humanPermission, "COVER_SHORT");
+          if (coverCheck.allowed) {
+            call = "COVER_SHORT";
+            gateStatus = "APPROVED";
+            this.pendingOrder = { actionType: "COVER_SHORT", qty: p.qty, stopLoss: null, target: null, signalCloseTs: tsClose };
+            barNotes.push("Queued COVER_SHORT for next bar open (structural reversal)");
+          } else {
+            call = "REJECT";
+            gateStatus = "REJECTED";
+            rejectionReasons.push(`HUMAN_PERMISSION_DENIED:${coverCheck.reason}`);
+            barNotes.push(`COVER_SHORT blocked at close: ${coverCheck.reason}`);
+          }
         } else {
           call = "HOLD";
           // Monotonic trailing stop ratchet

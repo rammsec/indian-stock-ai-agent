@@ -113,6 +113,15 @@ class CashReservationLedger:
             entry = self._reservations.pop(order_id, None)
             return entry[1] if entry is not None else 0.0
 
+    def release_for_symbol(self, symbol: str) -> float:
+        sym_u = symbol.strip().upper()
+        with self._lock:
+            keys = [oid for oid, (sym, _) in self._reservations.items() if sym == sym_u]
+            total = 0.0
+            for k in keys:
+                total += self._reservations.pop(k)[1]
+            return total
+
     def clear(self) -> None:
         with self._lock:
             self._reservations.clear()
