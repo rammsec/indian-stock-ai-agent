@@ -163,6 +163,8 @@ class IntradayPaperPortfolio:
         self._last_hash: str = "GENESIS_HASH_00000000000000000000000000000000"
         self.peak_equity: float = float(initial_capital)
         self.day_start_equity: float = float(initial_capital)
+        self.margin_call_triggered: bool = False
+        self.margin_call_events: list[dict[str, Any]] = []
 
         # Record portfolio initialization event
         self._record_event(
@@ -639,6 +641,26 @@ class IntradayPaperPortfolio:
                     "cash_after": self.cash,
                 },
             )
+
+            # R5-D: Honest short-gap losses — NEVER clip negative P&L or floor cash to 0.
+            # If adverse short cover drives cash negative, trigger margin-call deficit state.
+            if self.cash < 0.0:
+                self.margin_call_triggered = True
+                mc_event: dict[str, Any] = {
+                    "symbol": symbol,
+                    "order_id": order_id,
+                    "gross_pnl": gross_pnl,
+                    "net_pnl": net_pnl,
+                    "cash_after_inr": self.cash,
+                    "cash_deficit_inr": abs(self.cash),
+                    "total_equity_inr": self.total_equity,
+                }
+                self.margin_call_events.append(mc_event)
+                self._record_event(
+                    "MARGIN_CALL_DEFICIT",
+                    timestamp.isoformat(),
+                    mc_event,
+                )
 
         # Track peak equity
         self.peak_equity = max(self.peak_equity, self.total_equity)

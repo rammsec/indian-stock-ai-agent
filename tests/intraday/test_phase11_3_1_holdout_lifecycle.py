@@ -156,7 +156,12 @@ def test_15_to_20_provenance_statuses_and_no_override(tmp_path: Path) -> None:
     d_ver = tmp_path / "ver"
     d_ver.mkdir()
     _write_1h(d_ver, days, bars_per_day=7)
-    ok_v, rep_v = validate_1h_provenance(LAB_DEFAULT_UNIVERSE, cache_dir=d_ver, min_sessions_required=55)
+    ok_v, rep_v = validate_1h_provenance(
+        LAB_DEFAULT_UNIVERSE,
+        cache_dir=d_ver,
+        min_sessions_required=55,
+        enforce_provider_authority_cap=False,
+    )
     assert ok_v is True and rep_v["final_provenance_status"] == "VERIFIED" and rep_v["verified"] is True
 
     # 16. PARTIALLY_VERIFIED is rejected for qualification

@@ -12,6 +12,7 @@ import yfinance as yf
 from ..config import IST_TZ, LAB_DEFAULT_UNIVERSE, is_nse_trading_day
 from ..intelligence.parsing import compute_candle_series_hash
 from .loader import CACHE_DIR
+from .loader_1m import parse_tz_aware_ist
 from .schema import Candle5M, DataProvenance, DataSourceMode
 
 
@@ -28,13 +29,13 @@ def fetch_and_cache_1h_universe(
         cache_file = CACHE_DIR / f"{sym}_1h.parquet"
         existing_df = pd.read_parquet(cache_file) if cache_file.exists() else pd.DataFrame()
         if not existing_df.empty:
-            existing_df["timestamp"] = pd.to_datetime(existing_df["timestamp"], utc=True).dt.tz_convert(IST_TZ)
+            existing_df["timestamp"] = parse_tz_aware_ist(existing_df["timestamp"], label="timestamp")
 
         df = yf.Ticker(yf_sym).history(period=period, interval="1h", auto_adjust=False)
         if df is not None and not df.empty:
             df = df.reset_index()
             ts_col = "Datetime" if "Datetime" in df.columns else "Date"
-            df["timestamp"] = pd.to_datetime(df[ts_col], utc=True).dt.tz_convert(IST_TZ)
+            df["timestamp"] = parse_tz_aware_ist(df[ts_col], label=ts_col)
             new_df = pd.DataFrame({
                 "timestamp": df["timestamp"],
                 "open": df["Open"].astype(float),
@@ -85,7 +86,7 @@ def get_available_1h_dates(
         if not cache_file.exists():
             continue
         df = pd.read_parquet(cache_file, columns=["timestamp"])
-        df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True).dt.tz_convert(IST_TZ)
+        df["timestamp"] = parse_tz_aware_ist(df["timestamp"], label="timestamp")
         counts = df.groupby(df["timestamp"].dt.date).size().to_dict()
         for d, cnt in counts.items():
             if is_nse_trading_day(d):
@@ -129,7 +130,7 @@ def load_1h_session_with_warmup(
         )
 
     df = pd.read_parquet(cache_file)
-    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True).dt.tz_convert(IST_TZ)
+    df["timestamp"] = parse_tz_aware_ist(df["timestamp"], label="timestamp")
     df["d"] = df["timestamp"].dt.date
     warmup_start = target_date - timedelta(days=warmup_days * 2)
     df_win = df[(df["d"] >= warmup_start) & (df["d"] <= target_date)].sort_values("timestamp")

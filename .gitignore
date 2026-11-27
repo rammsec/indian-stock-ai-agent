@@ -13,4 +13,6 @@ data/raw/*.html
 data/raw/*.zip
 data/ticks/
 data/intraday_1m/*.parquet
+data/intraday_1m/*_report.json
+data/lab/paper_snapshots/
 .env

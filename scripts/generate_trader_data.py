@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from trader.config import IST_TZ
 from trader.data.instruments import INSTRUMENT_MASTER
-from trader.data.loader import load_historical_5m_candles, generate_synthetic_5m_session
+from trader.data.loader import DataUnavailableError, load_historical_5m_candles, generate_synthetic_5m_session
 from trader.data.schema import DataSourceMode
 from trader.features.indicators import compute_all_features
 from trader.portfolio.ledger import IntradayPaperPortfolio, OrderSide
@@ -167,8 +167,6 @@ def build_trader_dataset(data_mode: DataSourceMode = DataSourceMode.SYNTHETIC_TE
 
     # 5. Backtest Comparison across 4 Strategies
     backtester = IntradayBacktester(initial_capital=1_000_000.0)
-    rel_candles = generate_synthetic_5m_session(symbol="RELIANCE", base_price=2500.0, daily_trend_pct=1.2)
-
     strats = [
         VWAPPullbackStrategy(),
         ORBBreakoutStrategy(),
@@ -176,22 +174,62 @@ def build_trader_dataset(data_mode: DataSourceMode = DataSourceMode.SYNTHETIC_TE
         SupertrendStrategy(),
     ]
     strat_results = []
-    for s in strats:
-        res = backtester.run_backtest(s, rel_candles)
-        strat_results.append({
-            "strategy_id": res.strategy_id,
-            "strategy_name": s.metadata.name,
-            "origin": s.metadata.origin_source,
-            "license": s.metadata.license_type,
-            "validation_status": s.metadata.validation_status,
-            "win_rate_pct": res.win_rate_pct,
-            "profit_factor": res.profit_factor,
-            "total_return_pct": res.total_return_pct,
-            "max_drawdown_pct": res.max_drawdown_pct,
-            "total_trades": res.total_trades,
-            "friction_paid_inr": res.total_friction_paid_inr,
-            "expectancy_inr": res.net_expectancy_per_trade_inr,
-        })
+
+    rel_candles = None
+    backtest_unavailable_reason: str | None = None
+    if data_mode == DataSourceMode.SYNTHETIC_TEST:
+        rel_candles = generate_synthetic_5m_session(
+            symbol="RELIANCE", base_price=2500.0, daily_trend_pct=1.2
+        )
+    else:
+        try:
+            rel_candles, _rel_prov = load_historical_5m_candles("RELIANCE", mode=data_mode)
+            if not rel_candles:
+                backtest_unavailable_reason = "No historical 5m candles returned for RELIANCE"
+        except (DataUnavailableError, FileNotFoundError, ValueError) as exc:
+            rel_candles = None
+            backtest_unavailable_reason = str(exc)
+
+    if not rel_candles:
+        for s in strats:
+            strat_results.append({
+                "strategy_id": s.metadata.strategy_id,
+                "strategy_name": s.metadata.name,
+                "origin": s.metadata.origin_source,
+                "license": s.metadata.license_type,
+                "validation_status": s.metadata.validation_status,
+                "status": "UNAVAILABLE",
+                "source_mode": data_mode.value,
+                "synthetic_substitution": False,
+                "unavailable_reason": backtest_unavailable_reason or "HISTORICAL_5M_DATA_UNAVAILABLE",
+                "win_rate_pct": None,
+                "profit_factor": None,
+                "total_return_pct": None,
+                "max_drawdown_pct": None,
+                "total_trades": 0,
+                "friction_paid_inr": 0.0,
+                "expectancy_inr": None,
+            })
+    else:
+        for s in strats:
+            res = backtester.run_backtest(s, rel_candles)
+            strat_results.append({
+                "strategy_id": res.strategy_id,
+                "strategy_name": s.metadata.name,
+                "origin": s.metadata.origin_source,
+                "license": s.metadata.license_type,
+                "validation_status": s.metadata.validation_status,
+                "status": "AVAILABLE",
+                "source_mode": data_mode.value,
+                "synthetic_substitution": data_mode == DataSourceMode.SYNTHETIC_TEST,
+                "win_rate_pct": res.win_rate_pct,
+                "profit_factor": res.profit_factor,
+                "total_return_pct": res.total_return_pct,
+                "max_drawdown_pct": res.max_drawdown_pct,
+                "total_trades": res.total_trades,
+                "friction_paid_inr": res.total_friction_paid_inr,
+                "expectancy_inr": res.net_expectancy_per_trade_inr,
+            })
 
     # 6. Portfolio Metrics
     port_summary = portfolio.get_portfolio_summary()

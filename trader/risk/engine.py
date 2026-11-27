@@ -313,7 +313,24 @@ class DeterministicRiskEngine:
         )
 
     def check_daily_loss_limit(self, portfolio: IntradayPaperPortfolio) -> bool:
-        """Check if cumulative daily loss or intraday MTM drawdown breaches circuit breaker."""
+        """Check if cumulative daily loss, intraday MTM drawdown, or margin-call deficit breaches circuit breaker."""
+        if portfolio.cash < 0.0 or bool(getattr(portfolio, "margin_call_triggered", False)):
+            if self.state != RiskState.HALTED:
+                self.state = RiskState.HALTED
+                self._record_audit(
+                    timestamp_ist=datetime.now(IST_TZ),
+                    symbol="*",
+                    side="SYSTEM",
+                    approved=False,
+                    status="REJECTED",
+                    approved_quantity=0,
+                    requested_quantity=0,
+                    reasons=["MARGIN_CALL_DEFICIT:Portfolio cash is negative; new entries halted (EXIT_ONLY)"],
+                    max_risk_amount_inr=0.0,
+                    estimated_trade_risk_inr=0.0,
+                )
+            return True
+
         total_equity = float(portfolio.total_equity)
         if total_equity > self._intraday_peak_equity:
             self._intraday_peak_equity = total_equity
@@ -385,9 +402,13 @@ class DeterministicRiskEngine:
             self._intraday_peak_equity = max(self._intraday_peak_equity, float(portfolio.total_equity))
         current_t = current_ist.time()
 
-        # 1. Check daily loss / intraday MTM drawdown circuit breaker
+        # 1. Check margin-call deficit / daily loss / intraday MTM drawdown circuit breaker
+        margin_call_deficit = portfolio.cash < 0.0 or bool(getattr(portfolio, "margin_call_triggered", False))
+        if margin_call_deficit and self.state != RiskState.HALTED:
+            self.state = RiskState.HALTED
+
         if self.state == RiskState.HALTED or self.check_daily_loss_limit(portfolio):
-            if is_exit_order and force_reduce_only:
+            if is_exit_order and (force_reduce_only or action_upper == "RISK_EXIT"):
                 pos = portfolio.positions.get(symbol)
                 held_qty = pos.quantity if pos is not None else 0
                 if held_qty <= 0:
@@ -421,7 +442,10 @@ class DeterministicRiskEngine:
                     estimated_trade_risk_inr=0.0,
                 )
 
-            reasons.append("Daily loss limit breached (or MTM drawdown); terminal in HALTED mode")
+            if margin_call_deficit:
+                reasons.append("MARGIN_CALL_DEFICIT:Portfolio cash is negative; new entries halted (EXIT_ONLY)")
+            else:
+                reasons.append("Daily loss limit breached (or MTM drawdown); terminal in HALTED mode")
             return self._record_audit(
                 timestamp_ist=current_ist,
                 symbol=symbol,

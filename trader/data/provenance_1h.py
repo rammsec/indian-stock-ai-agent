@@ -28,9 +28,18 @@ def validate_1h_provenance(
     provider_name: str = "yahoo_finance_1h",
     resampling_methodology: str = "DIRECT_PROVIDER_1H_OHLCV_NO_INTERPOLATION",
     *,
-    enforce_provider_authority_cap: bool = False,
+    enforce_provider_authority_cap: bool = True,
 ) -> tuple[bool, dict[str, Any]]:
-    """Run all 15 mandatory provenance & integrity checks across the 1-hour NSE Parquet archive."""
+    """Run all 15 mandatory provenance & integrity checks across the 1-hour NSE Parquet archive.
+
+    By default (`enforce_provider_authority_cap=True`), non-authoritative providers
+    (e.g., Yahoo Finance, local Parquet caches, offline replays) are capped at
+    `PARTIALLY_VERIFIED` and cannot emit `VERIFIED` or unlock qualification.
+
+    Narrow opt-out: `enforce_provider_authority_cap=False` is reserved exclusively
+    for historical offline diagnostic audits. When opted out, the returned report
+    payload explicitly records `provider_authority_cap_opted_out=True`.
+    """
     per_symbol: dict[str, Any] = {}
     any_failed = False
     any_partial = False
@@ -261,6 +270,8 @@ def validate_1h_provenance(
         "timeframe": "1h",
         "provider": provider_name,
         "resampling_methodology": resampling_methodology,
+        "enforce_provider_authority_cap": enforce_provider_authority_cap,
+        "provider_authority_cap_opted_out": not enforce_provider_authority_cap,
         "verified": verified,
         "qualification_allowed": verified,
         "exploratory_research_allowed": overall_status in ("VERIFIED", "PARTIALLY_VERIFIED"),
