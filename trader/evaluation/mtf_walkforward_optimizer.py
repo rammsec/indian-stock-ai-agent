@@ -167,7 +167,8 @@ def run_mtf_walkforward_comparison(
     train_dates, test_dates, train_bundles_1m, test_bundles_1m = split_bundles_chronologically(
         raw_bundles, train_ratio=train_ratio
     )
-    assert max(train_dates) < min(test_dates), "Zero-lookahead chronological split violated!"
+    if not (max(train_dates) < min(test_dates)):
+        raise ValueError("Zero-lookahead chronological split violated: max(train_dates) must be < min(test_dates)")
 
     tf_results: dict[str, Any] = {}
     best_overall_key: tuple[str, str] | None = None

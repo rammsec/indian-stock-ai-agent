@@ -298,16 +298,17 @@
       <div class="ctrl-group">
         <label>Central Direction</label>
         <select id="select-direction">
-          <option value="AUTO" selected>AUTO (Live Trend)</option>
+          <option value="AUTO" selected>AUTO (Replay Trend)</option>
           <option value="BULLISH">BULLISH</option>
           <option value="BEARISH">BEARISH</option>
           <option value="NEUTRAL">NEUTRAL</option>
         </select>
       </div>
       <div class="ctrl-group">
-        <label>Human Authority (Live Mid-Session)</label>
+        <label>Human Authority (Mid-Session)</label>
         <select id="select-human-perm">
-          <option value="ALLOW_BOTH" selected>ALLOW_BOTH</option>
+          <option value="" selected>UNSET (Fail-Closed — No Entries)</option>
+          <option value="ALLOW_BOTH">ALLOW_BOTH</option>
           <option value="ALLOW_LONG">ALLOW_LONG</option>
           <option value="ALLOW_SHORT">ALLOW_SHORT</option>
           <option value="NO_NEW_ENTRIES">NO_NEW_ENTRIES</option>
@@ -422,7 +423,7 @@
           </div>
           <div class="kv-grid">
             <div class="kv-label">Central Bias</div><div class="kv-val" id="hud-central">BULLISH (UNCALIB)</div>
-            <div class="kv-label">Human Permission</div><div class="kv-val" id="hud-human">ALLOW_LONG</div>
+            <div class="kv-label">Human Permission</div><div class="kv-val" id="hud-human">UNSET (FAIL-CLOSED)</div>
             <div class="kv-label">Gate Status</div><div class="kv-val" id="hud-gate-status">N/A</div>
             <div class="kv-label">Execution Model</div><div class="kv-val">Next-Bar Open (₹0.05)</div>
           </div>
@@ -603,6 +604,7 @@
         if (sessionBars.length === 0) {
           showError(`No genuine historical ${tf} bars found for ${sym} on ${targetDate}. Refusing to substitute synthetic or other-symbol data.`);
           sim = null;
+          renderAll();
           return;
         }
         const firstSessionTime = sessionBars[0].t;
@@ -615,7 +617,7 @@
           warmupBars,
           sessionBars,
           centralDirection: elDir.value,
-          humanPermission: elPerm.value,
+          humanPermission: elPerm.value || null,
           strategyProfile: elProfile ? elProfile.value : "BALANCED_ALL",
           initialCapital: Number(elCap.value) || 50000,
         });
@@ -904,7 +906,52 @@
 
       function renderAll() {
         renderChart();
-        if (!sim) return;
+        if (!sim) {
+          document.getElementById("progress-label").textContent = "Bar 0 / 0";
+          document.getElementById("progress-fill").style.width = "0%";
+          document.getElementById("warmup-label").textContent = "Warmup: 0 bars";
+          document.getElementById("clock-banner").textContent = "Eval Clock: No session data";
+          document.getElementById("kpi-price").textContent = "—";
+          document.getElementById("kpi-change").textContent = "No session bars loaded";
+          document.getElementById("kpi-change").className = "kpi-sub";
+          document.getElementById("kpi-position").textContent = "FLAT";
+          document.getElementById("kpi-position").className = "kpi-value";
+          document.getElementById("kpi-pos-sub").textContent = "0 shares open";
+          document.getElementById("kpi-pnl").textContent = "₹0.00";
+          document.getElementById("kpi-pnl").className = "kpi-value";
+          document.getElementById("kpi-trades").textContent = "0";
+          document.getElementById("kpi-winrate").textContent = "Win Rate: —";
+          document.getElementById("kpi-mtf").textContent = "NEUTRAL";
+          document.getElementById("kpi-mtf").className = "kpi-value text-warn";
+          document.getElementById("kpi-mtf-sub").textContent = "No session loaded";
+          document.getElementById("hud-central").textContent = "—";
+          document.getElementById("hud-human").textContent = elPerm.value || "UNSET (FAIL-CLOSED)";
+          document.getElementById("hud-gate-status").textContent = "N/A";
+          document.getElementById("gate-badge").textContent = "NO DATA";
+          document.getElementById("gate-badge").className = "badge badge-warn";
+          document.getElementById("call-badge").textContent = "WAIT";
+          document.getElementById("call-badge").className = "badge badge-warn";
+          document.getElementById("hud-bias").textContent = "—";
+          document.getElementById("hud-patterns").textContent = "—";
+          document.getElementById("hud-structure").textContent = "—";
+          document.getElementById("hud-vwap-vol").textContent = "—";
+          document.getElementById("hud-rsi-atr").textContent = "—";
+          document.getElementById("risk-badge").textContent = "INACTIVE";
+          document.getElementById("risk-badge").className = "badge badge-warn";
+          document.getElementById("hud-pos").textContent = "FLAT (0 sh)";
+          document.getElementById("hud-sl-tp").textContent = "—";
+          document.getElementById("hud-cash").textContent = "—";
+          document.getElementById("hud-equity").textContent = "—";
+          document.getElementById("hud-realized").textContent = "₹0.00";
+          document.getElementById("hud-fees").textContent = "₹0.00";
+          document.getElementById("log-count").textContent = "0 bars logged";
+          document.getElementById("decision-log-body").innerHTML = "";
+          document.getElementById("trade-count").textContent = "0 orders";
+          document.getElementById("order-ledger-body").innerHTML = "";
+          document.getElementById("outcome-summary").textContent = "NO SESSION DATA";
+          document.getElementById("outcome-review-body").innerHTML = "";
+          return;
+        }
 
         const total = sim.sessionBars.length;
         const pct = total > 0 ? Math.round((sim.barIdx / total) * 100) : 0;
@@ -978,7 +1025,7 @@
             ? `AUTO → ${sim.lastEffectiveDirection || "NEUTRAL"}`
             : `${sim.centralDirection} (UNCALIB)`;
         document.getElementById("hud-central").textContent = centralTxt;
-        document.getElementById("hud-human").textContent = sim.humanPermission;
+        document.getElementById("hud-human").textContent = sim.humanPermission || "UNSET (FAIL-CLOSED)";
         document.getElementById("hud-gate-status").textContent = lastDec ? lastDec.gateStatus : "READY";
         const gBadge = document.getElementById("gate-badge");
         gBadge.textContent = lastDec ? lastDec.gateStatus : "READY";
@@ -993,8 +1040,8 @@
           document.getElementById("hud-bias").textContent = `${a.candleBias} (${a.priceActionScore.toFixed(2)})`;
           document.getElementById("hud-patterns").textContent = a.patterns.length ? a.patterns.join(", ") : "NONE";
           document.getElementById("hud-structure").textContent = `${a.swingStructure} / ${a.breakoutState}`;
-          document.getElementById("hud-vwap-vol").textContent = `${a.vwapEvent} / ${a.volumeRegime === "VOLUME_UNREPORTED_BY_PROVIDER" ? "VOL_UNREPORTED" : (a.rvol ? a.rvol.toFixed(2) + "x" : "N/A")}`;
-          document.getElementById("hud-rsi-atr").textContent = `${a.rsi14 ? a.rsi14.toFixed(1) : "N/A"} / ₹${a.atr.toFixed(2)}`;
+          document.getElementById("hud-vwap-vol").textContent = `${a.vwapEvent} / ${a.volumeRegime === "VOLUME_UNREPORTED_BY_PROVIDER" ? "VOL_UNREPORTED" : (a.rvol !== null && a.rvol !== undefined ? a.rvol.toFixed(2) + "x" : "N/A")}`;
+          document.getElementById("hud-rsi-atr").textContent = `${a.rsi14 !== null && a.rsi14 !== undefined ? a.rsi14.toFixed(1) : "N/A"} / ₹${a.atr.toFixed(2)}`;
         } else {
           document.getElementById("hud-bias").textContent = "NEUTRAL (0.00)";
           document.getElementById("hud-patterns").textContent = "—";
@@ -1091,12 +1138,12 @@
         if (!container || !catalog || !sim) return;
         const tf = elTf.value;
         const targetDate = elDate.value;
-        const curRec = sim.records.length > 0 ? sim.records[sim.records.length - 1] : null;
+        const curRec = sim.decisions.length > 0 ? sim.decisions[sim.decisions.length - 1] : null;
         const cutoffTs = curRec ? curRec.tsOpen : null;
         if (asofEl) {
           asofEl.textContent = cutoffTs
             ? `Causal @ ${cutoffTs.slice(0, 16).replace("T", " ")} IST (${tf})`
-            : `Pre-open (${targetDate}, ${tf}) — Step or Play to scan live`;
+            : `Pre-open (${targetDate}, ${tf}) — Step or Play to scan replay`;
         }
         if (!cutoffTs) {
           container.innerHTML = (catalog.symbols || [])
@@ -1200,7 +1247,13 @@
         if (sim) { sim.setCentralDirection(elDir.value); renderAll(); }
       });
       elPerm.addEventListener("change", () => {
-        if (sim) { sim.setHumanPermission(elPerm.value); renderAll(); }
+        if (sim) { sim.setHumanPermission(elPerm.value || null); renderAll(); }
+      });
+      elSpeed.addEventListener("change", () => {
+        if (playTimer) {
+          clearInterval(playTimer);
+          playTimer = setInterval(stepOnce, Number(elSpeed.value) || 400);
+        }
       });
       document.querySelectorAll('#overlay-toggles input[type="checkbox"]').forEach((cb) => {
         cb.addEventListener("change", () => {

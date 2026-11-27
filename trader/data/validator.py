@@ -10,9 +10,9 @@ from .schema import Candle5M, CandleValidationResult
 
 
 def is_within_intraday_session(ts: datetime) -> bool:
-    """Check if timestamp falls within the normal Indian market session (09:15 to 15:30 IST)."""
+    """Check if timestamp falls within the normal Indian market session [09:15, 15:30) IST."""
     t = ts.astimezone(IST_TZ).time()
-    return MARKET_OPEN_TIME <= t <= MARKET_CLOSE_TIME
+    return MARKET_OPEN_TIME <= t < MARKET_CLOSE_TIME
 
 
 def detect_missing_candles(

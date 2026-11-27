@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Literal
 
-from ..config import IST_TZ
+from ..config import IST_TZ, MARKET_CLOSE_TIME
 from ..intelligence.mtf_aligner import expected_5m_sub_bars_for_bucket
 from .schema import Candle5M
 
@@ -60,6 +60,8 @@ def resample_5m_candles(
     buckets: dict[tuple[object, datetime], list[Candle5M]] = {}
     for c in clean_bars:
         ts_ist = c.timestamp.astimezone(IST_TZ)
+        if ts_ist.time() >= MARKET_CLOSE_TIME:
+            continue
         session_open = ts_ist.replace(hour=9, minute=15, second=0, microsecond=0)
         mins_since_open = int((ts_ist - session_open).total_seconds() // 60)
         if mins_since_open < 0:
@@ -74,7 +76,7 @@ def resample_5m_candles(
         bars_sorted = sorted(bars, key=lambda x: x.timestamp)
         expected_sub_bars = (
             expected_5m_sub_bars_for_bucket(bucket_start, target_minutes)
-            if target_minutes == 60
+            if target_minutes in (30, 60)
             else target_minutes // 5
         )
         is_complete = len(bars_sorted) == expected_sub_bars

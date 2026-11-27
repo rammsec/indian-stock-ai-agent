@@ -808,7 +808,7 @@
       const eq = this.getTotalEquity();
       const riskPerShare = Math.abs(entryPrice - stopLoss);
       if (riskPerShare <= 0 || entryPrice <= 0) return 0;
-      const maxByRisk = Math.floor((eq * 0.02) / riskPerShare);
+      const maxByRisk = Math.floor((eq * 0.01) / riskPerShare);
       const maxByCap = Math.floor((eq * 0.15) / entryPrice); // 15% max position weight parity!
       const maxByExp = Math.floor(Math.max(0, eq * 0.8 - this.getInvestedCapital()) / entryPrice);
       let maxByCash = Math.floor(this.cash / entryPrice);
@@ -979,12 +979,12 @@
           if (p.stopLoss !== null && bar.o <= p.stopLoss) {
             closedIntrabarSide = "LONG";
             this._closePosition(roundToNseTick(bar.o), tsClose, "GAP_STOP_LOSS");
-          } else if (p.target !== null && bar.o >= p.target) {
-            closedIntrabarSide = "LONG";
-            this._closePosition(roundToNseTick(bar.o), tsClose, "GAP_TARGET");
           } else if (p.stopLoss !== null && bar.l <= p.stopLoss) {
             closedIntrabarSide = "LONG";
             this._closePosition(roundToNseTick(p.stopLoss), tsClose, "INTRABAR_STOP_LOSS");
+          } else if (p.target !== null && bar.o >= p.target) {
+            closedIntrabarSide = "LONG";
+            this._closePosition(roundToNseTick(bar.o), tsClose, "GAP_TARGET");
           } else if (p.target !== null && bar.h >= p.target) {
             closedIntrabarSide = "LONG";
             this._closePosition(roundToNseTick(p.target), tsClose, "INTRABAR_TARGET");
@@ -996,12 +996,12 @@
           if (p.stopLoss !== null && bar.o >= p.stopLoss) {
             closedIntrabarSide = "SHORT";
             this._closePosition(roundToNseTick(bar.o), tsClose, "GAP_STOP_LOSS");
-          } else if (p.target !== null && bar.o <= p.target) {
-            closedIntrabarSide = "SHORT";
-            this._closePosition(roundToNseTick(bar.o), tsClose, "GAP_TARGET");
           } else if (p.stopLoss !== null && bar.h >= p.stopLoss) {
             closedIntrabarSide = "SHORT";
             this._closePosition(roundToNseTick(p.stopLoss), tsClose, "INTRABAR_STOP_LOSS");
+          } else if (p.target !== null && bar.o <= p.target) {
+            closedIntrabarSide = "SHORT";
+            this._closePosition(roundToNseTick(bar.o), tsClose, "GAP_TARGET");
           } else if (p.target !== null && bar.l <= p.target) {
             closedIntrabarSide = "SHORT";
             this._closePosition(roundToNseTick(p.target), tsClose, "INTRABAR_TARGET");

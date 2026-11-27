@@ -209,8 +209,16 @@ def test_21_to_28_central_guard_reassessment_fingerprints_and_immutability(tmp_p
     c3_11_3_before = CYCLE_003_PHASE11_3_REASSESSMENT_PATH.read_bytes() if CYCLE_003_PHASE11_3_REASSESSMENT_PATH.exists() else None
 
     orch = ChiefResearchOrchestrator()
-    # 21. CYCLE-003 reassessment calls central guard
-    reass = orch.reassess_cycle_003_phase11_3_1()
+    # 21. CYCLE-003 reassessment calls central guard (isolated to tmp_path so tracked JSONs stay clean)
+    lab_idx_tmp = tmp_path / "lab_index.json"
+    tracked_lab_idx = Path("docs/lab/data/lab_index.json")
+    if tracked_lab_idx.exists():
+        lab_idx_tmp.write_bytes(tracked_lab_idx.read_bytes())
+    reass = orch.reassess_cycle_003_phase11_3_1(
+        output_path=tmp_path / "cycle_003_phase11_3_1_reassessment.json",
+        provenance_report_path=tmp_path / "provenance_report_1h.json",
+        lab_index_path=lab_idx_tmp,
+    )
     assert reass["guard_version"] == "11.3.1"
     assert reass["provenance_verified"] is False
     assert reass["qualification_allowed"] is False
@@ -258,6 +266,6 @@ def test_21_to_28_central_guard_reassessment_fingerprints_and_immutability(tmp_p
     assert ev_default.final_status in ("BLOCKED_INTEGRITY", "INVALIDATED")
 
     # 26. Dashboard index reflects actual guard output
-    idx = json.loads(Path("docs/lab/data/lab_index.json").read_text(encoding="utf-8"))
+    idx = json.loads(lab_idx_tmp.read_text(encoding="utf-8"))
     assert idx["integrity_guard_status"]["qualification_allowed"] is False
     assert idx["integrity_guard_status"]["provenance_verified"] is False

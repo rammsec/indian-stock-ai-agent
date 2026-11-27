@@ -20,12 +20,18 @@ from datetime import datetime, timedelta
 from typing import Any, Callable, Literal
 
 from ..config import IST_TZ
-from ..portfolio.ledger import IntradayPaperPortfolio
+from ..portfolio.ledger import IntradayPaperPortfolio, round_to_nse_tick
 from ..risk.engine import DeterministicRiskEngine, RiskEvaluationResult, RiskState
 from ..timing.candle_timing_agent import TimingAssessment, TimingDecision
 from ..timing.central_directional_agent import DirectionalBias
 from .audit import AuthorityAuditRecord
 from .instructions import ActionType, AuthorityInstruction, AuthoritySource, PermissionType
+
+
+def _normalize_scope(scope: str) -> str:
+    """Normalize an authority scope string (case- and whitespace-insensitive)."""
+    s = scope.strip().upper()
+    return "*" if s in ("*", "PORTFOLIO", "ALL") else s
 
 
 class AuthorityGateRejectionError(RuntimeError):
@@ -226,7 +232,7 @@ class MandatoryExecutionGate:
     def clear_human_instruction(self, scope: str = "*") -> None:
         """Clear human instruction for scope."""
         with self._lock:
-            norm = "*" if scope in ("*", "PORTFOLIO", "ALL") else scope.strip().upper()
+            norm = _normalize_scope(scope)
             self._human_instructions.pop(norm, None)
 
     def emergency_human_stop(
@@ -244,7 +250,7 @@ class MandatoryExecutionGate:
         now_ist = current_time.astimezone(IST_TZ)
 
         with self._lock:
-            norm_scope = "*" if scope in ("*", "PORTFOLIO", "ALL") else scope.strip().upper()
+            norm_scope = _normalize_scope(scope)
             existing = self._human_instructions.get(norm_scope)
             # Ensure STOP_ALL valid_from is never earlier than an existing active instruction
             base_valid_from = now_ist - timedelta(seconds=1)
@@ -290,7 +296,7 @@ class MandatoryExecutionGate:
     def clear_central_instruction(self, scope: str = "*") -> None:
         """Clear central instruction for scope."""
         with self._lock:
-            norm = "*" if scope in ("*", "PORTFOLIO", "ALL") else scope.strip().upper()
+            norm = _normalize_scope(scope)
             self._central_instructions.pop(norm, None)
 
     def get_active_human_instruction(self, symbol: str, current_time: datetime) -> AuthorityInstruction | None:
@@ -352,7 +358,7 @@ class MandatoryExecutionGate:
 
     def release_reservations_for_scope(self, scope: str) -> float:
         """Release all pending cash reservations for '*' or a specific symbol scope."""
-        norm = "*" if scope in ("*", "PORTFOLIO", "ALL") else scope.strip().upper()
+        norm = _normalize_scope(scope)
         with self._lock:
             if norm == "*":
                 released = self.risk_engine.cash_ledger.total_reserved_inr
@@ -376,7 +382,7 @@ class MandatoryExecutionGate:
         current_time: datetime,
     ) -> None:
         """Default safe management: square off open long/short positions via audited RISK_EXIT."""
-        sym_u = "*" if symbol in ("*", "PORTFOLIO", "ALL") else symbol.strip().upper()
+        sym_u = _normalize_scope(symbol)
         for pos in list(portfolio.positions.values()):
             if pos and pos.quantity > 0 and (sym_u == "*" or pos.symbol.strip().upper() == sym_u):
                 px = getattr(pos, "current_price", pos.entry_price)
@@ -539,9 +545,9 @@ class MandatoryExecutionGate:
                     if stop_loss_price is not None:
                         sl = stop_loss_price
                     elif action_type == ActionType.ENTRY_SHORT:
-                        sl = round(entry_price * 1.015, 2)
+                        sl = round_to_nse_tick(entry_price * 1.015)
                     else:
-                        sl = round(entry_price * 0.985, 2)
+                        sl = round_to_nse_tick(entry_price * 0.985)
                     side_str = "BUY" if action_type == ActionType.ENTRY_LONG else "SELL"
                     risk_eval = self.risk_engine.evaluate_order(
                         symbol=sym_u,
@@ -572,7 +578,9 @@ class MandatoryExecutionGate:
                             )
             else:
                 # Audit all exits through Risk Engine with force_reduce_only=True so HALTED -> EXIT_ONLY works cleanly
-                if requested_quantity > 0 and entry_price > 0 and pos is not None:
+                if entry_price <= 0:
+                    rejection_reasons.append("INVALID_EXIT_PRICE:Exit price must be strictly positive")
+                elif requested_quantity > 0 and pos is not None:
                     exit_side = "BUY" if (action_type == ActionType.EXIT_SHORT or current_side == "SHORT") else "SELL"
                     risk_eval = self.risk_engine.evaluate_order(
                         symbol=sym_u,
@@ -693,7 +701,9 @@ class MandatoryExecutionGate:
             effective_stop_loss = stop_loss_price
             if effective_stop_loss is None and action_type.is_new_entry and price > 0:
                 effective_stop_loss = (
-                    round(price * 1.015, 2) if action_type == ActionType.ENTRY_SHORT else round(price * 0.985, 2)
+                    round_to_nse_tick(price * 1.015)
+                    if action_type == ActionType.ENTRY_SHORT
+                    else round_to_nse_tick(price * 0.985)
                 )
 
             order = portfolio.submit_order(
@@ -705,6 +715,7 @@ class MandatoryExecutionGate:
                 target=target_price,
                 timestamp=current_time,
                 position_effect=pos_effect,
+                round_ticks=True,
             )
             executed = order.status.value in ("FILLED", "PARTIALLY_FILLED")
             return outcome, executed

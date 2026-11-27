@@ -106,6 +106,8 @@ class CashReservationLedger:
         if amount_inr < 0:
             raise ValueError(f"Reservation amount must be non-negative, got {amount_inr}")
         with self._lock:
+            if order_id in self._reservations:
+                raise ValueError(f"DUPLICATE_RESERVATION_ORDER_ID:{order_id}")
             self._reservations[order_id] = (symbol.upper(), float(amount_inr))
 
     def release(self, order_id: str) -> float:
@@ -636,8 +638,10 @@ class DeterministicRiskEngine:
 
         # 10. Total Portfolio Exposure Limit (max 80% total invested, net of all pending reservations)
         max_portfolio_invested = total_equity * self.max_portfolio_exposure_pct
+        gross_portfolio_exposure = sum(pos.quantity * pos.current_price for pos in portfolio.positions.values())
+        effective_exposure = max(portfolio.invested_capital, gross_portfolio_exposure)
         total_reserved = self.cash_ledger.total_reserved_inr
-        remaining_portfolio_capital = max(0.0, max_portfolio_invested - portfolio.invested_capital - total_reserved)
+        remaining_portfolio_capital = max(0.0, max_portfolio_invested - effective_exposure - total_reserved)
         max_shares_by_exposure = int(remaining_portfolio_capital / entry_price) if entry_price > 0 else 0
 
         # 11. Available Cash Limit (net of pending CashReservationLedger holds)

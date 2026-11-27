@@ -60,14 +60,17 @@ def test_resampler_15m_and_30m_strict_alignment_and_no_cross_day_merge() -> None
     assert r15_inc[-1].is_complete is False
     assert r15_inc[-1].source_bar_count == 1
 
-    # Verify 30m resampling: 75 bars = 12 full 30m bars (72 bars) + 3 leftover bars (15:15..15:25)
+    # Verify 30m resampling: 75 bars = 12 full 30m bars (09:15..14:45) + 1 NSE closing 15m bar (15:15..15:30, 3 x 5m)
     r30 = resample_5m_candles(s1, target_minutes=30, include_incomplete=False)
-    assert len(r30) == 12
+    assert len(r30) == 13
     assert r30[0].timestamp.strftime("%H:%M") == "09:15"
-    assert r30[-1].timestamp.strftime("%H:%M") == "14:45"
+    assert r30[-2].timestamp.strftime("%H:%M") == "14:45"
+    assert r30[-1].timestamp.strftime("%H:%M") == "15:15"
+    assert r30[-1].source_bar_count == 3
+    assert r30[-1].is_complete is True
 
     compat = to_candle5m_compatible(r30)
-    assert len(compat) == 12
+    assert len(compat) == 13
     assert compat[0].volume == r30[0].volume
 
 

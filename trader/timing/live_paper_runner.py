@@ -19,6 +19,7 @@ HARD SAFETY INVARIANTS:
 from __future__ import annotations
 
 import json
+import threading
 import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -274,10 +275,19 @@ class LivePaperTradingRunner:
 
         # Mandatory 5-tier governed stack (NO private _open_positions or _equity_inr bypass!)
         self.portfolio = portfolio or IntradayPaperPortfolio(initial_capital=float(self.config.initial_capital_inr))
-        self.risk_engine = risk_engine or DeterministicRiskEngine(
-            max_risk_per_trade_pct=self.config.risk_pct,
-        )
-        self.execution_gate = execution_gate or MandatoryExecutionGate(risk_engine=self.risk_engine)
+        if execution_gate is not None:
+            if risk_engine is not None and risk_engine is not execution_gate.risk_engine:
+                raise ValueError(
+                    "Conflicting risk_engine and execution_gate.risk_engine instances passed; "
+                    "pass only execution_gate or ensure risk_engine is execution_gate.risk_engine."
+                )
+            self.execution_gate = execution_gate
+            self.risk_engine = execution_gate.risk_engine
+        else:
+            self.risk_engine = risk_engine or DeterministicRiskEngine(
+                max_risk_per_trade_pct=self.config.risk_pct,
+            )
+            self.execution_gate = MandatoryExecutionGate(risk_engine=self.risk_engine)
 
         # Decision 1: NO implicit Human permission. If caller omits human_instruction, Gate 1 fails closed!
         self._explicit_central_scopes: set[str] = set()
@@ -298,6 +308,8 @@ class LivePaperTradingRunner:
         self.archive = TickParquetArchive(base_dir=self.output_dir / "ticks")
 
         # Per-symbol causal tracking (position state lives strictly in self.portfolio.positions)
+        self._state_lock = threading.RLock()
+        self._active_session_date: date | None = None
         self._raw_ticks_by_symbol_day: dict[tuple[str, date], list[TickEvent]] = defaultdict(list)
         self._archived_bars: dict[tuple[str, date], dict[TimeframeName, list[RecordedBar]]] = defaultdict(
             lambda: {tf: [] for tf in self.timeframes}
@@ -323,17 +335,18 @@ class LivePaperTradingRunner:
         current_time: datetime | None = None,
     ) -> InstructionRegistrationResult:
         """Register Human Authority instruction via MandatoryExecutionGate (triggers safe mgmt on STOP_ALL)."""
-        res = self.execution_gate.set_human_instruction(instruction, current_time=current_time)
-        if res.accepted and instruction.permission == PermissionType.STOP_ALL:
-            self.execution_gate.release_reservations_for_scope(instruction.normalized_scope)
-            ts = current_time or self._last_watermark_ist or datetime.now(IST_TZ)
-            self.execution_gate.invoke_safe_position_management(
-                symbol=instruction.normalized_scope,
-                portfolio=self.portfolio,
-                current_time=ts,
-            )
-            self._sync_closed_trades_from_portfolio("HUMAN_STOP_ALL_SAFE_MANAGEMENT")
-        return res
+        with self._state_lock:
+            res = self.execution_gate.set_human_instruction(instruction, current_time=current_time)
+            if res.accepted and instruction.permission == PermissionType.STOP_ALL:
+                self.execution_gate.release_reservations_for_scope(instruction.normalized_scope)
+                ts = current_time or self._last_watermark_ist or datetime.now(IST_TZ)
+                self.execution_gate.invoke_safe_position_management(
+                    symbol=instruction.normalized_scope,
+                    portfolio=self.portfolio,
+                    current_time=ts,
+                )
+                self._sync_closed_trades_from_portfolio("HUMAN_STOP_ALL_SAFE_MANAGEMENT")
+            return res
 
     def set_central_instruction(
         self,
@@ -342,21 +355,23 @@ class LivePaperTradingRunner:
         current_time: datetime | None = None,
     ) -> InstructionRegistrationResult:
         """Register explicit Central Agent instruction (takes precedence over AUTO mode per Decision 3)."""
-        res = self.execution_gate.set_central_instruction(instruction, current_time=current_time)
-        if res.accepted:
-            self._explicit_central_scopes.add(instruction.normalized_scope)
-        return res
+        with self._state_lock:
+            res = self.execution_gate.set_central_instruction(instruction, current_time=current_time)
+            if res.accepted:
+                self._explicit_central_scopes.add(instruction.normalized_scope)
+            return res
 
     def emergency_human_stop(self, *, reason: str = "HUMAN_EMERGENCY_STOP", current_time: datetime) -> AuthorityInstruction:
         """Issue immediate Human STOP_ALL and flatten open positions via audited RISK_EXIT."""
-        instr = self.execution_gate.emergency_human_stop(
-            reason=reason,
-            current_time=current_time,
-            scope="*",
-            portfolio=self.portfolio,
-        )
-        self._sync_closed_trades_from_portfolio("HUMAN_EMERGENCY_STOP")
-        return instr
+        with self._state_lock:
+            instr = self.execution_gate.emergency_human_stop(
+                reason=reason,
+                current_time=current_time,
+                scope="*",
+                portfolio=self.portfolio,
+            )
+            self._sync_closed_trades_from_portfolio("HUMAN_EMERGENCY_STOP")
+            return instr
 
     def _sync_closed_trades_from_portfolio(self, exit_reason: str) -> None:
         """Mirror newly closed trades from self.portfolio.closed_trades into self._trades."""
@@ -420,6 +435,14 @@ class LivePaperTradingRunner:
         ts_close = bar.ts_close_ist.astimezone(IST_TZ)
         t_ist = ts_open.time()
         day = ts_open.date()
+
+        if self._bars_1m_history[sym] and ts_open <= self._bars_1m_history[sym][-1]["timestamp"]:
+            return
+
+        if self._active_session_date is None or day > self._active_session_date:
+            self.portfolio.reset_daily_session(day)
+            self.risk_engine.reset_daily_session(day)
+            self._active_session_date = day
 
         self._bars_1m_history[sym].append(
             {
@@ -533,9 +556,11 @@ class LivePaperTradingRunner:
             elif getattr(pos, "side", "LONG") == "LONG":
                 if bar.low <= meta["active_sl"]:
                     reason = "TRAILING_STOP_HIT" if meta["active_sl"] > meta["initial_sl"] else "STOP_LOSS_HIT"
-                    self._execute_governed_exit(sym, meta["active_sl"], ts_close, reason, is_risk_exit=True)
+                    fill_px = min(bar.open, meta["active_sl"])
+                    self._execute_governed_exit(sym, fill_px, ts_close, reason, is_risk_exit=True)
                 elif bar.high >= meta["take_profit"]:
-                    self._execute_governed_exit(sym, meta["take_profit"], ts_close, "TARGET_HIT", is_risk_exit=True)
+                    fill_px = max(bar.open, meta["take_profit"])
+                    self._execute_governed_exit(sym, fill_px, ts_close, "TARGET_HIT", is_risk_exit=True)
                 else:
                     meta["peak_price"] = max(meta["peak_price"], bar.high)
                     risk_u = max(pos.entry_price - meta["initial_sl"], 1e-6)
@@ -550,9 +575,11 @@ class LivePaperTradingRunner:
             else:
                 if bar.high >= meta["active_sl"]:
                     reason = "TRAILING_STOP_HIT" if meta["active_sl"] < meta["initial_sl"] else "STOP_LOSS_HIT"
-                    self._execute_governed_exit(sym, meta["active_sl"], ts_close, reason, is_risk_exit=True)
+                    fill_px = max(bar.open, meta["active_sl"])
+                    self._execute_governed_exit(sym, fill_px, ts_close, reason, is_risk_exit=True)
                 elif bar.low <= meta["take_profit"]:
-                    self._execute_governed_exit(sym, meta["take_profit"], ts_close, "TARGET_HIT", is_risk_exit=True)
+                    fill_px = min(bar.open, meta["take_profit"])
+                    self._execute_governed_exit(sym, fill_px, ts_close, "TARGET_HIT", is_risk_exit=True)
                 else:
                     meta["trough_price"] = min(meta["trough_price"], bar.low)
                     risk_u = max(meta["initial_sl"] - pos.entry_price, 1e-6)
@@ -573,7 +600,7 @@ class LivePaperTradingRunner:
             self._cooldown_left[sym] -= 1
         elif (
             self._entries_today[(sym, day)] < self.config.max_entries_per_day
-            and ENTRY_START_IST <= t_ist <= ENTRY_END_IST
+            and ENTRY_START_IST <= ts_close.time() < ENTRY_END_IST
             and len(df) >= 20
             and eff_dir in ("BULLISH", "BEARISH")
         ):
@@ -719,7 +746,15 @@ class LivePaperTradingRunner:
 
                                 if allow_entry:
                                     res_id = f"LIVE-{sym}-{uuid.uuid4().hex[:8]}"
-                                    self.execution_gate.reserve_cash_for_pending_order(res_id, sym, entry_px * qty)
+                                    entry_friction = calculate_intraday_costs(
+                                        price=entry_px,
+                                        quantity=qty,
+                                        side=want_side,  # type: ignore[arg-type]
+                                        cost_config=self.portfolio.cost_config,
+                                    ).total_friction_inr
+                                    self.execution_gate.reserve_cash_for_pending_order(
+                                        res_id, sym, (entry_px * qty) + entry_friction
+                                    )
                                     outcome, executed = self.execution_gate.execute_with_gate_protection(
                                         symbol=sym,
                                         action_type=act,
@@ -783,19 +818,20 @@ class LivePaperTradingRunner:
 
     def _handle_tick(self, tick: TickEvent) -> None:
         """Ingest one read-only tick, flush any causally closed bars, and evaluate 1m closes."""
-        if not self.aggregator.ingest_tick(tick):
-            return
-        ts_ist = tick.timestamp_ist.astimezone(IST_TZ)
-        self._raw_ticks_by_symbol_day[(tick.symbol, ts_ist.date())].append(tick)
-        if self._last_watermark_ist is None or ts_ist > self._last_watermark_ist:
-            self._last_watermark_ist = ts_ist
+        with self._state_lock:
+            if not self.aggregator.ingest_tick(tick):
+                return
+            ts_ist = tick.timestamp_ist.astimezone(IST_TZ)
+            self._raw_ticks_by_symbol_day[(tick.symbol, ts_ist.date())].append(tick)
+            if self._last_watermark_ist is None or ts_ist > self._last_watermark_ist:
+                self._last_watermark_ist = ts_ist
 
-        closed_bars = self.aggregator.flush_closed_bars(self._last_watermark_ist)
-        for bar in closed_bars:
-            day = bar.ts_open_ist.astimezone(IST_TZ).date()
-            self._archived_bars[(bar.symbol, day)][bar.timeframe].append(bar)
-            if bar.timeframe == "1m":
-                self._evaluate_closed_1m_bar(bar)
+            closed_bars = self.aggregator.flush_closed_bars(self._last_watermark_ist)
+            for bar in closed_bars:
+                day = bar.ts_open_ist.astimezone(IST_TZ).date()
+                self._archived_bars[(bar.symbol, day)][bar.timeframe].append(bar)
+                if bar.timeframe == "1m":
+                    self._evaluate_closed_1m_bar(bar)
 
     def run(self, symbols: Iterable[str]) -> LivePaperSessionSummary:
         """Stream read-only ticks, evaluate closed 1m bars via MandatoryExecutionGate, and archive."""
@@ -807,12 +843,20 @@ class LivePaperTradingRunner:
         try:
             self.adapter.stream(clean_symbols, self._handle_tick)
         finally:
-            remaining = self.aggregator.finalize_all()
-            for bar in remaining:
-                day = bar.ts_open_ist.astimezone(IST_TZ).date()
-                self._archived_bars[(bar.symbol, day)][bar.timeframe].append(bar)
-                if bar.timeframe == "1m":
-                    self._evaluate_closed_1m_bar(bar)
+            with self._state_lock:
+                remaining = self.aggregator.finalize_all()
+                for bar in remaining:
+                    day = bar.ts_open_ist.astimezone(IST_TZ).date()
+                    self._archived_bars[(bar.symbol, day)][bar.timeframe].append(bar)
+                    if (
+                        bar.timeframe == "1m"
+                        and self._last_watermark_ist is not None
+                        and (
+                            bar.ts_close_ist.astimezone(IST_TZ) <= self._last_watermark_ist
+                            or self._last_watermark_ist.time() >= time(15, 30)
+                        )
+                    ):
+                        self._evaluate_closed_1m_bar(bar)
 
             # Release any remaining cash reservations & close all open positions via audited RISK_EXIT
             self.execution_gate.clear_cash_reservations()

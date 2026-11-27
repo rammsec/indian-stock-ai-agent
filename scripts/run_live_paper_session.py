@@ -176,6 +176,36 @@ def main(argv: list[str] | None = None) -> int:
         ml_scorer_fn = model.predict_proba
 
     now_ist = datetime.now(IST_TZ)
+    valid_from = now_ist - timedelta(hours=24)
+    expires_at = now_ist + timedelta(hours=24)
+    if args.provider == "offline_jsonl" and args.jsonl_file is not None and args.jsonl_file.exists():
+        min_ts: datetime | None = None
+        max_ts: datetime | None = None
+        with args.jsonl_file.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                raw = line.strip()
+                if not raw:
+                    continue
+                try:
+                    rec = json.loads(raw)
+                except json.JSONDecodeError:
+                    continue
+                ts_raw = rec.get("timestamp_ist") if isinstance(rec, dict) else None
+                if not ts_raw:
+                    continue
+                try:
+                    ts = datetime.fromisoformat(str(ts_raw))
+                except ValueError:
+                    continue
+                ts = ts.replace(tzinfo=IST_TZ) if ts.tzinfo is None else ts.astimezone(IST_TZ)
+                if min_ts is None or ts < min_ts:
+                    min_ts = ts
+                if max_ts is None or ts > max_ts:
+                    max_ts = ts
+        if min_ts is not None and max_ts is not None:
+            valid_from = min_ts - timedelta(hours=1)
+            expires_at = max_ts + timedelta(hours=24)
+
     human_instr: AuthorityInstruction | None = None
     if args.human_permission != "NONE":
         human_instr = AuthorityInstruction(
@@ -183,8 +213,8 @@ def main(argv: list[str] | None = None) -> int:
             authority=AuthoritySource.HUMAN,
             scope="*",
             permission=PermissionType(args.human_permission),
-            valid_from=now_ist - timedelta(hours=24),
-            expires_at=now_ist + timedelta(hours=24),
+            valid_from=valid_from,
+            expires_at=expires_at,
             reason=f"Explicit CLI Human Authority: {args.human_permission}",
             version="1.0",
         )
@@ -205,8 +235,8 @@ def main(argv: list[str] | None = None) -> int:
             authority=AuthoritySource.CENTRAL_AGENT,
             scope="*",
             permission=c_perm,
-            valid_from=now_ist - timedelta(hours=24),
-            expires_at=now_ist + timedelta(hours=24),
+            valid_from=valid_from,
+            expires_at=expires_at,
             reason=f"Explicit CLI Central Direction: {args.central_direction}",
             version="1.0",
         )

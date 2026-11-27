@@ -203,7 +203,8 @@ def split_bundles_chronologically(
     split_idx = max(1, min(len(unique_dates) - 1, int(round(len(unique_dates) * train_ratio))))
     train_dates = set(unique_dates[:split_idx])
     test_dates = set(unique_dates[split_idx:])
-    assert max(train_dates) < min(test_dates), "Chronological walk-forward boundary violated"
+    if not (max(train_dates) < min(test_dates)):
+        raise ValueError("Chronological walk-forward boundary violated: max(train_dates) must be < min(test_dates)")
 
     train_bundles = [b for b in bundles if b.trading_date in train_dates]
     test_bundles = [b for b in bundles if b.trading_date in test_dates]

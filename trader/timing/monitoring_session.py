@@ -232,7 +232,8 @@ def evaluate_causal_5m_mtf_trend(causal_df: pd.DataFrame) -> Literal["BULLISH", 
         return "NEUTRAL"
 
     closes = pd.Series(causal_df["close"].astype(float).values, index=ts_idx)
-    bars_5m = closes.resample("5min", origin="start_day", offset="15min").last().dropna()
+    resampled = closes.resample("5min", origin="start_day", offset="15min")
+    bars_5m = resampled.last()[resampled.count() >= 5].dropna()
     if len(bars_5m) < 5:
         return "NEUTRAL"
     ema9 = bars_5m.ewm(span=9, adjust=False).mean().iloc[-1]
@@ -333,9 +334,18 @@ class IntradayCandleMonitoringSession:
     ) -> None:
         self.feed = feed
         self.timing_agent = timing_agent or CandleTimingAgent()
-        self.risk_engine = risk_engine or DeterministicRiskEngine()
+        if execution_gate is not None:
+            if risk_engine is not None and risk_engine is not execution_gate.risk_engine:
+                raise ValueError(
+                    "Conflicting risk_engine and execution_gate.risk_engine instances passed; "
+                    "pass only execution_gate or ensure risk_engine is execution_gate.risk_engine."
+                )
+            self.execution_gate = execution_gate
+            self.risk_engine = execution_gate.risk_engine
+        else:
+            self.risk_engine = risk_engine or DeterministicRiskEngine()
+            self.execution_gate = MandatoryExecutionGate(risk_engine=self.risk_engine)
         self.portfolio = portfolio or IntradayPaperPortfolio(initial_capital=initial_capital)
-        self.execution_gate = execution_gate or MandatoryExecutionGate(risk_engine=self.risk_engine)
 
     def run_session(
         self,
@@ -712,7 +722,7 @@ class IntradayCandleMonitoringSession:
             if squared_off_side is None and eff_chandelier and sym_u in self.portfolio.positions:
                 cur_pos = self.portfolio.positions[sym_u]
                 atr_val = float(getattr(lifecycle.timing_assessment, "atr_14", 0.0) or 0.0)
-                if atr_val <= 0.0 and len(causal_df) >= 2:
+                if atr_val <= 0.0 and causal_df is not None and len(causal_df) >= 2:
                     atr_val = float((causal_df["high"] - causal_df["low"]).tail(14).mean())
                 e_side = "SELL" if cur_pos.side == "SHORT" else "BUY"
                 x_side = "BUY" if cur_pos.side == "SHORT" else "SELL"
@@ -882,10 +892,18 @@ class IntradayCandleMonitoringSession:
                         res_id: str | None = None
                         if act.is_new_entry and approved_qty > 0:
                             res_id = f"PEND-{sym_u}-{int(bar_idx)}"
+                            res_px = round_to_nse_tick(c_px)
+                            res_side = "BUY" if act == ActionType.ENTRY_LONG else "SELL"
+                            res_friction = calculate_intraday_costs(
+                                price=res_px,
+                                quantity=approved_qty,
+                                side=res_side,
+                                cost_config=self.portfolio.cost_config,
+                            ).total_friction_inr
                             self.execution_gate.reserve_cash_for_pending_order(
                                 res_id,
                                 sym_u,
-                                round_to_nse_tick(c_px) * approved_qty,
+                                (res_px * approved_qty) + res_friction,
                             )
                         pending_order = PendingOrder(
                             symbol=sym_u,

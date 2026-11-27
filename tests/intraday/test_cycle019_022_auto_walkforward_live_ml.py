@@ -310,13 +310,15 @@ def test_cycle021_live_paper_runner_offline_jsonl_end_to_end(tmp_path: Path) -> 
     assert summary.live_trading_enabled is False
     assert summary.read_only_mode is True
     assert summary.ticks_accepted == 70
-    assert summary.bars_1m_evaluated == 35
+    # 34 bars (09:15..09:48) causally close; the 35th bar (09:49) ends at 09:50:00
+    # while the last tick is 09:49:45, so D6-04 intentionally skips the unclosed partial bar.
+    assert summary.bars_1m_evaluated == 34
     assert len(summary.archived_provenance_files) == 1
     assert Path(summary.archived_provenance_files[0]).exists()
     assert summary.state_json_path is not None
     state_data = json.loads(Path(summary.state_json_path).read_text(encoding="utf-8"))
     assert state_data["live_trading_enabled"] is False
-    assert state_data["bars_1m_evaluated"] == 35
+    assert state_data["bars_1m_evaluated"] == 34
 
 
 # ---------------------------------------------------------------------------
