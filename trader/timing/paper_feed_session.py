@@ -80,9 +80,18 @@ class PaperFeedSignalSession:
         self.feed = feed
         self.directional_agent = directional_agent or CentralDirectionalAgent()
         self.timing_agent = timing_agent or CandleTimingAgent()
-        self.risk_engine = risk_engine or DeterministicRiskEngine()
+        if execution_gate is not None:
+            if risk_engine is not None and risk_engine is not execution_gate.risk_engine:
+                raise ValueError(
+                    "Conflicting risk_engine and execution_gate.risk_engine instances passed; "
+                    "pass only execution_gate or ensure risk_engine is execution_gate.risk_engine."
+                )
+            self.execution_gate = execution_gate
+            self.risk_engine = execution_gate.risk_engine
+        else:
+            self.risk_engine = risk_engine or DeterministicRiskEngine()
+            self.execution_gate = MandatoryExecutionGate(risk_engine=self.risk_engine)
         self.portfolio = portfolio or IntradayPaperPortfolio(initial_capital=DEFAULT_INITIAL_CAPITAL_INR)
-        self.execution_gate = execution_gate or MandatoryExecutionGate(risk_engine=self.risk_engine)
 
     def generate_daily_calls(
         self,
@@ -96,6 +105,7 @@ class PaperFeedSignalSession:
         snapshot_dir: Path | None = None,
         lookback_bars: int = 200,
         requested_quantity: int = 10,
+        human_instruction: Any | None = None,
     ) -> DailyPaperCallReport:
         if as_of_ist.tzinfo is None:
             raise ValueError("as_of_ist must be timezone-aware")
@@ -150,7 +160,11 @@ class PaperFeedSignalSession:
             ev_5m = self.feed.get_bars(sym, "5m", cutoff_ist, lookback_bars=lookback_bars)
 
             ev_map = {"1h": ev_1h, "15m": ev_15m, "5m": ev_5m}
-            ev_primary = ev_map[primary_timeframe]
+            ev_primary = (
+                ev_map[primary_timeframe]
+                if primary_timeframe in ev_map
+                else self.feed.get_bars(sym, primary_timeframe, cutoff_ist, lookback_bars=lookback_bars)
+            )
 
             bars_primary = _evidence_to_agent_df(ev_primary)
             bars_15m = _evidence_to_agent_df(ev_15m)
@@ -170,7 +184,9 @@ class PaperFeedSignalSession:
 
             # Register Central Instruction from hypothesis
             central_instr = hyp.to_authority_instruction()
-            self.execution_gate.set_central_instruction(central_instr)
+            self.execution_gate.set_central_instruction(central_instr, current_time=cutoff_ist)
+            if human_instruction is not None and self.execution_gate.get_active_human_instruction(sym, cutoff_ist) is None:
+                self.execution_gate.set_human_instruction(human_instruction, current_time=cutoff_ist)
 
             if (
                 bars_primary is not None
@@ -194,6 +210,7 @@ class PaperFeedSignalSession:
                     entry_price=entry_price,
                     stop_loss_price=stop_loss,
                     target_price=target_price,
+                    dry_run=True,
                 )
                 risk_eval = gate_outcome.risk_evaluation
 

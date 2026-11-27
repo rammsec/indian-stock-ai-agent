@@ -77,6 +77,22 @@ function renderDataProvenance(meta, prov, cost) {
       <span style="color: var(--text-dim);">Broker Orders: DISABLED</span>
     </div>
   `;
+
+  const provStatusEl = document.getElementById("badge-provenance-status");
+  if (provStatusEl) {
+    if (isSynthetic) {
+      provStatusEl.textContent = "SYNTHETIC TEST DATA";
+      provStatusEl.style.color = "var(--accent-amber, #f59e0b)";
+    } else {
+      provStatusEl.textContent = "SHA-256 Provenance Verified ✓";
+      provStatusEl.style.color = "var(--accent-green)";
+    }
+  }
+
+  const wfStatusEl = document.getElementById("badge-wf-status");
+  if (wfStatusEl) {
+    wfStatusEl.textContent = isSynthetic ? "SYNTHETIC TEST DATA" : "WALK-FORWARD VERIFIED";
+  }
 }
 
 function renderMarketOverview(mo) {

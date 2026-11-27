@@ -22,7 +22,26 @@ class ProvenanceTier(str, Enum):
 
 
 NON_AUTHORITATIVE_PROVIDERS: frozenset[str] = frozenset(
-    {"yahoo_finance_1h", "yahoo_finance_5m"}
+    {
+        "yahoo_finance_1h",
+        "yahoo_finance_5m",
+        "yahoo_finance",
+        "local_parquet",
+        "local_parquet_csv",
+        "offline_replay",
+        "unknown",
+    }
+)
+
+_NON_AUTHORITATIVE_PREFIXES: tuple[str, ...] = (
+    "yahoo_finance",
+    "yahoofinanceapi",
+    "local_parquet",
+    "parquetcache",
+    "offline_replay",
+    "huggingface",
+    "unknown",
+    "synthetic",
 )
 
 
@@ -58,8 +77,12 @@ def cap_provenance_tier(
     provider: str,
 ) -> ProvenanceTier | str:
     """Cap provenance tier so non-authoritative providers can NEVER emit VERIFIED."""
-    is_non_auth = provider in NON_AUTHORITATIVE_PROVIDERS or provider.startswith(
-        "yahoo_finance"
+    prov_norm = (provider or "").strip().lower()
+    is_non_auth = (
+        not prov_norm
+        or provider in NON_AUTHORITATIVE_PROVIDERS
+        or prov_norm in NON_AUTHORITATIVE_PROVIDERS
+        or any(prov_norm.startswith(prefix) for prefix in _NON_AUTHORITATIVE_PREFIXES)
     )
     tier_val = tier.value if isinstance(tier, ProvenanceTier) else str(tier)
     if is_non_auth and tier_val == ProvenanceTier.VERIFIED.value:
@@ -192,6 +215,9 @@ def build_ohlcv_evidence_frame(
                 f"Cannot infer bar_duration for timeframe {timeframe!r}; provide 'ts_close_ist' or bar_duration"
             )
         ts_close = ts_open + delta
+        if timeframe in ("1h", "60m", "30m"):
+            is_final_nse_bar = (ts_open.dt.hour == 15) & (ts_open.dt.minute == 15)
+            ts_close = ts_close.where(~is_final_nse_bar, ts_open + timedelta(minutes=15))
 
     # Resolve ts_init_ist
     if "ts_init_ist" in work.columns:

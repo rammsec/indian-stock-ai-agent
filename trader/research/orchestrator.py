@@ -1668,6 +1668,9 @@ class ChiefResearchOrchestrator:
     def reassess_cycle_003_phase11_3_1(
         self,
         registry_path: Path = SEALED_HOLDOUT_REGISTRY_PATH,
+        output_path: Path = CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH,
+        provenance_report_path: Path = PROVENANCE_REPORT_PATH,
+        lab_index_path: Path = LAB_INDEX_PATH,
     ) -> dict[str, Any]:
         """Phase 11.3.1: Reassess CYCLE-003 exclusively via the central ResearchIntegrityGuard."""
         from ..data.loader_1h import get_available_1h_dates
@@ -1677,8 +1680,8 @@ class ChiefResearchOrchestrator:
 
         orig = json.loads(CYCLE_003_REPORT_PATH.read_text(encoding="utf-8"))
         _, prov_1h_report = validate_1h_provenance(LAB_DEFAULT_UNIVERSE)
-        PROVENANCE_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-        PROVENANCE_REPORT_PATH.write_text(json.dumps(prov_1h_report, indent=2), encoding="utf-8")
+        provenance_report_path.parent.mkdir(parents=True, exist_ok=True)
+        provenance_report_path.write_text(json.dumps(prov_1h_report, indent=2), encoding="utf-8")
 
         elig_1h, _ = get_available_1h_dates(LAB_DEFAULT_UNIVERSE, min_bars_per_stock=6)
         n_1h = len(elig_1h)
@@ -1778,15 +1781,15 @@ class ChiefResearchOrchestrator:
             "downgrade_explanations": downgrade_explanations,
         }
 
-        CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH.parent.mkdir(parents=True, exist_ok=True)
-        CYCLE_003_PHASE11_3_1_REASSESSMENT_PATH.write_text(json.dumps(out, indent=2), encoding="utf-8")
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(out, indent=2), encoding="utf-8")
 
-        if LAB_INDEX_PATH.exists():
-            idx = json.loads(LAB_INDEX_PATH.read_text(encoding="utf-8"))
+        if lab_index_path.exists():
+            idx = json.loads(lab_index_path.read_text(encoding="utf-8"))
             idx["cycle_003_phase11_3_1_reassessment"] = out
             idx["integrity_guard_status"] = guard_res
             idx["provenance_report_1h"] = prov_1h_report
-            LAB_INDEX_PATH.write_text(json.dumps(idx, indent=2), encoding="utf-8")
+            lab_index_path.write_text(json.dumps(idx, indent=2), encoding="utf-8")
 
         return out
 

@@ -197,7 +197,9 @@ class CausalSetupScorerModel:
         vec = np.array([float(features.get(name, 0.0)) for name in self.feature_names], dtype=np.float64)
         mu = np.array(self.means, dtype=np.float64)
         sd = np.array(self.stds, dtype=np.float64)
-        return (vec - mu) / np.where(sd > 1e-9, sd, 1.0)
+        vec = np.where(np.isfinite(vec), vec, mu)
+        x_norm = (vec - mu) / np.where(sd > 1e-9, sd, 1.0)
+        return np.where(np.isfinite(x_norm), x_norm, 0.0)
 
     def predict_proba(self, features: dict[str, float]) -> float:
         """Predict calibrated probability that this setup finishes net-profitable after NSE taxes."""
@@ -288,7 +290,11 @@ class CausalSetupScorerModel:
             metadata=dict(raw.get("metadata", {})),
         )
         expected = model.compute_weights_sha256()
-        if model.weights_sha256 and model.weights_sha256 != expected:
+        if not model.weights_sha256:
+            raise ValueError(
+                f"Model SHA-256 missing for {path}: expected {expected}"
+            )
+        if model.weights_sha256 != expected:
             raise ValueError(
                 f"Model SHA-256 mismatch for {path}: expected {expected}, got {model.weights_sha256}"
             )
@@ -329,7 +335,8 @@ def train_walkforward_setup_scorer(
     train_dates, test_dates, train_bundles, test_bundles = split_bundles_chronologically(
         bundles_by_symbol, train_ratio=train_ratio
     )
-    assert max(train_dates) < min(test_dates), "Zero-lookahead chronological split violated!"
+    if not (max(train_dates) < min(test_dates)):
+        raise ValueError("Zero-lookahead chronological split violated: max(train_dates) must be < min(test_dates)")
 
     precomp_train = [precompute_causal_1m_arrays(b) for b in train_bundles]
     precomp_test = [precompute_causal_1m_arrays(b) for b in test_bundles]

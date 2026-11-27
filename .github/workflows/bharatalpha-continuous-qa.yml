@@ -1,0 +1,156 @@
+name: BharatAlpha Continuous QA Monitor (Read-Only)
+
+on:
+  schedule:
+    # Daily 02:30 UTC (08:00 IST pre-market)
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  continuous-qa-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest httpx pydantic pandas numpy pyarrow yfinance
+
+      - name: Run Read-Only Continuous QA Checks
+        id: qa
+        run: |
+          mkdir -p qa_artifacts
+          set +e
+
+          # 1. JS syntax checks
+          node -c docs/candle-agent/engine.js && node -c docs/trader/app.js && node -c docs/lab/app.js
+          JS_RC=$?
+
+          # 2. Authority, risk & capital regression suite
+          pytest tests/intraday/test_remed01_authority_risk_capital.py -v --tb=short
+          REMED_RC=$?
+
+          # 3. AST non-bypass & safety invariant check
+          python - <<'PY'
+          import ast, pathlib, sys
+
+          errors = []
+          # Verify paper-only flags in critical modules
+          paper_only_files = [
+              "trader/data/tick_recorder.py",
+              "trader/evaluation/walkforward_optimizer.py",
+              "trader/evaluation/mtf_walkforward_optimizer.py",
+              "trader/intelligence/ml_setup_scorer.py",
+          ]
+          for rel in paper_only_files:
+              p = pathlib.Path(rel)
+              tree = ast.parse(p.read_text(encoding="utf-8"), filename=rel)
+              found_false = False
+              for node in tree.body:
+                  if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id == "LIVE_TRADING_ENABLED":
+                      if isinstance(node.value, ast.Constant) and node.value.value is False:
+                          found_false = True
+                  elif isinstance(node, ast.Assign):
+                      for t in node.targets:
+                          if isinstance(t, ast.Name) and t.id == "LIVE_TRADING_ENABLED":
+                              if isinstance(node.value, ast.Constant) and node.value.value is False:
+                                  found_false = True
+              if not found_false:
+                  errors.append(f"{rel}: LIVE_TRADING_ENABLED must be statically False")
+
+          # Verify no assert-based chronological split checks remain in walk-forward modules
+          wf_files = [
+              "trader/evaluation/walkforward_optimizer.py",
+              "trader/evaluation/walkforward_1m.py",
+              "trader/evaluation/mtf_walkforward_optimizer.py",
+              "trader/intelligence/ml_setup_scorer.py",
+          ]
+          for rel in wf_files:
+              p = pathlib.Path(rel)
+              tree = ast.parse(p.read_text(encoding="utf-8"), filename=rel)
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Assert):
+                      errors.append(f"{rel}:{node.lineno}: unexpected assert statement in production quant module")
+
+          if errors:
+              for e in errors:
+                  print("AST_GATE_FAIL:", e)
+              sys.exit(1)
+          print("AST_GATE_PASS: all paper-only and non-bypass invariants verified")
+          PY
+          AST_RC=$?
+
+          # 4. Protected-file & sealed-holdout immutability verification
+          python - <<'PY'
+          import json, pathlib
+          reg = pathlib.Path("data/lab/sealed_holdout_registry.json")
+          assert reg.exists(), "Missing sealed_holdout_registry.json"
+          data = json.loads(reg.read_text(encoding="utf-8"))
+          assert isinstance(data, dict), "sealed_holdout_registry.json must be a JSON object"
+          print("HOLDOUT_JSON_VALID:", reg)
+          PY
+          HOLDOUT_JSON_RC=$?
+
+          git diff --exit-code data/lab/sealed_holdout_registry.json && git diff --exit-code data/lab/ docs/lab/data/
+          CLEAN_RC=$?
+
+          # 5. Generate JSON + Markdown health artifact
+          python - <<PY
+          import datetime, json, pathlib
+
+          status = {
+              "workflow": "bharatalpha-continuous-qa",
+              "mode": "READ_ONLY",
+              "timestamp_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              "checks": {
+                  "js_syntax": ${JS_RC} == 0,
+                  "remed01_authority_risk_capital": ${REMED_RC} == 0,
+                  "ast_non_bypass_invariants": ${AST_RC} == 0,
+                  "sealed_holdout_json_valid": ${HOLDOUT_JSON_RC} == 0,
+                  "clean_tree_and_holdout_immutability": ${CLEAN_RC} == 0,
+              },
+          }
+          status["overall_pass"] = all(status["checks"].values())
+          out_dir = pathlib.Path("qa_artifacts")
+          (out_dir / "continuous_qa_health.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
+
+          md_lines = [
+              "# BharatAlpha Continuous QA Health Report (Read-Only)",
+              "",
+              f"- **Timestamp (UTC)**: \`{status['timestamp_utc']}\`",
+              f"- **Overall Status**: {'PASS' if status['overall_pass'] else 'FAIL'}",
+              "",
+              "| Check | Status |",
+              "|---|---|",
+          ]
+          for k, v in status["checks"].items():
+              md_lines.append(f"| \`{k}\` | {'PASS' if v else 'FAIL'} |")
+          (out_dir / "continuous_qa_health.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
+          PY
+
+          if [ "$JS_RC" -ne 0 ] || [ "$REMED_RC" -ne 0 ] || [ "$AST_RC" -ne 0 ] || [ "$HOLDOUT_JSON_RC" -ne 0 ] || [ "$CLEAN_RC" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Upload Continuous QA Health Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bharatalpha-continuous-qa-health
+          path: qa_artifacts/
+          retention-days: 14

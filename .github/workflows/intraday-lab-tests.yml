@@ -21,10 +21,21 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest httpx pydantic pandas numpy pyarrow yfinance
+
+      - name: Verify Frontend JavaScript Syntax
+        run: |
+          node -c docs/candle-agent/engine.js
+          node -c docs/trader/app.js
+          node -c docs/lab/app.js
 
       - name: Run CYCLE-009C Fast Lookahead & Convergence CI Gate
         run: |
@@ -33,3 +44,8 @@ jobs:
       - name: Run Intraday & Historical Lab Test Suite
         run: |
           pytest tests/intraday/ tests/phase6/ -v --tb=short
+
+      - name: Clean-Tree & Sealed-Holdout Immutability Gate
+        run: |
+          git diff --exit-code data/lab/sealed_holdout_registry.json
+          git diff --exit-code data/lab/ docs/lab/data/

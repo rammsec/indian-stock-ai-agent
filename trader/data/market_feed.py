@@ -69,7 +69,7 @@ def _normalize_raw_ohlcv(
             ts = ts.dt.tz_localize(tz_default) if hasattr(ts, "dt") else ts.tz_localize(tz_default)
         else:
             ts = ts.dt.tz_convert("Asia/Kolkata") if hasattr(ts, "dt") else ts.tz_convert("Asia/Kolkata")
-        out["ts_open_ist"] = ts.values if not hasattr(ts, "dt") else ts
+        out["ts_open_ist"] = pd.Series(ts, index=out.index) if not hasattr(ts, "dt") else ts
 
     else:
         ts_open = pd.to_datetime(out["ts_open_ist"])
@@ -522,5 +522,14 @@ class CompositeMarketFeed(BaseMarketFeed):
             if ev.provenance_status != ProvenanceTier.UNAVAILABLE and ev.bar_count > 0:
                 return ev
             last_ev = ev
-        assert last_ev is not None
+        if last_ev is None:
+            return build_ohlcv_evidence_frame(
+                df=None,
+                symbol=symbol.strip().upper(),
+                timeframe=timeframe,
+                as_of_ist=as_of_ist,
+                provenance_status=ProvenanceTier.UNAVAILABLE,
+                source_name=self.provider_name,
+                missing_reason=f"UNSUPPORTED_TIMEFRAME:{timeframe}",
+            )
         return last_ev

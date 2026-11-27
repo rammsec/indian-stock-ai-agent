@@ -1,13 +1,14 @@
-"""Mandatory Central Agent & Human Authority Execution Gate.
+"""Mandatory Central Agent & Human Authority Execution Gate (REMED-01 Hardened).
 
-Enforces strict authority hierarchy:
-1. Human instructions (highest priority for restrictions; cannot override Risk Engine)
-2. Central Agent trading instructions & permissions
-3. Deterministic Risk Engine controls (absolute veto on capital/drawdown limits)
-4. Independent Candle Timing Agent (advisory only; never self-authorizing)
+Enforces strict 5-tier authority hierarchy:
+1. Human Authority (highest priority; fail-closed if missing/invalid for new entries)
+2. Central Agent directional instructions & freshness
+3. Candle Timing Agent (advisory only; never self-authorizing)
+4. Deterministic Risk Engine (absolute veto on capital/drawdown/exposure limits)
+5. Paper Execution Ledger (atomic under RLock with CashReservationLedger holds)
 
-Revalidates all 7 mandatory gates atomically under lock immediately prior to
-every paper execution to prevent stale permissions and race conditions.
+Revalidates all mandatory gates atomically under lock immediately prior to
+every paper execution to prevent stale permissions, replay attacks, and race conditions.
 """
 
 from __future__ import annotations
@@ -15,20 +16,52 @@ from __future__ import annotations
 import threading
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, time as dt_time
-from typing import Any, Callable, Literal, Sequence
+from datetime import datetime, timedelta
+from typing import Any, Callable, Literal
 
 from ..config import IST_TZ
-from ..portfolio.ledger import IntradayPaperPortfolio
-from ..risk.engine import DeterministicRiskEngine, RiskEvaluationResult
+from ..portfolio.ledger import IntradayPaperPortfolio, round_to_nse_tick
+from ..risk.engine import DeterministicRiskEngine, RiskEvaluationResult, RiskState
 from ..timing.candle_timing_agent import TimingAssessment, TimingDecision
-from ..timing.central_directional_agent import DirectionalBias, DirectionalHypothesis
+from ..timing.central_directional_agent import DirectionalBias
 from .audit import AuthorityAuditRecord
 from .instructions import ActionType, AuthorityInstruction, AuthoritySource, PermissionType
 
 
+def _normalize_scope(scope: str) -> str:
+    """Normalize an authority scope string (case- and whitespace-insensitive)."""
+    s = scope.strip().upper()
+    return "*" if s in ("*", "PORTFOLIO", "ALL") else s
+
+
 class AuthorityGateRejectionError(RuntimeError):
     """Raised when an action is rejected by the mandatory authority execution gate."""
+
+
+@dataclass(frozen=True)
+class InstructionRegistrationResult:
+    """Structured, auditable outcome of registering a Human or Central instruction."""
+
+    accepted: bool
+    reason: str
+    instruction_id: str
+    authority: str
+    scope: str
+    permission: str
+    timestamp_ist: str
+    active_instruction_id: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "accepted": self.accepted,
+            "reason": self.reason,
+            "instruction_id": self.instruction_id,
+            "authority": self.authority,
+            "scope": self.scope,
+            "permission": self.permission,
+            "timestamp_ist": self.timestamp_ist,
+            "active_instruction_id": self.active_instruction_id,
+        }
 
 
 @dataclass(frozen=True)
@@ -58,33 +91,148 @@ class MandatoryExecutionGate:
         *,
         risk_engine: DeterministicRiskEngine | None = None,
         safe_position_handler: Callable[[str, IntradayPaperPortfolio, datetime], None] | None = None,
+        max_central_staleness_minutes: int | None = None,
     ) -> None:
         self.risk_engine = risk_engine or DeterministicRiskEngine()
         self._safe_position_handler = safe_position_handler or self._default_safe_position_handler
+        self._max_central_staleness_minutes = max_central_staleness_minutes
         self._lock = threading.RLock()
 
-        # Active instructions stores: keyed by normalized scope ("*" or uppercase symbol)
+        # Active instruction stores: keyed by normalized scope ("*" or uppercase symbol)
         self._human_instructions: dict[str, AuthorityInstruction] = {}
         self._central_instructions: dict[str, AuthorityInstruction] = {}
 
-        # Cryptographically hash-chained audit log
+        # Replay & out-of-order protection
+        self._seen_instruction_ids: set[str] = set()
+        self._instruction_audit_log: list[InstructionRegistrationResult] = []
+
+        # Cryptographically hash-chained gate audit log
         self._audit_log: list[AuthorityAuditRecord] = []
 
     # --------------------------------------------------------------------------
-    # Instruction Management (Human & Central Agent)
+    # Instruction Management (Human & Central Agent) — Decision 2 Hardened
     # --------------------------------------------------------------------------
 
-    def set_human_instruction(self, instruction: AuthorityInstruction) -> None:
-        """Register or update an active human authority instruction."""
+    def _register_instruction(
+        self,
+        store: dict[str, AuthorityInstruction],
+        expected_source: AuthoritySource,
+        instruction: AuthorityInstruction,
+        *,
+        current_time: datetime | None = None,
+    ) -> InstructionRegistrationResult:
+        now_ist = (
+            current_time.astimezone(IST_TZ)
+            if (current_time is not None and current_time.tzinfo is not None)
+            else datetime.now(IST_TZ)
+        )
+        scope = instruction.normalized_scope
+
+        with self._lock:
+            existing = store.get(scope)
+            active_id = existing.instruction_id if existing is not None else None
+
+            if instruction.authority != expected_source:
+                res = InstructionRegistrationResult(
+                    accepted=False,
+                    reason=(
+                        f"INVALID_AUTHORITY_SOURCE:expected={expected_source.value},"
+                        f"got={instruction.authority.value}"
+                    ),
+                    instruction_id=instruction.instruction_id,
+                    authority=instruction.authority.value,
+                    scope=scope,
+                    permission=instruction.permission.value,
+                    timestamp_ist=now_ist.isoformat(),
+                    active_instruction_id=active_id,
+                )
+                self._instruction_audit_log.append(res)
+                return res
+
+            # 1. Duplicate / replayed instruction_id rejection
+            if instruction.instruction_id in self._seen_instruction_ids:
+                res = InstructionRegistrationResult(
+                    accepted=False,
+                    reason=f"DUPLICATE_INSTRUCTION_ID:{instruction.instruction_id}",
+                    instruction_id=instruction.instruction_id,
+                    authority=instruction.authority.value,
+                    scope=scope,
+                    permission=instruction.permission.value,
+                    timestamp_ist=now_ist.isoformat(),
+                    active_instruction_id=active_id,
+                )
+                self._instruction_audit_log.append(res)
+                return res
+
+            # 2. Stale / already-expired instruction rejection (when current_time supplied)
+            if current_time is not None and current_time.tzinfo is not None:
+                if now_ist > instruction.expires_at:
+                    res = InstructionRegistrationResult(
+                        accepted=False,
+                        reason=f"STALE_EXPIRED_INSTRUCTION:{instruction.instruction_id}",
+                        instruction_id=instruction.instruction_id,
+                        authority=instruction.authority.value,
+                        scope=scope,
+                        permission=instruction.permission.value,
+                        timestamp_ist=now_ist.isoformat(),
+                        active_instruction_id=active_id,
+                    )
+                    self._instruction_audit_log.append(res)
+                    return res
+
+            # 3. Delayed / out-of-order instruction rejection (cannot overwrite newer valid_from)
+            if existing is not None and instruction.valid_from < existing.valid_from:
+                res = InstructionRegistrationResult(
+                    accepted=False,
+                    reason=(
+                        f"DELAYED_OUT_OF_ORDER_INSTRUCTION:"
+                        f"incoming={instruction.valid_from.isoformat()}<active={existing.valid_from.isoformat()}"
+                    ),
+                    instruction_id=instruction.instruction_id,
+                    authority=instruction.authority.value,
+                    scope=scope,
+                    permission=instruction.permission.value,
+                    timestamp_ist=now_ist.isoformat(),
+                    active_instruction_id=active_id,
+                )
+                self._instruction_audit_log.append(res)
+                return res
+
+            store[scope] = instruction
+            self._seen_instruction_ids.add(instruction.instruction_id)
+            res = InstructionRegistrationResult(
+                accepted=True,
+                reason="ACCEPTED",
+                instruction_id=instruction.instruction_id,
+                authority=instruction.authority.value,
+                scope=scope,
+                permission=instruction.permission.value,
+                timestamp_ist=now_ist.isoformat(),
+                active_instruction_id=instruction.instruction_id,
+            )
+            self._instruction_audit_log.append(res)
+            return res
+
+    def set_human_instruction(
+        self,
+        instruction: AuthorityInstruction,
+        *,
+        current_time: datetime | None = None,
+    ) -> InstructionRegistrationResult:
+        """Register or update an active human authority instruction (structured rejection on replay/delay)."""
         if instruction.authority != AuthoritySource.HUMAN:
             raise ValueError(f"Instruction authority must be HUMAN; got {instruction.authority.value}")
-        with self._lock:
-            self._human_instructions[instruction.normalized_scope] = instruction
+        return self._register_instruction(
+            self._human_instructions,
+            AuthoritySource.HUMAN,
+            instruction,
+            current_time=current_time,
+        )
 
     def clear_human_instruction(self, scope: str = "*") -> None:
         """Clear human instruction for scope."""
         with self._lock:
-            norm = "*" if scope in ("*", "PORTFOLIO", "ALL") else scope.strip().upper()
+            norm = _normalize_scope(scope)
             self._human_instructions.pop(norm, None)
 
     def emergency_human_stop(
@@ -96,24 +244,31 @@ class MandatoryExecutionGate:
         portfolio: IntradayPaperPortfolio | None = None,
         valid_duration_minutes: int = 1440,
     ) -> AuthorityInstruction:
-        """Immediately issue a Human STOP_ALL instruction and trigger safe position management."""
+        """Immediately issue a Human STOP_ALL instruction, release pending reservations, and trigger safe management."""
         if current_time.tzinfo is None:
             raise ValueError(f"current_time must be timezone-aware; got {current_time!r}")
         now_ist = current_time.astimezone(IST_TZ)
-        from datetime import timedelta
 
-        instr = AuthorityInstruction(
-            instruction_id=f"HUMAN-STOP-{uuid.uuid4().hex[:8]}",
-            authority=AuthoritySource.HUMAN,
-            scope=scope,
-            permission=PermissionType.STOP_ALL,
-            valid_from=now_ist - timedelta(seconds=1),
-            expires_at=now_ist + timedelta(minutes=valid_duration_minutes),
-            reason=reason,
-            version="1.0",
-        )
         with self._lock:
-            self.set_human_instruction(instr)
+            norm_scope = _normalize_scope(scope)
+            existing = self._human_instructions.get(norm_scope)
+            # Ensure STOP_ALL valid_from is never earlier than an existing active instruction
+            base_valid_from = now_ist - timedelta(seconds=1)
+            if existing is not None and existing.valid_from > base_valid_from:
+                base_valid_from = existing.valid_from
+
+            instr = AuthorityInstruction(
+                instruction_id=f"HUMAN-STOP-{uuid.uuid4().hex[:8]}",
+                authority=AuthoritySource.HUMAN,
+                scope=scope,
+                permission=PermissionType.STOP_ALL,
+                valid_from=base_valid_from,
+                expires_at=now_ist + timedelta(minutes=valid_duration_minutes),
+                reason=reason,
+                version="1.0",
+            )
+            self.set_human_instruction(instr, current_time=now_ist)
+            self.release_reservations_for_scope(norm_scope)
             if portfolio is not None:
                 self.invoke_safe_position_management(
                     symbol=scope,
@@ -122,18 +277,39 @@ class MandatoryExecutionGate:
                 )
         return instr
 
-    def set_central_instruction(self, instruction: AuthorityInstruction) -> None:
-        """Register or update an active Central Agent authority instruction."""
+    def set_central_instruction(
+        self,
+        instruction: AuthorityInstruction,
+        *,
+        current_time: datetime | None = None,
+    ) -> InstructionRegistrationResult:
+        """Register or update an active Central Agent authority instruction (structured rejection on replay/delay)."""
         if instruction.authority != AuthoritySource.CENTRAL_AGENT:
             raise ValueError(f"Instruction authority must be CENTRAL_AGENT; got {instruction.authority.value}")
-        with self._lock:
-            self._central_instructions[instruction.normalized_scope] = instruction
+        return self._register_instruction(
+            self._central_instructions,
+            AuthoritySource.CENTRAL_AGENT,
+            instruction,
+            current_time=current_time,
+        )
 
     def clear_central_instruction(self, scope: str = "*") -> None:
         """Clear central instruction for scope."""
         with self._lock:
-            norm = "*" if scope in ("*", "PORTFOLIO", "ALL") else scope.strip().upper()
+            norm = _normalize_scope(scope)
             self._central_instructions.pop(norm, None)
+
+    def get_active_human_instruction(self, symbol: str, current_time: datetime) -> AuthorityInstruction | None:
+        """Return currently valid Human instruction for symbol (or None)."""
+        with self._lock:
+            instr, _ = self._get_applicable_instruction(self._human_instructions, symbol, current_time)
+            return instr
+
+    def get_active_central_instruction(self, symbol: str, current_time: datetime) -> AuthorityInstruction | None:
+        """Return currently valid Central instruction for symbol (or None)."""
+        with self._lock:
+            instr, _ = self._get_applicable_instruction(self._central_instructions, symbol, current_time)
+            return instr
 
     def _get_applicable_instruction(
         self,
@@ -141,31 +317,62 @@ class MandatoryExecutionGate:
         symbol: str,
         current_time: datetime,
     ) -> tuple[AuthorityInstruction | None, list[str]]:
-        """Find active instruction applying to symbol (symbol-specific takes precedence over '*')."""
+        """Find active instruction applying to symbol.
+
+        HARD FAIL-CLOSED PRECEDENCE:
+        If a symbol-specific instruction exists in `store` and is expired or not-yet-valid,
+        NEVER fall back to the broader portfolio-wide `"*"` instruction.
+        """
         sym_u = symbol.strip().upper()
-        candidates = []
         if sym_u in store:
-            candidates.append(store[sym_u])
-        if "*" in store:
-            candidates.append(store["*"])
-
-        if not candidates:
-            return None, ["NO_INSTRUCTION_FOUND"]
-
-        rejection_reasons = []
-        for cand in candidates:
+            cand = store[sym_u]
             if not cand.is_valid_at(current_time):
                 if current_time < cand.valid_from:
-                    rejection_reasons.append(f"INSTRUCTION_NOT_YET_VALID:{cand.instruction_id}")
-                else:
-                    rejection_reasons.append(f"INSTRUCTION_EXPIRED:{cand.instruction_id}")
-                continue
+                    return None, [f"INSTRUCTION_NOT_YET_VALID:{cand.instruction_id}"]
+                return None, [f"INSTRUCTION_EXPIRED:{cand.instruction_id}"]
             return cand, []
 
-        return None, rejection_reasons
+        if "*" in store:
+            cand = store["*"]
+            if not cand.is_valid_at(current_time):
+                if current_time < cand.valid_from:
+                    return None, [f"INSTRUCTION_NOT_YET_VALID:{cand.instruction_id}"]
+                return None, [f"INSTRUCTION_EXPIRED:{cand.instruction_id}"]
+            return cand, []
+
+        return None, ["NO_INSTRUCTION_FOUND"]
 
     # --------------------------------------------------------------------------
-    # Safe Position Management
+    # Cash Reservation Coordination (Multi-Symbol Capital Protection)
+    # --------------------------------------------------------------------------
+
+    def reserve_cash_for_pending_order(self, order_id: str, symbol: str, amount_inr: float) -> None:
+        """Reserve cash in DeterministicRiskEngine.cash_ledger for a pending order."""
+        with self._lock:
+            self.risk_engine.cash_ledger.reserve(order_id, symbol.strip().upper(), amount_inr)
+
+    def release_cash_reservation(self, order_id: str) -> float:
+        """Release a pending order's cash reservation."""
+        with self._lock:
+            return self.risk_engine.cash_ledger.release(order_id)
+
+    def release_reservations_for_scope(self, scope: str) -> float:
+        """Release all pending cash reservations for '*' or a specific symbol scope."""
+        norm = _normalize_scope(scope)
+        with self._lock:
+            if norm == "*":
+                released = self.risk_engine.cash_ledger.total_reserved_inr
+                self.risk_engine.cash_ledger.clear()
+                return released
+            return self.risk_engine.cash_ledger.release_for_symbol(norm)
+
+    def clear_cash_reservations(self) -> None:
+        """Clear all pending cash reservations."""
+        with self._lock:
+            self.risk_engine.cash_ledger.clear()
+
+    # --------------------------------------------------------------------------
+    # Safe Position Management (Fully Audited via RISK_EXIT)
     # --------------------------------------------------------------------------
 
     def _default_safe_position_handler(
@@ -174,59 +381,19 @@ class MandatoryExecutionGate:
         portfolio: IntradayPaperPortfolio,
         current_time: datetime,
     ) -> None:
-        """Default safe management: square off open long and short positions to eliminate risk."""
-        sym_u = symbol.strip().upper()
-        if sym_u == "*":
-            # Square off all open positions
-            open_keys = list(portfolio.positions.keys())
-            for k in open_keys:
-                pos = portfolio.positions.get(k)
-                if pos and pos.quantity > 0:
-                    px = getattr(pos, "current_price", pos.entry_price)
-                    if getattr(pos, "side", "LONG") == "SHORT":
-                        portfolio.submit_order(
-                            symbol=pos.symbol,
-                            side="BUY",
-                            quantity=pos.quantity,
-                            price=px,
-                            exchange=pos.exchange,
-                            timestamp=current_time,
-                            position_effect="COVER_SHORT",
-                        )
-                    else:
-                        portfolio.submit_order(
-                            symbol=pos.symbol,
-                            side="SELL",
-                            quantity=pos.quantity,
-                            price=px,
-                            exchange=pos.exchange,
-                            timestamp=current_time,
-                            position_effect="EXIT_LONG",
-                        )
-        else:
-            pos = portfolio.positions.get(sym_u)
-            if pos and pos.quantity > 0:
+        """Default safe management: square off open long/short positions via audited RISK_EXIT."""
+        sym_u = _normalize_scope(symbol)
+        for pos in list(portfolio.positions.values()):
+            if pos and pos.quantity > 0 and (sym_u == "*" or pos.symbol.strip().upper() == sym_u):
                 px = getattr(pos, "current_price", pos.entry_price)
-                if getattr(pos, "side", "LONG") == "SHORT":
-                    portfolio.submit_order(
-                        symbol=pos.symbol,
-                        side="BUY",
-                        quantity=pos.quantity,
-                        price=px,
-                        exchange=pos.exchange,
-                        timestamp=current_time,
-                        position_effect="COVER_SHORT",
-                    )
-                else:
-                    portfolio.submit_order(
-                        symbol=pos.symbol,
-                        side="SELL",
-                        quantity=pos.quantity,
-                        price=px,
-                        exchange=pos.exchange,
-                        timestamp=current_time,
-                        position_effect="EXIT_LONG",
-                    )
+                self.execute_with_gate_protection(
+                    symbol=pos.symbol,
+                    action_type=ActionType.RISK_EXIT,
+                    current_time=current_time,
+                    portfolio=portfolio,
+                    requested_quantity=pos.quantity,
+                    price=px,
+                )
 
     def invoke_safe_position_management(
         self,
@@ -254,6 +421,7 @@ class MandatoryExecutionGate:
         entry_price: float = 0.0,
         stop_loss_price: float | None = None,
         target_price: float | None = None,
+        dry_run: bool = False,
     ) -> GateEvaluationOutcome:
         """Evaluate all 7 mandatory gates atomically under lock immediately prior to execution."""
         sym_u = symbol.strip().upper()
@@ -265,21 +433,20 @@ class MandatoryExecutionGate:
         disagreement_str: str | None = None
 
         with self._lock:
-            # GATE 1: Current Human Permission (fail closed if an explicitly registered human instruction expired)
+            # GATE 1: Human Authority (Decision 1: STRICT FAIL-CLOSED for new entries; exits remain safe)
             human_instr, human_errs = self._get_applicable_instruction(self._human_instructions, sym_u, now_ist)
             if human_instr is not None:
                 allowed, r_reason = human_instr.allows_action(action_type)
                 if not allowed:
                     rejection_reasons.append(f"HUMAN_PERMISSION_DENIED:{r_reason}")
-            elif action_type.is_new_entry and any(
-                e.startswith(("INSTRUCTION_EXPIRED:", "INSTRUCTION_NOT_YET_VALID:")) for e in human_errs
-            ):
-                rejection_reasons.append(f"HUMAN_INSTRUCTION_EXPIRED_OR_INVALID:{','.join(human_errs)}")
+            elif action_type.is_new_entry:
+                if any(e.startswith(("INSTRUCTION_EXPIRED:", "INSTRUCTION_NOT_YET_VALID:")) for e in human_errs):
+                    rejection_reasons.append(f"HUMAN_INSTRUCTION_EXPIRED_OR_INVALID:{','.join(human_errs)}")
+                else:
+                    rejection_reasons.append(f"HUMAN_INSTRUCTION_MISSING:{','.join(human_errs) or 'NO_RECORD'}")
 
-            # GATE 2: Current Central Agent Permission
+            # GATE 2: Central Agent Authority & Freshness (fail-closed for new entries)
             central_instr, central_errs = self._get_applicable_instruction(self._central_instructions, sym_u, now_ist)
-
-            # For new entries, Central Agent permission is MANDATORY (fail closed if missing or expired)
             if action_type.is_new_entry:
                 if central_instr is None:
                     rejection_reasons.append(
@@ -289,29 +456,23 @@ class MandatoryExecutionGate:
                     allowed, c_reason = central_instr.allows_action(action_type)
                     if not allowed:
                         rejection_reasons.append(f"CENTRAL_PERMISSION_DENIED:{c_reason}")
+                    if self._max_central_staleness_minutes is not None:
+                        age_min = (now_ist - central_instr.valid_from).total_seconds() / 60.0
+                        if age_min > self._max_central_staleness_minutes:
+                            rejection_reasons.append(
+                                f"CENTRAL_INSTRUCTION_STALE:age_min={age_min:.1f}>max={self._max_central_staleness_minutes}"
+                            )
 
-            # GATE 3: Instruction Freshness, Expiry & Time Boundaries
-            if human_instr is not None and not human_instr.is_valid_at(now_ist):
-                rejection_reasons.append(f"HUMAN_INSTRUCTION_EXPIRED:{human_instr.instruction_id}")
-            if central_instr is not None and not central_instr.is_valid_at(now_ist):
-                rejection_reasons.append(f"CENTRAL_INSTRUCTION_EXPIRED:{central_instr.instruction_id}")
-
-            # GATE 4: Symbol & Directional Restrictions
-            # (Checked inside allows_action above)
-
-            # GATE 5: Candle Agent Subordination & Conflict Resolution
-            # Candle Agent MUST NOT independently authorize execution.
+            # GATE 3: Candle Agent Subordination & Conflict Resolution (never self-authorizing)
             if action_type.is_new_entry:
                 if candle_assessment is None:
                     rejection_reasons.append("CANDLE_TIMING_ASSESSMENT_MISSING")
                 else:
-                    # Candle Agent must confirm timing
                     if candle_assessment.decision != TimingDecision.ENTER_NOW:
                         rejection_reasons.append(
                             f"CANDLE_TIMING_NOT_CONFIRMED:decision={candle_assessment.decision.value}"
                         )
 
-                    # Verify action-to-candle directional alignment (even under ALLOW_BOTH)
                     expected_action_bias = (
                         DirectionalBias.BULLISH if action_type == ActionType.ENTRY_LONG else DirectionalBias.BEARISH
                     )
@@ -323,7 +484,6 @@ class MandatoryExecutionGate:
                         )
                         rejection_reasons.append(f"CANDLE_ACTION_DIRECTION_MISMATCH:{disagreement_str}")
 
-                    # Check for Disagreement with Central Agent
                     if central_instr is not None and central_instr.permission != PermissionType.ALLOW_BOTH:
                         c_dir = (
                             DirectionalBias.BULLISH
@@ -341,7 +501,7 @@ class MandatoryExecutionGate:
                             )
                             rejection_reasons.append(f"CENTRAL_CANDLE_DISAGREEMENT:{disagreement_str}")
 
-            # GATE 6: Current Position and Available Capital
+            # GATE 4: Position Direction & Exit Quantity Consistency
             pos = portfolio.positions.get(sym_u)
             current_qty = pos.quantity if pos else 0
             current_side = getattr(pos, "side", "LONG") if pos else None
@@ -351,20 +511,10 @@ class MandatoryExecutionGate:
                     rejection_reasons.append(
                         f"OPPOSITE_POSITION_OPEN:cannot ENTRY_LONG while SHORT {current_qty} shares in {sym_u}"
                     )
-                required_cash = requested_quantity * entry_price
-                if required_cash > portfolio.cash:
-                    rejection_reasons.append(
-                        f"INSUFFICIENT_CASH:required=Rs {required_cash:,.2f}, available=Rs {portfolio.cash:,.2f}"
-                    )
             elif action_type == ActionType.ENTRY_SHORT:
                 if pos is not None and current_side == "LONG":
                     rejection_reasons.append(
                         f"OPPOSITE_POSITION_OPEN:cannot ENTRY_SHORT while LONG {current_qty} shares in {sym_u}"
-                    )
-                required_margin = requested_quantity * entry_price
-                if required_margin > portfolio.cash:
-                    rejection_reasons.append(
-                        f"INSUFFICIENT_CASH:required=Rs {required_margin:,.2f}, available=Rs {portfolio.cash:,.2f}"
                     )
             elif action_type == ActionType.EXIT_LONG:
                 if requested_quantity <= 0 or pos is None or current_side != "LONG" or current_qty < requested_quantity:
@@ -382,7 +532,9 @@ class MandatoryExecutionGate:
                         f"INSUFFICIENT_POSITION_TO_EXIT:requested={requested_quantity}, open={current_qty}"
                     )
 
-            # GATE 7: Deterministic Risk Engine Approval (Human/Central CANNOT override Risk limits)
+            # GATE 5 & 6 (REMED-01 Fix): Deterministic Risk Engine Sizing & Limits FIRST,
+            # THEN check unreserved available cash against the post-sized `approved_quantity`!
+            # (Decision 4: HALTED blocks new entries and implements EXIT_ONLY for existing positions.)
             risk_eval: RiskEvaluationResult | None = None
             if action_type.is_new_entry:
                 if requested_quantity <= 0 or entry_price <= 0:
@@ -393,9 +545,9 @@ class MandatoryExecutionGate:
                     if stop_loss_price is not None:
                         sl = stop_loss_price
                     elif action_type == ActionType.ENTRY_SHORT:
-                        sl = round(entry_price * 1.015, 2)
+                        sl = round_to_nse_tick(entry_price * 1.015)
                     else:
-                        sl = round(entry_price * 0.985, 2)
+                        sl = round_to_nse_tick(entry_price * 0.985)
                     side_str = "BUY" if action_type == ActionType.ENTRY_LONG else "SELL"
                     risk_eval = self.risk_engine.evaluate_order(
                         symbol=sym_u,
@@ -407,6 +559,40 @@ class MandatoryExecutionGate:
                         current_time=now_ist,
                         action_type=action_type.value,
                         include_entry_friction_in_cash_cap=True,
+                        dry_run=dry_run,
+                    )
+                    if not risk_eval.approved:
+                        for reason in risk_eval.rejection_reasons:
+                            rejection_reasons.append(f"RISK_ENGINE_REJECTION:{reason}")
+                    else:
+                        # Gate 6 post-sizing unreserved cash verification
+                        sized_qty = risk_eval.approved_quantity
+                        available_unreserved = max(
+                            0.0, float(portfolio.cash) - self.risk_engine.cash_ledger.total_reserved_inr
+                        )
+                        required_notional = sized_qty * entry_price
+                        if required_notional > available_unreserved + 1e-6:
+                            rejection_reasons.append(
+                                f"INSUFFICIENT_UNRESERVED_CASH:required=Rs {required_notional:,.2f}, "
+                                f"available=Rs {available_unreserved:,.2f}"
+                            )
+            else:
+                # Audit all exits through Risk Engine with force_reduce_only=True so HALTED -> EXIT_ONLY works cleanly
+                if entry_price <= 0:
+                    rejection_reasons.append("INVALID_EXIT_PRICE:Exit price must be strictly positive")
+                elif requested_quantity > 0 and pos is not None:
+                    exit_side = "BUY" if (action_type == ActionType.EXIT_SHORT or current_side == "SHORT") else "SELL"
+                    risk_eval = self.risk_engine.evaluate_order(
+                        symbol=sym_u,
+                        side=exit_side,
+                        requested_quantity=requested_quantity,
+                        entry_price=entry_price,
+                        stop_loss_price=None,
+                        portfolio=portfolio,
+                        current_time=now_ist,
+                        force_reduce_only=True,
+                        action_type=action_type.value,
+                        dry_run=dry_run,
                     )
                     if not risk_eval.approved:
                         for reason in risk_eval.rejection_reasons:
@@ -462,14 +648,17 @@ class MandatoryExecutionGate:
         candle_assessment: TimingAssessment | None = None,
         stop_loss_price: float | None = None,
         target_price: float | None = None,
+        reservation_order_id: str | None = None,
     ) -> tuple[GateEvaluationOutcome, bool]:
-        """Atomically evaluate the 7 mandatory gates and immediately execute paper order if approved.
+        """Atomically revalidate all mandatory gates and immediately execute paper order if approved.
 
-        Eliminates any race window between gate evaluation and paper order placement.
-        Returns (GateEvaluationOutcome, executed: bool).
+        Releases any pending `reservation_order_id` atomically before sizing/execution so the
+        order's own reservation does not block itself, and ensures release on rejection as well.
         """
         with self._lock:
-            # 1. Gate revalidation immediately prior to execution
+            if reservation_order_id is not None:
+                self.risk_engine.cash_ledger.release(reservation_order_id)
+
             outcome = self.evaluate_gate(
                 symbol=symbol,
                 action_type=action_type,
@@ -480,12 +669,12 @@ class MandatoryExecutionGate:
                 entry_price=price,
                 stop_loss_price=stop_loss_price,
                 target_price=target_price,
+                dry_run=False,
             )
 
             if not outcome.approved:
                 return outcome, False
 
-            # 2. Execution under the same atomic lock with explicit position_effect, stop_loss, and target
             sym_u = symbol.strip().upper()
             pos = portfolio.positions.get(sym_u)
             if action_type == ActionType.ENTRY_LONG:
@@ -501,7 +690,6 @@ class MandatoryExecutionGate:
                 side = "BUY"
                 pos_effect = "COVER_SHORT"
             else:
-                # ActionType.RISK_EXIT matches the existing position's direction
                 if pos is not None and getattr(pos, "side", "LONG") == "SHORT":
                     side = "BUY"
                     pos_effect = "COVER_SHORT"
@@ -513,11 +701,13 @@ class MandatoryExecutionGate:
             effective_stop_loss = stop_loss_price
             if effective_stop_loss is None and action_type.is_new_entry and price > 0:
                 effective_stop_loss = (
-                    round(price * 1.015, 2) if action_type == ActionType.ENTRY_SHORT else round(price * 0.985, 2)
+                    round_to_nse_tick(price * 1.015)
+                    if action_type == ActionType.ENTRY_SHORT
+                    else round_to_nse_tick(price * 0.985)
                 )
 
             order = portfolio.submit_order(
-                symbol=symbol,
+                symbol=sym_u,
                 side=side,
                 quantity=qty,
                 price=price,
@@ -525,12 +715,31 @@ class MandatoryExecutionGate:
                 target=target_price,
                 timestamp=current_time,
                 position_effect=pos_effect,
+                round_ticks=True,
             )
             executed = order.status.value in ("FILLED", "PARTIALLY_FILLED")
             return outcome, executed
 
     @property
     def audit_trail(self) -> tuple[AuthorityAuditRecord, ...]:
-        """Return immutable copy of the audit trail."""
+        """Return immutable copy of the gate evaluation audit trail."""
         with self._lock:
             return tuple(self._audit_log)
+
+    @property
+    def instruction_audit_trail(self) -> tuple[InstructionRegistrationResult, ...]:
+        """Return immutable copy of the instruction registration/rejection audit trail."""
+        with self._lock:
+            return tuple(self._instruction_audit_log)
+
+    def verify_audit_chain(self) -> bool:
+        """Verify BOTH per-record SHA-256 hashes AND contiguous prev_hash linkage from genesis."""
+        with self._lock:
+            expected_prev = self._GENESIS_HASH
+            for rec in self._audit_log:
+                if rec.prev_hash != expected_prev:
+                    return False
+                if not rec.verify_hash():
+                    return False
+                expected_prev = rec.record_hash
+            return True

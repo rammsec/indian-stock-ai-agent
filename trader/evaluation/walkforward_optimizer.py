@@ -615,9 +615,20 @@ def simulate_fast_1m_session(
         pos_qty = 0
         cooldown_left = cfg.cooldown_bars
 
+    if n >= 2:
+        deltas_sec = [
+            (timestamps[k] - timestamps[k - 1]).total_seconds()
+            for k in range(1, min(n, 20))
+            if (timestamps[k] - timestamps[k - 1]).total_seconds() > 0
+        ]
+        is_multi_minute = bool(deltas_sec and float(np.median(deltas_sec)) >= 300.0)
+    else:
+        is_multi_minute = False
+
     for i in range(n):
         ts = timestamps[i]
         t_ist = ts.time()
+        o = float(opens[i])
         c = closes[i]
         h = highs[i]
         l = lows[i]
@@ -629,10 +640,15 @@ def simulate_fast_1m_session(
         # 1. Manage open position (EOD square-off, SL/TP, Chandelier Trail + Breakeven Lock)
         if pos_side is not None:
             if t_ist >= EOD_SQUAREOFF_IST or i == n - 1:
-                _close_position(c, ts.isoformat(), "EOD_SQUARE_OFF")
+                eod_exit_px = o if (is_multi_minute and t_ist >= EOD_SQUAREOFF_IST) else c
+                _close_position(eod_exit_px, ts.isoformat(), "EOD_SQUARE_OFF")
                 continue
 
             if pos_side == "BUY":
+                if o <= pos_active_sl:
+                    reason = "TRAILING_STOP_HIT" if pos_active_sl > pos_initial_sl else "STOP_LOSS_HIT"
+                    _close_position(o, ts.isoformat(), reason)
+                    continue
                 if l <= pos_active_sl:
                     reason = "TRAILING_STOP_HIT" if pos_active_sl > pos_initial_sl else "STOP_LOSS_HIT"
                     _close_position(pos_active_sl, ts.isoformat(), reason)
@@ -652,6 +668,10 @@ def simulate_fast_1m_session(
                 if cand_sl < c:
                     pos_active_sl = cand_sl
             else:
+                if o >= pos_active_sl:
+                    reason = "TRAILING_STOP_HIT" if pos_active_sl < pos_initial_sl else "STOP_LOSS_HIT"
+                    _close_position(o, ts.isoformat(), reason)
+                    continue
                 if h >= pos_active_sl:
                     reason = "TRAILING_STOP_HIT" if pos_active_sl < pos_initial_sl else "STOP_LOSS_HIT"
                     _close_position(pos_active_sl, ts.isoformat(), reason)
@@ -937,7 +957,8 @@ def split_bundles_chronologically(
     split_idx = max(1, min(len(all_dates) - 1, int(len(all_dates) * train_ratio)))
     train_dates = all_dates[:split_idx]
     test_dates = all_dates[split_idx:]
-    assert max(train_dates) < min(test_dates), "Chronological leakage violation!"
+    if not (max(train_dates) < min(test_dates)):
+        raise ValueError("Chronological leakage violation: max(train_dates) must be < min(test_dates)")
 
     train_set = set(train_dates)
     test_set = set(test_dates)

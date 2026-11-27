@@ -18,13 +18,12 @@ def expected_5m_sub_bars_for_bucket(
     """Return expected 5m sub-bars for a resampled NSE bucket.
 
     NSE regular session runs 09:15–15:30 IST (75 x 5m bars).
-    For 60m resampling, bars 1..6 (09:15..14:15) have 12 x 5m bars,
-    while the final closing bar (15:15–15:30) has 3 x 5m bars.
+    For 30m and 60m resampling, the final closing bar (15:15–15:30) has 3 x 5m bars.
     """
     if target_minutes <= 0 or target_minutes % 5 != 0:
         raise ValueError(f"target_minutes must be a positive multiple of 5, got {target_minutes}")
     bucket_ist = _ensure_tz_aware_ist(bucket_open_ist, "bucket_open_ist")
-    if target_minutes == 60 and bucket_ist.hour == 15 and bucket_ist.minute == 15:
+    if target_minutes in (30, 60) and bucket_ist.hour == 15 and bucket_ist.minute == 15:
         return 3
     return target_minutes // 5
 

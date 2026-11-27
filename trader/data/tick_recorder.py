@@ -13,9 +13,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 from abc import ABC, abstractmethod
-from collections import defaultdict
+from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
@@ -24,7 +25,7 @@ from typing import Any, Callable, Final, Iterable, Literal
 import pandas as pd
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from ..config import IST_TZ
+from ..config import IST_TZ, is_nse_trading_day
 
 LIVE_TRADING_ENABLED: Final[bool] = False
 READ_ONLY_MODE: Final[bool] = True
@@ -55,11 +56,11 @@ class TickEvent(_StrictModel):
     symbol: str
     exchange: Literal["NSE", "BSE"] = "NSE"
     timestamp_ist: datetime
-    ltp: float = Field(gt=0.0)
-    volume_delta: float = Field(default=0.0, ge=0.0)
-    cumulative_volume: float | None = Field(default=None, ge=0.0)
-    bid: float | None = Field(default=None, gt=0.0)
-    ask: float | None = Field(default=None, gt=0.0)
+    ltp: float = Field(gt=0.0, allow_inf_nan=False)
+    volume_delta: float = Field(default=0.0, ge=0.0, allow_inf_nan=False)
+    cumulative_volume: float | None = Field(default=None, ge=0.0, allow_inf_nan=False)
+    bid: float | None = Field(default=None, gt=0.0, allow_inf_nan=False)
+    ask: float | None = Field(default=None, gt=0.0, allow_inf_nan=False)
     provider: ProviderName = "offline_replay"
 
     @field_validator("symbol")
@@ -86,11 +87,11 @@ class RecordedBar(_StrictModel):
     timeframe: TimeframeName
     ts_open_ist: datetime
     ts_close_ist: datetime
-    open: float = Field(gt=0.0)
-    high: float = Field(gt=0.0)
-    low: float = Field(gt=0.0)
-    close: float = Field(gt=0.0)
-    volume: float = Field(ge=0.0)
+    open: float = Field(gt=0.0, allow_inf_nan=False)
+    high: float = Field(gt=0.0, allow_inf_nan=False)
+    low: float = Field(gt=0.0, allow_inf_nan=False)
+    close: float = Field(gt=0.0, allow_inf_nan=False)
+    volume: float = Field(ge=0.0, allow_inf_nan=False)
     tick_count: int = Field(ge=1)
     source_provider: ProviderName
 
@@ -149,11 +150,11 @@ def assert_read_only_recorder_config(
 
 
 def is_within_nse_session_ist(ts: datetime) -> bool:
-    """Return True iff `ts` falls on a weekday strictly inside [09:15:00, 15:30:00) IST."""
+    """Return True iff `ts` falls on an NSE trading day strictly inside [09:15:00, 15:30:00) IST."""
     if ts.tzinfo is None or ts.tzinfo.utcoffset(ts) is None:
         raise ValueError("Timestamp must be timezone-aware")
     ts_ist = ts.astimezone(IST_TZ)
-    if ts_ist.weekday() >= 5:
+    if ts_ist.weekday() >= 5 or not is_nse_trading_day(ts_ist.date()):
         return False
     t = ts_ist.time()
     return NSE_SESSION_OPEN_TIME <= t < NSE_SESSION_CLOSE_TIME
@@ -214,6 +215,8 @@ class CausalTickAggregator:
         self.accepted_ticks: int = 0
         self.out_of_order_ticks: int = 0
         self.rejected_outside_hours_ticks: int = 0
+        self.late_dropped_ticks: int = 0
+        self.duplicate_ticks: int = 0
         self._last_ts_by_symbol_day: dict[tuple[str, date], datetime] = {}
         self._last_cum_vol_by_symbol_day: dict[tuple[str, date], float] = {}
         # Key: (symbol, trading_date, timeframe, ts_open_ist) -> list[(ts_ist, seq, ltp, vol, exchange, provider)]
@@ -222,15 +225,53 @@ class CausalTickAggregator:
             list[tuple[datetime, int, float, float, Literal["NSE", "BSE"], ProviderName]],
         ] = defaultdict(list)
         self._bucket_close: dict[tuple[str, date, TimeframeName, datetime], datetime] = {}
+        self._flushed_buckets: set[tuple[str, date, TimeframeName, datetime]] = set()
+        self._recent_tick_sigs: set[tuple[str, datetime, float, float, float | None, ProviderName]] = set()
+        self._recent_tick_order: deque[tuple[str, datetime, float, float, float | None, ProviderName]] = deque()
+        self._max_recent_sigs: int = 20_000
         self._seq: int = 0
 
     def ingest_tick(self, tick: TickEvent) -> bool:
-        """Ingest one TickEvent. Returns True if accepted, False if rejected outside NSE hours."""
+        """Ingest one TickEvent. Returns True if accepted, False if rejected/duplicate/late."""
         if not is_within_nse_session_ist(tick.timestamp_ist):
             self.rejected_outside_hours_ticks += 1
             return False
 
         ts_ist = tick.timestamp_ist.astimezone(IST_TZ)
+        tick_sig = (
+            tick.symbol,
+            ts_ist,
+            tick.ltp,
+            tick.volume_delta,
+            tick.cumulative_volume,
+            tick.provider,
+        )
+        if tick_sig in self._recent_tick_sigs:
+            self.duplicate_ticks += 1
+            return False
+
+        # Determine eligible (non-flushed) timeframe buckets before mutating state
+        eligible_buckets: list[tuple[tuple[str, date, TimeframeName, datetime], datetime]] = []
+        any_flushed = False
+        for tf in self.timeframes:
+            ts_open, ts_close = align_tick_bucket_ist(ts_ist, tf)
+            bkey = (tick.symbol, ts_ist.date(), tf, ts_open)
+            if bkey in self._flushed_buckets:
+                any_flushed = True
+                continue
+            eligible_buckets.append((bkey, ts_close))
+
+        if any_flushed:
+            self.late_dropped_ticks += 1
+        if not eligible_buckets:
+            return False
+
+        self._recent_tick_sigs.add(tick_sig)
+        self._recent_tick_order.append(tick_sig)
+        if len(self._recent_tick_order) > self._max_recent_sigs:
+            oldest = self._recent_tick_order.popleft()
+            self._recent_tick_sigs.discard(oldest)
+
         day_key = (tick.symbol, ts_ist.date())
 
         prev_ts = self._last_ts_by_symbol_day.get(day_key)
@@ -254,9 +295,7 @@ class CausalTickAggregator:
 
         self._seq += 1
         entry = (ts_ist, self._seq, tick.ltp, vol_delta, tick.exchange, tick.provider)
-        for tf in self.timeframes:
-            ts_open, ts_close = align_tick_bucket_ist(ts_ist, tf)
-            bkey = (tick.symbol, ts_ist.date(), tf, ts_open)
+        for bkey, ts_close in eligible_buckets:
             self._open_buckets[bkey].append(entry)
             self._bucket_close[bkey] = ts_close
 
@@ -300,6 +339,7 @@ class CausalTickAggregator:
             entries = self._open_buckets.pop(k)
             bars.append(self._build_bar(k, entries))
             self._bucket_close.pop(k, None)
+            self._flushed_buckets.add(k)
         return bars
 
     def finalize_all(self) -> list[RecordedBar]:
@@ -310,6 +350,7 @@ class CausalTickAggregator:
             entries = self._open_buckets.pop(k)
             bars.append(self._build_bar(k, entries))
             self._bucket_close.pop(k, None)
+            self._flushed_buckets.add(k)
         return bars
 
 
@@ -470,38 +511,90 @@ def parse_zerodha_kite_tick(
     if token not in token_to_symbol:
         return None
     raw_ltp = raw_tick.get("last_price")
-    if raw_ltp is None:
+    if raw_ltp is None or isinstance(raw_ltp, bool):
         return None
-    ltp = float(raw_ltp)
-    if ltp <= 0.0:
+    try:
+        ltp = float(raw_ltp)
+    except (TypeError, ValueError):
         return None
-    raw_ts = raw_tick.get("exchange_timestamp") or raw_tick.get("timestamp")
+    if not math.isfinite(ltp) or ltp <= 0.0:
+        return None
+
+    raw_ts = raw_tick.get("exchange_timestamp")
+    if raw_ts is None:
+        raw_ts = raw_tick.get("timestamp")
+    if raw_ts is None or isinstance(raw_ts, bool):
+        return None
     if isinstance(raw_ts, datetime):
-        ts_ist = raw_ts.astimezone(IST_TZ) if raw_ts.tzinfo else raw_ts.replace(tzinfo=IST_TZ)
+        if raw_ts.tzinfo is None or raw_ts.tzinfo.utcoffset(raw_ts) is None:
+            return None
+        ts_ist = raw_ts.astimezone(IST_TZ)
     elif isinstance(raw_ts, str):
-        parsed = datetime.fromisoformat(raw_ts)
-        ts_ist = parsed.astimezone(IST_TZ) if parsed.tzinfo else parsed.replace(tzinfo=IST_TZ)
+        try:
+            parsed = datetime.fromisoformat(raw_ts)
+        except ValueError:
+            return None
+        if parsed.tzinfo is None or parsed.tzinfo.utcoffset(parsed) is None:
+            return None
+        ts_ist = parsed.astimezone(IST_TZ)
     else:
-        ts_ist = datetime.now(IST_TZ)
+        return None
 
     cum_vol = raw_tick.get("volume_traded")
     if cum_vol is None:
         cum_vol = raw_tick.get("volume")
-    last_qty = float(raw_tick.get("last_traded_quantity") or raw_tick.get("last_quantity") or 0.0)
+    cum_vol_f: float | None = None
+    if cum_vol is not None and not isinstance(cum_vol, bool):
+        try:
+            val = float(cum_vol)
+            if math.isfinite(val) and val >= 0.0:
+                cum_vol_f = val
+        except (TypeError, ValueError):
+            cum_vol_f = None
+
+    raw_last_qty = raw_tick.get("last_traded_quantity")
+    if raw_last_qty is None:
+        raw_last_qty = raw_tick.get("last_quantity")
+    last_qty = 0.0
+    if raw_last_qty is not None and not isinstance(raw_last_qty, bool):
+        try:
+            val = float(raw_last_qty)
+            if math.isfinite(val) and val > 0.0:
+                last_qty = val
+        except (TypeError, ValueError):
+            last_qty = 0.0
 
     depth = raw_tick.get("depth") or {}
     buy_depth = depth.get("buy") or []
     sell_depth = depth.get("sell") or []
-    bid = float(buy_depth[0]["price"]) if buy_depth and buy_depth[0].get("price", 0) > 0 else None
-    ask = float(sell_depth[0]["price"]) if sell_depth and sell_depth[0].get("price", 0) > 0 else None
+    bid: float | None = None
+    if buy_depth and isinstance(buy_depth[0], dict):
+        bp = buy_depth[0].get("price")
+        if bp is not None and not isinstance(bp, bool):
+            try:
+                bp_f = float(bp)
+                if math.isfinite(bp_f) and bp_f > 0.0:
+                    bid = bp_f
+            except (TypeError, ValueError):
+                bid = None
+    ask: float | None = None
+    if sell_depth and isinstance(sell_depth[0], dict):
+        ap = sell_depth[0].get("price")
+        if ap is not None and not isinstance(ap, bool):
+            try:
+                ap_f = float(ap)
+                if math.isfinite(ap_f) and ap_f > 0.0:
+                    ask = ap_f
+            except (TypeError, ValueError):
+                ask = None
 
     return TickEvent(
         symbol=token_to_symbol[token],
         exchange="NSE",
         timestamp_ist=ts_ist,
         ltp=ltp,
-        volume_delta=max(0.0, last_qty),
-        cumulative_volume=float(cum_vol) if cum_vol is not None else None,
+        volume_delta=last_qty,
+        cumulative_volume=cum_vol_f,
         bid=bid,
         ask=ask,
         provider="zerodha_kite",
@@ -520,28 +613,66 @@ def parse_angel_one_tick(
     raw_ltp = raw_tick.get("last_traded_price")
     if raw_ltp is None or isinstance(raw_ltp, bool):
         return None
-    ltp_val = float(raw_ltp) / 100.0 if isinstance(raw_ltp, int) else float(raw_ltp)
-    if ltp_val <= 0.0:
+    try:
+        ltp_val = float(raw_ltp) / 100.0 if isinstance(raw_ltp, int) else float(raw_ltp)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(ltp_val) or ltp_val <= 0.0:
         return None
 
     exch_ts_ms = raw_tick.get("exchange_timestamp")
+    if exch_ts_ms is None or isinstance(exch_ts_ms, bool):
+        return None
     if isinstance(exch_ts_ms, (int, float)):
-        ts_ist = datetime.fromtimestamp(float(exch_ts_ms) / 1000.0, tz=IST_TZ)
+        exch_f = float(exch_ts_ms)
+        if not math.isfinite(exch_f) or exch_f <= 0.0:
+            return None
+        try:
+            ts_ist = datetime.fromtimestamp(exch_f / 1000.0, tz=IST_TZ)
+        except (OverflowError, OSError, ValueError):
+            return None
     elif isinstance(exch_ts_ms, datetime):
-        ts_ist = exch_ts_ms.astimezone(IST_TZ) if exch_ts_ms.tzinfo else exch_ts_ms.replace(tzinfo=IST_TZ)
+        if exch_ts_ms.tzinfo is None or exch_ts_ms.tzinfo.utcoffset(exch_ts_ms) is None:
+            return None
+        ts_ist = exch_ts_ms.astimezone(IST_TZ)
+    elif isinstance(exch_ts_ms, str):
+        try:
+            parsed = datetime.fromisoformat(exch_ts_ms)
+        except ValueError:
+            return None
+        if parsed.tzinfo is None or parsed.tzinfo.utcoffset(parsed) is None:
+            return None
+        ts_ist = parsed.astimezone(IST_TZ)
     else:
-        ts_ist = datetime.now(IST_TZ)
+        return None
 
     cum_vol = raw_tick.get("volume_trade_for_the_day")
-    last_qty = float(raw_tick.get("last_traded_quantity") or 0.0)
+    cum_vol_f: float | None = None
+    if cum_vol is not None and not isinstance(cum_vol, bool):
+        try:
+            val = float(cum_vol)
+            if math.isfinite(val) and val >= 0.0:
+                cum_vol_f = val
+        except (TypeError, ValueError):
+            cum_vol_f = None
+
+    raw_last_qty = raw_tick.get("last_traded_quantity")
+    last_qty = 0.0
+    if raw_last_qty is not None and not isinstance(raw_last_qty, bool):
+        try:
+            val = float(raw_last_qty)
+            if math.isfinite(val) and val > 0.0:
+                last_qty = val
+        except (TypeError, ValueError):
+            last_qty = 0.0
 
     return TickEvent(
         symbol=token_to_symbol[token],
         exchange="NSE",
         timestamp_ist=ts_ist,
         ltp=ltp_val,
-        volume_delta=max(0.0, last_qty),
-        cumulative_volume=float(cum_vol) if cum_vol is not None else None,
+        volume_delta=last_qty,
+        cumulative_volume=cum_vol_f,
         provider="angel_one_smartapi",
     )
 

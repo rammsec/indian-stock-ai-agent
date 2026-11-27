@@ -105,12 +105,19 @@ class AuthorityInstruction:
 
         Returns (allowed: bool, reason: str).
         """
-        # STOP_ALL or PAUSE blocks all new entries
-        if self.permission in (PermissionType.STOP_ALL, PermissionType.PAUSE):
+        # STOP_ALL blocks all new entries; permits protective/unwind exits
+        if self.permission == PermissionType.STOP_ALL:
             if action.is_new_entry:
-                return False, f"{self.authority.value} permission {self.permission.value} blocks all new entries"
-            # Risk exits and regular exits are permitted to safely unwind
-            return True, f"{self.permission.value} permits exit/unwind"
+                return False, f"{self.authority.value} permission STOP_ALL blocks all new entries"
+            return True, "STOP_ALL permits protective exit/unwind"
+
+        # PAUSE blocks all new entries AND discretionary strategy exits; preserves protective RISK_EXIT
+        if self.permission == PermissionType.PAUSE:
+            if action.is_new_entry:
+                return False, f"{self.authority.value} permission PAUSE blocks all new entries"
+            if action == ActionType.RISK_EXIT:
+                return True, "PAUSE preserves deterministic protective RISK_EXIT"
+            return False, f"{self.authority.value} permission PAUSE suspends discretionary {action.value}"
 
         # NO_NEW_ENTRIES prohibits new entries but permits position exits
         if self.permission == PermissionType.NO_NEW_ENTRIES:

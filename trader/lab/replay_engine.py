@@ -1197,14 +1197,22 @@ class HistoricalLabReplayEngine:
         data_mode: DataSourceMode = DataSourceMode.HISTORICAL_REAL,
     ) -> dict[str, Any]:
         """Evaluate strategy across chronological Train, Validation, and Unseen Test date splits."""
-        n = len(ordered_dates)
+        clean_dates = sorted(set(ordered_dates))
+        n = len(clean_dates)
         if n < 3:
-            raise ValueError("Need at least 3 trading dates for Train/Validation/Unseen splits")
-        t_end = max(1, int(n * train_ratio))
-        v_end = max(t_end + 1, int(n * (train_ratio + val_ratio)))
-        train_dates = ordered_dates[:t_end]
-        val_dates = ordered_dates[t_end:v_end]
-        test_dates = ordered_dates[v_end:] or [ordered_dates[-1]]
+            raise ValueError("Need at least 3 distinct trading dates for Train/Validation/Unseen splits")
+        t_end = max(1, min(n - 2, int(n * train_ratio)))
+        v_end = max(t_end + 1, min(n - 1, int(n * (train_ratio + val_ratio))))
+        train_dates = clean_dates[:t_end]
+        val_dates = clean_dates[t_end:v_end]
+        test_dates = clean_dates[v_end:]
+        if (
+            not train_dates
+            or not val_dates
+            or not test_dates
+            or not (max(train_dates) < min(val_dates) and max(val_dates) < min(test_dates))
+        ):
+            raise ValueError("Train/Validation/Unseen date splits must be non-empty and strictly disjoint")
 
         return {
             "strategy_id": strategy_id,
