@@ -267,11 +267,54 @@ def test_remed01_monitoring_session_auto_direction_runs_and_yields_to_explicit_h
 
 
 def test_remed01_missing_human_permission_fails_closed_in_monitoring_session_and_live_runner(tmp_path: Path) -> None:
-    # A. MonitoringSession with human_permission=None & human_instruction=None -> 0 entries opened!
+    from dataclasses import replace as dc_replace
+    from trader.timing.candle_timing_agent import AgentCall, CandleTimingAgent
+
+    class _ForceEntryAgent:
+        def __init__(self) -> None:
+            self._inner = CandleTimingAgent()
+            self.calls = 0
+
+        def evaluate_bar_lifecycle(self, *args: Any, **kwargs: Any) -> Any:
+            self.calls += 1
+            base = self._inner.evaluate_bar_lifecycle(*args, **kwargs)
+            if self.calls == 1:
+                ta = _make_candle(symbol="TCS", bias=DirectionalBias.BULLISH, decision=TimingDecision.ENTER_NOW)
+                return dc_replace(base, call=AgentCall.OPEN_LONG, timing_assessment=ta)
+            return dc_replace(base, call=AgentCall.WAIT)
+
+    # A0. Direct MandatoryExecutionGate with NO Human instruction: blocks ENTRY_LONG, allows RISK_EXIT
+    p_direct = IntradayPaperPortfolio(initial_capital=50_000.0)
+    p_direct.submit_order("TCS", "BUY", 2, 2500.0, timestamp=NOW_IST - timedelta(minutes=5), position_effect="OPEN_LONG")
+    g_direct = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    g_direct.set_central_instruction(_make_instr("C-NO-H", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+    res_block = g_direct.evaluate_gate(
+        symbol="TCS",
+        action_type=ActionType.ENTRY_LONG,
+        current_time=NOW_IST,
+        portfolio=IntradayPaperPortfolio(initial_capital=50_000.0),
+        candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH),
+        requested_quantity=2,
+        entry_price=2500.0,
+        stop_loss_price=2475.0,
+    )
+    assert res_block.approved is False
+    assert any("HUMAN_INSTRUCTION_MISSING" in r for r in res_block.rejection_reasons)
+    _, rx_ok = g_direct.execute_with_gate_protection(
+        symbol="TCS",
+        action_type=ActionType.RISK_EXIT,
+        current_time=NOW_IST,
+        portfolio=p_direct,
+        requested_quantity=2,
+        price=2505.0,
+    )
+    assert rx_ok is True and len(p_direct.positions) == 0
+
+    # A. MonitoringSession with human_permission=None & human_instruction=None -> forced OPEN_LONG MUST fail closed!
     d = date(2026, 11, 23)
-    rows = _make_5m_day_rows(d, step_px=2.5, n_session_bars=30)
+    rows = _make_5m_day_rows(d, step_px=2.5, n_session_bars=10)
     feed = _StaticBarFeed("TCS", "5m", rows)
-    sess = IntradayCandleMonitoringSession(feed=feed, initial_capital=50_000.0)
+    sess = IntradayCandleMonitoringSession(feed=feed, timing_agent=_ForceEntryAgent(), initial_capital=50_000.0)  # type: ignore[arg-type]
     res = sess.run_session(
         symbol="TCS",
         session_date=d,
@@ -282,12 +325,11 @@ def test_remed01_missing_human_permission_fails_closed_in_monitoring_session_and
     )
     assert len(sess.portfolio.closed_trades) == 0
     assert len(sess.portfolio.positions) == 0
-    # Verify any attempted entry was explicitly rejected with HUMAN_INSTRUCTION_MISSING
-    if sess.execution_gate.audit_trail:
-        assert any(
-            any("HUMAN_INSTRUCTION_MISSING" in r for r in rec.rejection_reasons)
-            for rec in sess.execution_gate.audit_trail
-        )
+    assert len(sess.execution_gate.audit_trail) >= 1
+    assert any(
+        any("HUMAN_INSTRUCTION_MISSING" in r for r in rec.rejection_reasons)
+        for rec in sess.execution_gate.audit_trail
+    )
     assert res.authority_audit_chain_ok is True
 
     # B. LivePaperTradingRunner with human_instruction=None on a breakout stream -> MUST record rejection!
@@ -434,35 +476,112 @@ def test_remed01_mandatory_1515_squareoff_succeeds_under_pause_and_intrabar_sl_i
     rows = _make_5m_day_rows(d, base_px=2500.0, step_px=0.2, n_session_bars=75)
     feed = _StaticBarFeed("TCS", "5m", rows)
 
-    # A. Open LONG & SHORT positions held into 15:15 IST under Human PAUSE -> MUST square off via RISK_EXIT!
-    for side in ("LONG", "SHORT"):
-        sess = IntradayCandleMonitoringSession(feed=feed, initial_capital=50_000.0)
-        sess.portfolio.submit_order(
-            "TCS",
-            "BUY" if side == "LONG" else "SELL",
-            2,
-            2500.0,
-            stop_loss=2000.0 if side == "LONG" else 3000.0,
-            target=3200.0 if side == "LONG" else 1800.0,
-            timestamp=datetime(2026, 11, 23, 9, 10, tzinfo=IST_TZ),
-            position_effect="OPEN_LONG" if side == "LONG" else "OPEN_SHORT",
-        )
-        res = sess.run_session(
-            symbol="TCS",
-            session_date=d,
-            timeframe="5m",
-            human_permission=PermissionType.PAUSE,
-        )
-        assert "TCS" not in sess.portfolio.positions
-        assert len(sess.portfolio.positions) == 0
-        assert any(
-            rec.action_type == ActionType.RISK_EXIT and rec.final_execution_decision == "APPROVED"
-            for rec in sess.execution_gate.audit_trail
-        )
-        assert res.authority_audit_chain_ok is True
+    from dataclasses import replace as dc_replace
+    from trader.timing.candle_timing_agent import AgentCall, CandleTimingAgent
 
-    # B. Intrabar SL hit in monitoring_session -> MUST be audited in BOTH gate & risk engine!
+    class _HoldTimingAgent:
+        def __init__(self) -> None:
+            self._inner = CandleTimingAgent()
+
+        def evaluate_bar_lifecycle(self, *args: Any, **kwargs: Any) -> Any:
+            return dc_replace(self._inner.evaluate_bar_lifecycle(*args, **kwargs), call=AgentCall.HOLD)
+
+    # A. Open LONG & SHORT positions held into 15:15 IST under PAUSE, EXIT_ONLY, STOP_ALL, and RiskState.HALTED
+    for perm in (PermissionType.PAUSE, PermissionType.EXIT_ONLY, PermissionType.STOP_ALL):
+        for side in ("LONG", "SHORT"):
+            sess = IntradayCandleMonitoringSession(feed=feed, timing_agent=_HoldTimingAgent(), initial_capital=50_000.0)  # type: ignore[arg-type]
+            sess.portfolio.submit_order(
+                "TCS",
+                "BUY" if side == "LONG" else "SELL",
+                2,
+                2500.0,
+                stop_loss=2000.0 if side == "LONG" else 3000.0,
+                target=3200.0 if side == "LONG" else 1800.0,
+                timestamp=datetime(2026, 11, 23, 9, 10, tzinfo=IST_TZ),
+                position_effect="OPEN_LONG" if side == "LONG" else "OPEN_SHORT",
+            )
+            res = sess.run_session(
+                symbol="TCS",
+                session_date=d,
+                timeframe="5m",
+                direction=DirectionalBias.BULLISH if side == "LONG" else DirectionalBias.BEARISH,
+                human_permission=perm,
+            )
+            assert "TCS" not in sess.portfolio.positions
+            assert len(sess.portfolio.positions) == 0
+            assert any(
+                rec.action_type == ActionType.RISK_EXIT and rec.final_execution_decision == "APPROVED"
+                for rec in sess.execution_gate.audit_trail
+            )
+            assert res.authority_audit_chain_ok is True
+
+    # A2. RiskState.HALTED (EXIT_ONLY) must also square off open position at 15:15 IST via RISK_EXIT
+    sess_halted = IntradayCandleMonitoringSession(feed=feed, timing_agent=_HoldTimingAgent(), initial_capital=50_000.0)  # type: ignore[arg-type]
+    sess_halted.portfolio.submit_order(
+        "TCS",
+        "BUY",
+        2,
+        2500.0,
+        stop_loss=2000.0,
+        target=3200.0,
+        timestamp=datetime(2026, 11, 23, 9, 10, tzinfo=IST_TZ),
+        position_effect="OPEN_LONG",
+    )
+    sess_halted.risk_engine.state = RiskState.HALTED
+    res_halted = sess_halted.run_session(
+        symbol="TCS",
+        session_date=d,
+        timeframe="5m",
+        human_permission=PermissionType.ALLOW_BOTH,
+    )
+    assert len(sess_halted.portfolio.positions) == 0
+    assert any(
+        rec.action_type == ActionType.RISK_EXIT and rec.final_execution_decision == "APPROVED"
+        for rec in sess_halted.execution_gate.audit_trail
+    )
+    assert res_halted.authority_audit_chain_ok is True
+
+    # A3. Python MonitoringSession STOP_ALL at bar index 0 (09:15 IST) -> immediately flattens open position
+    bar0_open = datetime(2026, 11, 23, 9, 15, tzinfo=IST_TZ)
+    rows_short = _make_5m_day_rows(d, base_px=2500.0, step_px=0.0, n_session_bars=3)
+    sess_b0 = IntradayCandleMonitoringSession(feed=_StaticBarFeed("TCS", "5m", rows_short), initial_capital=50_000.0)
+    sess_b0.portfolio.submit_order(
+        "TCS",
+        "BUY",
+        2,
+        2500.0,
+        stop_loss=2400.0,
+        target=2700.0,
+        timestamp=datetime(2026, 11, 23, 9, 10, tzinfo=IST_TZ),
+        position_effect="OPEN_LONG",
+    )
+    stop_b0 = _make_instr(
+        "H-STOP-BAR0",
+        AuthoritySource.HUMAN,
+        PermissionType.STOP_ALL,
+        scope="TCS",
+        valid_from=bar0_open,
+        expires_at=datetime(2026, 11, 23, 16, 0, tzinfo=IST_TZ),
+    )
+    res_b0 = sess_b0.run_session(
+        symbol="TCS",
+        session_date=d,
+        timeframe="5m",
+        human_permission=PermissionType.ALLOW_BOTH,
+        mid_session_human_instructions={bar0_open: stop_b0},
+    )
+    assert len(sess_b0.portfolio.positions) == 0
+    assert any("HUMAN_STOP_ALL_SAFE_MANAGEMENT:H-STOP-BAR0" in n for n in res_b0.decisions[0].rationale)
+    assert any(
+        rec.action_type == ActionType.RISK_EXIT and rec.final_execution_decision == "APPROVED"
+        for rec in sess_b0.execution_gate.audit_trail
+    )
+
+    # B. Intrabar SL hit in monitoring_session -> MUST be audited in BOTH gate & risk engine,
+    #    and surviving bars MUST update highest_price/lowest_price (MFE tracking for Chandelier stops).
     rows_sl = _make_5m_day_rows(d, base_px=2500.0, step_px=0.0, n_session_bars=10)
+    rows_sl[25 + 0]["high"] = 2525.0
+    rows_sl[25 + 0]["low"] = 2492.0
     # Bar 2 crashes through SL=2480
     rows_sl[25 + 2]["low"] = 2470.0
     rows_sl[25 + 2]["close"] = 2475.0
@@ -491,6 +610,31 @@ def test_remed01_mandatory_1515_squareoff_succeeds_under_pause_and_intrabar_sl_i
     assert len(sess_sl.risk_engine.audit_log) >= 1
     assert res_sl.authority_audit_chain_ok is True
     assert res_sl.risk_audit_chain_ok is True
+
+    # B2. Verify surviving bar updates highest_price & lowest_price in Step B (prevents Chandelier MFE regression)
+    rows_mfe = _make_5m_day_rows(d, base_px=2500.0, step_px=0.0, n_session_bars=2)
+    rows_mfe[25 + 0]["high"] = 2535.0
+    rows_mfe[25 + 0]["low"] = 2491.0
+    sess_mfe = IntradayCandleMonitoringSession(feed=_StaticBarFeed("TCS", "5m", rows_mfe), initial_capital=50_000.0)
+    sess_mfe.portfolio.submit_order(
+        "TCS",
+        "BUY",
+        2,
+        2500.0,
+        stop_loss=2400.0,
+        target=2700.0,
+        timestamp=datetime(2026, 11, 23, 9, 10, tzinfo=IST_TZ),
+        position_effect="OPEN_LONG",
+    )
+    sess_mfe.run_session(
+        symbol="TCS",
+        session_date=d,
+        timeframe="5m",
+        human_permission=PermissionType.PAUSE,
+    )
+    assert "TCS" in sess_mfe.portfolio.positions
+    assert sess_mfe.portfolio.positions["TCS"].highest_price >= 2535.0
+    assert sess_mfe.portfolio.positions["TCS"].lowest_price <= 2491.0
 
 
 # ---------------------------------------------------------------------------
@@ -624,6 +768,43 @@ def test_remed01_symbol_scoped_stop_all_releases_only_target_symbol_and_flattens
 
 
 def test_remed01_isolated_daily_2_5_pct_and_isolated_mtm_3_0_pct_drawdown_exit_only() -> None:
+    def _assert_halted_exit_only(re_obj: DeterministicRiskEngine, port: IntradayPaperPortfolio) -> None:
+        g = MandatoryExecutionGate(risk_engine=re_obj)
+        g.set_human_instruction(_make_instr("H-HALT", AuthoritySource.HUMAN, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+        g.set_central_instruction(_make_instr("C-HALT", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+        # New entry MUST be blocked when RiskState.HALTED
+        ent = g.evaluate_gate(
+            symbol="INFY",
+            action_type=ActionType.ENTRY_LONG,
+            current_time=NOW_IST,
+            portfolio=port,
+            candle_assessment=_make_candle("INFY", DirectionalBias.BULLISH),
+            requested_quantity=1,
+            entry_price=1500.0,
+            stop_loss_price=1480.0,
+        )
+        assert ent.approved is False
+        # Existing position exit (EXIT_LONG & RISK_EXIT) MUST still be allowed
+        ex = g.evaluate_gate(
+            symbol="TCS",
+            action_type=ActionType.EXIT_LONG,
+            current_time=NOW_IST,
+            portfolio=port,
+            candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH),
+            requested_quantity=2,
+            entry_price=port.positions["TCS"].current_price,
+        )
+        assert ex.approved is True
+        rx = g.evaluate_gate(
+            symbol="TCS",
+            action_type=ActionType.RISK_EXIT,
+            current_time=NOW_IST,
+            portfolio=port,
+            requested_quantity=2,
+            entry_price=port.positions["TCS"].current_price,
+        )
+        assert rx.approved is True
+
     # A. Isolated 2.5% daily loss breach (equity drops -2.6% from day start; MTM DD is also 2.6% < 3.0%)
     p_day = IntradayPaperPortfolio(initial_capital=50_000.0)
     re_day = DeterministicRiskEngine(max_daily_loss_pct=0.025, max_intraday_mtm_drawdown_pct=0.030)
@@ -631,10 +812,11 @@ def test_remed01_isolated_daily_2_5_pct_and_isolated_mtm_3_0_pct_drawdown_exit_o
     p_day.positions["TCS"].current_price = 1850.0  # -₹1,300 = -2.6% (< 3.0% MTM, > 2.5% daily)
     assert re_day.check_daily_loss_limit(p_day) is True
     assert re_day.state == RiskState.HALTED
-    # Decision 4: NOT auto-liquidated!
+    # Decision 4: NOT auto-liquidated, and gate enforces EXIT_ONLY!
     assert len(p_day.positions) == 1
+    _assert_halted_exit_only(re_day, p_day)
 
-    # B. Isolated 3.0% MTM drawdown breach while day P&L is still POSITIVE (+2.0% from day start, -3.3% from peak)
+    # B. Isolated 3.0% MTM drawdown breach while day P&L is still POSITIVE (+2.0% from day start, -3.41% from peak)
     p_mtm = IntradayPaperPortfolio(initial_capital=50_000.0)
     re_mtm = DeterministicRiskEngine(max_daily_loss_pct=0.025, max_intraday_mtm_drawdown_pct=0.030)
     p_mtm.submit_order("TCS", "BUY", 2, 2500.0, timestamp=NOW_IST, position_effect="OPEN_LONG")
@@ -644,15 +826,16 @@ def test_remed01_isolated_daily_2_5_pct_and_isolated_mtm_3_0_pct_drawdown_exit_o
     assert re_mtm.check_daily_loss_limit(p_mtm) is True
     assert re_mtm.state == RiskState.HALTED
     assert len(p_mtm.positions) == 1
+    _assert_halted_exit_only(re_mtm, p_mtm)
 
 
 # ---------------------------------------------------------------------------
-# 8. Fee-Inclusive Cash Boundary & Duplicate/Stale/Delayed Central Instructions
+# 8. Fee-Inclusive Cash Boundary, Gate 6 Sizing & Full Human/Central Validation (Cat 3 & 12)
 # ---------------------------------------------------------------------------
 
 
 def test_remed01_fee_inclusive_cash_boundary_and_central_staleness_rejection() -> None:
-    # Exact cash = ₹2,500.00 for 1 share @ ₹2,500.00 -> notional fits, but notional + NSE entry friction > ₹2,500 -> REJECT!
+    # A. Exact cash = ₹2,500.00 for 1 share @ ₹2,500.00 -> notional fits, but notional + NSE entry friction > ₹2,500 -> REJECT!
     p = IntradayPaperPortfolio(initial_capital=2_500.0)
     re = DeterministicRiskEngine(max_position_weight_pct=1.0, max_portfolio_exposure_pct=1.0, max_risk_per_trade_pct=1.0)
     g = MandatoryExecutionGate(risk_engine=re, max_central_staleness_minutes=30)
@@ -672,7 +855,26 @@ def test_remed01_fee_inclusive_cash_boundary_and_central_staleness_rejection() -
     assert out_fee.approved is False
     assert any("RISK_ENGINE_REJECTION" in r for r in out_fee.rejection_reasons)
 
-    # Central staleness check (> 30 min old) + duplicate & delayed Central registration
+    # B. Gate 6 sizing-before-cash: requested_quantity=100 @ ₹2,500 on ₹50k capital -> sizes down to 1..3 shares & APPROVES!
+    p_size = IntradayPaperPortfolio(initial_capital=50_000.0)
+    g_size = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    g_size.set_human_instruction(_make_instr("H-SZ", AuthoritySource.HUMAN, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+    g_size.set_central_instruction(_make_instr("C-SZ", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+    out_size = g_size.evaluate_gate(
+        symbol="TCS",
+        action_type=ActionType.ENTRY_LONG,
+        current_time=NOW_IST,
+        portfolio=p_size,
+        candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH),
+        requested_quantity=100,
+        entry_price=2500.0,
+        stop_loss_price=2475.0,
+    )
+    assert out_size.approved is True
+    assert out_size.risk_evaluation is not None
+    assert 1 <= out_size.risk_evaluation.approved_quantity <= 3
+
+    # C. Central staleness (> 30 min) + duplicate & delayed Central registration
     out_stale = g.evaluate_gate(
         symbol="TCS",
         action_type=ActionType.ENTRY_LONG,
@@ -687,12 +889,70 @@ def test_remed01_fee_inclusive_cash_boundary_and_central_staleness_rejection() -
     assert any("CENTRAL_INSTRUCTION_STALE" in r for r in out_stale.rejection_reasons)
 
     dup_c = g.set_central_instruction(_make_instr("C-FEE", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_SHORT), current_time=NOW_IST)
-    assert dup_c.accepted is False and "DUPLICATE_INSTRUCTION_ID" in dup_c.reason
+    assert isinstance(dup_c, InstructionRegistrationResult) and dup_c.accepted is False and "DUPLICATE_INSTRUCTION_ID" in dup_c.reason
     del_c = g.set_central_instruction(
         _make_instr("C-OLD", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_SHORT, valid_from=NOW_IST - timedelta(hours=1)),
         current_time=NOW_IST,
     )
-    assert del_c.accepted is False and "DELAYED_OUT_OF_ORDER_INSTRUCTION" in del_c.reason
+    assert isinstance(del_c, InstructionRegistrationResult) and del_c.accepted is False and "DELAYED_OUT_OF_ORDER_INSTRUCTION" in del_c.reason
+
+    # D. Human instruction validation: invalid window, duplicate, delayed/out-of-order,
+    #    expired symbol-scoped NOT falling back to wildcard "*", and mid-session rejected Human update!
+    with pytest.raises(ValueError):
+        _make_instr("H-INV", AuthoritySource.HUMAN, PermissionType.ALLOW_LONG, valid_from=NOW_IST, expires_at=NOW_IST - timedelta(minutes=1))
+
+    g_h = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    g_h.set_central_instruction(_make_instr("C-HVAL", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+    ok_wild = g_h.set_human_instruction(_make_instr("H-WILD", AuthoritySource.HUMAN, PermissionType.ALLOW_BOTH, scope="*"), current_time=NOW_IST)
+    assert ok_wild.accepted is True
+    # Duplicate Human ID -> structured rejection (no exception, no overwrite)
+    dup_h = g_h.set_human_instruction(_make_instr("H-WILD", AuthoritySource.HUMAN, PermissionType.STOP_ALL, scope="*"), current_time=NOW_IST)
+    assert dup_h.accepted is False and "DUPLICATE_INSTRUCTION_ID" in dup_h.reason
+    # Delayed/out-of-order Human instruction -> structured rejection
+    del_h = g_h.set_human_instruction(
+        _make_instr("H-OLD", AuthoritySource.HUMAN, PermissionType.STOP_ALL, scope="*", valid_from=NOW_IST - timedelta(hours=2)),
+        current_time=NOW_IST,
+    )
+    assert del_h.accepted is False and "DELAYED_OUT_OF_ORDER_INSTRUCTION" in del_h.reason
+    # Expired symbol-scoped Human instruction MUST fail closed (NOT fall back to active wildcard "*")
+    g_h.set_human_instruction(
+        _make_instr("H-TCS-EXP", AuthoritySource.HUMAN, PermissionType.ALLOW_LONG, scope="TCS", valid_from=NOW_IST - timedelta(minutes=20), expires_at=NOW_IST + timedelta(minutes=5)),
+        current_time=NOW_IST,
+    )
+    out_exp = g_h.evaluate_gate(
+        symbol="TCS",
+        action_type=ActionType.ENTRY_LONG,
+        current_time=NOW_IST + timedelta(minutes=10),
+        portfolio=IntradayPaperPortfolio(initial_capital=50_000.0),
+        candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH),
+        requested_quantity=1,
+        entry_price=2500.0,
+        stop_loss_price=2475.0,
+    )
+    assert out_exp.approved is False
+    assert any("HUMAN_INSTRUCTION_EXPIRED" in r or "HUMAN_INSTRUCTION_MISSING" in r for r in out_exp.rejection_reasons)
+
+    # Mid-session delayed/duplicate Human instruction injected into MonitoringSession -> logged as HUMAN_INSTRUCTION_REJECTED
+    d = date(2026, 11, 23)
+    rows_m = _make_5m_day_rows(d, base_px=2500.0, step_px=0.5, n_session_bars=4)
+    sess_m = IntradayCandleMonitoringSession(feed=_StaticBarFeed("TCS", "5m", rows_m), initial_capital=50_000.0)
+    bar1_open = datetime(2026, 11, 23, 9, 20, tzinfo=IST_TZ)
+    stale_mid = _make_instr(
+        "H-STALE-MID",
+        AuthoritySource.HUMAN,
+        PermissionType.STOP_ALL,
+        scope="TCS",
+        valid_from=datetime(2026, 11, 23, 8, 0, tzinfo=IST_TZ),  # older than 09:15 initial instruction!
+        expires_at=datetime(2026, 11, 23, 16, 0, tzinfo=IST_TZ),
+    )
+    res_m = sess_m.run_session(
+        symbol="TCS",
+        session_date=d,
+        timeframe="5m",
+        human_permission=PermissionType.ALLOW_LONG,
+        mid_session_human_instructions={bar1_open: stale_mid},
+    )
+    assert any("HUMAN_INSTRUCTION_REJECTED:" in n for dec in res_m.decisions for n in dec.rationale)
 
 
 # ---------------------------------------------------------------------------
@@ -710,19 +970,18 @@ def test_remed01_python_js_five_scenario_parity_matrix() -> None:
       warmup.push(mkBar(`2026-11-20T10:${String(i).padStart(2,'0')}:00+05:30`, `2026-11-20T10:${String(i+1).padStart(2,'0')}:00+05:30`, 2500+i, 2502+i, 2499+i, 2501+i));
     }
 
-    // Scenario 1: Missing Human permission -> constructor MUST fail closed (null, NOT ALLOW_LONG)
+    // Scenario 1: Missing Human permission -> constructor MUST fail closed (null) AND reject queued OPEN_LONG
     const s1 = new eng.IntradaySessionSimulator({
       symbol: 'TCS', sessionDate: '2026-11-23', timeframe: '5m',
       warmupBars: warmup,
       sessionBars: [
         mkBar('2026-11-23T09:15:00+05:30', '2026-11-23T09:20:00+05:30', 2520, 2530, 2519, 2528),
-        mkBar('2026-11-23T09:20:00+05:30', '2026-11-23T09:25:00+05:30', 2528, 2538, 2527, 2536),
       ],
       centralDirection: 'BULLISH',
       humanPermission: undefined,
     });
-    s1.stepNextBar();
-    s1.stepNextBar();
+    s1.pendingOrder = { actionType: 'OPEN_LONG', qty: 2, stopLoss: 2490, target: 2580, signalCloseTs: '2026-11-23T09:15:00+05:30' };
+    const r1 = s1.stepNextBar();
 
     // Scenario 2: 14:45 cutoff boundary -> pending entry queued at 14:44 MUST be blocked at 14:45 open
     const s2 = new eng.IntradaySessionSimulator({
@@ -737,17 +996,17 @@ def test_remed01_python_js_five_scenario_parity_matrix() -> None:
     s2.pendingOrder = { actionType: 'OPEN_LONG', qty: 2, stopLoss: 2490, target: 2580, signalCloseTs: '2026-11-23T14:45:00+05:30' };
     const r2 = s2.stepNextBar();
 
-    // Scenario 3: PAUSE exit timing -> discretionary exit rejected at bar close (no pendingOrder queued)
+    // Scenario 3: PAUSE exit timing -> discretionary EXIT_LONG MUST be rejected immediately at bar close
     const s3 = new eng.IntradaySessionSimulator({
       symbol: 'TCS', sessionDate: '2026-11-23', timeframe: '5m',
       warmupBars: warmup,
       sessionBars: [
-        mkBar('2026-11-23T10:00:00+05:30', '2026-11-23T10:05:00+05:30', 2520, 2521, 2495, 2496, 50000),
+        mkBar('2026-11-23T10:00:00+05:30', '2026-11-23T10:05:00+05:30', 2520, 2521, 2440, 2442, 80000),
       ],
-      centralDirection: 'BULLISH',
+      centralDirection: 'BEARISH',
       humanPermission: 'PAUSE',
     });
-    s3.position = { side: 'LONG', qty: 2, entryPrice: 2515, currentPrice: 2515, stopLoss: 2400, target: 2700, entryCost: 5, highestPrice: 2520, lowestPrice: 2515, barsHeld: 5 };
+    s3.position = { side: 'LONG', qty: 2, entryPrice: 2515, currentPrice: 2515, stopLoss: 2300, target: 2700, entryCost: 5, highestPrice: 2520, lowestPrice: 2515, barsHeld: 5 };
     const r3 = s3.stepNextBar();
 
     // Scenario 4: STOP_ALL at barIdx === 0 -> immediately flattens open position
@@ -776,6 +1035,7 @@ def test_remed01_python_js_five_scenario_parity_matrix() -> None:
     console.log(JSON.stringify({
       s1_humanPerm: s1.humanPermission,
       s1_pos: s1.position,
+      s1_blocked: r1.notes.some(x => x.includes('HUMAN_INSTRUCTION_MISSING')),
       s2_pos: s2.position,
       s2_blocked: r2.notes.some(x => x.includes('PAST_1445_OR_REDUCING')),
       s3_pending: s3.pendingOrder,
@@ -790,31 +1050,50 @@ def test_remed01_python_js_five_scenario_parity_matrix() -> None:
     proc = subprocess.run(["node", "-e", node_script], cwd=str(REPO_ROOT), capture_output=True, text=True, check=True)
     res = json.loads(proc.stdout.strip())
 
-    # Verify all 5 JS parity scenarios match Python behavior exactly
-    assert res["s1_humanPerm"] is None and res["s1_pos"] is None
+    # Unconditional assertions for all 5 JS parity scenarios (zero vacuous if-guards!)
+    assert res["s1_humanPerm"] is None and res["s1_pos"] is None and res["s1_blocked"] is True
     assert res["s2_pos"] is None and res["s2_blocked"] is True
-    assert res["s3_pending"] is None
-    if res["s3_call"] == "REJECT":
-        assert res["s3_gateStatus"] == "REJECTED"
+    assert res["s3_pending"] is None and res["s3_call"] == "REJECT" and res["s3_gateStatus"] == "REJECTED"
     assert res["s4_pos"] is None and res["s4_closed"] == 1
     assert res["s5_pos"] is None and res["s5_blocked"] is True
 
-    # Cross-check Python 14:45 boundary (identical: 14:45:00 MUST reject)
-    g_py = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    # Side-by-side Python parity verification for ALL 5 scenarios:
+    # Py-1: Missing Human permission -> fails closed with HUMAN_INSTRUCTION_MISSING
+    g1 = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    g1.set_central_instruction(_make_instr("C-P1", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+    o1 = g1.evaluate_gate(symbol="TCS", action_type=ActionType.ENTRY_LONG, current_time=NOW_IST, portfolio=IntradayPaperPortfolio(initial_capital=50_000.0), candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH), requested_quantity=2, entry_price=2500.0, stop_loss_price=2475.0)
+    assert o1.approved is False and any("HUMAN_INSTRUCTION_MISSING" in r for r in o1.rejection_reasons)
+
+    # Py-2: 14:45 cutoff boundary -> 14:45:00 MUST reject
+    g2 = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
     t1445 = datetime(2026, 11, 23, 14, 45, tzinfo=IST_TZ)
-    g_py.set_human_instruction(_make_instr("H1445", AuthoritySource.HUMAN, PermissionType.ALLOW_BOTH, valid_from=t1445 - timedelta(hours=5), expires_at=t1445 + timedelta(hours=2)), current_time=t1445)
-    g_py.set_central_instruction(_make_instr("C1445", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH, valid_from=t1445 - timedelta(hours=5), expires_at=t1445 + timedelta(hours=2)), current_time=t1445)
-    out_py_1445 = g_py.evaluate_gate(
-        symbol="TCS",
-        action_type=ActionType.ENTRY_LONG,
-        current_time=t1445,
-        portfolio=IntradayPaperPortfolio(initial_capital=50_000.0),
-        candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH),
-        requested_quantity=2,
-        entry_price=2500.0,
-        stop_loss_price=2475.0,
-    )
-    assert out_py_1445.approved is False
+    g2.set_human_instruction(_make_instr("H1445", AuthoritySource.HUMAN, PermissionType.ALLOW_BOTH, valid_from=t1445 - timedelta(hours=5), expires_at=t1445 + timedelta(hours=2)), current_time=t1445)
+    g2.set_central_instruction(_make_instr("C1445", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH, valid_from=t1445 - timedelta(hours=5), expires_at=t1445 + timedelta(hours=2)), current_time=t1445)
+    o2 = g2.evaluate_gate(symbol="TCS", action_type=ActionType.ENTRY_LONG, current_time=t1445, portfolio=IntradayPaperPortfolio(initial_capital=50_000.0), candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH), requested_quantity=2, entry_price=2500.0, stop_loss_price=2475.0)
+    assert o2.approved is False
+
+    # Py-3: PAUSE rejects discretionary EXIT_LONG immediately
+    p3 = IntradayPaperPortfolio(initial_capital=50_000.0)
+    p3.submit_order("TCS", "BUY", 2, 2500.0, timestamp=NOW_IST - timedelta(minutes=5), position_effect="OPEN_LONG")
+    g3 = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    g3.set_human_instruction(_make_instr("H-P3", AuthoritySource.HUMAN, PermissionType.PAUSE), current_time=NOW_IST)
+    g3.set_central_instruction(_make_instr("C-P3", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+    o3 = g3.evaluate_gate(symbol="TCS", action_type=ActionType.EXIT_LONG, current_time=NOW_IST, portfolio=p3, candle_assessment=_make_candle("TCS", DirectionalBias.BEARISH), requested_quantity=2, entry_price=2480.0)
+    assert o3.approved is False and any("HUMAN_PERMISSION_DENIED" in r for r in o3.rejection_reasons)
+
+    # Py-4: STOP_ALL immediately flattens open position
+    p4 = IntradayPaperPortfolio(initial_capital=50_000.0)
+    p4.submit_order("TCS", "BUY", 2, 2500.0, timestamp=NOW_IST - timedelta(minutes=5), position_effect="OPEN_LONG")
+    g4 = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    g4.emergency_human_stop(reason="parity_stop", current_time=NOW_IST, portfolio=p4, scope="TCS")
+    assert len(p4.positions) == 0
+
+    # Py-5: Opposing Central BEARISH (ALLOW_SHORT) blocks ENTRY_LONG
+    g5 = MandatoryExecutionGate(risk_engine=DeterministicRiskEngine())
+    g5.set_human_instruction(_make_instr("H-P5", AuthoritySource.HUMAN, PermissionType.ALLOW_BOTH), current_time=NOW_IST)
+    g5.set_central_instruction(_make_instr("C-P5", AuthoritySource.CENTRAL_AGENT, PermissionType.ALLOW_SHORT), current_time=NOW_IST)
+    o5 = g5.evaluate_gate(symbol="TCS", action_type=ActionType.ENTRY_LONG, current_time=NOW_IST, portfolio=IntradayPaperPortfolio(initial_capital=50_000.0), candle_assessment=_make_candle("TCS", DirectionalBias.BULLISH), requested_quantity=2, entry_price=2500.0, stop_loss_price=2475.0)
+    assert o5.approved is False and any("CENTRAL_PERMISSION_DENIED" in r for r in o5.rejection_reasons)
 
 
 # ---------------------------------------------------------------------------

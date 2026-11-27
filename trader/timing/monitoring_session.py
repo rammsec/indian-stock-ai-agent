@@ -620,6 +620,8 @@ class IntradayCandleMonitoringSession:
                         last_exit_bar_index = int(bar_idx)
                         bar_events_notes.append(f"{intrabar_reason}@{intrabar_exit_px:.2f}")
                 else:
+                    open_pos_b.highest_price = max(open_pos_b.highest_price, round_to_nse_tick(h_px))
+                    open_pos_b.lowest_price = min(open_pos_b.lowest_price, round_to_nse_tick(l_px))
                     open_pos_b.current_price = round_to_nse_tick(c_px)
                 if self.risk_engine.check_daily_loss_limit(self.portfolio):
                     bar_events_notes.append("RISK_HALTED_EXIT_ONLY_ACTIVE:drawdown_breach_blocks_new_entries")
