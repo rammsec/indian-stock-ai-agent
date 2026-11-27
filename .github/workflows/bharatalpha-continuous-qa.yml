@@ -2,12 +2,16 @@ name: BharatAlpha Continuous QA Monitor (Read-Only)
 
 on:
   schedule:
-    # Daily 02:30 UTC (08:00 IST pre-market)
-    - cron: "30 2 * * *"
+    # Mon-Fri 02:30 UTC (08:00 IST pre-market, prior to NSE 09:15 IST open)
+    - cron: "30 2 * * 1-5"
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: bharatalpha-continuous-qa-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   continuous-qa-health:
@@ -37,28 +41,137 @@ jobs:
           mkdir -p qa_artifacts
           set +e
 
-          # 1. JS syntax checks
+          # 0. NSE Trading Calendar Check (Asia/Kolkata — informational; read-only QA always runs)
+          NSE_CALENDAR_NOTE=$(python - <<'PY'
+          import datetime
+          try:
+              from zoneinfo import ZoneInfo
+              now_ist = datetime.datetime.now(ZoneInfo("Asia/Kolkata"))
+          except Exception:
+              now_ist = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5, minutes=30)))
+          try:
+              from backend.config import is_nse_trading_day
+              is_open = bool(is_nse_trading_day(now_ist.date()))
+              status = "NSE_TRADING_DAY" if is_open else "NSE_HOLIDAY_OR_WEEKEND"
+          except Exception as exc:
+              status = f"CALENDAR_CHECK_UNAVAILABLE ({exc})"
+          print(f"{status} (IST date: {now_ist.date().isoformat()})")
+          PY
+          )
+          echo "NSE Calendar Status: ${NSE_CALENDAR_NOTE}"
+
+          # 1. JavaScript syntax checks
+          echo "=== [1/9] JavaScript syntax checks ==="
           node -c docs/candle-agent/engine.js && node -c docs/trader/app.js && node -c docs/lab/app.js
           JS_RC=$?
 
-          # 2. Authority, risk & capital regression suite
-          pytest tests/intraday/test_remed01_authority_risk_capital.py -v --tb=short
-          REMED_RC=$?
-
-          # 3. AST non-bypass & safety invariant check
+          # 2. Inline HTML <script> syntax validation
+          echo "=== [2/9] Inline HTML <script> syntax validation ==="
           python - <<'PY'
-          import ast, pathlib, sys
+          import pathlib, re, subprocess, sys, tempfile
+
+          html_files = [
+              "docs/candle-agent/index.html",
+              "docs/trader/index.html",
+              "docs/lab/index.html",
+          ]
+          errors = []
+          total_scripts = 0
+          for rel in html_files:
+              p = pathlib.Path(rel)
+              if not p.exists():
+                  errors.append(f"Missing HTML file: {rel}")
+                  continue
+              text = p.read_text(encoding="utf-8")
+              scripts = re.findall(
+                  r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>",
+                  text,
+                  flags=re.IGNORECASE | re.DOTALL,
+              )
+              for idx, code in enumerate(scripts):
+                  total_scripts += 1
+                  with tempfile.NamedTemporaryFile("w", suffix=".js", encoding="utf-8", delete=True) as tf:
+                      tf.write(code)
+                      tf.flush()
+                      res = subprocess.run(["node", "-c", tf.name], capture_output=True, text=True)
+                      if res.returncode != 0:
+                          errors.append(f"{rel} inline <script>[{idx}] syntax error:\n{res.stderr.strip()}")
+          if errors:
+              for e in errors:
+                  print("HTML_SCRIPT_FAIL:", e)
+              sys.exit(1)
+          print(f"HTML_SCRIPT_PASS: validated {total_scripts} inline <script> block(s) across {len(html_files)} HTML files")
+          PY
+          HTML_JS_RC=$?
+
+          # 3. REMED-01 authority & capital-reservation tests
+          echo "=== [3/9] REMED-01 authority & capital-reservation tests ==="
+          pytest tests/intraday/test_remed01_authority_risk_capital.py -v --tb=short
+          REMED01_RC=$?
+
+          # 4. REMED-02 deferred-hardening tests
+          echo "=== [4/9] REMED-02 deferred-hardening tests ==="
+          pytest tests/intraday/test_remed02_deferred_hardening.py -v --tb=short
+          REMED02_RC=$?
+
+          # 5. Autonomous QA remediation tests
+          echo "=== [5/9] Autonomous QA remediation tests ==="
+          pytest tests/intraday/test_autonomous_qa_remediation.py -v --tb=short
+          AUTO_QA_RC=$?
+
+          # 6. Forward soak autonomous long-only tests (run if file exists)
+          echo "=== [6/9] Forward soak autonomous long-only tests ==="
+          if [ -f "tests/intraday/test_forward_soak_autonomous_long_only.py" ]; then
+            pytest tests/intraday/test_forward_soak_autonomous_long_only.py -v --tb=short
+            SOAK_RC=$?
+            SOAK_PRESENT="true"
+          else
+            echo "SKIPPED_NOT_PRESENT: tests/intraday/test_forward_soak_autonomous_long_only.py not yet present"
+            SOAK_RC=0
+            SOAK_PRESENT="false"
+          fi
+
+          # 7. Static safety & invariant scan
+          echo "=== [7/9] Static safety & invariant scan ==="
+          python - <<'PY'
+          import ast, datetime, json, pathlib, sys
 
           errors = []
-          # Verify paper-only flags in critical modules
+
+          # 7a. AST non-bypass check across execution orchestrators
+          non_bypass_files = [
+              "trader/timing/monitoring_session.py",
+              "trader/timing/live_paper_runner.py",
+              "trader/paper/cycle006b.py",
+              "trader/timing/cycle007_pipeline.py",
+          ]
+          for rel in non_bypass_files:
+              p = pathlib.Path(rel)
+              if not p.exists():
+                  errors.append(f"Missing non-bypass target file: {rel}")
+                  continue
+              tree = ast.parse(p.read_text(encoding="utf-8"), filename=rel)
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+                      if node.func.attr in ("submit_order", "update_candle_bar"):
+                          errors.append(
+                              f"{rel}:{node.lineno}: direct .{node.func.attr}() bypass detected outside MandatoryExecutionGate"
+                          )
+
+          # 7b. Verify LIVE_TRADING_ENABLED == False in all critical paper-only modules
           paper_only_files = [
               "trader/data/tick_recorder.py",
+              "trader/timing/live_paper_runner.py",
               "trader/evaluation/walkforward_optimizer.py",
               "trader/evaluation/mtf_walkforward_optimizer.py",
               "trader/intelligence/ml_setup_scorer.py",
+              "trader/intelligence/multi_stock_scanner.py",
           ]
           for rel in paper_only_files:
               p = pathlib.Path(rel)
+              if not p.exists():
+                  errors.append(f"Missing paper-only module: {rel}")
+                  continue
               tree = ast.parse(p.read_text(encoding="utf-8"), filename=rel)
               found_false = False
               for node in tree.body:
@@ -73,7 +186,35 @@ jobs:
               if not found_false:
                   errors.append(f"{rel}: LIVE_TRADING_ENABLED must be statically False")
 
-          # Verify no assert-based chronological split checks remain in walk-forward modules
+          # Also ensure no module in trader/ or scripts/ sets LIVE_TRADING_ENABLED = True
+          # and zero real broker order-placement calls exist anywhere in trader/ or scripts/
+          forbidden_broker_calls = {"place_order", "modify_order", "cancel_order"}
+          for root_dir in ("trader", "scripts"):
+              root_path = pathlib.Path(root_dir)
+              if not root_path.exists():
+                  continue
+              for py_file in sorted(root_path.rglob("*.py")):
+                  rel = py_file.as_posix()
+                  tree = ast.parse(py_file.read_text(encoding="utf-8"), filename=rel)
+                  for node in ast.walk(tree):
+                      if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.target.id == "LIVE_TRADING_ENABLED":
+                          if not (isinstance(node.value, ast.Constant) and node.value.value is False):
+                              errors.append(f"{rel}:{node.lineno}: LIVE_TRADING_ENABLED must be False")
+                      elif isinstance(node, ast.Assign):
+                          for t in node.targets:
+                              if isinstance(t, ast.Name) and t.id == "LIVE_TRADING_ENABLED":
+                                  if not (isinstance(node.value, ast.Constant) and node.value.value is False):
+                                      errors.append(f"{rel}:{node.lineno}: LIVE_TRADING_ENABLED must be False")
+                      elif isinstance(node, ast.Call):
+                          callee = None
+                          if isinstance(node.func, ast.Attribute):
+                              callee = node.func.attr
+                          elif isinstance(node.func, ast.Name):
+                              callee = node.func.id
+                          if callee in forbidden_broker_calls:
+                              errors.append(f"{rel}:{node.lineno}: forbidden real broker call '{callee}()' detected")
+
+          # 7c. Verify no assert-based chronological split checks remain in walk-forward modules
           wf_files = [
               "trader/evaluation/walkforward_optimizer.py",
               "trader/evaluation/walkforward_1m.py",
@@ -87,63 +228,150 @@ jobs:
                   if isinstance(node, ast.Assert):
                       errors.append(f"{rel}:{node.lineno}: unexpected assert statement in production quant module")
 
+          # 7d. Long-only standing-permission & fail-closed ledger invariant check
+          from trader.authority.instructions import ActionType, AuthorityInstruction, AuthoritySource, PermissionType
+          from trader.config import IST_TZ
+          from trader.portfolio.ledger import IntradayPaperPortfolio, OrderStatus
+
+          now_ist = datetime.datetime.now(IST_TZ)
+          standing_long = AuthorityInstruction(
+              instruction_id="QA-STANDING-ALLOW-LONG",
+              authority=AuthoritySource.HUMAN,
+              scope="*",
+              permission=PermissionType.ALLOW_LONG,
+              valid_from=now_ist - datetime.timedelta(minutes=5),
+              expires_at=now_ist + datetime.timedelta(hours=1),
+              reason="Continuous QA long-only standing permission invariant check",
+          )
+          allowed_short, _ = standing_long.allows_action(ActionType.ENTRY_SHORT)
+          if allowed_short:
+              errors.append("LONG_ONLY_INVARIANT_FAIL: PermissionType.ALLOW_LONG permitted ActionType.ENTRY_SHORT")
+
+          # Verify SELL EXIT_LONG with quantity > open_qty and unknown CLOSE_LONG fail closed (never open SHORT)
+          port = IntradayPaperPortfolio(initial_capital=100000.0)
+          open_ord = port.submit_order("TCS", "BUY", 2, 1000.0, timestamp=now_ist, position_effect="OPEN_LONG")
+          if open_ord.status != OrderStatus.FILLED:
+              errors.append("LONG_ONLY_INVARIANT_FAIL: baseline OPEN_LONG setup failed")
+          over_exit = port.submit_order("TCS", "SELL", 5, 1010.0, timestamp=now_ist, position_effect="EXIT_LONG")
+          if over_exit.status != OrderStatus.REJECTED:
+              errors.append("LONG_ONLY_INVARIANT_FAIL: over-sized EXIT_LONG was not rejected")
+          close_long_alias = port.submit_order("TCS", "SELL", 5, 1010.0, timestamp=now_ist, position_effect="CLOSE_LONG")
+          if close_long_alias.status != OrderStatus.REJECTED:
+              errors.append("LONG_ONLY_INVARIANT_FAIL: unrecognized position_effect='CLOSE_LONG' was not rejected")
+          pos_after = port.positions.get("TCS")
+          if pos_after is None or pos_after.side != "LONG" or pos_after.quantity != 2:
+              errors.append(f"LONG_ONLY_INVARIANT_FAIL: unexpected position mutation after rejected sells: {pos_after}")
+
+          # If any standing-permission JSON file exists, verify it enforces ALLOW_LONG only
+          for cand in (
+              pathlib.Path("data/lab/standing_human_permission.json"),
+              pathlib.Path("config/standing_human_permission.json"),
+          ):
+              if cand.exists():
+                  cfg = json.loads(cand.read_text(encoding="utf-8"))
+                  perm_val = str(cfg.get("permission", "")).upper()
+                  if perm_val != "ALLOW_LONG":
+                      errors.append(f"{cand.as_posix()}: standing permission must be ALLOW_LONG, got {perm_val!r}")
+
           if errors:
               for e in errors:
-                  print("AST_GATE_FAIL:", e)
+                  print("SAFETY_INVARIANT_FAIL:", e)
               sys.exit(1)
-          print("AST_GATE_PASS: all paper-only and non-bypass invariants verified")
+          print("SAFETY_INVARIANT_PASS: AST non-bypass, LIVE_TRADING_ENABLED==False, zero broker calls, and long-only invariants verified")
           PY
-          AST_RC=$?
+          SAFETY_RC=$?
 
-          # 4. Protected-file & sealed-holdout immutability verification
+          # 8. Sealed-holdout JSON validity check
+          echo "=== [8/9] Sealed-holdout JSON validity check ==="
           python - <<'PY'
           import json, pathlib
           reg = pathlib.Path("data/lab/sealed_holdout_registry.json")
-          assert reg.exists(), "Missing sealed_holdout_registry.json"
+          if not reg.exists():
+              raise SystemExit("Missing data/lab/sealed_holdout_registry.json")
           data = json.loads(reg.read_text(encoding="utf-8"))
-          assert isinstance(data, dict), "sealed_holdout_registry.json must be a JSON object"
+          if not isinstance(data, dict):
+              raise SystemExit("sealed_holdout_registry.json must be a JSON object")
           print("HOLDOUT_JSON_VALID:", reg)
           PY
           HOLDOUT_JSON_RC=$?
 
-          git diff --exit-code data/lab/sealed_holdout_registry.json && git diff --exit-code data/lab/ docs/lab/data/
+          # 9. Holdout registry immutability & tracked lab JSON clean-tree check
+          echo "=== [9/9] Holdout immutability & tracked lab JSON clean-tree check ==="
+          git diff --exit-code data/lab/sealed_holdout_registry.json && git diff --exit-code data/lab/ docs/lab/data/ docs/trader/data/
           CLEAN_RC=$?
 
-          # 5. Generate JSON + Markdown health artifact
-          python - <<PY
-          import datetime, json, pathlib
+          # 10. Generate JSON + Markdown health artifact and GitHub Step Summary
+          export JS_RC HTML_JS_RC REMED01_RC REMED02_RC AUTO_QA_RC SOAK_RC SOAK_PRESENT SAFETY_RC HOLDOUT_JSON_RC CLEAN_RC NSE_CALENDAR_NOTE
+          python - <<'PY'
+          import datetime, json, os, pathlib
+
+          soak_present = os.environ.get("SOAK_PRESENT") == "true"
+          soak_rc = int(os.environ["SOAK_RC"])
+
+          checks = {
+              "js_syntax": int(os.environ["JS_RC"]) == 0,
+              "html_inline_script_syntax": int(os.environ["HTML_JS_RC"]) == 0,
+              "remed01_authority_risk_capital": int(os.environ["REMED01_RC"]) == 0,
+              "remed02_deferred_hardening": int(os.environ["REMED02_RC"]) == 0,
+              "autonomous_qa_remediation": int(os.environ["AUTO_QA_RC"]) == 0,
+              "forward_soak_autonomous_long_only": (soak_rc == 0) if soak_present else True,
+              "static_safety_invariants": int(os.environ["SAFETY_RC"]) == 0,
+              "sealed_holdout_json_valid": int(os.environ["HOLDOUT_JSON_RC"]) == 0,
+              "holdout_immutability_and_clean_tree": int(os.environ["CLEAN_RC"]) == 0,
+          }
+          check_details = {
+              "js_syntax": "PASS" if checks["js_syntax"] else "FAIL",
+              "html_inline_script_syntax": "PASS" if checks["html_inline_script_syntax"] else "FAIL",
+              "remed01_authority_risk_capital": "PASS" if checks["remed01_authority_risk_capital"] else "FAIL",
+              "remed02_deferred_hardening": "PASS" if checks["remed02_deferred_hardening"] else "FAIL",
+              "autonomous_qa_remediation": "PASS" if checks["autonomous_qa_remediation"] else "FAIL",
+              "forward_soak_autonomous_long_only": (
+                  ("PASS" if soak_rc == 0 else "FAIL") if soak_present else "SKIPPED_NOT_PRESENT"
+              ),
+              "static_safety_invariants": "PASS" if checks["static_safety_invariants"] else "FAIL",
+              "sealed_holdout_json_valid": "PASS" if checks["sealed_holdout_json_valid"] else "FAIL",
+              "holdout_immutability_and_clean_tree": "PASS" if checks["holdout_immutability_and_clean_tree"] else "FAIL",
+          }
 
           status = {
               "workflow": "bharatalpha-continuous-qa",
               "mode": "READ_ONLY",
+              "schedule_cron": "30 2 * * 1-5",
+              "schedule_description": "02:30 UTC / 08:00 IST Mon-Fri pre-market (plus workflow_dispatch)",
+              "nse_calendar_note": os.environ.get("NSE_CALENDAR_NOTE", "UNKNOWN"),
               "timestamp_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-              "checks": {
-                  "js_syntax": ${JS_RC} == 0,
-                  "remed01_authority_risk_capital": ${REMED_RC} == 0,
-                  "ast_non_bypass_invariants": ${AST_RC} == 0,
-                  "sealed_holdout_json_valid": ${HOLDOUT_JSON_RC} == 0,
-                  "clean_tree_and_holdout_immutability": ${CLEAN_RC} == 0,
-              },
+              "checks": checks,
+              "check_statuses": check_details,
+              "overall_pass": all(checks.values()),
           }
-          status["overall_pass"] = all(status["checks"].values())
+
           out_dir = pathlib.Path("qa_artifacts")
-          (out_dir / "continuous_qa_health.json").write_text(json.dumps(status, indent=2), encoding="utf-8")
+          (out_dir / "continuous_qa_health.json").write_text(json.dumps(status, indent=2) + "\n", encoding="utf-8")
 
           md_lines = [
               "# BharatAlpha Continuous QA Health Report (Read-Only)",
               "",
-              f"- **Timestamp (UTC)**: \`{status['timestamp_utc']}\`",
-              f"- **Overall Status**: {'PASS' if status['overall_pass'] else 'FAIL'}",
+              f"- **Timestamp (UTC)**: `{status['timestamp_utc']}`",
+              f"- **Schedule**: `30 2 * * 1-5` (`02:30 UTC` / `08:00 IST` Mon-Fri pre-market, plus `workflow_dispatch`)",
+              f"- **NSE Calendar Check**: `{status['nse_calendar_note']}` *(read-only QA runs unconditionally)*",
+              f"- **Permissions**: `contents: read` (zero broker credentials, zero automatic commits/merges)",
+              f"- **Overall Status**: **{'PASS' if status['overall_pass'] else 'FAIL'}**",
               "",
               "| Check | Status |",
               "|---|---|",
           ]
-          for k, v in status["checks"].items():
-              md_lines.append(f"| \`{k}\` | {'PASS' if v else 'FAIL'} |")
-          (out_dir / "continuous_qa_health.md").write_text("\n".join(md_lines) + "\n", encoding="utf-8")
+          for k, v in check_details.items():
+              md_lines.append(f"| `{k}` | {v} |")
+          md_text = "\n".join(md_lines) + "\n"
+          (out_dir / "continuous_qa_health.md").write_text(md_text, encoding="utf-8")
+
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary_path:
+              with open(summary_path, "a", encoding="utf-8") as sf:
+                  sf.write(md_text)
           PY
 
-          if [ "$JS_RC" -ne 0 ] || [ "$REMED_RC" -ne 0 ] || [ "$AST_RC" -ne 0 ] || [ "$HOLDOUT_JSON_RC" -ne 0 ] || [ "$CLEAN_RC" -ne 0 ]; then
+          if [ "$JS_RC" -ne 0 ] || [ "$HTML_JS_RC" -ne 0 ] || [ "$REMED01_RC" -ne 0 ] || [ "$REMED02_RC" -ne 0 ] || [ "$AUTO_QA_RC" -ne 0 ] || [ "$SOAK_RC" -ne 0 ] || [ "$SAFETY_RC" -ne 0 ] || [ "$HOLDOUT_JSON_RC" -ne 0 ] || [ "$CLEAN_RC" -ne 0 ]; then
             exit 1
           fi
 
