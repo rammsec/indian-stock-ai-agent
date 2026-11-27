@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from trader.authority.gate import MandatoryExecutionGate
 from trader.authority.instructions import (
     AuthorityInstruction,
     AuthoritySource,
@@ -39,6 +40,11 @@ from trader.data.tick_recorder import (
     OfflineJsonlTickAdapter,
     ReadOnlyTickAdapter,
     ZerodhaKiteReadOnlyAdapter,
+)
+from trader.portfolio.ledger import IntradayPaperPortfolio
+from trader.risk.engine import DeterministicRiskEngine
+from trader.timing.autonomous_session_controller import (
+    AutonomousLongOnlySessionController,
 )
 from trader.timing.live_paper_runner import (
     LIVE_TRADING_ENABLED,
@@ -130,7 +136,53 @@ def build_cli_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ml-model", type=Path, default=None, help="Optional CYCLE-022 setup_scorer_1m.json")
     parser.add_argument("--min-ml-prob", type=float, default=None)
     parser.add_argument("--dry-run", action="store_true", help="Validate read-only adapter config and exit")
+    parser.add_argument(
+        "--autonomous-long-only",
+        action="store_true",
+        help="Enable AutonomousLongOnlySessionController (Stage A preflight -> 09:15 NO_NEW_ENTRIES -> 09:30 ALLOW_LONG -> 15:15 EOD square-off)",
+    )
+    parser.add_argument(
+        "--preflight-only",
+        action="store_true",
+        help="Run Stage A preflight verification, print JSON result without secrets, and exit 0 (PASS) or 2 (FAIL)",
+    )
+    parser.add_argument(
+        "--lock-file",
+        type=Path,
+        default=None,
+        help="Optional single-instance PID lock file path to prevent duplicate runner processes",
+    )
     return parser
+
+
+def _scan_jsonl_time_bounds(jsonl_file: Path | None) -> tuple[datetime | None, datetime | None]:
+    """Scan an offline JSONL tick file for its earliest and latest IST timestamps."""
+    if jsonl_file is None or not jsonl_file.exists():
+        return None, None
+    min_ts: datetime | None = None
+    max_ts: datetime | None = None
+    with jsonl_file.open("r", encoding="utf-8") as fh:
+        for line in fh:
+            raw = line.strip()
+            if not raw:
+                continue
+            try:
+                rec = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+            ts_raw = rec.get("timestamp_ist") if isinstance(rec, dict) else None
+            if not ts_raw:
+                continue
+            try:
+                ts = datetime.fromisoformat(str(ts_raw))
+            except ValueError:
+                continue
+            ts = ts.replace(tzinfo=IST_TZ) if ts.tzinfo is None else ts.astimezone(IST_TZ)
+            if min_ts is None or ts < min_ts:
+                min_ts = ts
+            if max_ts is None or ts > max_ts:
+                max_ts = ts
+    return min_ts, max_ts
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -138,9 +190,50 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_cli_parser()
     args = parser.parse_args(argv)
 
+    if args.autonomous_long_only and args.human_permission in ("ALLOW_SHORT", "ALLOW_BOTH"):
+        print(
+            json.dumps(
+                {
+                    "status": "REJECTED",
+                    "error": (
+                        f"--autonomous-long-only NEVER permits --human-permission {args.human_permission}"
+                    ),
+                },
+                indent=2,
+            ),
+            file=sys.stderr,
+        )
+        return 2
+
+    clean_symbols = [s.strip().upper() for s in args.symbols if s.strip()]
+    now_ist = datetime.now(IST_TZ)
+    min_ts, max_ts = (
+        _scan_jsonl_time_bounds(args.jsonl_file)
+        if args.provider == "offline_jsonl"
+        else (None, None)
+    )
+    session_date = min_ts.date() if min_ts is not None else now_ist.date()
+
+    if args.preflight_only:
+        portfolio = IntradayPaperPortfolio(initial_capital=float(args.capital))
+        risk_engine = DeterministicRiskEngine()
+        controller = AutonomousLongOnlySessionController(
+            session_date=session_date,
+            provider=args.provider,
+            symbols=tuple(clean_symbols),
+            output_dir=args.output_dir,
+        )
+        preflight = controller.run_preflight(
+            risk_engine=risk_engine,
+            portfolio=portfolio,
+            lock_file=args.lock_file,
+        )
+        controller.release_lock()
+        print(json.dumps(preflight.to_dict(), indent=2))
+        return 0 if preflight.passed else 2
+
     token_map = parse_token_map(args.token_map)
     adapter = build_adapter(args.provider, args.jsonl_file, token_map=token_map)
-    clean_symbols = [s.strip().upper() for s in args.symbols if s.strip()]
 
     if args.provider in ("zerodha", "angel_one"):
         missing = [s for s in clean_symbols if s not in token_map]
@@ -160,6 +253,7 @@ def main(argv: list[str] | None = None) -> int:
                     "central_direction": args.central_direction,
                     "profile": args.profile,
                     "capital_inr": args.capital,
+                    "autonomous_long_only": bool(args.autonomous_long_only),
                     "live_trading_enabled": LIVE_TRADING_ENABLED,
                     "read_only_mode": READ_ONLY_MODE,
                 },
@@ -175,49 +269,18 @@ def main(argv: list[str] | None = None) -> int:
         model = CausalSetupScorerModel.load_json(args.ml_model)
         ml_scorer_fn = model.predict_proba
 
-    now_ist = datetime.now(IST_TZ)
     valid_from = now_ist - timedelta(hours=24)
     expires_at = now_ist + timedelta(hours=24)
-    if args.provider == "offline_jsonl" and args.jsonl_file is not None and args.jsonl_file.exists():
-        min_ts: datetime | None = None
-        max_ts: datetime | None = None
-        with args.jsonl_file.open("r", encoding="utf-8") as fh:
-            for line in fh:
-                raw = line.strip()
-                if not raw:
-                    continue
-                try:
-                    rec = json.loads(raw)
-                except json.JSONDecodeError:
-                    continue
-                ts_raw = rec.get("timestamp_ist") if isinstance(rec, dict) else None
-                if not ts_raw:
-                    continue
-                try:
-                    ts = datetime.fromisoformat(str(ts_raw))
-                except ValueError:
-                    continue
-                ts = ts.replace(tzinfo=IST_TZ) if ts.tzinfo is None else ts.astimezone(IST_TZ)
-                if min_ts is None or ts < min_ts:
-                    min_ts = ts
-                if max_ts is None or ts > max_ts:
-                    max_ts = ts
-        if min_ts is not None and max_ts is not None:
-            valid_from = min_ts - timedelta(hours=1)
-            expires_at = max_ts + timedelta(hours=24)
+    if min_ts is not None and max_ts is not None:
+        valid_from = min_ts - timedelta(hours=1)
+        expires_at = max_ts + timedelta(hours=24)
 
-    human_instr: AuthorityInstruction | None = None
-    if args.human_permission != "NONE":
-        human_instr = AuthorityInstruction(
-            instruction_id=f"HUMAN-CLI-{uuid.uuid4().hex[:8]}",
-            authority=AuthoritySource.HUMAN,
-            scope="*",
-            permission=PermissionType(args.human_permission),
-            valid_from=valid_from,
-            expires_at=expires_at,
-            reason=f"Explicit CLI Human Authority: {args.human_permission}",
-            version="1.0",
-        )
+    cfg = LivePaperConfig(
+        strategy_profile=args.profile,
+        initial_capital_inr=args.capital,
+        auto_direction=(args.central_direction == "AUTO"),
+        min_ml_win_prob=args.min_ml_prob,
+    )
 
     central_instr: AuthorityInstruction | None = None
     if args.central_direction != "AUTO":
@@ -241,19 +304,55 @@ def main(argv: list[str] | None = None) -> int:
             version="1.0",
         )
 
-    cfg = LivePaperConfig(
-        strategy_profile=args.profile,
-        initial_capital_inr=args.capital,
-        auto_direction=(args.central_direction == "AUTO"),
-        min_ml_win_prob=args.min_ml_prob,
-    )
+    session_controller: AutonomousLongOnlySessionController | None = None
+    portfolio: IntradayPaperPortfolio | None = None
+    execution_gate: MandatoryExecutionGate | None = None
+    human_instr: AuthorityInstruction | None = None
+
+    if args.autonomous_long_only:
+        portfolio = IntradayPaperPortfolio(initial_capital=float(cfg.initial_capital_inr))
+        risk_engine = DeterministicRiskEngine(max_risk_per_trade_pct=cfg.risk_pct)
+        execution_gate = MandatoryExecutionGate(risk_engine=risk_engine)
+        session_controller = AutonomousLongOnlySessionController(
+            session_date=session_date,
+            provider=args.provider,
+            symbols=tuple(clean_symbols),
+            output_dir=args.output_dir,
+        )
+        preflight = session_controller.run_preflight(
+            risk_engine=risk_engine,
+            portfolio=portfolio,
+            lock_file=args.lock_file,
+        )
+        if not preflight.passed:
+            session_controller.release_lock()
+            print(json.dumps(preflight.to_dict(), indent=2), file=sys.stderr)
+            return 2
+        obs_start_ts = min_ts if min_ts is not None else now_ist
+        session_controller.start_observation(execution_gate, obs_start_ts)
+    elif args.human_permission != "NONE":
+        human_instr = AuthorityInstruction(
+            instruction_id=f"HUMAN-CLI-{uuid.uuid4().hex[:8]}",
+            authority=AuthoritySource.HUMAN,
+            scope="*",
+            permission=PermissionType(args.human_permission),
+            valid_from=valid_from,
+            expires_at=expires_at,
+            reason=f"Explicit CLI Human Authority: {args.human_permission}",
+            version="1.0",
+        )
+
     runner = LivePaperTradingRunner(
         adapter=adapter,
         output_dir=args.output_dir,
         config=cfg,
+        portfolio=portfolio,
+        execution_gate=execution_gate,
         human_instruction=human_instr,
         central_instruction=central_instr,
         ml_scorer=ml_scorer_fn,
+        session_controller=session_controller,
+        long_only_standing_mode=bool(args.autonomous_long_only),
     )
 
     def _graceful_stop(signum: int, _frame: Any) -> None:

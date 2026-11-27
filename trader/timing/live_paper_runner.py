@@ -58,6 +58,10 @@ from trader.intelligence.chart_overlays import (
 from trader.portfolio.cost_calculator import calculate_intraday_costs
 from trader.portfolio.ledger import IntradayPaperPortfolio, round_to_nse_tick
 from trader.risk.engine import DeterministicRiskEngine, RiskState
+from trader.timing.autonomous_session_controller import (
+    AutonomousLongOnlySessionController,
+    SessionStage,
+)
 from trader.timing.candle_timing_agent import (
     AlignmentStatus,
     TimingAssessment,
@@ -175,9 +179,10 @@ class LivePaperSessionSummary:
     final_risk_state: str = "ACTIVE"
     final_cash_inr: float = 0.0
     final_equity_inr: float = 0.0
+    autonomous_controller_summary: dict[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload: dict[str, Any] = {
             "schema_version": "cycle021_remed01_live_paper_session_v2",
             "provider": self.provider,
             "symbols": self.symbols,
@@ -201,6 +206,9 @@ class LivePaperSessionSummary:
             "archived_provenance_files": self.archived_provenance_files,
             "state_json_path": self.state_json_path,
         }
+        if self.autonomous_controller_summary is not None:
+            payload["autonomous_controller_summary"] = self.autonomous_controller_summary
+        return payload
 
 
 def _build_advisory_timing_assessment(
@@ -265,6 +273,8 @@ class LivePaperTradingRunner:
         central_instruction: AuthorityInstruction | None = None,
         ml_scorer: Callable[[dict[str, float]], float] | None = None,
         on_bar_evaluated: Callable[[dict[str, Any]], None] | None = None,
+        session_controller: AutonomousLongOnlySessionController | None = None,
+        long_only_standing_mode: bool = False,
     ) -> None:
         assert_paper_only_live_runner()
         self.adapter = adapter
@@ -272,6 +282,8 @@ class LivePaperTradingRunner:
         self.config = config or LivePaperConfig()
         self.ml_scorer = ml_scorer
         self.on_bar_evaluated = on_bar_evaluated
+        self.session_controller = session_controller
+        self.long_only_standing_mode = bool(long_only_standing_mode or (session_controller is not None))
 
         # Mandatory 5-tier governed stack (NO private _open_positions or _equity_inr bypass!)
         self.portfolio = portfolio or IntradayPaperPortfolio(initial_capital=float(self.config.initial_capital_inr))
@@ -323,6 +335,13 @@ class LivePaperTradingRunner:
         self._gate_rejections_count: int = 0
         self._last_direction_by_symbol: dict[str, str] = {}
         self._last_watermark_ist: datetime | None = None
+        self._executed_signal_keys: set[str] = set()
+        if self.session_controller is not None:
+            ckpt = self.session_controller.load_checkpoint()
+            if ckpt is not None:
+                self._executed_signal_keys.update(
+                    str(k) for k in ckpt.get("executed_signal_keys", [])
+                )
 
     # ------------------------------------------------------------------
     # Governed Authority Controls (Decision 1, 2, 3)
@@ -458,6 +477,14 @@ class LivePaperTradingRunner:
             self._bars_1m_history[sym] = self._bars_1m_history[sym][-450:]
 
         self._bars_1m_evaluated += 1
+        if self.session_controller is not None:
+            self.session_controller.record_completed_1m_bar(ts_close)
+            self.session_controller.evaluate_0930_transition(
+                execution_gate=self.execution_gate,
+                risk_engine=self.risk_engine,
+                portfolio=self.portfolio,
+                current_time=ts_close,
+            )
         df = pd.DataFrame(self._bars_1m_history[sym])
         overlays = compute_chart_overlays(df, session_date=day)
 
@@ -591,6 +618,10 @@ class LivePaperTradingRunner:
                     if cand_tick > bar.close and cand_tick < meta["active_sl"]:
                         meta["active_sl"] = cand_tick
                         pos.stop_loss = cand_tick
+            if self.session_controller is not None:
+                self.session_controller.save_checkpoint(
+                    self.portfolio, self._executed_signal_keys, len(self._trades)
+                )
             if self.on_bar_evaluated is not None:
                 self.on_bar_evaluated(self._build_bar_event(sym, bar, eff_dir, overlays.to_dict()))
             return
@@ -627,6 +658,14 @@ class LivePaperTradingRunner:
                         want_side = "BUY"
                     elif eff_dir == "BEARISH" and overlays.supertrend_direction == "BEARISH":
                         want_side = "SELL"
+
+                # Long-only standing mode: strictly reject any short-opening entry candidate
+                if want_side == "SELL" and self.long_only_standing_mode:
+                    want_side = None
+
+                signal_key = f"{sym}|{ts_open.isoformat()}|{want_side}" if want_side is not None else ""
+                if want_side is not None and signal_key in self._executed_signal_keys:
+                    want_side = None
 
                 if want_side is not None:
                     entry_px = round_to_nse_tick(bar.close)
@@ -768,6 +807,7 @@ class LivePaperTradingRunner:
                                         reservation_order_id=res_id,
                                     )
                                     if executed:
+                                        self._executed_signal_keys.add(signal_key)
                                         self._pos_meta[sym] = {
                                             "initial_sl": sl,
                                             "active_sl": sl,
@@ -781,6 +821,10 @@ class LivePaperTradingRunner:
                                     else:
                                         self._gate_rejections_count += 1
 
+        if self.session_controller is not None:
+            self.session_controller.save_checkpoint(
+                self.portfolio, self._executed_signal_keys, len(self._trades)
+            )
         if self.on_bar_evaluated is not None:
             self.on_bar_evaluated(self._build_bar_event(sym, bar, eff_dir, overlays.to_dict()))
 
@@ -822,6 +866,10 @@ class LivePaperTradingRunner:
             if not self.aggregator.ingest_tick(tick):
                 return
             ts_ist = tick.timestamp_ist.astimezone(IST_TZ)
+            if self.session_controller is not None:
+                self.session_controller.record_tick_health(
+                    ts_ist, execution_gate=self.execution_gate
+                )
             self._raw_ticks_by_symbol_day[(tick.symbol, ts_ist.date())].append(tick)
             if self._last_watermark_ist is None or ts_ist > self._last_watermark_ist:
                 self._last_watermark_ist = ts_ist
@@ -897,6 +945,16 @@ class LivePaperTradingRunner:
             risk_ok = bool(self.risk_engine.verify_audit_chain())
             auth_ok = self.execution_gate.verify_audit_chain()
 
+            ctrl_summary: dict[str, Any] | None = None
+            if self.session_controller is not None:
+                if self.session_controller.stage != SessionStage.HALTED_OR_INTERRUPTED:
+                    self.session_controller.stage = SessionStage.COMPLETED
+                self.session_controller.save_checkpoint(
+                    self.portfolio, self._executed_signal_keys, len(self._trades)
+                )
+                ctrl_summary = self.session_controller.summary_dict()
+                self.session_controller.release_lock()
+
             summary = LivePaperSessionSummary(
                 provider=self.adapter.provider_name,
                 symbols=clean_symbols,
@@ -917,6 +975,7 @@ class LivePaperTradingRunner:
                 final_risk_state=self.risk_engine.state.value,
                 final_cash_inr=self.portfolio.cash,
                 final_equity_inr=self.portfolio.total_equity,
+                autonomous_controller_summary=ctrl_summary,
             )
 
             self.output_dir.mkdir(parents=True, exist_ok=True)
